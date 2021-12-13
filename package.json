@@ -1,0 +1,61 @@
+{
+  "name": "htw-manager",
+  "version": "0.1.0",
+  "private": false,
+  "homepage": "https://manager.heattransferwarehouse.com/",
+  "repository": "git://github.com/Traizel/htw-manager.git",
+  "proxy": "http://localhost:5000",
+  "dependencies": {
+    "@material-ui/core": "^4.11.1",
+    "@material-ui/icons": "^4.9.1",
+    "@material-ui/lab": "^4.0.0-alpha.56",
+    "@terrestris/react-geo": "^15.3.0",
+    "antd": "^4.17.2",
+    "async": "^3.2.0",
+    "axios": "^0.19.2",
+    "backend": "0.0.0",
+    "bcryptjs": "^2.4.3",
+    "bootstrap": "^4.5.0",
+    "dotenv": "^4.0.0",
+    "express": "^4.16.4",
+    "mui-datatables": "^3.7.1",
+    "ol": "^6.9.0",
+    "pg": "^8.5.1",
+    "react": "^16.8.6",
+    "react-bootstrap": "^1.3.0",
+    "react-chartjs-2": "^2.11.1",
+    "react-dom": "^16.8.6",
+    "react-iframe": "^1.8.0",
+    "react-moment": "^0.9.7",
+    "react-redux": "^7.2.2",
+    "react-router-dom": "^5.0.0",
+    "react-scripts": "^3.4.0",
+    "redux": "^4.0.1",
+    "redux-logger": "^3.0.6",
+    "redux-saga": "^1.0.2",
+    "sweetalert": "^2.1.2",
+    "webdriver-manager": "^12.1.7",
+    "xmlhttprequest": "^1.8.0"
+  },
+  "scripts": {
+    "start": "node server/server.js",
+    "client": "react-scripts start",
+    "server": "nodemon --watch server server/server.js",
+    "build": "react-scripts build",
+    "test": "jest",
+    "eject": "react-scripts eject"
+  },
+  "publishConfig": {
+    "registry": "https://npm.pkg.github.com"
+  },
+  "devDependencies": {
+    "nodemon": "^1.18.10"
+  },
+  "browserslist": [
+    ">0.2%",
+    "not dead",
+    "not ie <= 11",
+    "not op_mini all"
+  ],
+  "heroku-run-build-script": true
+}

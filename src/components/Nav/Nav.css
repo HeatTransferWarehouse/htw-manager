@@ -1,0 +1,78 @@
+.nav-title {
+    font-size: 24px;
+    font-weight: 700;
+    display: inline-block;
+    color: #f2f2f2;
+    padding-left: 10px;
+}
+
+.nav {
+  overflow: hidden;
+  width:100%;
+
+  
+}
+
+.nav-link {
+  float: left;
+  background-color: #00008B;
+  color: #f2f2f2;
+  text-align: center;
+  padding: 24px 10px;
+  text-decoration: none;
+  font-size: 15px;
+  border:none;
+  cursor: pointer;
+  outline:0;
+}
+
+.nav-link2 {
+  float: left;
+  background-color: #8B008B;
+  color: #f2f2f2;
+  text-align: center;
+  padding: 24px 10px;
+  text-decoration: none;
+  font-size: 15px;
+  border:none;
+  cursor: pointer;
+  outline:0;
+}
+
+.active-nav-link {
+  float: left;
+  background-color: #00008B;
+  color: #FFD700;
+  text-align: center;
+  padding: 24px 10px;
+  text-decoration: none;
+  font-size: 15px;
+  border:none;
+  cursor: pointer;
+  outline:0;
+}
+
+.active-nav-link2 {
+  float: left;
+  background-color: #8B008B;
+  color: #FFD700;
+  text-align: center;
+  padding: 24px 10px;
+  text-decoration: none;
+  font-size: 15px;
+  border:none;
+  cursor: pointer;
+  outline:0;
+}
+
+.nav-link:hover {
+  color:#FFD700;
+}
+
+.nav-link2:hover {
+  color:#FFD700;
+}
+
+.nav-right {
+  float: right;
+}

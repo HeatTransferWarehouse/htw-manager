@@ -1,0 +1,94 @@
+table {
+    width: 100%;
+}
+
+td {
+    padding: 2%;
+    
+}
+
+thead {
+    background-color: rgb(172, 172, 172);
+}
+
+tr {
+    margin: 10%;
+}
+
+tbody tr:nth-child(even) {
+    background-color: #94fab6;
+}
+
+br {
+    height: 1500%;
+}
+
+form {
+    text-align: center;
+    display: flex;
+    justify-content: center;
+}
+
+.reseller-form {
+    text-align: center;
+    margin-top: 20px;
+}
+
+.order-input {
+    text-align: center;
+    width: 100px;
+    border-radius: 10px;
+}
+
+.loader {
+    border: 66px solid rgb(172, 172, 172);
+    border-radius: 50%;
+    border-top: 66px solid #94fab6;
+    width: 420px;
+    height: 420px;
+    -webkit-animation: spin 2s linear infinite;
+    /* Safari */
+    animation: spin 2s linear infinite;
+    margin: auto;
+}
+
+@-webkit-keyframes spin {
+    0% {
+        -webkit-transform: rotate(0deg);
+    }
+
+    100% {
+        -webkit-transform: rotate(360deg);
+    }
+}
+
+@keyframes spin {
+    0% {
+        transform: rotate(0deg);
+    }
+
+    100% {
+        transform: rotate(360deg);
+    }
+}
+
+.ol-map, #map, .map {
+    min-width: 600px;
+    min-height: 500px;
+    margin-right: 100px;
+    margin-left: 100px;
+    height: 1000px;
+    width: "100%";
+}
+
+.ol-control {
+    position: absolute;
+    background-color: rgba(255, 255, 255, 0.4);
+    border-radius: 4px;
+    padding: 2px;
+}
+
+.ol-full-screen {
+    top: .5em;
+    right: .5em;
+}

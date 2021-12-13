@@ -1,0 +1,12 @@
+footer {
+    /* stylings for the footer*/
+    bottom:0;
+    background-color: #00003D;
+    padding:1%;
+    width:100% !important;
+    color: white;
+    
+    text-align:center;
+    margin-top: 3% !important;
+
+}
