@@ -48,12 +48,26 @@ function* deleteItem(action) {
   }
 }
 
+function* resetData(action) {
+  try {
+    yield axios.delete(`/api/item/all`);
+    const response = yield axios.get(`/api/item/getitems`);
+    yield put({
+      type: "SET_ITEM",
+      payload: response.data,
+    });
+  } catch (error) {
+    console.log("Error with deleting from the list of items:", error);
+  }
+}
+
 //this takes all of the Saga functions and dispatches them
 function* itemSaga() {
     yield takeLatest('GET_ITEM_LIST', getitemlist);
     yield takeLatest('ADD_ITEM', addItem);
     yield takeLatest('DELETE_ITEM', deleteItem);
     yield takeLatest('CAPTURE_ORDERS', captureOrders);
+    yield takeLatest('RESET_DATA', resetData);
 }
 
 export default itemSaga;

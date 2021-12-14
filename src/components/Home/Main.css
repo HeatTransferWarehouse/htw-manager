@@ -38,6 +38,7 @@ form {
     text-align: center;
     width: 100px;
     border-radius: 10px;
+    margin: 10px;
 }
 
 .loader {

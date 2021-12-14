@@ -20,8 +20,17 @@ import AssignmentTurnedInIcon from "@material-ui/icons/AssignmentTurnedIn";
 import FlagIcon from "@material-ui/icons/Flag";
 import QueueIcon from "@material-ui/icons/Queue";
 import swal from "sweetalert";
+import Importer from '../Importer/Importer';
+import Upload from '../Importer/Upload';
+import moment from 'moment';
 
 function Main () {
+
+  useEffect(() => {
+    dispatch({
+      type: "GET_ITEM_LIST",
+    });
+  }, [])
 
   const items = useSelector(store => store.item.itemlist);
 
@@ -38,6 +47,23 @@ function Main () {
 
     swal(`Orders in the last ${changeCapture} Minutes Captured on BrightPearl!`);
   }
+
+  const deleteData = () => {
+    dispatch({
+      type: "RESET_DATA",
+    });
+
+    swal('Sales Data Reset!');
+  }
+
+  const data = items.map((item) => [
+    item.name,
+    item.sku,
+    item.width,
+    item.type,
+    item.bulk,
+    moment(item.date).format('MMM Do YY'),
+  ]);
 
     //defines the dataselector to know which items to preform actions on
     return (
@@ -56,6 +82,26 @@ function Main () {
       </section>
       <br/>
       <br/>
+      <section className='reseller-form'>
+      <h2>Import Sales Data from BrightPearl</h2>
+      <br></br>
+      <Importer />
+      </section>
+      <br></br>
+      <button onClick={deleteData} className='order-input'>Delete Sales Data</button>
+      <MUITable
+              data={data} //brings in data as an array, in this case, list of items
+              columns={[
+                //names the columns found on MUI table
+                { name: "Name" },
+                { name: "SKU" },
+                { name: "Width" },
+                { name: "Type" },
+                { name: "Total Bulk Sales" },
+                { name: "Date" },
+              ]}
+              title={"Sales Data"} //give the table a name
+              />
       </>
     )
   }

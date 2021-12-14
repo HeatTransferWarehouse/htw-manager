@@ -29,31 +29,69 @@ router.get("/getitems", (req, res) => {
     });
 });
 
-router.post("/items", (req, res) => {
+router.post("/items", async function (req, res) {
   console.log("We are about to add to the item list");
 
-  let name = req.body.name;
-  let business = req.body.business;
-  let phone = req.body.phone;
-  let email = req.body.email;
-  let customerid = req.body.customerid;
-  let location = req.body.location;
+try {
+  await addItems();
+} catch (err) {
+  console.log('Error on add items: ', err);
+  return res.status(500);
+}
 
-  const queryText = `insert into "item" (name, business, phone, email, location, customerid) VALUES ($1, $2, $3, $4, $5, $6);`;
-  pool
-    .query(queryText, [name, business, phone, email, location, customerid])
-    .then((selectResult) => {
-      res.send(selectResult.rows);
-    })
-    .catch((error) => {
-      console.log(`Error on item query ${error}`);
-      res.sendStatus(500);
-    });
+try {
+  res.sendStatus(200);
+} catch (err) {
+  console.log('Error on send 200: ', err);
+  return res.status(500);
+}
+
+  async function addItems () {
+
+  for (const product of req.body.products) {
+        try {
+          let name = product.name;
+          let sku = product.sku;
+          let bulk = parseInt(product.bulk);
+          let width = product.width;
+          let type = product.type;
+
+          const queryText2 = `insert into "item" (name, sku, bulk, width, type) VALUES ($1, $2, $3, $4, $5);`;
+          await pool
+            .query(queryText2, [name, sku, bulk, width, type])
+        } catch (err) {
+          console.log('Error on get single item: ', err);
+          return res.status(500);
+        }
+  }
+ }
+});
+
+
+router.delete("/all", async function (req, res) {
+  console.log("We are about to delete the item list");
+
+  try {
+    console.log('deleting items');
+    const queryText = `DELETE from "item";`;
+    await pool
+      .query(queryText)
+  } catch (err) {
+    console.log('Error on delete items: ', err);
+    return res.status(500);
+  }
+
+  try {
+    res.sendStatus(200);
+  } catch (err) {
+    console.log('Error on send 200: ', err);
+    return res.status(500);
+  }
 });
 
 router.delete("/items:id", async function (req, res) {
   console.log("We are deleting items with id:", req.params.id);
-  const id = req.params.id[1];
+  const id = req.params.id;
   console.log(id);
   
   try {
