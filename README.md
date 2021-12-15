@@ -1,3 +1,3 @@
-# HTW-Reseller App
+# HTW-Manager App
 
-HTW App to add, remove, and track reseller and reseller information
+HTW App with misc tools, sales data tools, and more

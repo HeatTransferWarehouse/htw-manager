@@ -23,6 +23,7 @@ import swal from "sweetalert";
 import Importer from '../Importer/Importer';
 import Upload from '../Importer/Upload';
 import moment from 'moment';
+import { Summary } from "rc-table";
 
 function Main () {
 
@@ -36,6 +37,7 @@ function Main () {
 
   const dispatch = useDispatch();
   const [changeCapture, setChangeCapture] = useState(3);
+  const [total, setTotal] = useState(0);
 
   const captureOrder = () => {
     dispatch({
@@ -64,6 +66,17 @@ function Main () {
     item.bulk,
     moment(item.date).format('MMM Do YY'),
   ]);
+
+    const calculateTotal = () => {
+      let total = 0;
+      for (const d of data) {
+        total += d[4];
+        console.log(d[4]);
+        console.log(total);
+      }
+      console.log(total);
+      setTotal(total);
+    }
 
     //defines the dataselector to know which items to preform actions on
     return (
@@ -97,11 +110,22 @@ function Main () {
                 { name: "SKU" },
                 { name: "Width" },
                 { name: "Type" },
-                { name: "Total Bulk Sales" },
+                { name: "Total Bulk Sales",
+                  summary: true,
+                  summaryOptions: [
+                    {
+                      type: 'SUM',
+                      format: 'integer'
+                    }
+                  ]
+                },
                 { name: "Date" },
               ]}
               title={"Sales Data"} //give the table a name
               />
+      <br></br>
+      <h4>{total}</h4>
+      <button onClick={(e) => {calculateTotal()}}>Calculate Total</button>
       </>
     )
   }

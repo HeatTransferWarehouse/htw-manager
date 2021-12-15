@@ -10,49 +10,50 @@ function Main () {
 const dispatch = useDispatch();
 
 const calculateSales = (products) => {
+    let lengths = [];
     let widths = [];
     let types = [];
     let newProducts = [];
     for (const prod of products) {
         let name = prod.name;
         let sku = prod.sku;
-        let sales = prod.sales;
-        let amount = prod.items;
-
-        if (name.includes('5 Yard') === true) {
-            widths.push({divider: 10, product: name, sales: sales, sku: sku, width: '5 Yard'})
-        }
-
-        if (name.includes('1 Yard') === true) {
-            widths.push({divider: 50, product: name, sales: sales, sku: sku, width: '1 Yard'})
-        }
-
-        if (name.includes('10 Yard') === true) {
-            widths.push({divider: 5, product: name, sales: sales, sku: sku, width: '10 Yard'})
-        }
+        let sales = prod.items;
 
         if (name.includes('25 Yard') === true) {
-            widths.push({divider: 2, product: name, sales: sales, sku: sku, width: '25 Yard'})
+            lengths.push({divider: 10, product: name, sales: sales, sku: sku})
+        } else if (name.includes('1 Yard') === true) {
+            lengths.push({divider: 50, product: name, sales: sales, sku: sku})
+        } else if (name.includes('10 Yard') === true) {
+            lengths.push({divider: 5, product: name, sales: sales, sku: sku})
+        } else if (name.includes('5 Yard') === true) {
+            lengths.push({divider: 2, product: name, sales: sales, sku: sku})
+        } else if (name.includes('50 Yard') === true) {
+            lengths.push({divider: 1, product: name, sales: sales, sku: sku})
+        } else if (name.includes('12 Inch') === true) {
+            lengths.push({divider: 150, product: name, sales: sales, sku: sku})
+        } else if (name.includes('3 Foot') === true) {
+            lengths.push({divider: 50, product: name, sales: sales, sku: sku})
+        } else {
+            lengths.push({divider: 50, product: name, sales: sales, sku: sku})
         }
+    }
 
-        if (name.includes('50 Yard') === true) {
-            widths.push({divider: 1, product: name, sales: sales, sku: sku, width: '50 Yard'})
-        }
-
-        if (name.includes('12 Inch') === true) {
-            widths.push({divider: 150, product: name, sales: sales, sku: sku, width: '12 Inch'})
-        }
-
-        if (name.includes('3 Foot') === true) {
-            widths.push({divider: 50, product: name, sales: sales, sku: sku, width: '3 Foot'})
-        }
-
+    for (const prod of lengths) {
+      if (prod.product.includes('12"') === true || prod.product.includes('12in') === true || prod.product.includes('12x12') === true || prod.product.includes('12 inches') === true) {
+        widths.push({divider: prod.divider, product: prod.product, sales: prod.sales, sku: prod.sku, width: '12"'})
+      } else if (prod.product.includes('15"') === true) {
+        widths.push({divider: prod.divider, product: prod.product, sales: prod.sales, sku: prod.sku, width: '15"'})
+      } else if (prod.product.includes('20"') === true) {
+        widths.push({divider: prod.divider, product: prod.product, sales: prod.sales, sku: prod.sku, width: '20"'})
+      } else {
+        widths.push({divider: prod.divider, product: prod.product, sales: prod.sales, sku: prod.sku, width: 'Not Found'})
+      }
     }
 
     for (const prod of widths) {
       if (prod.product.includes('Easyweed') === true || prod.product.includes('EasyWeed') === true) {
             types.push({divider: prod.divider, product: prod.product, sales: prod.sales, sku: prod.sku, width: prod.width, type: 'EasyWeed'})
-      } else if (prod.product.includes('Thermoflex') === true) {
+      } else if (prod.product.includes('Thermoflex') === true || prod.product.includes('ThermoFlex') === true) {
             types.push({divider: prod.divider, product: prod.product, sales: prod.sales, sku: prod.sku, width: prod.width, type: 'Thermoflex'})
       } else {
             types.push({divider: prod.divider, product: prod.product, sales: prod.sales, sku: prod.sku, width: prod.width, type: 'Uncategorized'})
@@ -60,7 +61,7 @@ const calculateSales = (products) => {
     }
 
     for (const prod of types) {
-        let bulk = parseInt(prod.sales) / prod.divider;
+        let bulk = parseInt(prod.sales) / parseFloat(prod.divider);
         newProducts.push({bulk: bulk, name: prod.product, sku: prod.sku, width: prod.width, type: prod.type});
     }
 
