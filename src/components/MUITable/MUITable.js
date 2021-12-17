@@ -1,44 +1,36 @@
-import React, {Component} from "react";
-import { connect } from "react-redux";
+import React from "react";
+import { useDispatch } from "react-redux";
 import MUIDataTable from "mui-datatables";
 
+function MUITable () {
 
-class MUITable extends Component {
+  const dispatch = useDispatch();
 
-  state = {
-    //title: this.props.title,
-    setResponsive: "vertical",
-    setTableBodyHeight: "400px",
-    setTableBodyMaxHeight: " ",
+  const state = {
     options: {
-      filter: true,
-      filterType: "dropdown",
-      responsive: "vertical",
       tableBodyHeight: "600px",
-      tableBodyMaxHeight: " ",
-      rowsPerPage: 2000,
-      rowsPerPageOptions: [2000],
-      selectableRows: false,
-      showSummaryRow: true,
-    },
+      filter: true,
+      responsive: "vertical",
+      selectableRows: "multiple",
+      onRowSelectionChange: function (currentRowsSelected, allRowsSelected, rowsSelected) {
+        dispatch({
+          type: "ADD_ROWS",
+          payload: allRowsSelected,
+        });
+      }
+    }
   };
 
-  render() {
     return (
       <React.Fragment>
         <MUIDataTable
-          title={this.props.title}
+          title={"Sales Data"}
           data={this.props.data}
           columns={this.props.columns}
           options={this.state.options}
         />
       </React.Fragment>
     );
-  }
 }
 
-const mapStateToProps = (state) => ({
-  user: state.user,
-});
-
-export default connect(mapStateToProps)(MUITable);
+export default MUITable;

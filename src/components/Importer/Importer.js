@@ -1,6 +1,6 @@
 import { Importer, ImporterField } from 'react-csv-importer';
-import React, {useEffect, useState} from "react";
-import { useSelector, useDispatch } from 'react-redux';
+import React from "react";
+import { useDispatch } from 'react-redux';
 
 // include the widget CSS file whichever way your bundler supports it
 import 'react-csv-importer/dist/index.css';
@@ -13,6 +13,7 @@ const calculateSales = (products) => {
     let lengths = [];
     let widths = [];
     let types = [];
+    let colors = [];
     let newProducts = [];
     for (const prod of products) {
         let name = prod.name;
@@ -39,11 +40,11 @@ const calculateSales = (products) => {
     }
 
     for (const prod of lengths) {
-      if (prod.product.includes('12"') === true || prod.product.includes('12in') === true || prod.product.includes('12x12') === true || prod.product.includes('12 inches') === true) {
+      if (prod.sku.includes('12-') === true) {
         widths.push({divider: prod.divider, product: prod.product, sales: prod.sales, sku: prod.sku, width: '12"'})
-      } else if (prod.product.includes('15"') === true) {
+      } else if (prod.sku.includes('15-') === true) {
         widths.push({divider: prod.divider, product: prod.product, sales: prod.sales, sku: prod.sku, width: '15"'})
-      } else if (prod.product.includes('20"') === true) {
+      } else if (prod.sku.includes('20-') === true) {
         widths.push({divider: prod.divider, product: prod.product, sales: prod.sales, sku: prod.sku, width: '20"'})
       } else {
         widths.push({divider: prod.divider, product: prod.product, sales: prod.sales, sku: prod.sku, width: 'Not Found'})
@@ -51,21 +52,36 @@ const calculateSales = (products) => {
     }
 
     for (const prod of widths) {
-      if (prod.product.includes('Easyweed') === true || prod.product.includes('EasyWeed') === true) {
+      if (prod.product.includes('Easyweed') === true || prod.product.includes('EasyWeed') === true || prod.product.includes('EASYWEED') === true) {
             types.push({divider: prod.divider, product: prod.product, sales: prod.sales, sku: prod.sku, width: prod.width, type: 'EasyWeed'})
-      } else if (prod.product.includes('Thermoflex') === true || prod.product.includes('ThermoFlex') === true) {
+      } else if (prod.product.includes('Thermoflex') === true || prod.product.includes('ThermoFlex') === true || prod.product.includes('THERMOFLEX') === true || prod.product.includes('Turbo Low') === true) {
             types.push({divider: prod.divider, product: prod.product, sales: prod.sales, sku: prod.sku, width: prod.width, type: 'Thermoflex'})
       } else {
             types.push({divider: prod.divider, product: prod.product, sales: prod.sales, sku: prod.sku, width: prod.width, type: 'Uncategorized'})
       }
     }
-
+  
     for (const prod of types) {
-        let bulk = parseInt(prod.sales) / parseFloat(prod.divider);
-        newProducts.push({bulk: bulk, name: prod.product, sku: prod.sku, width: prod.width, type: prod.type});
+      if (prod.product.includes('Matte White') === true) {
+            colors.push({divider: prod.divider, product: prod.product, sales: prod.sales, sku: prod.sku, width: prod.width, type: prod.type, color: 'Matte White'})
+      } else if (prod.product.includes('Royal Blue') === true) {
+            colors.push({divider: prod.divider, product: prod.product, sales: prod.sales, sku: prod.sku, width: prod.width, type: prod.type, color: 'Royal Blue'})
+      } else if (prod.product.includes('401') === true || prod.product.includes('4901') === true || prod.product.includes('7001') === true) {
+            colors.push({divider: prod.divider, product: prod.product, sales: prod.sales, sku: prod.sku, width: prod.width, type: prod.type, color: 'White'})
+      } else if (prod.product.includes('Kelly Green') === true) {
+            colors.push({divider: prod.divider, product: prod.product, sales: prod.sales, sku: prod.sku, width: prod.width, type: prod.type, color: 'Kelly Green'})
+      } else if (prod.product.includes('7002') === true || prod.product.includes('402') === true || prod.product.includes('4902') === true) {
+            colors.push({divider: prod.divider, product: prod.product, sales: prod.sales, sku: prod.sku, width: prod.width, type: prod.type, color: 'Black'})
+      } else {
+            colors.push({divider: prod.divider, product: prod.product, sales: prod.sales, sku: prod.sku, width: prod.width, type: prod.type, color: 'Uncategorized'})
+      }
     }
 
-    console.log(newProducts);
+    for (const prod of colors) {
+        let bulk = Number(prod.sales) / prod.divider;
+        let newBulk = Math.round(bulk);
+        newProducts.push({bulk: newBulk, name: prod.product, sku: prod.sku, width: prod.width, type: prod.type, color: prod.color});
+    }
 
     dispatch({
       type: "ADD_ITEM",

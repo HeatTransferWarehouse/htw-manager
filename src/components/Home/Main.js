@@ -1,31 +1,33 @@
 import React, {useEffect, useState} from "react";
 import { useSelector, useDispatch } from 'react-redux';
 import './Main.css'
-import MUITable from "../MUITable/MUITable";
+import MUITable from "mui-datatables";
 import Button from "react-bootstrap/Button";
 import { Paper, TextField } from "@material-ui/core";
 import Form from "react-bootstrap/Form";
 import AssignmentIndIcon from "@material-ui/icons/AssignmentInd";
 import PlayArrowIcon from "@material-ui/icons/PlayArrow";
-import Switch from '@material-ui/core/Switch';
-import Checkbox from "@material-ui/core/Checkbox";
 import DeleteIcon from "@material-ui/icons/Delete";
-import Radio from '@material-ui/core/Radio';
-import RadioGroup from '@material-ui/core/RadioGroup';
-import FormGroup from '@material-ui/core/FormGroup';
-import FormControlLabel from '@material-ui/core/FormControlLabel';
-import FormLabel from '@material-ui/core/FormLabel';
-import FormControl from '@material-ui/core/FormControl';
 import AssignmentTurnedInIcon from "@material-ui/icons/AssignmentTurnedIn";
 import FlagIcon from "@material-ui/icons/Flag";
 import QueueIcon from "@material-ui/icons/Queue";
 import swal from "sweetalert";
 import Importer from '../Importer/Importer';
-import Upload from '../Importer/Upload';
 import moment from 'moment';
-import { Summary } from "rc-table";
 
 function Main () {
+
+  const options = {
+    tableBodyHeight: "600px",
+    filter: true,
+    filterType: 'multiselect',
+    onRowSelectionChange: function (currentRowsSelected, allRowsSelected, rowsSelected) {
+      dispatch({
+        type: "ADD_ROWS",
+        payload: allRowsSelected,
+      });
+    }
+  }
 
   useEffect(() => {
     dispatch({
@@ -34,6 +36,7 @@ function Main () {
   }, [])
 
   const items = useSelector(store => store.item.itemlist);
+  const rows = useSelector(store => store.item.rowsList);
 
   const dispatch = useDispatch();
   const [changeCapture, setChangeCapture] = useState(3);
@@ -63,18 +66,18 @@ function Main () {
     item.sku,
     item.width,
     item.type,
+    item.color,
     item.bulk,
     moment(item.date).format('MMM Do YY'),
   ]);
 
     const calculateTotal = () => {
       let total = 0;
-      for (const d of data) {
-        total += d[4];
-        console.log(d[4]);
-        console.log(total);
+      for (const row of rows) {
+        let index = row.dataIndex;
+        let bulkNumber = data[index];
+        total += bulkNumber[5];
       }
-      console.log(total);
       setTotal(total);
     }
 
@@ -84,48 +87,60 @@ function Main () {
       <br></br>
       <br></br>
       <br></br>
-      <section className="reseller-form">
+      <section className="capture-form">
       <h2>BrightPearl Order Capture</h2>
       <br></br>
       <h4>Capture Last</h4>
       <input value={changeCapture} type="number" onChange={(e) => (setChangeCapture(e.target.value))} className="order-input"></input>
       <h4>Minutes</h4>
       <br></br>
-      <button onClick={(e) => {captureOrder(changeCapture)}} className="order-input">Capture BP Orders</button>
+      <Button onClick={(e) => {captureOrder(changeCapture)}} className="sales-input"><PlayArrowIcon/> Capture BP Orders</Button>
       </section>
-      <br/>
-      <br/>
+      <section className="sales-form">
       <section className='reseller-form'>
       <h2>Import Sales Data from BrightPearl</h2>
       <br></br>
       <Importer />
       </section>
       <br></br>
-      <button onClick={deleteData} className='order-input'>Delete Sales Data</button>
+      <section className='total-form'>
+      <Button onClick={deleteData} className='sales-input'><DeleteIcon /> Delete Sales Data</Button>
+      </section>
+      <br></br>
+      <br></br>
       <MUITable
-              data={data} //brings in data as an array, in this case, list of items
+              title={"Sales Data"}
+              data={data}
               columns={[
                 //names the columns found on MUI table
-                { name: "Name" },
-                { name: "SKU" },
+                { name: "Name",
+                  options: { 
+                    filter: false,
+                  }
+                },
+                { name: "SKU",
+                  options: {
+                    filter: false,
+                  }
+                },
                 { name: "Width" },
                 { name: "Type" },
+                { name: "Color" },
                 { name: "Total Bulk Sales",
-                  summary: true,
-                  summaryOptions: [
-                    {
-                      type: 'SUM',
-                      format: 'integer'
-                    }
-                  ]
+                  options: {
+                    filter: false,
+                  }
                 },
                 { name: "Date" },
               ]}
-              title={"Sales Data"} //give the table a name
+              options={options}
               />
       <br></br>
-      <h4>{total}</h4>
-      <button onClick={(e) => {calculateTotal()}}>Calculate Total</button>
+      <section className='total-form'>
+      <h4 className='big-number'>{total}</h4>
+      <Button onClick={(e) => {calculateTotal()}} className='sales-input'><QueueIcon/> Calculate Total</Button>
+      </section>
+      </section>
       </>
     )
   }

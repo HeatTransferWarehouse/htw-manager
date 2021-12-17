@@ -1,3 +1,7 @@
+body {
+    background-color: #c0c0c0;
+}
+
 table {
     width: 100%;
 }
@@ -16,7 +20,7 @@ tr {
 }
 
 tbody tr:nth-child(even) {
-    background-color: #94fab6;
+    background-color: #a3c0ff;
 }
 
 br {
@@ -34,6 +38,23 @@ form {
     margin-top: 20px;
 }
 
+.capture-form {
+    text-align: center;
+    margin-top: 20px;
+    background-color: rgb(228, 228, 228);
+    padding: 20px;
+}
+
+.total-form {
+    display: flex;
+    justify-content: right;
+}
+
+.sales-form {
+    background-color: #c0c0c0;
+    padding: 30px;
+}
+
 .order-input {
     text-align: center;
     width: 100px;
@@ -41,10 +62,22 @@ form {
     margin: 10px;
 }
 
+.big-number {
+    margin: 20px;
+}
+
+.sales-input {
+    text-align: center;
+    width: 200px;
+    border-radius: 10px;
+    margin: 10px;
+    background-color: rgb(103, 86, 255);
+}
+
 .loader {
     border: 66px solid rgb(172, 172, 172);
     border-radius: 50%;
-    border-top: 66px solid #94fab6;
+    border-top: 66px solid #a3c0ff;
     width: 420px;
     height: 420px;
     -webkit-animation: spin 2s linear infinite;
