@@ -21,13 +21,13 @@ const calculateSales = (products) => {
         let sales = prod.items;
 
         if (name.includes('25 Yard') === true) {
-            lengths.push({divider: 10, product: name, sales: sales, sku: sku})
+            lengths.push({divider: 2, product: name, sales: sales, sku: sku})
         } else if (name.includes('1 Yard') === true) {
             lengths.push({divider: 50, product: name, sales: sales, sku: sku})
         } else if (name.includes('10 Yard') === true) {
             lengths.push({divider: 5, product: name, sales: sales, sku: sku})
         } else if (name.includes('5 Yard') === true) {
-            lengths.push({divider: 2, product: name, sales: sales, sku: sku})
+            lengths.push({divider: 10, product: name, sales: sales, sku: sku})
         } else if (name.includes('50 Yard') === true) {
             lengths.push({divider: 1, product: name, sales: sales, sku: sku})
         } else if (name.includes('12 Inch') === true) {
