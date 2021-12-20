@@ -9,16 +9,6 @@ const itemlist = (state = [], action) => {
   }
 };
 
-const rowsList = (state = [], action) => {
-  switch (action.type) {
-    case "ADD_ROWS":
-      return action.payload;
-    default:
-      return state;
-  }
-};
-
 export default combineReducers({
   itemlist,
-  rowsList,
 });

@@ -3,8 +3,6 @@ import { useSelector, useDispatch } from 'react-redux';
 import './Main.css'
 import MUITable from "mui-datatables";
 import Button from "react-bootstrap/Button";
-import { Paper, TextField } from "@material-ui/core";
-import Form from "react-bootstrap/Form";
 import AssignmentIndIcon from "@material-ui/icons/AssignmentInd";
 import PlayArrowIcon from "@material-ui/icons/PlayArrow";
 import DeleteIcon from "@material-ui/icons/Delete";
@@ -22,10 +20,7 @@ function Main () {
     filter: true,
     filterType: 'multiselect',
     onRowSelectionChange: function (currentRowsSelected, allRowsSelected, rowsSelected) {
-      dispatch({
-        type: "ADD_ROWS",
-        payload: allRowsSelected,
-      });
+      setRows(allRowsSelected);
     }
   }
 
@@ -36,11 +31,11 @@ function Main () {
   }, [])
 
   const items = useSelector(store => store.item.itemlist);
-  const rows = useSelector(store => store.item.rowsList);
 
   const dispatch = useDispatch();
   const [changeCapture, setChangeCapture] = useState(3);
   const [total, setTotal] = useState(0);
+  const [rows, setRows] = useState([]);
 
   const captureOrder = () => {
     dispatch({
