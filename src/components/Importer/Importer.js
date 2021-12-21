@@ -38,6 +38,16 @@ const calculateSales = (products) => {
             lengths.push({divider: 3, product: prod.product, sales: prod.sales, sku: prod.sku, type: prod.type})
         } else if (prod.product.includes('20 Yard') === true && prod.type === 'Thermoflex') {
             lengths.push({divider: 1.5, product: prod.product, sales: prod.sales, sku: prod.sku, type: prod.type})
+        } else if (prod.product.includes('12 Yard') === true && prod.type === 'Thermoflex') {
+            lengths.push({divider: 2.5, product: prod.product, sales: prod.sales, sku: prod.sku, type: prod.type})
+        } else if (prod.product.includes('15 Yard') === true && prod.type === 'Thermoflex') {
+            lengths.push({divider: 2, product: prod.product, sales: prod.sales, sku: prod.sku, type: prod.type})
+        } else if (prod.product.includes('5 Yard') === true && prod.type === 'Thermoflex') {
+            lengths.push({divider: 6, product: prod.product, sales: prod.sales, sku: prod.sku, type: prod.type})
+        } else if (prod.product.includes('3 Foot') === true && prod.type === 'Thermoflex') {
+            lengths.push({divider: 30, product: prod.product, sales: prod.sales, sku: prod.sku, type: prod.type})
+        } else if (prod.product.includes('12 Inch') === true || prod.product.includes('12x12') === true && prod.type === 'Thermoflex') {
+            lengths.push({divider: 30, product: prod.product, sales: prod.sales, sku: prod.sku, type: prod.type})
         } else if (prod.product.includes('25 Yard') === true) {
             lengths.push({divider: 2, product: prod.product, sales: prod.sales, sku: prod.sku, type: prod.type})
         } else if (prod.product.includes('1 Yard') === true) {
