@@ -10,58 +10,66 @@ function Main () {
 const dispatch = useDispatch();
 
 const calculateSales = (products) => {
+    let types = [];
     let lengths = [];
     let widths = [];
-    let types = [];
     let colors = [];
     let newProducts = [];
+
+
     for (const prod of products) {
         let name = prod.name;
         let sku = prod.sku;
         let sales = prod.items;
 
-        if (name.includes('25 Yard') === true) {
-            lengths.push({divider: 2, product: name, sales: sales, sku: sku})
-        } else if (name.includes('1 Yard') === true) {
-            lengths.push({divider: 50, product: name, sales: sales, sku: sku})
-        } else if (name.includes('10 Yard') === true) {
-            lengths.push({divider: 5, product: name, sales: sales, sku: sku})
-        } else if (name.includes('5 Yard') === true) {
-            lengths.push({divider: 10, product: name, sales: sales, sku: sku})
-        } else if (name.includes('50 Yard') === true) {
-            lengths.push({divider: 1, product: name, sales: sales, sku: sku})
-        } else if (name.includes('12 Inch') === true) {
-            lengths.push({divider: 150, product: name, sales: sales, sku: sku})
-        } else if (name.includes('3 Foot') === true) {
-            lengths.push({divider: 50, product: name, sales: sales, sku: sku})
+      if (name.includes('Easyweed') === true || name.includes('EasyWeed') === true || name.includes('EASYWEED') === true) {
+            types.push({product: name, sales: sales, sku: sku, type: 'EasyWeed'})
+      } else if (name.includes('Thermoflex') === true || name.includes('ThermoFlex') === true || name.includes('THERMOFLEX') === true || name.includes('Turbo Low') === true) {
+            types.push({product: name, sales: sales, sku: sku, type: 'Thermoflex'})
+      } else {
+            types.push({product: name, sales: sales, sku: sku, type: 'Uncategorized'})
+      }
+    }
+
+
+    for (const prod of types) {
+
+        if (prod.product.includes('10 Yard') === true && prod.type === 'Thermoflex') {
+            lengths.push({divider: 3, product: prod.product, sales: prod.sales, sku: prod.sku, type: prod.type})
+        } else if (prod.product.includes('20 Yard') === true && prod.type === 'Thermoflex') {
+            lengths.push({divider: 1.5, product: prod.product, sales: prod.sales, sku: prod.sku, type: prod.type})
+        } else if (prod.product.includes('25 Yard') === true) {
+            lengths.push({divider: 2, product: prod.product, sales: prod.sales, sku: prod.sku, type: prod.type})
+        } else if (prod.product.includes('1 Yard') === true) {
+            lengths.push({divider: 50, product: prod.product, sales: prod.sales, sku: prod.sku, type: prod.type})
+        } else if (prod.product.includes('10 Yard') === true) {
+            lengths.push({divider: 5, product: prod.product, sales: prod.sales, sku: prod.sku, type: prod.type})
+        } else if (prod.product.includes('5 Yard') === true) {
+            lengths.push({divider: 10, product: prod.product, sales: prod.sales, sku: prod.sku, type: prod.type})
+        } else if (prod.product.includes('50 Yard') === true) {
+            lengths.push({divider: 1, product: prod.product, sales: prod.sales, sku: prod.sku, type: prod.type})
+        } else if (prod.product.includes('12 Inch') === true) {
+            lengths.push({divider: 150, product: prod.product, sales: prod.sales, sku: prod.sku, type: prod.type})
+        } else if (prod.product.includes('3 Foot') === true) {
+            lengths.push({divider: 50, product: prod.product, sales: prod.sales, sku: prod.sku, type: prod.type})
         } else {
-            lengths.push({divider: 50, product: name, sales: sales, sku: sku})
+            lengths.push({divider: 50, product: prod.product, sales: prod.sales, sku: prod.sku, type: prod.type})
         }
     }
 
     for (const prod of lengths) {
       if (prod.sku.includes('12-') === true) {
-        widths.push({divider: prod.divider, product: prod.product, sales: prod.sales, sku: prod.sku, width: '12"'})
+        widths.push({divider: prod.divider, product: prod.product, sales: prod.sales, sku: prod.sku, width: '12"', type: prod.type})
       } else if (prod.sku.includes('15-') === true) {
-        widths.push({divider: prod.divider, product: prod.product, sales: prod.sales, sku: prod.sku, width: '15"'})
+        widths.push({divider: prod.divider, product: prod.product, sales: prod.sales, sku: prod.sku, width: '15"', type: prod.type})
       } else if (prod.sku.includes('20-') === true) {
-        widths.push({divider: prod.divider, product: prod.product, sales: prod.sales, sku: prod.sku, width: '20"'})
+        widths.push({divider: prod.divider, product: prod.product, sales: prod.sales, sku: prod.sku, width: '20"', type: prod.type})
       } else {
-        widths.push({divider: prod.divider, product: prod.product, sales: prod.sales, sku: prod.sku, width: 'Not Found'})
-      }
-    }
-
-    for (const prod of widths) {
-      if (prod.product.includes('Easyweed') === true || prod.product.includes('EasyWeed') === true || prod.product.includes('EASYWEED') === true) {
-            types.push({divider: prod.divider, product: prod.product, sales: prod.sales, sku: prod.sku, width: prod.width, type: 'EasyWeed'})
-      } else if (prod.product.includes('Thermoflex') === true || prod.product.includes('ThermoFlex') === true || prod.product.includes('THERMOFLEX') === true || prod.product.includes('Turbo Low') === true) {
-            types.push({divider: prod.divider, product: prod.product, sales: prod.sales, sku: prod.sku, width: prod.width, type: 'Thermoflex'})
-      } else {
-            types.push({divider: prod.divider, product: prod.product, sales: prod.sales, sku: prod.sku, width: prod.width, type: 'Uncategorized'})
+        widths.push({divider: prod.divider, product: prod.product, sales: prod.sales, sku: prod.sku, width: 'Not Found', type: prod.type})
       }
     }
   
-    for (const prod of types) {
+    for (const prod of widths) {
       if (prod.product.includes('Matte White') === true) {
             colors.push({divider: prod.divider, product: prod.product, sales: prod.sales, sku: prod.sku, width: prod.width, type: prod.type, color: 'Matte White'})
       } else if (prod.product.includes('Royal Blue') === true) {
@@ -80,7 +88,7 @@ const calculateSales = (products) => {
     for (const prod of colors) {
         let bulk = Number(prod.sales) / prod.divider;
         let newBulk = Math.round(bulk);
-        newProducts.push({bulk: newBulk, name: prod.product, sku: prod.sku, width: prod.width, type: prod.type, color: prod.color});
+        newProducts.push({bulk: newBulk, name: prod.product, sku: prod.sku, width: prod.width, type: prod.type, color: prod.color, sales: prod.sales});
     }
 
     dispatch({

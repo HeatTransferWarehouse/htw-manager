@@ -7,5 +7,6 @@ CREATE TABLE "item"
 	"width" varchar(255),
 	"type" varchar(255),
 	"color" varchar(255),
+	"sales" varchar(255),
 	"date" date DEFAULT NOW()
 );

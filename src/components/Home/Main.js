@@ -63,6 +63,7 @@ function Main () {
     item.type,
     item.color,
     item.bulk,
+    item.sales,
     moment(item.date).format('MMM Do YY'),
   ]);
 
@@ -126,6 +127,7 @@ function Main () {
                     filter: false,
                   }
                 },
+                { name: "Total Yardage Sales" },
                 { name: "Date" },
               ]}
               options={options}

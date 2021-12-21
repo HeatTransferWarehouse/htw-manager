@@ -56,10 +56,11 @@ try {
           let width = product.width;
           let type = product.type;
           let color = product.color;
+          let sales = product.sales;
 
-          const queryText2 = `insert into "item" (name, sku, bulk, width, type, color) VALUES ($1, $2, $3, $4, $5, $6);`;
+          const queryText2 = `insert into "item" (name, sku, bulk, width, type, color, sales) VALUES ($1, $2, $3, $4, $5, $6, $7);`;
           await pool
-            .query(queryText2, [name, sku, bulk, width, type, color])
+            .query(queryText2, [name, sku, bulk, width, type, color, sales])
         } catch (err) {
           console.log('Error on get single item: ', err);
           return res.status(500);
