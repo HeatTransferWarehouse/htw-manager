@@ -84,8 +84,6 @@ const calculateSales = (products) => {
     for (const prod of widths) {
       if (prod.product.includes('Matte White') === true) {
             colors.push({divider: prod.divider, product: prod.product, sales: prod.sales, sku: prod.sku, width: prod.width, type: prod.type, color: 'Matte White'})
-      } else if (prod.product.includes('White Length') === true) {
-            colors.push({divider: prod.divider, product: prod.product, sales: prod.sales, sku: prod.sku, width: prod.width, type: prod.type, color: 'White Length'})
       } else if (prod.product.includes('White Stretch') === true) {
             colors.push({divider: prod.divider, product: prod.product, sales: prod.sales, sku: prod.sku, width: prod.width, type: prod.type, color: 'White Stretch'})
       } else if (prod.product.includes('Charcoal Gray') === true) {
@@ -98,8 +96,24 @@ const calculateSales = (products) => {
             colors.push({divider: prod.divider, product: prod.product, sales: prod.sales, sku: prod.sku, width: prod.width, type: prod.type, color: 'Fluorescent Green'})
       } else if (prod.product.includes('Burgundy') === true) {
             colors.push({divider: prod.divider, product: prod.product, sales: prod.sales, sku: prod.sku, width: prod.width, type: prod.type, color: 'Burgundy'})
+      } else if (prod.product.includes('Maroon') === true) {
+            colors.push({divider: prod.divider, product: prod.product, sales: prod.sales, sku: prod.sku, width: prod.width, type: prod.type, color: 'Maroon'})
+      } else if (prod.product.includes('Turqouise') === true) {
+            colors.push({divider: prod.divider, product: prod.product, sales: prod.sales, sku: prod.sku, width: prod.width, type: prod.type, color: 'Turqouise'})
+      } else if (prod.product.includes('Lilac') === true) {
+            colors.push({divider: prod.divider, product: prod.product, sales: prod.sales, sku: prod.sku, width: prod.width, type: prod.type, color: 'Lilac'})
+      } else if (prod.product.includes('Cream') === true) {
+            colors.push({divider: prod.divider, product: prod.product, sales: prod.sales, sku: prod.sku, width: prod.width, type: prod.type, color: 'Cream'})
       } else if (prod.product.includes('Royal Blue') === true) {
             colors.push({divider: prod.divider, product: prod.product, sales: prod.sales, sku: prod.sku, width: prod.width, type: prod.type, color: 'Royal Blue'})
+      } else if (prod.product.includes('Sky Blue') === true) {
+            colors.push({divider: prod.divider, product: prod.product, sales: prod.sales, sku: prod.sku, width: prod.width, type: prod.type, color: 'Sky Blue'})
+      } else if (prod.product.includes('Glacial Blue') === true) {
+            colors.push({divider: prod.divider, product: prod.product, sales: prod.sales, sku: prod.sku, width: prod.width, type: prod.type, color: 'Glacial Blue'})
+      } else if (prod.product.includes('Navy Blue') === true) {
+            colors.push({divider: prod.divider, product: prod.product, sales: prod.sales, sku: prod.sku, width: prod.width, type: prod.type, color: 'Navy Blue'})
+      } else if (prod.product.includes('Bahama Blue') === true) {
+            colors.push({divider: prod.divider, product: prod.product, sales: prod.sales, sku: prod.sku, width: prod.width, type: prod.type, color: 'Bahama Blue'})
       } else if (prod.product.includes('Antique Gold') === true) {
             colors.push({divider: prod.divider, product: prod.product, sales: prod.sales, sku: prod.sku, width: prod.width, type: prod.type, color: 'Antique Gold'})
       } else if (prod.product.includes('Athletic Gold') === true) {
@@ -108,10 +122,12 @@ const calculateSales = (products) => {
             colors.push({divider: prod.divider, product: prod.product, sales: prod.sales, sku: prod.sku, width: prod.width, type: prod.type, color: 'Royal Purple'})
       } else if (prod.product.includes('Kelly Green') === true) {
             colors.push({divider: prod.divider, product: prod.product, sales: prod.sales, sku: prod.sku, width: prod.width, type: prod.type, color: 'Kelly Green'})
+      } else if (prod.product.includes('Moss Green') === true) {
+            colors.push({divider: prod.divider, product: prod.product, sales: prod.sales, sku: prod.sku, width: prod.width, type: prod.type, color: 'Moss Green'})
+      } else if (prod.product.includes('Dark Green') === true) {
+            colors.push({divider: prod.divider, product: prod.product, sales: prod.sales, sku: prod.sku, width: prod.width, type: prod.type, color: 'Dark Green'})
       } else if (prod.product.includes('Black Stretch') === true) {
             colors.push({divider: prod.divider, product: prod.product, sales: prod.sales, sku: prod.sku, width: prod.width, type: prod.type, color: 'Black Stretch'})
-      } else if (prod.product.includes('Black Length') === true) {
-            colors.push({divider: prod.divider, product: prod.product, sales: prod.sales, sku: prod.sku, width: prod.width, type: prod.type, color: 'Black Length'})
       } else if (prod.product.includes('Matte Black') === true) {
             colors.push({divider: prod.divider, product: prod.product, sales: prod.sales, sku: prod.sku, width: prod.width, type: prod.type, color: 'Matte Black'})
       } else if (prod.product.includes('Black') === true) {
@@ -120,10 +136,14 @@ const calculateSales = (products) => {
             colors.push({divider: prod.divider, product: prod.product, sales: prod.sales, sku: prod.sku, width: prod.width, type: prod.type, color: 'Red'})
       } else if (prod.product.includes('Yellow') === true) {
             colors.push({divider: prod.divider, product: prod.product, sales: prod.sales, sku: prod.sku, width: prod.width, type: prod.type, color: 'Yellow'})
+      } else if (prod.product.includes('Green') === true) {
+            colors.push({divider: prod.divider, product: prod.product, sales: prod.sales, sku: prod.sku, width: prod.width, type: prod.type, color: 'Green'})
       } else if (prod.product.includes('Purple') === true) {
             colors.push({divider: prod.divider, product: prod.product, sales: prod.sales, sku: prod.sku, width: prod.width, type: prod.type, color: 'Purple'})
       } else if (prod.product.includes('Gray') === true) {
             colors.push({divider: prod.divider, product: prod.product, sales: prod.sales, sku: prod.sku, width: prod.width, type: prod.type, color: 'Gray'})
+      } else if (prod.product.includes('Lemon') === true) {
+            colors.push({divider: prod.divider, product: prod.product, sales: prod.sales, sku: prod.sku, width: prod.width, type: prod.type, color: 'Lemon'})
       } else if (prod.product.includes('Silver') === true) {
             colors.push({divider: prod.divider, product: prod.product, sales: prod.sales, sku: prod.sku, width: prod.width, type: prod.type, color: 'Silver'})
       } else if (prod.product.includes('Gold') === true) {
