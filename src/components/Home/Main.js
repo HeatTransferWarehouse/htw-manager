@@ -127,7 +127,11 @@ function Main () {
                     filter: false,
                   }
                 },
-                { name: "Total Yardage Sales" },
+                { name: "Total Yardage Sales",
+                  options: {
+                    filter: false,
+                  }
+                },
                 { name: "Date" },
               ]}
               options={options}
