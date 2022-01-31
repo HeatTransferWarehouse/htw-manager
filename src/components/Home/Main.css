@@ -38,6 +38,13 @@ form {
     margin-top: 20px;
 }
 
+.sanmar-form {
+    text-align: center;
+    margin-top: 20px;
+    margin-left: 10%;
+    margin-right: 10%;
+}
+
 .capture-form {
     text-align: center;
     margin-top: 20px;

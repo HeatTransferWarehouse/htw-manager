@@ -3,14 +3,13 @@ import { useSelector, useDispatch } from 'react-redux';
 import './Main.css'
 import MUITable from "mui-datatables";
 import Button from "react-bootstrap/Button";
-import AssignmentIndIcon from "@material-ui/icons/AssignmentInd";
 import PlayArrowIcon from "@material-ui/icons/PlayArrow";
 import DeleteIcon from "@material-ui/icons/Delete";
-import AssignmentTurnedInIcon from "@material-ui/icons/AssignmentTurnedIn";
-import FlagIcon from "@material-ui/icons/Flag";
 import QueueIcon from "@material-ui/icons/Queue";
 import swal from "sweetalert";
-import Importer from '../Importer/Importer';
+import BPSalesImporter from '../Importer/BPSalesImporter';
+import SanmarImporter from '../Importer/SanmarImporter';
+import BCClothingImporter from '../Importer/BCClothingImporter';
 import moment from 'moment';
 
 function Main () {
@@ -24,13 +23,21 @@ function Main () {
     }
   }
 
+  const SanmarOptions = {
+    tableBodyHeight: "600px",
+    filter: true,
+    filterType: 'multiselect',
+  }
+
   useEffect(() => {
     dispatch({
       type: "GET_ITEM_LIST",
     });
   }, [])
 
-  const items = useSelector(store => store.item.itemlist);
+  const BPItems = useSelector(store => store.item.itemlist);
+  const SanmarItems = useSelector(store => store.item.clothinglist);
+  const BcItems = useSelector(store => store.item.bcClothinglist);
 
   const dispatch = useDispatch();
   const [changeCapture, setChangeCapture] = useState(3);
@@ -56,7 +63,7 @@ function Main () {
     swal('Sales Data Reset!');
   }
 
-  const data = items.map((item) => [
+  const BPData = BPItems.map((item) => [
     item.name,
     item.sku,
     item.width,
@@ -67,11 +74,27 @@ function Main () {
     moment(item.date).format('MMM Do YY'),
   ]);
 
+  const sanmarPrices = SanmarItems.map((item) => [
+    item.name,
+    item.sku,
+    item.color,
+    item.size,
+    item.price,
+  ]);
+
+  const bcPrices = BcItems.map((item) => [
+    item.name,
+    item.sku,
+    item.color,
+    item.size,
+    item.price,
+  ]);
+
     const calculateTotal = () => {
       let total = 0;
       for (const row of rows) {
         let index = row.dataIndex;
-        let bulkNumber = data[index];
+        let bulkNumber = BPData[index];
         total += bulkNumber[5];
       }
       setTotal(total);
@@ -96,7 +119,7 @@ function Main () {
       <section className='reseller-form'>
       <h2>Import Sales Data from BrightPearl</h2>
       <br></br>
-      <Importer />
+      <BPSalesImporter />
       </section>
       <br></br>
       <section className='total-form'>
@@ -106,7 +129,7 @@ function Main () {
       <br></br>
       <MUITable
               title={"Sales Data"}
-              data={data}
+              data={BPData}
               columns={[
                 //names the columns found on MUI table
                 { name: "Name",
@@ -142,6 +165,71 @@ function Main () {
       <Button onClick={(e) => {calculateTotal()}} className='sales-input'><QueueIcon/> Calculate Total</Button>
       </section>
       </section>
+      <br></br>
+      <seciton className="sanmar-form">
+      <div className="container">
+        <div className="row">
+        <div className="column">
+          <h3>Import Clothing Prices from BC</h3>
+          <BCClothingImporter />
+        </div>
+        <div className="column">
+          <h3>Import Clothing Prices from Sanmar</h3>
+          <SanmarImporter />
+        </div>
+        </div>
+      <br></br>
+      <br></br>
+      <div className="row">
+        <div className="column">
+            <MUITable
+              title={"Sanmar Prices"}
+              data={sanmarPrices}
+              columns={[
+                //names the columns found on MUI table
+                { name: "Name",
+                  options: { 
+                    filter: false,
+                  }
+                },
+                { name: "SKU",
+                  options: {
+                    filter: false,
+                  }
+                },
+                { name: "Color" },
+                { name: "Size" },
+                { name: "Price" }
+              ]}
+              options={SanmarOptions}
+              />
+        </div>
+        <div className="column">
+            <MUITable
+              title={"BC Prices"}
+              data={bcPrices}
+              columns={[
+                //names the columns found on MUI table
+                { name: "Name",
+                  options: { 
+                    filter: false,
+                  }
+                },
+                { name: "SKU",
+                  options: {
+                    filter: false,
+                  }
+                },
+                { name: "Color" },
+                { name: "Size" },
+                { name: "Price" }
+              ]}
+              options={SanmarOptions}
+              />
+        </div>
+      </div>
+      </div>
+      </seciton>
       </>
     )
   }
