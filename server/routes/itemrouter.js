@@ -47,7 +47,7 @@ async function eachSanmarItem(product, item) {
   if (searchedName === -1) {
     //console.log('Not Matched! Skipping!');
   } else {
-    console.log(`${product.sku} at ${item.sku}`);
+    console.log(`${product.sku} at ${item.sku} and $${item.price}`);
 
     const data = JSON.stringify({
       "price": item.price
