@@ -2,6 +2,7 @@ const express = require('express');
 const pool = require('../modules/pool');
 const router = express.Router();
 const axios = require("axios");
+var XMLHttpRequest = require("xmlhttprequest").XMLHttpRequest;
 
 
 //Waiter Function
@@ -13,6 +14,69 @@ function timeoutPromise(interval) {
       });
 };
 
+
+async function updatePrices(bc, sanmar) {
+  try {
+      if (bc[0]) {
+        for (const item of bc) {
+          console.log(`Updating Product with SKU: ${item.sku}`);
+          await eachPrice(item.sku, sanmar);
+        }
+        console.log('DONE');
+        return;
+      } else {
+        console.log('No items in BC Items! Canceling!');
+        return;
+      }
+    } catch (err) {
+      console.log('Error on Update Product: ', err);
+    }
+    }
+
+async function eachPrice(product, sanmar) {
+      for (const item of sanmar) {
+
+        console.log(`${item.sku} at $${item.price}`);
+
+      let data = JSON.stringify({
+        "price": item.price
+      });
+
+      let xhr = new XMLHttpRequest();
+      xhr.withCredentials = true;
+
+      xhr.addEventListener("readystatechange", function () {
+        if (this.readyState === this.DONE) {
+          console.log(this.responseText);
+        }
+      });
+
+      xhr.open("PUT", `https://api.bigcommerce.com/stores/et4qthkygq/v3/catalog/products/${product}/variants/${item.sku}`);
+      xhr.setRequestHeader("accept", "application/json");
+      xhr.setRequestHeader("content-type", "application/json");
+      xhr.setRequestHeader("x-auth-token", "13n6uxj2je2wbnc0vggmz8sqjl93d1d");
+
+      xhr.send(data);
+
+      }
+    }
+
+
+router.put("/updatePrices", async function (req, res) {
+  console.log("We are updating sanmar prices..");
+  const bc = req.body.bcItems;
+  const sanmar = req.body.sanmar;
+
+
+  try {
+    await updatePrices(bc, sanmar);
+    res.sendStatus(200).send();
+  } catch (err) {
+    console.log('Error on update Prices: ', err);
+    return res.status(500).send();
+  }
+
+});
 
 router.get("/getitems", (req, res) => {
   console.log("We are about to get the item list");

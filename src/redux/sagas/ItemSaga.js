@@ -61,6 +61,14 @@ function* resetData(action) {
   }
 }
 
+function* updatePrices(action) {
+  try {
+    yield axios.put(`/api/item/updatePrices`, action.payload);
+  } catch (error) {
+    console.log("Error with updating prices:", error);
+  }
+}
+
 //this takes all of the Saga functions and dispatches them
 function* itemSaga() {
     yield takeLatest('GET_ITEM_LIST', getitemlist);
@@ -68,6 +76,7 @@ function* itemSaga() {
     yield takeLatest('DELETE_ITEM', deleteItem);
     yield takeLatest('CAPTURE_ORDERS', captureOrders);
     yield takeLatest('RESET_DATA', resetData);
+    yield takeLatest('UPDATE_PRICES', updatePrices);
 }
 
 export default itemSaga;
