@@ -36,7 +36,7 @@ async function updatePrices(bc, sanmar) {
 async function eachPrice(product, sanmar) {
       for (const item of sanmar) {
 
-        //console.log(`${item.sku} at $${item.price}`);
+        console.log(`${item.sku} at $${item.price}`);
 
       let data = JSON.stringify({
         "price": item.price
