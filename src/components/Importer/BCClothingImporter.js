@@ -13,7 +13,8 @@ async function calculateSales (products) {
   let newProducts = [];
 
   for (const prod of products) {
-    let newName = prod.name.replace(/®/g, "");
+    let preNewName = prod.name.replace(/™/g, "");
+    let newName = preNewName.replace(/®/g, "");
     if (prod.type === 'Product' && (prod.brand === 'Ogio' || prod.brand === 'Gildan' || prod.brand === 'Cornerstone' || prod.brand === 'Carhartt' || prod.brand === 'Bulwark' || prod.brand === 'Anvil' || prod.brand === 'Hanes' || prod.brand === 'District' || prod.brand === 'District Made' || prod.brand === 'Eddie Bauer' || prod.brand === 'TravisMathew' || prod.brand === 'Sport-Tek' || prod.brand === 'Silly Socks' || prod.brand === 'Russell Outdoors' || prod.brand === 'Red Kap' || prod.brand === 'Red House' || prod.brand === 'Rabbit Skins' || prod.brand === 'Port Authority' || prod.brand === 'Port & Company' || prod.brand === 'Nike' || prod.brand === 'Next Level' || prod.brand === 'New Era' || prod.brand === 'Fruit of the Loom' || prod.brand === 'Jerzees' || prod.brand === 'Comfort Colors' || prod.brand === 'Champion' || prod.brand === 'Bella + Canvas' || prod.brand === 'Jerzees' || prod.brand === 'Alternative Apparel' || prod.brand === 'American Apparel')) {
       newProducts.push({sku: prod.sku, name: newName});
     }

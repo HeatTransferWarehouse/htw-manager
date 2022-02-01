@@ -20,7 +20,7 @@ async function updatePrices(bc, sanmar) {
       if (bc[0]) {
         for (const item of bc) {
           console.log(`Updating Product with SKU: ${item.sku}`);
-          await eachPrice(item.sku, sanmar);
+          await eachPrice(item, sanmar);
         }
         console.log('DONE');
         return;
@@ -36,30 +36,40 @@ async function updatePrices(bc, sanmar) {
 async function eachPrice(product, sanmar) {
       for (const item of sanmar) {
 
-        console.log(`${item.sku} at $${item.price}`);
-
-      let data = JSON.stringify({
-        "price": item.price
-      });
-
-      let xhr = new XMLHttpRequest();
-      xhr.withCredentials = true;
-
-      xhr.addEventListener("readystatechange", function () {
-        if (this.readyState === this.DONE) {
-          console.log(this.responseText);
-        }
-      });
-
-      xhr.open("PUT", `https://api.bigcommerce.com/stores/et4qthkygq/v3/catalog/products/${product}/variants/${item.sku}`);
-      xhr.setRequestHeader("accept", "application/json");
-      xhr.setRequestHeader("content-type", "application/json");
-      xhr.setRequestHeader("x-auth-token", "13n6uxj2je2wbnc0vggmz8sqjl93d1d");
-
-      xhr.send(data);
+        await eachSanmarItem(product, item);
 
       }
     }
+
+async function eachSanmarItem(product, item) {
+  let searchedName = item.name.search(`${product.name}`);
+
+  if (searchedName === -1) {
+    //console.log('Not Matched! Skipping!');
+  } else {
+    console.log(`${product.sku} at ${item.sku}`);
+
+    const data = JSON.stringify({
+      "price": item.price
+    });
+
+    const xhr = new XMLHttpRequest();
+    xhr.withCredentials = true;
+
+    xhr.addEventListener("readystatechange", function () {
+      if (this.readyState === this.DONE) {
+        console.log(this.responseText);
+      }
+    });
+
+    xhr.open("PUT", `https://api.bigcommerce.com/stores/et4qthkygq/v3/catalog/products/${product.sku}/variants/${item.sku}`);
+    xhr.setRequestHeader("accept", "application/json");
+    xhr.setRequestHeader("content-type", "application/json");
+    xhr.setRequestHeader("x-auth-token", "13n6uxj2je2wbnc0vggmz8sqjl93d1d");
+
+    xhr.send(data);
+  }
+}
 
 
 router.put("/updatePrices", async function (req, res) {

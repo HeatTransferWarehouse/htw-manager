@@ -180,11 +180,11 @@ function Main () {
       <seciton className="sanmar-form">
       <div className="container">
         <div className="row">
-        <div className="column">
+        <div className="clothing-importer">
           <h3>Import Clothing Prices from Sanmar</h3>
           <SanmarImporter />
         </div>
-        <div className="column">
+        <div className="clothing-importer">
           <h3>Import Clothing Prices from BC</h3>
           <BCClothingImporter />
         </div>
@@ -192,7 +192,7 @@ function Main () {
       <br></br>
       <br></br>
       <div className="row">
-        <div className="column">
+        <div className="clothing-data">
             <MUITable
               title={"Sanmar Prices"}
               data={sanmarPrices}
@@ -215,7 +215,7 @@ function Main () {
               options={SanmarOptions}
               />
         </div>
-        <div className="column">
+        <div className="clothing-data">
             <MUITable
               title={"BC Prices"}
               data={bcPrices}
@@ -237,8 +237,10 @@ function Main () {
         </div>
       </div>
       </div>
-      <button onClick={() => updatePrices()}>Update Prices</button>
       </seciton>
+      <section className="total-form">
+      <Button onClick={(e) => {updatePrices()}} className='sales-input'><QueueIcon/> Update Prices</Button>
+      </section>
       </>
     )
   }

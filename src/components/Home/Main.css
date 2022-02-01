@@ -39,6 +39,7 @@ form {
 }
 
 .sanmar-form {
+    display: flex;
     text-align: center;
     margin-top: 20px;
     margin-left: 10%;
@@ -50,6 +51,21 @@ form {
     margin-top: 20px;
     background-color: rgb(228, 228, 228);
     padding: 20px;
+}
+
+.clothing-importer {
+    margin: 20px;
+}
+
+.clothing-data {
+    margin: 10px;
+}
+
+.clothing-input {
+    text-align: center;
+    width: 100px;
+    border-radius: 10px;
+    margin: 10px;
 }
 
 .total-form {
