@@ -22,9 +22,9 @@ const clothinglist = (state = [], action) => {
 
 const bcClothinglist = (state = [], action) => {
   switch (action.type) {
-    case "SET_CLOTHING":
+    case "SET_BC_CLOTHING":
       return [...state, ...action.payload.products];
-    case "RESET_CLOTHING":
+    case "RESET_BC_CLOTHING":
       return [];
     default:
       return state;

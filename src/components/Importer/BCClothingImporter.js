@@ -10,11 +10,19 @@ function Main () {
 const dispatch = useDispatch();
 
 async function calculateSales (products) {
+  let newProducts = [];
+
+  for (const prod of products) {
+    let newName = prod.name.replace(/®/g, "");
+    if (prod.type === 'Product' && (prod.brand === 'Ogio' || prod.brand === 'Gildan' || prod.brand === 'Cornerstone' || prod.brand === 'Carhartt' || prod.brand === 'Bulwark' || prod.brand === 'Anvil' || prod.brand === 'Hanes' || prod.brand === 'District' || prod.brand === 'District Made' || prod.brand === 'Eddie Bauer' || prod.brand === 'TravisMathew' || prod.brand === 'Sport-Tek' || prod.brand === 'Silly Socks' || prod.brand === 'Russell Outdoors' || prod.brand === 'Red Kap' || prod.brand === 'Red House' || prod.brand === 'Rabbit Skins' || prod.brand === 'Port Authority' || prod.brand === 'Port & Company' || prod.brand === 'Nike' || prod.brand === 'Next Level' || prod.brand === 'New Era' || prod.brand === 'Fruit of the Loom' || prod.brand === 'Jerzees' || prod.brand === 'Comfort Colors' || prod.brand === 'Champion' || prod.brand === 'Bella + Canvas' || prod.brand === 'Jerzees' || prod.brand === 'Alternative Apparel' || prod.brand === 'American Apparel')) {
+      newProducts.push({sku: prod.sku, name: newName});
+    }
+  }
 
     dispatch({
-      type: "SET_CLOTHING",
+      type: "SET_BC_CLOTHING",
       payload: {
-        products: products,
+        products: newProducts,
       }
     });
 }
@@ -51,11 +59,10 @@ return (
         console.log("importer dismissed");
       }}
     >
-      <ImporterField name="name" label="PRODUCT_TITLE" />
-      <ImporterField name="sku" label="UNIQUE_KEY" />
-      <ImporterField name="color" label="COLOR_NAME" />
-      <ImporterField name="size" label="SIZE" />
-      <ImporterField name="price" label="PIECE_PRICE" />
+      <ImporterField name="name" label="Product Name" />
+      <ImporterField name="type" label="Item Type" />
+      <ImporterField name="sku" label="Product ID" />
+      <ImporterField name="brand" label="Brand Name" />
     </Importer>
 
     )

@@ -11,6 +11,7 @@ import BPSalesImporter from '../Importer/BPSalesImporter';
 import SanmarImporter from '../Importer/SanmarImporter';
 import BCClothingImporter from '../Importer/BCClothingImporter';
 import moment from 'moment';
+const axios = require("axios");
 
 function Main () {
 
@@ -23,6 +24,7 @@ function Main () {
     }
   }
 
+  
   const SanmarOptions = {
     tableBodyHeight: "600px",
     filter: true,
@@ -38,6 +40,7 @@ function Main () {
   const BPItems = useSelector(store => store.item.itemlist);
   const SanmarItems = useSelector(store => store.item.clothinglist);
   const BcItems = useSelector(store => store.item.bcClothinglist);
+  const bcHash = process.env.BC_STORE_HASH;
 
   const dispatch = useDispatch();
   const [changeCapture, setChangeCapture] = useState(3);
@@ -63,6 +66,44 @@ function Main () {
     swal('Sales Data Reset!');
   }
 
+    async function updatePrices () {
+      if (BcItems[0]) {
+      swal('Updating Prices!');
+      for (const item of BcItems) {
+        console.log(`Updating Product with SKU: ${item.sku}`);
+        await eachPrice(item.sku);
+      }
+      console.log('DONE');
+     } else {
+       swal('Import some prices first!');
+     }
+    }
+
+    async function eachPrice (product) {
+      for (const item of SanmarItems) {
+
+      try {
+        await axios
+          .put(
+            `https://api.bigcommerce.com/stores/et4qthkygq/v3/catalog/products/${product}/variants/${item.sku}`,
+            {
+              //authenticate Big Commerce API
+              headers: {
+                "X-Auth-Client": process.env.BG_AUTH_CLIENT,
+                "X-Auth-Token": process.env.BG_AUTH_TOKEN,
+              },
+              body: {
+                "price": item.price
+              }
+            }
+          )
+      } catch (err) {
+        console.log('Error on Update Product: ', err);
+      }
+
+     }
+    }
+
   const BPData = BPItems.map((item) => [
     item.name,
     item.sku,
@@ -85,9 +126,6 @@ function Main () {
   const bcPrices = BcItems.map((item) => [
     item.name,
     item.sku,
-    item.color,
-    item.size,
-    item.price,
   ]);
 
     const calculateTotal = () => {
@@ -170,12 +208,12 @@ function Main () {
       <div className="container">
         <div className="row">
         <div className="column">
-          <h3>Import Clothing Prices from BC</h3>
-          <BCClothingImporter />
-        </div>
-        <div className="column">
           <h3>Import Clothing Prices from Sanmar</h3>
           <SanmarImporter />
+        </div>
+        <div className="column">
+          <h3>Import Clothing Prices from BC</h3>
+          <BCClothingImporter />
         </div>
         </div>
       <br></br>
@@ -219,16 +257,14 @@ function Main () {
                   options: {
                     filter: false,
                   }
-                },
-                { name: "Color" },
-                { name: "Size" },
-                { name: "Price" }
+                }
               ]}
               options={SanmarOptions}
               />
         </div>
       </div>
       </div>
+      <button onClick={() => updatePrices()}>Update Prices</button>
       </seciton>
       </>
     )
