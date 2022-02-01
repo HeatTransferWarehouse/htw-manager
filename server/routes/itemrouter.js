@@ -36,7 +36,7 @@ async function updatePrices(bc, sanmar) {
 async function eachPrice(product, sanmar) {
       for (const item of sanmar) {
 
-        console.log(`${item.sku} at $${item.price}`);
+        //console.log(`${item.sku} at $${item.price}`);
 
       let data = JSON.stringify({
         "price": item.price
@@ -67,13 +67,12 @@ router.put("/updatePrices", async function (req, res) {
   const bc = req.body.bcItems;
   const sanmar = req.body.sanmar;
 
+  res.sendStatus(200).send();
 
   try {
     await updatePrices(bc, sanmar);
-    res.sendStatus(200).send();
   } catch (err) {
     console.log('Error on update Prices: ', err);
-    return res.status(500).send();
   }
 
 });
