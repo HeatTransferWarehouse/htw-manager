@@ -14,8 +14,10 @@ async function calculateSales (products) {
 
   for (const prod of products) {
     let preNewName = prod.name.replace(/™/g, "");
-    let extraNewName = preNewName.replace(/¬Æ/g, "");
-    let newNewName = extraNewName.replace(/Ñ¢/g, "");
+    let extraNewName = preNewName.replace(/Æ/g, "");
+    let extraNewName2 = extraNewName.replace(/¬/g, "");
+    let newNewName2 = extraNewName2.replace(/Ñ/g, "");
+    let newNewName = newNewName2.replace(/¢/g, "");
     let newName = newNewName.replace(/®/g, "");
     if (prod.type === 'Product' && (prod.brand === 'Ogio' || prod.brand === 'Gildan' || prod.brand === 'Cornerstone' || prod.brand === 'Carhartt' || prod.brand === 'Bulwark' || prod.brand === 'Anvil' || prod.brand === 'Hanes' || prod.brand === 'District' || prod.brand === 'District Made' || prod.brand === 'Eddie Bauer' || prod.brand === 'TravisMathew' || prod.brand === 'Sport-Tek' || prod.brand === 'Silly Socks' || prod.brand === 'Russell Outdoors' || prod.brand === 'Red Kap' || prod.brand === 'Red House' || prod.brand === 'Rabbit Skins' || prod.brand === 'Port Authority' || prod.brand === 'Port & Company' || prod.brand === 'Nike' || prod.brand === 'Next Level' || prod.brand === 'New Era' || prod.brand === 'Fruit of the Loom' || prod.brand === 'Jerzees' || prod.brand === 'Comfort Colors' || prod.brand === 'Champion' || prod.brand === 'Bella + Canvas' || prod.brand === 'Jerzees' || prod.brand === 'Alternative Apparel' || prod.brand === 'American Apparel')) {
       newProducts.push({sku: prod.sku, name: newName});
