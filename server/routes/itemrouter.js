@@ -119,7 +119,7 @@ async function eachSanmarItem(product, item, vars) {
     req.end();
 
     } else {
-      console.log('No Variant Found to sync ID!');
+      //console.log('No Variant Found to sync ID!');
     }
 }
 
