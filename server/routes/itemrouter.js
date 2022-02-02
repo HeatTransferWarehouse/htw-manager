@@ -34,40 +34,96 @@ async function updatePrices(bc, sanmar) {
     }
 
 async function eachPrice(product, sanmar) {
+
+      const sanmarIds = await getSanmarId(product);
+      const variants = sanmarIds.data.data;
+
       for (const item of sanmar) {
 
-        await eachSanmarItem(product, item);
+        await eachSanmarItem(product, item, variants);
 
       }
     }
 
-async function eachSanmarItem(product, item) {
+async function getSanmarId(product) {
+
+  let config = {
+    headers: {
+      "X-Auth-Client": process.env.BG_AUTH_CLIENT,
+      "X-Auth-Token": process.env.BG_AUTH_TOKEN,
+    }
+  };
+
+  let items;
+
+  try {
+    items = await axios
+      .get(
+        `https://api.bigcommerce.com/stores/et4qthkygq/v3/catalog/products/${product.sku}/variants`,
+        config
+      )
+  } catch (err) {
+    console.log('Error on Get Items: ', err);
+  }
+
+  return items;
+}
+
+
+async function eachSanmarItem(product, item, vars) {
   let searchedName = item.name.search(`${product.name}`);
 
   if (searchedName === -1) {
     //console.log('Not Matched! Skipping!');
   } else {
-    console.log(`${product.sku} at ${item.sku} and $${item.price}`);
 
-    const data = JSON.stringify({
-      "price": item.price
-    });
+    let putId = 0;
 
-    const xhr = new XMLHttpRequest();
-    xhr.withCredentials = true;
-
-    xhr.addEventListener("readystatechange", function () {
-      if (this.readyState === this.DONE) {
-        console.log(this.responseText);
+    for (const variant of vars) {
+        if (variant.sku === item.sku) {
+          putId = variant.id;
       }
+    }
+
+    if (putId !== 0) {
+    
+    console.log(`${product.sku} at ${putId} and $${item.price}`);
+
+    const http = require("https");
+
+    const options = {
+      "method": "PUT",
+      "hostname": "api.bigcommerce.com",
+      "port": null,
+      "path": `/stores/et4qthkygq/v3/catalog/products/${product.sku}/variants/${putId}`,
+      "headers": {
+        "accept": "application/json",
+        "content-type": "application/json",
+        "x-auth-token": "13n6uxj2je2wbnc0vggmz8sqjl93d1d"
+      }
+    };
+
+    const req = http.request(options, function (res) {
+      const chunks = [];
+
+      res.on("data", function (chunk) {
+        chunks.push(chunk);
+      });
+
+      res.on("end", function () {
+        const body = Buffer.concat(chunks);
+        console.log(body.toString());
+      });
     });
 
-    xhr.open("PUT", `https://api.bigcommerce.com/stores/et4qthkygq/v3/catalog/products/${product.sku}/variants/${item.sku}`);
-    xhr.setRequestHeader("accept", "application/json");
-    xhr.setRequestHeader("content-type", "application/json");
-    xhr.setRequestHeader("x-auth-token", "13n6uxj2je2wbnc0vggmz8sqjl93d1d");
+    req.write(JSON.stringify({
+      price: item.price
+    }));
+    req.end();
 
-    xhr.send(data);
+    } else {
+      console.log('No Variant Found to sync ID!');
+    }
   }
 }
 
