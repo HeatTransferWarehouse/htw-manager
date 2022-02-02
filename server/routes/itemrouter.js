@@ -74,12 +74,7 @@ async function eachSanmarItem(product, item, vars) {
   let searchedName = item.name.search(`${product.name}`);
   let preNewPrice = item.price * 1.4;
   let newPrice = Math.round(preNewPrice * 100) / 100
-
-  if (searchedName === -1) {
-    //console.log('Not Matched! Skipping!');
-  } else {
-
-    let putId = 0;
+  let putId = 0;
 
     for (const variant of vars) {
         if (variant.sku === item.sku) {
@@ -126,7 +121,6 @@ async function eachSanmarItem(product, item, vars) {
     } else {
       console.log('No Variant Found to sync ID!');
     }
-  }
 }
 
 
