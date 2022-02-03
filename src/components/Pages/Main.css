@@ -1,0 +1,157 @@
+body {
+    background-color: #c0c0c0;
+}
+
+table {
+    width: 100%;
+}
+
+td {
+    padding: 2%;
+
+}
+
+thead {
+    background-color: rgb(172, 172, 172);
+}
+
+tr {
+    margin: 10%;
+}
+
+tbody tr:nth-child(even) {
+    background-color: #a3c0ff;
+}
+
+br {
+    height: 1500%;
+}
+
+form {
+    text-align: center;
+    display: flex;
+    justify-content: center;
+}
+
+.reseller-form {
+    text-align: center;
+    margin-top: 20px;
+}
+
+.sanmar-form {
+    display: flex;
+    text-align: center;
+    margin-top: 20px;
+    margin-left: 10%;
+    margin-right: 10%;
+}
+
+.capture-form {
+    text-align: center;
+    margin-top: 20px;
+    background-color: rgb(228, 228, 228);
+    padding: 20px;
+}
+
+.clothing-importer {
+    margin: 20px;
+}
+
+.clothing-data {
+    margin: 10px;
+}
+
+.clothing-input {
+    text-align: center;
+    width: 100px;
+    border-radius: 10px;
+    margin: 10px;
+}
+
+.total-form {
+    display: flex;
+    justify-content: right;
+}
+
+.sales-form {
+    background-color: #c0c0c0;
+    padding: 30px;
+}
+
+.order-input {
+    text-align: center;
+    width: 100px;
+    border-radius: 10px;
+    margin: 10px;
+}
+
+.big-number {
+    margin: 20px;
+}
+
+.sales-input {
+    text-align: center;
+    width: 200px;
+    border-radius: 10px;
+    margin: 10px;
+    background-color: rgb(103, 86, 255);
+}
+
+.loader {
+    border: 66px solid rgb(172, 172, 172);
+    border-radius: 50%;
+    border-top: 66px solid #a3c0ff;
+    width: 420px;
+    height: 420px;
+    -webkit-animation: spin 2s linear infinite;
+    /* Safari */
+    animation: spin 2s linear infinite;
+    margin: auto;
+}
+
+@-webkit-keyframes spin {
+    0% {
+        -webkit-transform: rotate(0deg);
+    }
+
+    100% {
+        -webkit-transform: rotate(360deg);
+    }
+}
+
+@keyframes spin {
+    0% {
+        transform: rotate(0deg);
+    }
+
+    100% {
+        transform: rotate(360deg);
+    }
+}
+
+.ol-map,
+#map,
+.map {
+    min-width: 600px;
+    min-height: 500px;
+    margin-right: 100px;
+    margin-left: 100px;
+    height: 1000px;
+    width: "100%";
+}
+
+.ftp-form {
+    text-align: center;
+}
+
+.ol-control {
+    position: absolute;
+    background-color: rgba(255, 255, 255, 0.4);
+    border-radius: 4px;
+    padding: 2px;
+}
+
+.ol-full-screen {
+    top: .5em;
+    right: .5em;
+}

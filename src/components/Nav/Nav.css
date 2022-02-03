@@ -9,14 +9,24 @@
 .nav {
   overflow: hidden;
   width:100%;
-
+  text-align: center;
+  background-color: #40e6d8;
   
 }
 
+.nav-logo {
+  text-align: center;
+}
+
+.link {
+  margin: 10px;
+}
+
 .nav-link {
+  font-family: Verdana;
   float: left;
-  background-color: #00008B;
-  color: #f2f2f2;
+  background-color: #40e6d8;
+  color: #303030;
   text-align: center;
   padding: 24px 10px;
   text-decoration: none;
@@ -42,7 +52,7 @@
 .active-nav-link {
   float: left;
   background-color: #00008B;
-  color: #FFD700;
+  color: #0e8baa;
   text-align: center;
   padding: 24px 10px;
   text-decoration: none;
@@ -55,7 +65,7 @@
 .active-nav-link2 {
   float: left;
   background-color: #8B008B;
-  color: #FFD700;
+  color: #0e8baa;
   text-align: center;
   padding: 24px 10px;
   text-decoration: none;
@@ -66,11 +76,11 @@
 }
 
 .nav-link:hover {
-  color:#FFD700;
+  color:#0e8baa;
 }
 
 .nav-link2:hover {
-  color:#FFD700;
+  color:#0e8baa;
 }
 
 .nav-right {

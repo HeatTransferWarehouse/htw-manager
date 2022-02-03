@@ -18,6 +18,7 @@
     "bootstrap": "^4.5.0",
     "dotenv": "^4.0.0",
     "express": "^4.16.4",
+    "ftp": "^0.3.10",
     "moment": "^2.29.1",
     "mui-datatables": "^3.7.1",
     "ol": "^6.9.0",
