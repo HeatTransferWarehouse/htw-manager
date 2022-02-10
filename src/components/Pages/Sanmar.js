@@ -38,12 +38,18 @@ function Sanmar () {
 
 
   const connectFtp = () => {  
+  console.log('Logging into FTP Client..');
+  
   c.connect({
       host: host,
       port: 21,
       user: user,
       password: password,
   });
+
+  setHost('');
+  setUser('');
+  setPassword('');
 }
 
   const updatePrices = () => {
