@@ -69,6 +69,14 @@ function* updatePrices(action) {
   }
 }
 
+function* connectFtp(action) {
+  try {
+    yield axios.put(`/api/item/ftp`, action.payload);
+  } catch (error) {
+    console.log("Error with connecting ftp:", error);
+  }
+}
+
 //this takes all of the Saga functions and dispatches them
 function* itemSaga() {
     yield takeLatest('GET_ITEM_LIST', getitemlist);
@@ -77,6 +85,7 @@ function* itemSaga() {
     yield takeLatest('CAPTURE_ORDERS', captureOrders);
     yield takeLatest('RESET_DATA', resetData);
     yield takeLatest('UPDATE_PRICES', updatePrices);
+    yield takeLatest('CONNECT_FTP', connectFtp);
 }
 
 export default itemSaga;

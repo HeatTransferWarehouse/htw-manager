@@ -2,6 +2,7 @@ const express = require('express');
 const pool = require('../modules/pool');
 const router = express.Router();
 const axios = require("axios");
+const Client = require('ftp');
 var XMLHttpRequest = require("xmlhttprequest").XMLHttpRequest;
 
 
@@ -124,6 +125,89 @@ async function eachSanmarItem(product, item, vars) {
 }
 
 
+async function connectFtp(host, user, password) {
+    console.log('Logging into FTP Client..');
+
+    const c = new Client();
+    const fs = require("fs");
+    let m = new Date();
+    let d = new Date();
+    let y = new Date();
+    m = m.getMonth();
+    m++
+    d = d.getDate();
+    d--
+    y = y.getFullYear();
+    let newY = `${y}`;
+    newY = newY.slice(2);
+    let file = ''
+    if (m < 10) {
+      file = `0${m}-${d}-${newY}status.txt`;
+    } else {
+      file = `${m}-${d}-${newY}status.txt`;
+    }
+    
+
+    console.log(file);
+
+
+    const ftpConfig = {
+      host: `${host}`,
+      port: 21,
+      user: `${user}`,
+      password: `${password}`,
+    }
+    console.log(`${host}, ${user}, ${password}`);
+
+    c.connect(ftpConfig);
+
+    c.on('ready', function () {
+      c.get(`/000175733Status/${file}`, function (err, stream) {
+        if (err) throw err;
+        stream.once('close', function () {
+          c.end();
+        });
+        stream.pipe(fs.createWriteStream(file));
+      });
+    });
+}
+
+function readData(writer, data, encoding, callback) {
+
+  console.log(writer);
+  //write();
+
+  function write() {
+    let ok = true;
+    if (true) {
+      // Last time!
+      writer.write(data, encoding, callback);
+    } else {
+      // See if we should continue, or wait.
+      // Don't pass the callback, because we're not done yet.
+      ok = writer.write(data, encoding);
+    }
+    if (true) {
+      // Had to stop early!
+      // Write some more once it drains.
+      writer.once('drain', write);
+    }
+  }
+}
+
+const stream = (data) => {
+
+  const writer = fs.createWriteStream(`${data}`);
+
+  reader.pipe(writer);
+
+  writer.on('pipe', (src) => {
+    console.log(`Something is piping into the writer. -- ${src}`);
+  });
+
+}
+
+
 router.put("/updatePrices", async function (req, res) {
   console.log("We are updating sanmar prices..");
   const bc = req.body.bcItems;
@@ -135,6 +219,20 @@ router.put("/updatePrices", async function (req, res) {
     await updatePrices(bc, sanmar);
   } catch (err) {
     console.log('Error on update Prices: ', err);
+  }
+
+});
+
+router.put("/ftp", async function (req, res) {
+  console.log("We are connecting to the ftp client..");
+  const host = req.body.host;
+  const password = req.body.password;
+  const user = req.body.user;
+
+  try {
+    await connectFtp(host, user, password);
+  } catch (err) {
+    console.log('Error on connect ftp: ', err);
   }
 
 });
@@ -193,7 +291,6 @@ try {
   }
  }
 });
-
 
 router.delete("/all", async function (req, res) {
   console.log("We are about to delete the item list");
