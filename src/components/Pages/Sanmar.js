@@ -24,8 +24,8 @@ function Sanmar () {
   const dispatch = useDispatch();
 //   const reader = readData();
   const Client = require('ftp');
+// const ftp = require("basic-ftp")
   
-
 
 async function connectFtp() {
     console.log('Logging into FTP Client..');
@@ -39,7 +39,7 @@ async function connectFtp() {
       user: `${user}`,
       password: `${password}`,
     }
-    //console.log(`${host}, ${user}, ${password}`);
+    console.log(`${host}, ${user}, ${password}`);
 
     c.connect(ftpConfig);
 
@@ -53,23 +53,23 @@ async function connectFtp() {
       });
     });
 
-    // const client = new ftp.Client()
-    // client.ftp.verbose = true
-    // try {
-    //   await client.access({
-    //     host: host,
-    //     user: user,
-    //     port: 21,
-    //     password: password,
-    //     secure: false
-    //   })
+  //   const client = new ftp.Client()
+  //   client.ftp.verbose = true
+  //   try {
+  //     await client.access({
+  //       host: host,
+  //       user: user,
+  //       port: 21,
+  //       password: password,
+  //       secure: false
+  //     })
 
-    //   //await client.downloadTo(stream, `/000175733Status/02-09-22status.txt`);
+  //     //await client.downloadTo(stream, `/000175733Status/02-09-22status.txt`);
 
-    // } catch (err) {
-    //   console.log(err);
-    // }
-    // client.close();
+  //   } catch (err) {
+  //     console.log(err);
+  //   }
+  //   client.close();
 
       setHost('');
       setUser('');
