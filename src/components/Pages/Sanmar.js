@@ -18,10 +18,12 @@ function Sanmar () {
 
   const SanmarItems = useSelector(store => store.item.clothinglist);
   const BcItems = useSelector(store => store.item.bcClothinglist);
+  const SanmarNotify = useSelector(store => store.item.sanmar);
   const [host, setHost] = useState('ftp.sanmar.com');
   const [user, setUser] = useState('175733');
   const [password, setPassword] = useState('Sanmar33');
   const dispatch = useDispatch();
+  let sanmarDisplay = <h4></h4>
 
 
 async function connectFtp() {
@@ -39,7 +41,7 @@ async function connectFtp() {
       setPassword('');
   }
 
-  const updatePrices = () => {
+const updatePrices = () => {
     if (BcItems[0]) {
       swal('Updating Prices!');
       dispatch({
@@ -67,6 +69,18 @@ async function connectFtp() {
     item.sku,
   ]);
 
+  switch (SanmarNotify) {
+    case 'WAIT':
+      sanmarDisplay = <h4></h4>
+      break;
+    case 'YES':
+      sanmarDisplay = <h4>Download Succesful! Check your downloads folder</h4>
+      break;
+    case 'NO':
+      sanmarDisplay = <h4>Download Failed! File may be unavailable for this day</h4>
+      break;
+  }
+
     //defines the dataselector to know which items to preform actions on
     return (
       <>
@@ -81,6 +95,10 @@ async function connectFtp() {
             <h4>Password: </h4><input value={password} placeholder="super secret" type="password" onChange={(e) => {setPassword(e.target.value)}}></input>
             <br></br>
             <Button onClick={() => {connectFtp()}}>Download Recent Sanmar Orders</Button>
+        </div>
+        <br />
+        <div>
+          {sanmarDisplay}
         </div>
       </section>
       <br></br>

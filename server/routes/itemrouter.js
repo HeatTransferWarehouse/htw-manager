@@ -157,7 +157,6 @@ async function connectFtp(host, user, password) {
       user: `${user}`,
       password: `${password}`,
     }
-    console.log(`${host}, ${user}, ${password}`);
 
     c.connect(ftpConfig);
 
@@ -167,44 +166,12 @@ async function connectFtp(host, user, password) {
         stream.once('close', function () {
           c.end();
         });
-        stream.pipe(fs.createWriteStream(file));
+        const path = require('path');
+        const DOWNLOAD_DIR = path.join(process.env.HOME || process.env.USERPROFILE, 'downloads/');
+        const file_path = path.join(DOWNLOAD_DIR,file);
+        stream.pipe(fs.createWriteStream(file_path));
       });
     });
-}
-
-function readData(writer, data, encoding, callback) {
-
-  console.log(writer);
-  //write();
-
-  function write() {
-    let ok = true;
-    if (true) {
-      // Last time!
-      writer.write(data, encoding, callback);
-    } else {
-      // See if we should continue, or wait.
-      // Don't pass the callback, because we're not done yet.
-      ok = writer.write(data, encoding);
-    }
-    if (true) {
-      // Had to stop early!
-      // Write some more once it drains.
-      writer.once('drain', write);
-    }
-  }
-}
-
-const stream = (data) => {
-
-  const writer = fs.createWriteStream(`${data}`);
-
-  reader.pipe(writer);
-
-  writer.on('pipe', (src) => {
-    console.log(`Something is piping into the writer. -- ${src}`);
-  });
-
 }
 
 
@@ -231,8 +198,10 @@ router.put("/ftp", async function (req, res) {
 
   try {
     await connectFtp(host, user, password);
+    res.send('YES').status(201);
   } catch (err) {
     console.log('Error on connect ftp: ', err);
+    res.send('NO').status(500);
   }
 
 });

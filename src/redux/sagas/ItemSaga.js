@@ -71,7 +71,11 @@ function* updatePrices(action) {
 
 function* connectFtp(action) {
   try {
-    yield axios.put(`/api/item/ftp`, action.payload);
+    const response = yield axios.put(`/api/item/ftp`, action.payload);
+    yield put({
+      type: "SET_SANMAR",
+      payload: response.data,
+    })
   } catch (error) {
     console.log("Error with connecting ftp:", error);
   }
