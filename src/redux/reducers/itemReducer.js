@@ -42,9 +42,21 @@ const sanmar = (state = 'WAIT', action) => {
   }
 };
 
+const tracking = (state = [], action) => {
+  switch (action.type) {
+    case "UPDATE_TRACKING":
+      return action.payload;
+    case "RESET_TRACKING":
+      return [];
+    default:
+      return state;
+  }
+};
+
 export default combineReducers({
   itemlist,
   clothinglist,
   bcClothinglist,
   sanmar,
+  tracking,
 });

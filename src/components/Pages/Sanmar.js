@@ -7,6 +7,11 @@ import QueueIcon from "@material-ui/icons/Queue";
 import swal from "sweetalert";
 import SanmarImporter from '../Importer/SanmarImporter';
 import BCClothingImporter from '../Importer/BCClothingImporter';
+import * as CSV from 'csv-string';
+import { MuiPickersUtilsProvider, DatePicker } from '@material-ui/pickers';
+import TextField from "@material-ui/core/TextField";
+import LuxonUtils from '@date-io/luxon';
+import Grid from '@material-ui/core/Grid';
 
 function Sanmar () {
   
@@ -19,6 +24,8 @@ function Sanmar () {
   const SanmarItems = useSelector(store => store.item.clothinglist);
   const BcItems = useSelector(store => store.item.bcClothinglist);
   const SanmarNotify = useSelector(store => store.item.sanmar);
+  const sanmarTracking = useSelector(store => store.item.tracking);
+  const [date, setDate] = useState('1-01-2022');
   const [host, setHost] = useState('ftp.sanmar.com');
   const [user, setUser] = useState('175733');
   const [password, setPassword] = useState('Sanmar33');
@@ -33,13 +40,33 @@ async function connectFtp() {
           host: host,
           user: user,
           password: password,
+          date: date,
         }
       });
+}
 
-      setHost('');
-      setUser('');
-      setPassword('');
+async function download() {
+  const arr = CSV.parse(SanmarNotify);
+  let trackingPush = [];
+  for (const item of arr) {
+    if (item[0] === 'CUSTOMER PO') {
+    } else {
+      let pusher = {
+        order: item[0],
+        tracking: item[15],
+        method: item[17],
+      };
+      trackingPush.push(pusher);
+    }
   }
+  dispatch({
+    type: "RESET_SANMAR",
+  });
+  dispatch({
+    type: "UPDATE_TRACKING",
+    payload: trackingPush,
+  });
+}
 
 const updatePrices = () => {
     if (BcItems[0]) {
@@ -56,6 +83,12 @@ const updatePrices = () => {
   }
 }
 
+  const tracking = sanmarTracking.map((item) => [
+    item.order,
+    item.tracking,
+    item.method,
+  ]);
+
   const sanmarPrices = SanmarItems.map((item) => [
     item.name,
     item.sku,
@@ -70,6 +103,9 @@ const updatePrices = () => {
   ]);
 
   switch (SanmarNotify) {
+    case '':
+      sanmarDisplay = <h4></h4>
+      break;
     case 'WAIT':
       sanmarDisplay = <h4></h4>
       break;
@@ -77,8 +113,10 @@ const updatePrices = () => {
       sanmarDisplay = <h4>Download Succesful! Check your downloads folder</h4>
       break;
     case 'NO':
-      sanmarDisplay = <h4>Download Failed! File may be unavailable for this day</h4>
+      sanmarDisplay = <h4>Download Failed! File may not be available yet</h4>
       break;
+    default:
+      download();
   }
 
     //defines the dataselector to know which items to preform actions on
@@ -93,12 +131,48 @@ const updatePrices = () => {
             <h4>Host: </h4><input value={host} placeholder="www.example.com" onChange={(e) => {setHost(e.target.value)}}></input>
             <h4>Username: </h4><input value={user} placeholder="1231234" onChange={(e) => {setUser(e.target.value)}}></input>
             <h4>Password: </h4><input value={password} placeholder="super secret" type="password" onChange={(e) => {setPassword(e.target.value)}}></input>
-            <br></br>
+            <br />
+            <MuiPickersUtilsProvider utils={LuxonUtils}>
+                <Grid container justify="space-around">
+                  {/* used to filter by date */}
+                  <DatePicker
+                  label="Date"
+                  inputFormat="MM/dd/yyyy"
+                  value={date}
+                  onChange={(event) =>
+                        setDate({year: event.c.year, month: event.c.month, day: event.c.day})
+                  }
+                  renderInput={(params) => <TextField {...params} />}
+                  />
+                </Grid>
+            </MuiPickersUtilsProvider>
+            <br />
             <Button onClick={() => {connectFtp()}}>Download Recent Sanmar Orders</Button>
         </div>
         <br />
         <div>
           {sanmarDisplay}
+        </div>
+        <div className="tracking-data">
+            <MUITable
+              title={"Sanmar Tracking"}
+              data={tracking}
+              columns={[
+                //names the columns found on MUI table
+                { name: "Order #",
+                  options: { 
+                    filter: false,
+                  }
+                },
+                { name: "Tracking #",
+                  options: {
+                    filter: false,
+                  }
+                },
+                { name: "Shipping Method" }
+              ]}
+              options={SanmarOptions}
+              />
         </div>
       </section>
       <br></br>

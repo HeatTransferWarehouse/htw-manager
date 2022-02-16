@@ -3,17 +3,6 @@ const pool = require('../modules/pool');
 const router = express.Router();
 const axios = require("axios");
 const Client = require('ftp');
-var XMLHttpRequest = require("xmlhttprequest").XMLHttpRequest;
-
-
-//Waiter Function
-function timeoutPromise(interval) {
-      return new Promise((resolve, reject) => {
-        setTimeout(function () {
-          resolve("done");
-        }, interval);
-      });
-};
 
 
 async function updatePrices(bc, sanmar) {
@@ -32,7 +21,7 @@ async function updatePrices(bc, sanmar) {
     } catch (err) {
       console.log('Error on Update Product: ', err);
     }
-    }
+}
 
 async function eachPrice(product, sanmar) {
 
@@ -44,7 +33,7 @@ async function eachPrice(product, sanmar) {
         await eachSanmarItem(product, item, variants);
 
       }
-    }
+}
 
 async function getSanmarId(product) {
 
@@ -125,53 +114,20 @@ async function eachSanmarItem(product, item, vars) {
 }
 
 
-async function connectFtp(host, user, password) {
-    console.log('Logging into FTP Client..');
+async function getFile(date) {
 
-    const c = new Client();
-    const fs = require("fs");
-    let m = new Date();
-    let d = new Date();
-    let y = new Date();
-    m = m.getMonth();
-    m++
-    d = d.getDate();
-    d--
-    y = y.getFullYear();
-    let newY = `${y}`;
+    console.log(date.month, date.day, date.year);
+    let newD = date.day--
+    let newY = `${date.year}`;
     newY = newY.slice(2);
     let file = ''
-    if (m < 10) {
-      file = `0${m}-${d}-${newY}status.txt`;
+    if (date.month < 10) {
+      file = `0${date.month}-${newD}-${newY}status.txt`;
     } else {
-      file = `${m}-${d}-${newY}status.txt`;
-    }
-    
-
-    console.log(file);
-
-
-    const ftpConfig = {
-      host: `${host}`,
-      port: 21,
-      user: `${user}`,
-      password: `${password}`,
+      file = `${date.month}-${newD}-${newY}status.txt`;
     }
 
-    c.connect(ftpConfig);
-
-    c.on('ready', function () {
-      c.get(`/000175733Status/${file}`, function (err, stream) {
-        if (err) throw err;
-        stream.once('close', function () {
-          c.end();
-        });
-        const path = require('path');
-        const DOWNLOAD_DIR = path.join(process.env.HOME || process.env.USERPROFILE, 'downloads/');
-        const file_path = path.join(DOWNLOAD_DIR,file);
-        stream.pipe(fs.createWriteStream(file_path));
-      });
-    });
+    return file;
 }
 
 
@@ -195,10 +151,35 @@ router.put("/ftp", async function (req, res) {
   const host = req.body.host;
   const password = req.body.password;
   const user = req.body.user;
+  const date = req.body.date;
+  const c = new Client();
+  const fs = require("fs");
 
   try {
-    await connectFtp(host, user, password);
-    res.send('YES').status(201);
+    console.log('Logging into FTP Client..');
+
+    const ftpConfig = {
+      host: `${host}`,
+      port: 21,
+      user: `${user}`,
+      password: `${password}`,
+    }
+    const file = await getFile(date);
+
+    c.connect(ftpConfig);
+
+    c.on('ready', function () {
+      c.get(`/000175733Status/${file}`, function (err, stream) {
+        if (err) throw err;
+        stream.once('close', function () {
+          c.end();
+        });
+        stream.pipe(res);
+
+        stream.on('end', res.end);
+      });
+    });
+    //res.send('YES').status(201);
   } catch (err) {
     console.log('Error on connect ftp: ', err);
     res.send('NO').status(500);
