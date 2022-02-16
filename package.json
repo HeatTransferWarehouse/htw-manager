@@ -6,6 +6,7 @@
   "repository": "git://github.com/Traizel/htw-manager.git",
   "proxy": "http://localhost:5000",
   "dependencies": {
+    "@date-io/luxon": "^2.13.1",
     "@material-ui/core": "^4.11.1",
     "@material-ui/icons": "^4.9.1",
     "@material-ui/lab": "^4.0.0-alpha.56",

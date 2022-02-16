@@ -25,7 +25,7 @@ function Sanmar () {
   const BcItems = useSelector(store => store.item.bcClothinglist);
   const SanmarNotify = useSelector(store => store.item.sanmar);
   const sanmarTracking = useSelector(store => store.item.tracking);
-  const [date, setDate] = useState('1-01-2022');
+  const [date, setDate] = useState('01/01/2022');
   const [host, setHost] = useState('ftp.sanmar.com');
   const [user, setUser] = useState('175733');
   const [password, setPassword] = useState('Sanmar33');
