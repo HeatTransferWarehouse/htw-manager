@@ -8,9 +8,10 @@ import swal from "sweetalert";
 import SanmarImporter from '../Importer/SanmarImporter';
 import BCClothingImporter from '../Importer/BCClothingImporter';
 import * as CSV from 'csv-string';
-import { MuiPickersUtilsProvider, DatePicker } from '@material-ui/pickers';
+import DesktopDatePicker from '@mui/lab/DesktopDatePicker';
+import LocalizationProvider from '@mui/lab/LocalizationProvider';
+import AdapterDateFns from '@mui/lab/AdapterDateFns';
 import TextField from "@material-ui/core/TextField";
-import LuxonUtils from '@date-io/luxon';
 import Grid from '@material-ui/core/Grid';
 
 function Sanmar () {
@@ -25,7 +26,7 @@ function Sanmar () {
   const BcItems = useSelector(store => store.item.bcClothinglist);
   const SanmarNotify = useSelector(store => store.item.sanmar);
   const sanmarTracking = useSelector(store => store.item.tracking);
-  const [date, setDate] = useState('01/01/2022');
+  const [date, setDate] = useState();
   const [host, setHost] = useState('ftp.sanmar.com');
   const [user, setUser] = useState('175733');
   const [password, setPassword] = useState('Sanmar33');
@@ -132,20 +133,19 @@ const updatePrices = () => {
             <h4>Username: </h4><input value={user} placeholder="1231234" onChange={(e) => {setUser(e.target.value)}}></input>
             <h4>Password: </h4><input value={password} placeholder="super secret" type="password" onChange={(e) => {setPassword(e.target.value)}}></input>
             <br />
-            <MuiPickersUtilsProvider utils={LuxonUtils}>
-                <Grid container justify="space-around">
-                  {/* used to filter by date */}
-                  <DatePicker
-                  label="Date"
-                  inputFormat="MM/dd/yyyy"
-                  value={date}
-                  onChange={(event) =>
-                        setDate({year: event.c.year, month: event.c.month, day: event.c.day})
-                  }
-                  renderInput={(params) => <TextField {...params} />}
-                  />
+            <LocalizationProvider dateAdapter={AdapterDateFns}>
+              <Grid container justify="space-around">
+                <DesktopDatePicker
+                label="Date"
+                value={date}
+                minDate={new Date('2009-01-01')}
+                onChange={(newValue) => {
+                setDate(newValue);
+                }}
+                renderInput={(params) => <TextField {...params} />}
+                />
                 </Grid>
-            </MuiPickersUtilsProvider>
+            </LocalizationProvider>
             <br />
             <Button onClick={() => {connectFtp()}}>Download Recent Sanmar Orders</Button>
         </div>

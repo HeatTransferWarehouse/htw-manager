@@ -3,6 +3,7 @@ const pool = require('../modules/pool');
 const router = express.Router();
 const axios = require("axios");
 const Client = require('ftp');
+const moment = require('moment');
 
 
 async function updatePrices(bc, sanmar) {
@@ -116,17 +117,23 @@ async function eachSanmarItem(product, item, vars) {
 
 async function getFile(date) {
 
-    console.log(date.month, date.day, date.year);
-    let newD = date.day--
-    let newY = `${date.year}`;
-    newY = newY.slice(2);
+    const newDate = moment(date).toObject();
+    let d = newDate.date
+    let m = newDate.months
+    m++
+    let y = `${newDate.years}`;
+    y = y.slice(2);
     let file = ''
-    if (date.month < 10) {
-      file = `0${date.month}-${newD}-${newY}status.txt`;
+    if (m < 10 && d < 10) {
+      file = `0${m}-0${d}-${y}status.txt`;
+    } else if (m < 10) {
+      file = `0${m}-${d}-${y}status.txt`;
+    } else if (d < 10) {
+      file = `${m}-0${d}-${y}status.txt`;
     } else {
-      file = `${date.month}-${newD}-${newY}status.txt`;
+      file = `${m}-${d}-${y}status.txt`;
     }
-
+    console.log(file);
     return file;
 }
 
@@ -153,7 +160,6 @@ router.put("/ftp", async function (req, res) {
   const user = req.body.user;
   const date = req.body.date;
   const c = new Client();
-  const fs = require("fs");
 
   try {
     console.log('Logging into FTP Client..');
