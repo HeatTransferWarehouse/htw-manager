@@ -27,9 +27,9 @@ function Sanmar () {
   const SanmarNotify = useSelector(store => store.item.sanmar);
   const sanmarTracking = useSelector(store => store.item.tracking);
   const [date, setDate] = useState();
-  const [host, setHost] = useState('');
-  const [user, setUser] = useState('');
-  const [password, setPassword] = useState('');
+  const [host, setHost] = useState('ftp.sanmar.com');
+  const [user, setUser] = useState('175733');
+  const [password, setPassword] = useState('Sanmar33');
   const dispatch = useDispatch();
   let sanmarDisplay = <h4></h4>
 
@@ -62,7 +62,15 @@ async function download() {
         tracking: item[15],
         method: item[17],
       };
+      let canPush = true;
+      for (const p of trackingPush) {
+        if (pusher.tracking === p.tracking) {
+          canPush = false;
+        }
+      }
+      if (canPush === true) {
       trackingPush.push(pusher);
+      }
     }
   }
   dispatch({
