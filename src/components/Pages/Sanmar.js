@@ -35,6 +35,7 @@ function Sanmar () {
 
 
 async function connectFtp() {
+    swal('Downloading Info!');
       dispatch({
         type: "CONNECT_FTP",
         payload: {

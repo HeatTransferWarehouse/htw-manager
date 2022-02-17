@@ -182,7 +182,7 @@ router.put("/ftp", async function (req, res) {
         });
         stream.pipe(res);
 
-        stream.on('end', res.end);
+        stream.on('end', function(){ res.end() });
       });
     });
     //res.send('YES').status(201);
