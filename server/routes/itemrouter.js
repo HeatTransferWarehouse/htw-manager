@@ -4,6 +4,15 @@ const router = express.Router();
 const axios = require("axios");
 const Client = require('ftp');
 const moment = require('moment');
+const sgMail = require("@sendgrid/mail");
+sgMail.setApiKey(process.env.SENDGRID_API_KEY);
+
+let config = {
+  headers: {
+    "X-Auth-Client": process.env.BG_AUTH_CLIENT,
+    "X-Auth-Token": process.env.BG_AUTH_TOKEN,
+  },
+};
 
 
 async function updatePrices(bc, sanmar) {
@@ -191,6 +200,112 @@ router.put("/ftp", async function (req, res) {
     res.send('NO').status(500);
   }
 
+});
+
+router.put("/email", async function (req, res) {
+  console.log("We are sending an email..");
+  const order = req.body.order;
+  const tracking = req.body.tracking;
+  let response = [];
+
+  try {
+    response = await axios
+      .get(
+        `https://api.bigcommerce.com/stores/et4qthkygq/v2/orders/${order}`,
+        config
+      )
+  } catch (err) {
+    console.log('Error on get order: ', err);
+    res.sendStatus(500);
+  }
+
+  try {
+            const email = response.data.billing_address.email;
+            let first_name = response.data.billing_address.first_name;
+            console.log(email, first_name);
+            let titleString = `
+            <div>
+              <img
+                src="https://cdn11.bigcommerce.com/s-et4qthkygq/product_images/uploaded_images/custom-transfers-email-banner-01.png?t=1623860610&_ga=2.54689192.22532363.1623675567-885995832.1599745631"
+                width="100%"
+                alt=""
+              />
+            </div>
+            <br>
+            <div style="color:black; padding-left: 30px; background-color:#DCDCDC; font-family:Arial Narrow, sans-serif; opacity:0.5;">
+              <i>New Message from the Art Department below</i>
+            </div>
+            <br>
+            <table>
+              <tr>
+                <td style="width: 20%; border: 1px solid white; padding: 5px; margin: 5px; background-color: #006bd6; color: white;">Hi ${first_name}!</td>
+              </tr>
+            </table>
+            <br>
+            <br>
+            <table style="border-collapse: collapse; font-family:Arial Narrow, sans-serif;">
+              <tr>
+                <td style="width: 20%; border: 1px solid white; padding: 5px; margin: 5px; background-color: #006bd6; color: white;">Order number:</td>
+                <td style="width: 80%; border: 1px solid #909090; padding: 5px; margin: 5px;"> ${order} </td>
+              </tr>
+            </table>
+            <br>
+            <i>Here are your Tracking Numbers: </i>
+            <br>
+            <br>`;
+            let infoArray = [];
+            for (const item of tracking) {
+            let info = `
+            <div>
+            <table style="border-collapse: collapse; font-family:Arial Narrow, sans-serif;">
+              <tr>
+                <td style="width: 20%; border: 1px solid white; padding: 5px; margin: 5px; background-color: #006bd6; color: white;">Tracking #:</td>
+                <td style="width: 80%; border: 1px solid #909090; padding: 5px; margin: 5px;"> ${item} </td>
+              </tr>
+            </table>
+            </div>`
+
+            infoArray.push(info);
+            }
+            let newArray = infoArray.join("");
+            let locationInfo = 'Heat Transfer Warehouse Company. 1501 21st Avenue North Fargo, North Dakota 58102';
+            let lastString = `<br><br><br><div style="color:#DCDCDC; background-color:#DCDCDC; font-family:Arial Narrow, sans-serif; opacity:0.5;">${locationInfo}</div>`;
+            let final =
+              `<html>` +
+              `<div>` +
+              titleString +
+              newArray +
+              lastString +
+              `</div>` +
+              `</html>`;
+            const msg = {
+              "personalizations": [
+                {
+                  "to": [
+                    //send to the customers email address
+                    {
+                      "email": "aj@heattransferwarehouse.com",
+                    },
+                  ],
+                },
+              ],
+              "from": "Transfers@heattransferwarehouse.com", 
+              "subject": `Information on your recent clothing order from Heat Transfer Warehouse ${order}`,
+              "html": `${final}`,
+            };
+            await sgMail
+              .send(msg)
+              .then(() => {
+                console.log('Email sent')
+              })
+              .catch((error) => {
+                console.error(error)
+              })
+  
+          } catch (err) {
+            console.log('Error on send email: ', err);
+            res.sendStatus(500);
+          }
 });
 
 router.get("/getitems", (req, res) => {

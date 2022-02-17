@@ -18,6 +18,7 @@
     "@mui/lab": "^5.0.0-alpha.69",
     "@mui/material": "^5.4.2",
     "@mui/styled-engine": "^5.4.2",
+    "@sendgrid/mail": "^7.6.1",
     "@terrestris/react-geo": "^15.3.0",
     "antd": "^4.17.2",
     "async": "^3.2.0",

@@ -81,6 +81,15 @@ function* connectFtp(action) {
   }
 }
 
+function* sendEmail(action) {
+  try {
+    yield axios.put(`/api/item/email`, action.payload);
+  } catch (error) {
+    console.log("Error with sending email:", error);
+  }
+}
+
+
 //this takes all of the Saga functions and dispatches them
 function* itemSaga() {
     yield takeLatest('GET_ITEM_LIST', getitemlist);
@@ -90,6 +99,7 @@ function* itemSaga() {
     yield takeLatest('RESET_DATA', resetData);
     yield takeLatest('UPDATE_PRICES', updatePrices);
     yield takeLatest('CONNECT_FTP', connectFtp);
+    yield takeLatest('SEND_EMAIL', sendEmail);
 }
 
 export default itemSaga;

@@ -26,6 +26,7 @@ function Sanmar () {
   const BcItems = useSelector(store => store.item.bcClothinglist);
   const SanmarNotify = useSelector(store => store.item.sanmar);
   const sanmarTracking = useSelector(store => store.item.tracking);
+  const [order, setOrder] = useState();
   const [date, setDate] = useState();
   const [host, setHost] = useState('ftp.sanmar.com');
   const [user, setUser] = useState('175733');
@@ -49,6 +50,29 @@ async function connectFtp() {
         }
       });
     }
+}
+
+async function sendEmail() {
+  let found = false;
+  const tracking = [];
+  for (const item of sanmarTracking) {
+    if (item.order === order) {
+      found = true;
+      tracking.push(item.tracking);
+    }
+  }
+  if (found === true) {
+    swal('Sending Email!');
+    dispatch({
+      type: "SEND_EMAIL",
+      payload: {
+        order: order,
+        tracking: tracking,
+      }
+    });
+  } else {
+    swal('Could not find Order! Make sure to download Orders first!');
+  }
 }
 
 async function download() {
@@ -142,6 +166,7 @@ const updatePrices = () => {
       <br></br>
       <section className="ftp-form">
         <div>
+          <div>
             <h1>SanMar Orders</h1>
             <h4>Host: </h4><input value={host} placeholder="www.example.com" onChange={(e) => {setHost(e.target.value)}}></input>
             <h4>Username: </h4><input value={user} placeholder="1231234" onChange={(e) => {setUser(e.target.value)}}></input>
@@ -162,11 +187,25 @@ const updatePrices = () => {
             </LocalizationProvider>
             <br />
             <Button onClick={() => {connectFtp()}}>Download Recent Sanmar Orders</Button>
-        </div>
-        <br />
-        <div>
+          </div>
+          <br />
+          <div>
           {sanmarDisplay}
+          </div>
         </div>
+        <div>
+          <br />
+          <br />
+          <br />
+          <br />
+          <br />
+          <br />
+          <h4>Order #: </h4><input value={order} placeholder="3201122" onChange={(e) => {setOrder(e.target.value)}}></input>
+         <div>
+          <Button onClick={() => {sendEmail()}}>Send Email</Button>
+         </div>
+        </div>
+        </section>
         <div className="tracking-data">
             <MUITable
               title={"Sanmar Tracking"}
@@ -188,7 +227,6 @@ const updatePrices = () => {
               options={SanmarOptions}
               />
         </div>
-      </section>
       <br></br>
       <br></br>
       <section className="sanmar-form">

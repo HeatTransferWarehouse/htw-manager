@@ -146,6 +146,8 @@ form {
 
 .ftp-form {
     text-align: center;
+    display: flex;
+    justify-content: center;
 }
 
 .ol-control {
