@@ -36,6 +36,9 @@ function Sanmar () {
 
 async function connectFtp() {
     swal('Downloading Info!');
+    if (host !== 'ftp.sanmar.com' || user !== '175733' || password !== 'Sanmar33') {
+      swal('Incorrect Login Info!');
+    } else {
       dispatch({
         type: "CONNECT_FTP",
         payload: {
@@ -45,6 +48,7 @@ async function connectFtp() {
           date: date,
         }
       });
+    }
 }
 
 async function download() {
