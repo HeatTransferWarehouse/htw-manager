@@ -7,6 +7,16 @@ const moment = require('moment');
 const sgMail = require("@sendgrid/mail");
 sgMail.setApiKey(process.env.SENDGRID_API_KEY);
 
+const {
+  updateNote,
+} = require('./Capture/api');
+
+const createNote = async (e) => {
+  console.log('Updating Note on BP...');
+  await updateNote(e);
+  console.log('Note Updated..');
+};
+
 let config = {
   headers: {
     "X-Auth-Client": process.env.BG_AUTH_CLIENT,
@@ -226,14 +236,14 @@ router.put("/email", async function (req, res) {
             let titleString = `
             <div>
               <img
-                src="https://cdn11.bigcommerce.com/s-et4qthkygq/product_images/uploaded_images/custom-transfers-email-banner-01.png?t=1623860610&_ga=2.54689192.22532363.1623675567-885995832.1599745631"
+                src="https://cdn11.bigcommerce.com/s-et4qthkygq/product_images/uploaded_images/clothing-order.png?t=1645193353"
                 width="100%"
                 alt=""
               />
             </div>
             <br>
             <div style="color:black; padding-left: 30px; background-color:#DCDCDC; font-family:Arial Narrow, sans-serif; opacity:0.5;">
-              <i>New Message from the Art Department below</i>
+              <i>Thank you for your order from Heat Transfer Warehouse!</i>
             </div>
             <br>
             <table>
@@ -252,6 +262,7 @@ router.put("/email", async function (req, res) {
             <br>
             <i>Here are your Tracking Numbers: </i>
             <br>
+            <p><strong>NOTE: </strong>Tracking Numbers are from UPS!</p>
             <br>`;
             let infoArray = [];
             for (const item of tracking) {
@@ -260,7 +271,7 @@ router.put("/email", async function (req, res) {
             <table style="border-collapse: collapse; font-family:Arial Narrow, sans-serif;">
               <tr>
                 <td style="width: 20%; border: 1px solid white; padding: 5px; margin: 5px; background-color: #006bd6; color: white;">Tracking #:</td>
-                <td style="width: 80%; border: 1px solid #909090; padding: 5px; margin: 5px;"> ${item} </td>
+                <td style="width: 80%; border: 1px solid #909090; padding: 5px; margin: 5px;"><a href="https://www.ups.com/track?loc=null&tracknum=${item}&requester=WT/trackdetails"> ${item} </a></td>
               </tr>
             </table>
             </div>`
@@ -284,13 +295,13 @@ router.put("/email", async function (req, res) {
                   "to": [
                     //send to the customers email address
                     {
-                      "email": "aj@heattransferwarehouse.com",
+                      "email": `tre@heattransferwarehouse.com`,
                     },
                   ],
                 },
               ],
               "from": "Transfers@heattransferwarehouse.com", 
-              "subject": `Information on your recent clothing order from Heat Transfer Warehouse ${order}`,
+              "subject": `Your clothing order from Heat Transfer Warehouse: ${order}`,
               "html": `${final}`,
             };
             await sgMail
@@ -306,6 +317,13 @@ router.put("/email", async function (req, res) {
             console.log('Error on send email: ', err);
             res.sendStatus(500);
           }
+        
+  try {
+    await createNote(order);
+  } catch (err) {
+    console.log('Error on add note: ', err);
+    res.sendStatus(500);
+  }
 });
 
 router.get("/getitems", (req, res) => {
