@@ -19,7 +19,7 @@ const axiosOptionsBody = (method, resourcePath, body) => {
     const HEADERS = {
         'brightpearl-app-ref': process.env.BRIGHTPEARL_APP_REF,
         'brightpearl-account-token': process.env.BRIGHTPEARL_ACCOUNT_TOKEN,
-        body: body,
+        'body': body,
     };
     return {
         method,
