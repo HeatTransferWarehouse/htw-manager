@@ -9,6 +9,7 @@ sgMail.setApiKey(process.env.SENDGRID_API_KEY);
 
 const {
   updateNote,
+  getSO,
 } = require('./Capture/api');
 
 const createNote = async (e) => {
@@ -319,7 +320,9 @@ router.put("/email", async function (req, res) {
           }
         
   try {
-    await createNote(order);
+    const so = await getSO(order);
+    console.log(so.response.results);
+    await createNote(so.response.results.salesOrderId);
   } catch (err) {
     console.log('Error on add note: ', err);
     res.sendStatus(500);

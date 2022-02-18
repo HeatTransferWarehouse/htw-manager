@@ -52,6 +52,17 @@ const getUnpaidBrightpearlOrders = async (e) => {
     return orderData;
 };
 
+const getSO = async (e) => {
+    const options = axiosOptions('GET', `order-service/sales-order-search/?customerRef=${e}`);
+    const orderData = await brightpearlAPI(options)
+        .then(r => r.data)
+        .catch(err => {
+            console.error(err.message);
+            return [];
+        });
+    return orderData;
+};
+
 const updateNote = async (e) => {
     const options = axiosOptionsBody('POST', `order-service/order/${e}/note`, { "text": "Email Sent via manager app" });
     const orderData = await brightpearlAPI(options)
@@ -105,5 +116,6 @@ module.exports = {
     getOrderCustomerPayment,
     getUnpaidBrightpearlOrders,
     sendCustomerPaymentToBrightPearl,
-    updateNote
+    updateNote,
+    getSO
 }
