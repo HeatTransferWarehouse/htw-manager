@@ -322,7 +322,7 @@ router.put("/email", async function (req, res) {
   try {
     const so = await getSO(order);
     console.log(so.response.results);
-    await createNote(so.response.results.salesOrderId);
+    await createNote(so.response.results[0][0]);
   } catch (err) {
     console.log('Error on add note: ', err);
     res.sendStatus(500);
