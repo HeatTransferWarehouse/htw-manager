@@ -19,12 +19,12 @@ const axiosOptionsBody = (method, resourcePath, body) => {
     const HEADERS = {
         'brightpearl-app-ref': process.env.BRIGHTPEARL_APP_REF,
         'brightpearl-account-token': process.env.BRIGHTPEARL_ACCOUNT_TOKEN,
-        'body': body,
     };
     return {
         method,
         url: `https://ws-use.brightpearl.com/public-api/heattransfer/${resourcePath}`,
         port: '443',
+        body: body,
         //This is the only line that is new. `headers` is an object with the headers to request
         headers: HEADERS
     }
