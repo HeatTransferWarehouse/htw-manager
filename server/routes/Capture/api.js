@@ -50,7 +50,7 @@ const getSO = async (e) => {
 
 const updateNote = async (e) => {
     const options = axiosOptions('POST', `order-service/order/${e}/note`);
-    const on = { "text": "Email Sent via manager app" };
+    const on = { "text": "Email Sent via manager app. https://manager.heattransferwarehouse.com" };
     options.data = on;
     const orderData = await brightpearlAPI(options)
         .then(r => r.data)

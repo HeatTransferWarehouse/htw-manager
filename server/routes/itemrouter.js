@@ -80,7 +80,6 @@ async function getSanmarId(product) {
   return items;
 }
 
-
 async function eachSanmarItem(product, item, vars) {
   let searchedName = item.name.search(`${product.name}`);
   let preNewPrice = item.price * 1.4;
@@ -133,7 +132,6 @@ async function eachSanmarItem(product, item, vars) {
       //console.log('No Variant Found to sync ID!');
     }
 }
-
 
 async function getFile(date) {
 
@@ -237,21 +235,15 @@ router.put("/email", async function (req, res) {
             let titleString = `
             <div>
               <img
-                src="https://cdn11.bigcommerce.com/s-et4qthkygq/product_images/uploaded_images/clothing-order.png?t=1645193353"
+                src="https://cdn11.bigcommerce.com/s-et4qthkygq/product_images/uploaded_images/clothing-order-2.png?t=1645461029"
                 width="100%"
                 alt=""
               />
             </div>
             <br>
-            <div style="color:black; padding-left: 30px; background-color:#DCDCDC; font-family:Arial Narrow, sans-serif; opacity:0.5;">
-              <i>Thank you for your order from Heat Transfer Warehouse!</i>
-            </div>
             <br>
-            <table>
-              <tr>
-                <td style="width: 20%; border: 1px solid white; padding: 5px; margin: 5px; background-color: #006bd6; color: white;">Hi ${first_name}!</td>
-              </tr>
-            </table>
+              <p><strong>Hi ${first_name}!</strong></p>
+              <p>Thank you for your order from Heat Transfer Warehouse!</p>
             <br>
             <br>
             <table style="border-collapse: collapse; font-family:Arial Narrow, sans-serif;">
@@ -296,7 +288,7 @@ router.put("/email", async function (req, res) {
                   "to": [
                     //send to the customers email address
                     {
-                      "email": `kirk@heattransferwarehouse.com`,
+                      "email": `${email}`,
                     },
                   ],
                 },
