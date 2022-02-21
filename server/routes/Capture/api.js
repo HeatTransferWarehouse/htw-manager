@@ -1,6 +1,23 @@
 require('dotenv').config();
 const axios = require('axios');
 
+let config = {
+    headers: {
+        'brightpearl-app-ref': process.env.BRIGHTPEARL_APP_REF,
+        'brightpearl-account-token': process.env.BRIGHTPEARL_ACCOUNT_TOKEN,
+    }
+};
+
+let configBody = {
+    headers: {
+        'brightpearl-app-ref': process.env.BRIGHTPEARL_APP_REF,
+        'brightpearl-account-token': process.env.BRIGHTPEARL_ACCOUNT_TOKEN,
+    },
+    body: {
+      "text": "Email Sent via manager app"
+    }
+};
+
 const axiosOptions = (method, resourcePath) => {
     const HEADERS = {
         'brightpearl-app-ref': process.env.BRIGHTPEARL_APP_REF,
@@ -15,8 +32,7 @@ const axiosOptions = (method, resourcePath) => {
     }
 };
 
-const axiosOptionsBody = (method, resourcePath, body) => {
-    console.log(body);
+const axiosOptionsBody = (method, resourcePath) => {
     const HEADERS = {
         'brightpearl-app-ref': process.env.BRIGHTPEARL_APP_REF,
         'brightpearl-account-token': process.env.BRIGHTPEARL_ACCOUNT_TOKEN,
@@ -26,8 +42,7 @@ const axiosOptionsBody = (method, resourcePath, body) => {
         url: `https://ws-use.brightpearl.com/public-api/heattransfer/${resourcePath}`,
         port: '443',
         //This is the only line that is new. `headers` is an object with the headers to request
-        headers: HEADERS,
-        body: body
+        headers: HEADERS
     }
 };
 
@@ -65,7 +80,9 @@ const getSO = async (e) => {
 };
 
 const updateNote = async (e) => {
-    const options = axiosOptionsBody('POST', `order-service/order/${e}/note`, { "text": "Email Sent via manager app" });
+    const options = axiosOptions('POST', `order-service/order/${e}/note`);
+    const on = { "text": "Email Sent via manager app" };
+    options.data = on;
     const orderData = await brightpearlAPI(options)
         .then(r => r.data)
         .catch(err => {
