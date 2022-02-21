@@ -230,6 +230,7 @@ router.put("/email", async function (req, res) {
 
   try {
             const email = response.data.billing_address.email;
+            //const email = 'tre@heattransferwarehouse.com';
             let first_name = response.data.billing_address.first_name;
             console.log(email, first_name);
             let titleString = `
@@ -334,6 +335,50 @@ router.get("/getitems", (req, res) => {
       console.log(`Error on item query ${error}`);
       res.sendStatus(500);
     });
+});
+
+router.get("/getsanmar", (req, res) => {
+  console.log("We are about to get the sanmar list");
+
+  const queryText = `select * from "sanmar" ORDER BY id DESC`;
+  pool
+    .query(queryText)
+    .then((selectResult) => {
+      res.send(selectResult.rows);
+    })
+    .catch((error) => {
+      console.log(`Error on item query ${error}`);
+      res.sendStatus(500);
+    });
+});
+
+router.post("/addOrder", async function (req, res) {
+  console.log("We are about to add an order to sanmar db");
+  const o = req.body.order;
+  console.log(o);
+
+try {
+  const queryText = `INSERT INTO "sanmar" (ref) VALUES ($1);`;
+  await pool
+    .query(queryText, [o])
+} catch (err) {
+  console.log('Error on add order: ', err);
+  return res.status(500);
+}
+
+  console.log("We are about to get the sanmar list");
+
+  const queryText = `select * from "sanmar" ORDER BY id DESC`;
+  pool
+    .query(queryText)
+    .then((selectResult) => {
+      res.send(selectResult.rows);
+    })
+    .catch((error) => {
+      console.log(`Error on item query ${error}`);
+      res.sendStatus(500);
+    });
+
 });
 
 router.post("/items", async function (req, res) {

@@ -10,3 +10,9 @@ CREATE TABLE "item"
 	"sales" varchar(255),
 	"date" date DEFAULT NOW()
 );
+
+CREATE TABLE "sanmar"
+(
+	"id" serial NOT NULL,
+	"ref" varchar(255) NOT NULL
+);

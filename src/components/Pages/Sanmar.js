@@ -1,4 +1,4 @@
-import React, {useState} from "react";
+import React, {useState, useEffect} from "react";
 import { useSelector, useDispatch } from 'react-redux';
 import './Main.css'
 import MUITable from "mui-datatables";
@@ -22,10 +22,17 @@ function Sanmar () {
     filterType: 'multiselect',
   }
 
+  useEffect(() => {
+    dispatch({
+      type: "GET_SANMAR_LIST",
+    });
+  }, [])
+
   const SanmarItems = useSelector(store => store.item.clothinglist);
   const BcItems = useSelector(store => store.item.bcClothinglist);
   const SanmarNotify = useSelector(store => store.item.sanmar);
   const sanmarTracking = useSelector(store => store.item.tracking);
+  const sanmarList = useSelector(store => store.item.sanmarlist);
   const [order, setOrder] = useState();
   const [date, setDate] = useState();
   const [host, setHost] = useState('ftp.sanmar.com');
@@ -53,6 +60,7 @@ async function connectFtp() {
 }
 
 async function sendEmail() {
+  updateList();
   let found = false;
   const tracking = [];
   for (const item of sanmarTracking) {
@@ -87,12 +95,18 @@ async function download() {
         method: item[17],
       };
       let canPush = true;
+      let alreadySent = false;
       for (const p of trackingPush) {
         if (pusher.tracking === p.tracking) {
           canPush = false;
         }
       }
-      if (canPush === true) {
+      for (const s of sanmarList) {
+        if (pusher.order === s.ref) {
+          alreadySent = true;
+        }
+      }
+      if (canPush === true && alreadySent === false) {
       trackingPush.push(pusher);
       }
     }
@@ -120,6 +134,49 @@ const updatePrices = () => {
   } else {
     swal('Import some prices first!');
   }
+}
+
+const updateList = (o) => {
+  const pusher = [];
+  for (const t of sanmarTracking) {
+    if (o) {
+      if (t.order === order || t.order === o) {
+    } else {
+      const push = {
+        order: t.order,
+        tracking: t.tracking,
+        method: t.method,
+      }
+      pusher.push(push);
+    }
+   } else {
+    if (t.order === order) {
+    } else {
+      const push = {
+        order: t.order,
+        tracking: t.tracking,
+        method: t.method,
+      }
+      pusher.push(push);
+    }
+   }
+  }
+  console.log(pusher);
+  dispatch({
+    type: "UPDATE_TRACKING",
+    payload: pusher,
+  });
+}
+
+const addSent = (o) => {
+  console.log(o);
+  dispatch({
+    type: "ADD_SENT",
+    payload: {
+      order: o
+    }
+  });
+  updateList(o);
 }
 
   const tracking = sanmarTracking.map((item) => [
@@ -222,7 +279,29 @@ const updatePrices = () => {
                     filter: false,
                   }
                 },
-                { name: "Shipping Method" }
+                { name: "Shipping Method" },
+                {
+                  name: "",
+                  options: {
+                    filter: false,
+                    sort: false,
+                    empty: true,
+                    customBodyRenderLite: (dataIndex, rowIndex) => {
+                      return (
+                        <Button
+                          variant="contained"
+                          onClick = {() => {
+                            const o = tracking[dataIndex][0];
+                            addSent(o);
+                          }
+                        }
+                        >
+                        Mark Sent
+                        </Button>
+                      );
+                    },
+                  },
+                },
               ]}
               options={SanmarOptions}
               />

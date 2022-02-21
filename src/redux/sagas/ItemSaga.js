@@ -22,6 +22,18 @@ function* getitemlist(action) {
   }
 }
 
+function* getsanmarlist(action) {
+  try {
+    const response = yield axios.get(`/api/item/getsanmar`);
+    yield put({
+      type: "SET_SANMAR_ITEMS",
+      payload: response.data,
+    });
+  } catch (error) {
+    console.log("Error with getting the list of items:", error);
+  }
+}
+
 function* addItem(action) {
   try {
     yield axios.post(`/api/item/items`, action.payload);
@@ -83,16 +95,35 @@ function* connectFtp(action) {
 
 function* sendEmail(action) {
   try {
+    const response = yield axios.post(`/api/item/addOrder`, action.payload);
+    yield put({
+      type: "SET_SANMAR_ITEMS",
+      payload: response.data,
+    });
     yield axios.put(`/api/item/email`, action.payload);
   } catch (error) {
     console.log("Error with sending email:", error);
   }
 }
 
+function* addSent(action) {
+  try {
+    const response = yield axios.post(`/api/item/addOrder`, action.payload);
+    yield put({
+      type: "SET_SANMAR_ITEMS",
+      payload: response.data,
+    });
+  } catch (error) {
+    console.log("Error with adding order:", error);
+  }
+}
+
+
 
 //this takes all of the Saga functions and dispatches them
 function* itemSaga() {
     yield takeLatest('GET_ITEM_LIST', getitemlist);
+    yield takeLatest('GET_SANMAR_LIST', getsanmarlist);
     yield takeLatest('ADD_ITEM', addItem);
     yield takeLatest('DELETE_ITEM', deleteItem);
     yield takeLatest('CAPTURE_ORDERS', captureOrders);
@@ -100,6 +131,7 @@ function* itemSaga() {
     yield takeLatest('UPDATE_PRICES', updatePrices);
     yield takeLatest('CONNECT_FTP', connectFtp);
     yield takeLatest('SEND_EMAIL', sendEmail);
+    yield takeLatest('ADD_SENT', addSent);
 }
 
 export default itemSaga;
