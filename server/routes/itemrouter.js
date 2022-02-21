@@ -296,7 +296,7 @@ router.put("/email", async function (req, res) {
                   "to": [
                     //send to the customers email address
                     {
-                      "email": `tre@heattransferwarehouse.com`,
+                      "email": `kirk@heattransferwarehouse.com`,
                     },
                   ],
                 },
