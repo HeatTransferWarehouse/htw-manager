@@ -170,19 +170,38 @@ const updateList = (o) => {
 
 const addSent = (o) => {
   console.log(o);
+  let found = false;
+  const tracking = [];
+  for (const item of sanmarTracking) {
+    if (item.order === o) {
+      found = true;
+      tracking.push(item.tracking);
+    }
+  }
+  if (found === true) {
+    swal('Manually marking this order as sent!');
   dispatch({
     type: "ADD_SENT",
     payload: {
-      order: o
+      order: o,
+      tracking: tracking,
     }
   });
   updateList(o);
+  } else {
+    swal('Something went wrong! Try again')
+  }
 }
 
   const tracking = sanmarTracking.map((item) => [
     item.order,
     item.tracking,
     item.method,
+  ]);
+
+  const emails = sanmarList.map((item) => [
+      item.ref,
+      item.tracking,
   ]);
 
   const sanmarPrices = SanmarItems.map((item) => [
@@ -301,6 +320,26 @@ const addSent = (o) => {
                       );
                     },
                   },
+                },
+              ]}
+              options={SanmarOptions}
+              />
+        </div>
+        <div className="tracking-data">
+            <MUITable
+              title={"Sent Emails"}
+              data={emails}
+              columns={[
+                //names the columns found on MUI table
+                { name: "Order #",
+                  options: { 
+                    filter: false,
+                  }
+                },
+                { name: "Tracking #",
+                  options: {
+                    filter: false,
+                  }
                 },
               ]}
               options={SanmarOptions}

@@ -14,5 +14,6 @@ CREATE TABLE "item"
 CREATE TABLE "sanmar"
 (
 	"id" serial NOT NULL,
-	"ref" varchar(255) NOT NULL
+	"ref" varchar(255) NOT NULL,
+	"tracking" varchar(255) NOT NULL
 );

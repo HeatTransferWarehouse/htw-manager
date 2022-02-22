@@ -355,12 +355,13 @@ router.get("/getsanmar", (req, res) => {
 router.post("/addOrder", async function (req, res) {
   console.log("We are about to add an order to sanmar db");
   const o = req.body.order;
-  console.log(o);
+  const tracking = req.body.tracking;
+  console.log(o, tracking);
 
 try {
-  const queryText = `INSERT INTO "sanmar" (ref) VALUES ($1);`;
+  const queryText = `INSERT INTO "sanmar" (ref, tracking) VALUES ($1, $2);`;
   await pool
-    .query(queryText, [o])
+    .query(queryText, [o, tracking])
 } catch (err) {
   console.log('Error on add order: ', err);
   return res.status(500);
