@@ -294,7 +294,7 @@ router.put("/email", async function (req, res) {
                   ],
                 },
               ],
-              "from": "Transfers@heattransferwarehouse.com", 
+              "from": "sales@heattransferwarehouse.com", 
               "subject": `Your clothing order from Heat Transfer Warehouse: ${order}`,
               "html": `${final}`,
             };
