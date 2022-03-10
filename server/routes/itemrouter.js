@@ -30,7 +30,7 @@ async function updatePrices(bc, sanmar) {
   try {
       if (bc[0]) {
         for (const item of bc) {
-          console.log(`Updating Product with SKU: ${item.sku}`);
+          console.log(`Updating Product with ID: ${item.sku}`);
           await eachPrice(item, sanmar);
         }
         console.log('DONE');
@@ -70,7 +70,7 @@ async function getSanmarId(product) {
   try {
     items = await axios
       .get(
-        `https://api.bigcommerce.com/stores/et4qthkygq/v3/catalog/products/${product.sku}/variants`,
+        `https://api.bigcommerce.com/stores/et4qthkygq/v3/catalog/products/${product.sku}/variants?limit=10000`,
         config
       )
   } catch (err) {

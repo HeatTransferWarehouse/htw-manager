@@ -399,7 +399,7 @@ const addSent = (o) => {
                     filter: false,
                   }
                 },
-                { name: "SKU",
+                { name: "ID",
                   options: {
                     filter: false,
                   }
