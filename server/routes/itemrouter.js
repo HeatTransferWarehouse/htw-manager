@@ -64,7 +64,7 @@ async function getSanmarId(product) {
     }
   };
 
-  let items;
+  let items = [];
   let items1;
   let items2;
   let items3;
