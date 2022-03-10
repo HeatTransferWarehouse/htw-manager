@@ -70,7 +70,7 @@ async function getSanmarId(product) {
   try {
     items = await axios
       .get(
-        `https://api.bigcommerce.com/stores/et4qthkygq/v3/catalog/products/${product.sku}/variants?limit=1000`,
+        `https://api.bigcommerce.com/stores/et4qthkygq/v3/catalog/products/${product.sku}/variants?limit=600`,
         config
       )
   } catch (err) {
