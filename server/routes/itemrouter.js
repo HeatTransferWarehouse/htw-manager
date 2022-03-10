@@ -46,8 +46,7 @@ async function updatePrices(bc, sanmar) {
 
 async function eachPrice(product, sanmar) {
 
-      const sanmarIds = await getSanmarId(product);
-      const variants = sanmarIds.data.data;
+      const variants = await getSanmarId(product);
 
       for (const item of sanmar) {
 
@@ -66,15 +65,95 @@ async function getSanmarId(product) {
   };
 
   let items;
+  let items1;
+  let items2;
+  let items3;
+  let items4;
+  let items5;
+  let items6;
 
   try {
-    items = await axios
+    items1 = await axios
       .get(
-        `https://api.bigcommerce.com/stores/et4qthkygq/v3/catalog/products/${product.sku}/variants?limit=600`,
+        `https://api.bigcommerce.com/stores/et4qthkygq/v3/catalog/products/${product.sku}/variants?limit=100?page=1`,
         config
       )
   } catch (err) {
-    console.log('Error on Get Items: ', err);
+    console.log('Error on Get Items1: ', err);
+  }
+
+  try {
+    items2 = await axios
+      .get(
+        `https://api.bigcommerce.com/stores/et4qthkygq/v3/catalog/products/${product.sku}/variants?limit=100?page=2`,
+        config
+      )
+  } catch (err) {
+    console.log('Error on Get Items2: ', err);
+  }
+
+  try {
+    items3 = await axios
+      .get(
+        `https://api.bigcommerce.com/stores/et4qthkygq/v3/catalog/products/${product.sku}/variants?limit=100?page=3`,
+        config
+      )
+  } catch (err) {
+    console.log('Error on Get Items3: ', err);
+  }
+
+  try {
+    items4 = await axios
+      .get(
+        `https://api.bigcommerce.com/stores/et4qthkygq/v3/catalog/products/${product.sku}/variants?limit=100?page=4`,
+        config
+      )
+  } catch (err) {
+    console.log('Error on Get Items4: ', err);
+  }
+
+  try {
+    items5 = await axios
+      .get(
+        `https://api.bigcommerce.com/stores/et4qthkygq/v3/catalog/products/${product.sku}/variants?limit=100?page=5`,
+        config
+      )
+  } catch (err) {
+    console.log('Error on Get Items5: ', err);
+  }
+
+  try {
+    items6 = await axios
+      .get(
+        `https://api.bigcommerce.com/stores/et4qthkygq/v3/catalog/products/${product.sku}/variants?limit=100?page=6`,
+        config
+      )
+  } catch (err) {
+    console.log('Error on Get Items6: ', err);
+  }
+
+  for (const item of items1.data.data) {
+    items.push(item);
+  }
+
+  for (const item of items2.data.data) {
+    items.push(item);
+  }
+
+  for (const item of items3.data.data) {
+    items.push(item);
+  }
+
+  for (const item of items4.data.data) {
+    items.push(item);
+  }
+
+  for (const item of items5.data.data) {
+    items.push(item);
+  }
+
+  for (const item of items6.data.data) {
+    items.push(item);
   }
 
   return items;
