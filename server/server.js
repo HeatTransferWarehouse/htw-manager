@@ -13,7 +13,7 @@ const captureRouter = require('./routes/index');
 
 
 
-//change this to push update 2
+//change this to push update 1
 
 app.use('/api/item', itemRouter);
 app.use('/api/capture', captureRouter);
