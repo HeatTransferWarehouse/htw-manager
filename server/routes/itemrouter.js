@@ -30,7 +30,7 @@ async function updatePrices(bc, sanmar) {
   try {
       if (bc[0]) {
         for (const item of bc) {
-          if (item.sku > 5960) {
+          if (item.sku > 0) {
           console.log(`Updating Product with ID: ${item.sku}`);
           await eachPrice(item, sanmar);
           }
@@ -77,7 +77,7 @@ async function getSanmarId(product) {
   try {
     items1 = await axios
       .get(
-        `https://api.bigcommerce.com/stores/et4qthkygq/v3/catalog/products/${product.sku}/variants?limit=100?page=1`,
+        `https://api.bigcommerce.com/stores/et4qthkygq/v3/catalog/products/${product.sku}/variants?limit=100&page=1`,
         config
       )
   } catch (err) {
@@ -87,7 +87,7 @@ async function getSanmarId(product) {
   try {
     items2 = await axios
       .get(
-        `https://api.bigcommerce.com/stores/et4qthkygq/v3/catalog/products/${product.sku}/variants?limit=100?page=2`,
+        `https://api.bigcommerce.com/stores/et4qthkygq/v3/catalog/products/${product.sku}/variants?limit=100&page=2`,
         config
       )
   } catch (err) {
@@ -97,7 +97,7 @@ async function getSanmarId(product) {
   try {
     items3 = await axios
       .get(
-        `https://api.bigcommerce.com/stores/et4qthkygq/v3/catalog/products/${product.sku}/variants?limit=100?page=3`,
+        `https://api.bigcommerce.com/stores/et4qthkygq/v3/catalog/products/${product.sku}/variants?limit=100&page=3`,
         config
       )
   } catch (err) {
@@ -107,7 +107,7 @@ async function getSanmarId(product) {
   try {
     items4 = await axios
       .get(
-        `https://api.bigcommerce.com/stores/et4qthkygq/v3/catalog/products/${product.sku}/variants?limit=100?page=4`,
+        `https://api.bigcommerce.com/stores/et4qthkygq/v3/catalog/products/${product.sku}/variants?limit=100&page=4`,
         config
       )
   } catch (err) {
@@ -117,7 +117,7 @@ async function getSanmarId(product) {
   try {
     items5 = await axios
       .get(
-        `https://api.bigcommerce.com/stores/et4qthkygq/v3/catalog/products/${product.sku}/variants?limit=100?page=5`,
+        `https://api.bigcommerce.com/stores/et4qthkygq/v3/catalog/products/${product.sku}/variants?limit=100&page=5`,
         config
       )
   } catch (err) {
@@ -127,7 +127,7 @@ async function getSanmarId(product) {
   try {
     items6 = await axios
       .get(
-        `https://api.bigcommerce.com/stores/et4qthkygq/v3/catalog/products/${product.sku}/variants?limit=100?page=6`,
+        `https://api.bigcommerce.com/stores/et4qthkygq/v3/catalog/products/${product.sku}/variants?limit=100&page=6`,
         config
       )
   } catch (err) {
