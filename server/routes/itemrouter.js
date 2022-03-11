@@ -39,10 +39,10 @@ async function updatePrices(bc, sanmar) {
   try {
       if (bc[0]) {
         for (const item of bc) {
-          if (item.sku > 5708) {
+          if (item.sku > 5719) {
           console.log(`Updating Product with ID: ${item.sku}`);
           await eachPrice(item, sanmar);
-          await timeoutPromise(500);
+          await timeoutPromise(250);
           }
         }
         console.log('DONE');
@@ -61,9 +61,9 @@ async function eachPrice(product, sanmar) {
       const variants = await getSanmarId(product);
 
       for (const item of sanmar) {
-
-        await eachSanmarItem(product, item, variants);
-
+        if (variants[0]) {
+          await eachSanmarItem(product, item, variants);
+        }
       }
 }
 
@@ -144,40 +144,40 @@ async function getSanmarId(product) {
     console.log('Error on Get Items6: ', err);
   }
 
-  if (items1.data.data) {
+  if (items1.data.data[0]) {
   for (const item of items1.data.data) {
     items.push(item);
-  }
+   }
   }
 
-  if (items2.data.data) {
+  if (items2.data.data[0]) {
   for (const item of items2.data.data) {
     items.push(item);
-  }
+   }
   }
 
-  if (items3.data.data) {
+  if (items3.data.data[0]) {
   for (const item of items3.data.data) {
     items.push(item);
-  }
+   }
   }
 
-  if (items4.data.data) {
+  if (items4.data.data[0]) {
   for (const item of items4.data.data) {
     items.push(item);
-  }
+   }
   }
 
-  if (items5.data.data) {
+  if (items5.data.data[0]) {
   for (const item of items5.data.data) {
     items.push(item);
-  }
+   }
   }
 
-  if (items6.data.data) {
+  if (items6.data.data[0]) {
   for (const item of items6.data.data) {
     items.push(item);
-  }
+   }
   }
 
   return items;
