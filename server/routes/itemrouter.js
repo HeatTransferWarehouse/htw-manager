@@ -30,7 +30,7 @@ async function updatePrices(bc, sanmar) {
   try {
       if (bc[0]) {
         for (const item of bc) {
-          if (item.sku > 5708) {
+          if (item.sku > 5766) {
           console.log(`Updating Product with ID: ${item.sku}`);
           await eachPrice(item, sanmar);
           }
