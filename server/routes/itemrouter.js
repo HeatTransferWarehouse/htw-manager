@@ -25,14 +25,24 @@ let config = {
   },
 };
 
+//Waiter Function
+function timeoutPromise(interval) {
+  return new Promise((resolve, reject) => {
+    setTimeout(function () {
+      resolve("done");
+    }, interval);
+  });
+};
+
 
 async function updatePrices(bc, sanmar) {
   try {
       if (bc[0]) {
         for (const item of bc) {
-          if (item.sku > 5686) {
+          if (item.sku > 5708) {
           console.log(`Updating Product with ID: ${item.sku}`);
           await eachPrice(item, sanmar);
+          await timeoutPromise(500);
           }
         }
         console.log('DONE');
