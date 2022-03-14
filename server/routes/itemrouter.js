@@ -146,36 +146,43 @@ async function getSanmarId(product) {
 
   if (items1.data.data[0]) {
   for (const item of items1.data.data) {
+    console.log('Page 1');
     items.push(item);
    }
   }
 
   if (items2.data.data[0]) {
   for (const item of items2.data.data) {
+    console.log('Page 2');
     items.push(item);
    }
   }
 
   if (items3.data.data[0]) {
   for (const item of items3.data.data) {
+    console.log('Page 3');
     items.push(item);
    }
   }
 
   if (items4.data.data[0]) {
   for (const item of items4.data.data) {
+    console.log('Page 4');
     items.push(item);
    }
   }
 
   if (items5.data.data[0]) {
   for (const item of items5.data.data) {
+    console.log('Page 5');
+    console.log(items5.data.data);
     items.push(item);
    }
   }
 
   if (items6.data.data[0]) {
   for (const item of items6.data.data) {
+    console.log('Page 6');
     items.push(item);
    }
   }
