@@ -191,20 +191,21 @@ async function getSanmarId(product) {
 }
 
 async function eachSanmarItem(product, item, vars) {
-  let searchedName = item.name.search(`${product.name}`);
   let preNewPrice = item.price * 1.4;
   let newPrice = Math.round(preNewPrice * 100) / 100
   let putId = 0;
+  let putVar = 0;
 
     for (const variant of vars) {
         if (variant.sku === item.sku) {
           putId = variant.id;
+          putVar = variant.sku;
       }
     }
 
     if (putId !== 0) {
     
-    console.log(`${product.sku} at ${putId} and $${newPrice}`);
+    console.log(`${product.sku} at ${putVar} and $${newPrice}`);
 
     const http = require("https");
 
