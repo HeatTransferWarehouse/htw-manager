@@ -87,7 +87,7 @@ async function getSanmarId(product) {
   try {
     items1 = await axios
       .get(
-        `https://api.bigcommerce.com/stores/et4qthkygq/v3/catalog/products/${product.sku}/variants?limit=100&page=1`,
+        `https://api.bigcommerce.com/stores/et4qthkygq/v3/catalog/products/${product.sku}/variants?page=1&limit=100`,
         config
       )
   } catch (err) {
@@ -97,7 +97,7 @@ async function getSanmarId(product) {
   try {
     items2 = await axios
       .get(
-        `https://api.bigcommerce.com/stores/et4qthkygq/v3/catalog/products/${product.sku}/variants?limit=100&page=2`,
+        `https://api.bigcommerce.com/stores/et4qthkygq/v3/catalog/products/${product.sku}/variants?page=2&limit=100`,
         config
       )
   } catch (err) {
@@ -107,7 +107,7 @@ async function getSanmarId(product) {
   try {
     items3 = await axios
       .get(
-        `https://api.bigcommerce.com/stores/et4qthkygq/v3/catalog/products/${product.sku}/variants?limit=100&page=3`,
+        `https://api.bigcommerce.com/stores/et4qthkygq/v3/catalog/products/${product.sku}/variants?page=3&limit=100`,
         config
       )
   } catch (err) {
@@ -117,7 +117,7 @@ async function getSanmarId(product) {
   try {
     items4 = await axios
       .get(
-        `https://api.bigcommerce.com/stores/et4qthkygq/v3/catalog/products/${product.sku}/variants?limit=100&page=4`,
+        `https://api.bigcommerce.com/stores/et4qthkygq/v3/catalog/products/${product.sku}/variants?page=4&limit=100`,
         config
       )
   } catch (err) {
@@ -127,7 +127,7 @@ async function getSanmarId(product) {
   try {
     items5 = await axios
       .get(
-        `https://api.bigcommerce.com/stores/et4qthkygq/v3/catalog/products/${product.sku}/variants?limit=100&page=5`,
+        `https://api.bigcommerce.com/stores/et4qthkygq/v3/catalog/products/${product.sku}/variants?page=5&limit=100`,
         config
       )
   } catch (err) {
@@ -137,7 +137,7 @@ async function getSanmarId(product) {
   try {
     items6 = await axios
       .get(
-        `https://api.bigcommerce.com/stores/et4qthkygq/v3/catalog/products/${product.sku}/variants?limit=100&page=6`,
+        `https://api.bigcommerce.com/stores/et4qthkygq/v3/catalog/products/${product.sku}/variants?page=6&limit=100`,
         config
       )
   } catch (err) {
