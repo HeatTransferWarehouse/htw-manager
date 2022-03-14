@@ -39,7 +39,7 @@ async function updatePrices(bc, sanmar) {
   try {
       if (bc[0]) {
         for (const item of bc) {
-          if (item.sku > 7020) {
+          if (item.sku > 7286) {
           console.log(`Updating Product with ID: ${item.sku}`);
           await eachPrice(item, sanmar);
           await timeoutPromise(500);
