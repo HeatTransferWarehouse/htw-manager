@@ -1071,7 +1071,7 @@ router.put("/ftpPrices", async function (req, res) {
 router.post("/sanmarDB", async function (req, res) {
   console.log("We are about to update the sanmar list");
 
-  response = req.body;
+  let response = req.body;
 
   try {
 
