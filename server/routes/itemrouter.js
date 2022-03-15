@@ -1072,6 +1072,7 @@ router.post("/sanmarDB", async function (req, res) {
   console.log("We are about to update the sanmar list");
 
   let response = req.body;
+  console.log(response);
 
   try {
 
