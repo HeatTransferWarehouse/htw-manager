@@ -134,7 +134,7 @@ function* refreshBC() {
 function* refreshSanmar(action) {
   try {
     const db = yield axios.put(`/api/item/ftpPrices`, action.payload);
-    yield axios.post(`/api/item/sanmarDB`, db.data);
+    yield axios.post(`/api/item/sanmarDB`, db);
     const response = yield axios.get(`/api/item/getSanmarPrices`);
     yield put({
       type: "SET_CLOTHING",
