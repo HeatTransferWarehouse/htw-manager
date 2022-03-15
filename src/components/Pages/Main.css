@@ -144,10 +144,9 @@ form {
     width: "100%";
 }
 
-.ftp-form {
+.container {
+    padding: 20px;
     text-align: center;
-    display: flex;
-    justify-content: center;
 }
 
 .ol-control {

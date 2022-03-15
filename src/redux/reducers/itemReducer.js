@@ -21,7 +21,7 @@ const sanmarlist = (state = [], action) => {
 const clothinglist = (state = [], action) => {
   switch (action.type) {
     case "SET_CLOTHING":
-      return [...state, ...action.payload.products];
+      return action.payload;
     case "RESET_CLOTHING":
       return [];
     default:
@@ -32,7 +32,7 @@ const clothinglist = (state = [], action) => {
 const bcClothinglist = (state = [], action) => {
   switch (action.type) {
     case "SET_BC_CLOTHING":
-      return [...state, ...action.payload.products];
+      return action.payload;
     case "RESET_BC_CLOTHING":
       return [];
     default:

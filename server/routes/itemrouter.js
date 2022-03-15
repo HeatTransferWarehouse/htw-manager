@@ -11,6 +11,7 @@ const {
   updateNote,
   getSO,
 } = require('./Capture/api');
+const { response } = require('express');
 
 const createNote = async (e) => {
   console.log('Updating Note on BP...');
@@ -266,6 +267,709 @@ async function getFile(date) {
     return file;
 }
 
+//Get All BC Items Function
+async function getBCItems() {
+
+  console.log('Getting Products..');
+
+  let bcResponse1;
+  let bcResponse2;
+  let bcResponse3;
+  let bcResponse4;
+  let bcResponse5;
+  let bcResponse6;
+  let bcResponse7;
+  let bcResponse8;
+  let bcResponse9;
+  let bcResponse10;
+  let bcResponse11;
+  let bcResponse12;
+  let bcResponse13;
+  let bcResponse14;
+  let bcResponse15;
+  let bcResponse16;
+  let bcResponse17;
+  let bcResponse18;
+  let bcResponse19;
+  let bcResponse20;
+  let bcResponse21;
+  let bcResponse22;
+  let bcResponse23;
+  let bcResponse24;
+  let bcResponse25;
+  let bcResponse26;
+  let bcResponse27;
+  let bcResponse28;
+  let bcResponse = [];
+
+
+  try {
+    bcResponse1 = await axios
+      .get(
+        `https://api.bigcommerce.com/stores/et4qthkygq/v3/catalog/products?limit=250&page=1`,
+        config
+      )
+  } catch (err) {
+    console.log('Error on Get1: ', err);
+  }
+
+  await timeoutPromise(500);
+
+  try {
+    bcResponse2 = await axios
+      .get(
+        `https://api.bigcommerce.com/stores/et4qthkygq/v3/catalog/products?limit=250&page=2`,
+        config
+      )
+  } catch (err) {
+    console.log('Error on Get2: ', err);
+  }
+
+  await timeoutPromise(500);
+
+  try {
+    bcResponse3 = await axios
+      .get(
+        `https://api.bigcommerce.com/stores/et4qthkygq/v3/catalog/products?limit=250&page=3`,
+        config
+      )
+  } catch (err) {
+    console.log('Error on Get3: ', err);
+  }
+
+  await timeoutPromise(500);
+
+  try {
+    bcResponse4 = await axios
+      .get(
+        `https://api.bigcommerce.com/stores/et4qthkygq/v3/catalog/products?limit=250&page=4`,
+        config
+      )
+  } catch (err) {
+    console.log('Error on Get4: ', err);
+  }
+
+  await timeoutPromise(500);
+
+  try {
+    bcResponse5 = await axios
+      .get(
+        `https://api.bigcommerce.com/stores/et4qthkygq/v3/catalog/products?limit=250&page=5`,
+        config
+      )
+  } catch (err) {
+    console.log('Error on Get5: ', err);
+  }
+
+  await timeoutPromise(500);
+
+  try {
+    bcResponse6 = await axios
+      .get(
+        `https://api.bigcommerce.com/stores/et4qthkygq/v3/catalog/products?limit=250&page=6`,
+        config
+      )
+  } catch (err) {
+    console.log('Error on Get6: ', err);
+  }
+
+  await timeoutPromise(500);
+
+  try {
+    bcResponse7 = await axios
+      .get(
+        `https://api.bigcommerce.com/stores/et4qthkygq/v3/catalog/products?limit=250&page=7`,
+        config
+      )
+  } catch (err) {
+    console.log('Error on Get7: ', err);
+  }
+
+  await timeoutPromise(500);
+
+  try {
+    bcResponse8 = await axios
+      .get(
+        `https://api.bigcommerce.com/stores/et4qthkygq/v3/catalog/products?limit=250&page=8`,
+        config
+      )
+  } catch (err) {
+    console.log('Error on Get8: ', err);
+  }
+
+  await timeoutPromise(500);
+
+  try {
+    bcResponse9 = await axios
+      .get(
+        `https://api.bigcommerce.com/stores/et4qthkygq/v3/catalog/products?limit=250&page=9`,
+        config
+      )
+  } catch (err) {
+    console.log('Error on Get9: ', err);
+  }
+
+  await timeoutPromise(500);
+
+  try {
+    bcResponse10 = await axios
+      .get(
+        `https://api.bigcommerce.com/stores/et4qthkygq/v3/catalog/products?limit=250&page=10`,
+        config
+      )
+  } catch (err) {
+    console.log('Error on Get10: ', err);
+  }
+
+  await timeoutPromise(500);
+
+  try {
+    bcResponse11 = await axios
+      .get(
+        `https://api.bigcommerce.com/stores/et4qthkygq/v3/catalog/products?limit=250&page=11`,
+        config
+      )
+  } catch (err) {
+    console.log('Error on Get11: ', err);
+  }
+
+  await timeoutPromise(500);
+
+  try {
+    bcResponse12 = await axios
+      .get(
+        `https://api.bigcommerce.com/stores/et4qthkygq/v3/catalog/products?limit=250&page=12`,
+        config
+      )
+  } catch (err) {
+    console.log('Error on Get12: ', err);
+  }
+
+  await timeoutPromise(500);
+
+  try {
+    bcResponse13 = await axios
+      .get(
+        `https://api.bigcommerce.com/stores/et4qthkygq/v3/catalog/products?limit=250&page=13`,
+        config
+      )
+  } catch (err) {
+    console.log('Error on Get13: ', err);
+  }
+
+  await timeoutPromise(500);
+
+  try {
+    bcResponse14 = await axios
+      .get(
+        `https://api.bigcommerce.com/stores/et4qthkygq/v3/catalog/products?limit=250&page=14`,
+        config
+      )
+  } catch (err) {
+    console.log('Error on Get14: ', err);
+  }
+
+  await timeoutPromise(500);
+
+  try {
+    bcResponse15 = await axios
+      .get(
+        `https://api.bigcommerce.com/stores/et4qthkygq/v3/catalog/products?limit=250&page=15`,
+        config
+      )
+  } catch (err) {
+    console.log('Error on Get15: ', err);
+  }
+
+  await timeoutPromise(500);
+
+  try {
+    bcResponse16 = await axios
+      .get(
+        `https://api.bigcommerce.com/stores/et4qthkygq/v3/catalog/products?limit=250&page=16`,
+        config
+      )
+  } catch (err) {
+    console.log('Error on Get16: ', err);
+  }
+
+  await timeoutPromise(500);
+
+  try {
+    bcResponse17 = await axios
+      .get(
+        `https://api.bigcommerce.com/stores/et4qthkygq/v3/catalog/products?limit=250&page=17`,
+        config
+      )
+  } catch (err) {
+    console.log('Error on Get17: ', err);
+  }
+
+  await timeoutPromise(500);
+
+  try {
+    bcResponse18 = await axios
+      .get(
+        `https://api.bigcommerce.com/stores/et4qthkygq/v3/catalog/products?limit=250&page=18`,
+        config
+      )
+  } catch (err) {
+    console.log('Error on Get18: ', err);
+  }
+
+  await timeoutPromise(500);
+
+  try {
+    bcResponse19 = await axios
+      .get(
+        `https://api.bigcommerce.com/stores/et4qthkygq/v3/catalog/products?limit=250&page=19`,
+        config
+      )
+  } catch (err) {
+    console.log('Error on Get19: ', err);
+  }
+
+  await timeoutPromise(500);
+
+  try {
+    bcResponse20 = await axios
+      .get(
+        `https://api.bigcommerce.com/stores/et4qthkygq/v3/catalog/products?limit=250&page=20`,
+        config
+      )
+  } catch (err) {
+    console.log('Error on Get20: ', err);
+  }
+
+  await timeoutPromise(500);
+
+  try {
+    bcResponse21 = await axios
+      .get(
+        `https://api.bigcommerce.com/stores/et4qthkygq/v3/catalog/products?limit=250&page=21`,
+        config
+      )
+  } catch (err) {
+    console.log('Error on Get21: ', err);
+  }
+
+  await timeoutPromise(500);
+
+  try {
+    bcResponse22 = await axios
+      .get(
+        `https://api.bigcommerce.com/stores/et4qthkygq/v3/catalog/products?limit=250&page=22`,
+        config
+      )
+  } catch (err) {
+    console.log('Error on Get22: ', err);
+  }
+
+  await timeoutPromise(500);
+
+  try {
+    bcResponse23 = await axios
+      .get(
+        `https://api.bigcommerce.com/stores/et4qthkygq/v3/catalog/products?limit=250&page=23`,
+        config
+      )
+  } catch (err) {
+    console.log('Error on Get23: ', err);
+  }
+
+  await timeoutPromise(500);
+
+  try {
+    bcResponse24 = await axios
+      .get(
+        `https://api.bigcommerce.com/stores/et4qthkygq/v3/catalog/products?limit=250&page=24`,
+        config
+      )
+  } catch (err) {
+    console.log('Error on Get24: ', err);
+  }
+
+  await timeoutPromise(500);
+
+  try {
+    bcResponse25 = await axios
+      .get(
+        `https://api.bigcommerce.com/stores/et4qthkygq/v3/catalog/products?limit=250&page=25`,
+        config
+      )
+  } catch (err) {
+    console.log('Error on Get25: ', err);
+  }
+
+  await timeoutPromise(500);
+
+  try {
+    bcResponse26 = await axios
+      .get(
+        `https://api.bigcommerce.com/stores/et4qthkygq/v3/catalog/products?limit=250&page=26`,
+        config
+      )
+  } catch (err) {
+    console.log('Error on Get26: ', err);
+  }
+
+  await timeoutPromise(500);
+
+  try {
+    bcResponse27 = await axios
+      .get(
+        `https://api.bigcommerce.com/stores/et4qthkygq/v3/catalog/products?limit=250&page=27`,
+        config
+      )
+  } catch (err) {
+    console.log('Error on Get27: ', err);
+  }
+
+  await timeoutPromise(500);
+
+  try {
+    bcResponse28 = await axios
+      .get(
+        `https://api.bigcommerce.com/stores/et4qthkygq/v3/catalog/products?limit=250&page=28`,
+        config
+      )
+  } catch (err) {
+    console.log('Error on Get28: ', err);
+  }
+
+  await timeoutPromise(500);
+
+  try {
+    for (item of bcResponse1.data.data) {
+      bcResponse.push(item);
+    }
+  } catch (err) {
+    console.log('Error on bcCreate: ', err);
+
+  }
+
+  await timeoutPromise(500);
+
+  try {
+    for (item of bcResponse2.data.data) {
+      bcResponse.push(item);
+    }
+  } catch (err) {
+    console.log('Error on bcCreate: ', err);
+
+  }
+
+  await timeoutPromise(500);
+
+  try {
+    for (item of bcResponse3.data.data) {
+      bcResponse.push(item);
+    }
+  } catch (err) {
+    console.log('Error on bcCreate: ', err);
+
+  }
+
+  await timeoutPromise(500);
+
+  try {
+    for (item of bcResponse4.data.data) {
+      bcResponse.push(item);
+    }
+  } catch (err) {
+    console.log('Error on bcCreate: ', err);
+
+  }
+
+  await timeoutPromise(500);
+
+  try {
+    for (item of bcResponse5.data.data) {
+      bcResponse.push(item);
+    }
+  } catch (err) {
+    console.log('Error on bcCreate: ', err);
+
+  }
+
+  await timeoutPromise(500);
+
+  try {
+    for (item of bcResponse6.data.data) {
+      bcResponse.push(item);
+    }
+  } catch (err) {
+    console.log('Error on bcCreate: ', err);
+
+  }
+
+  await timeoutPromise(500);
+
+  try {
+    for (item of bcResponse7.data.data) {
+      bcResponse.push(item);
+    }
+  } catch (err) {
+    console.log('Error on bcCreate: ', err);
+
+  }
+
+  await timeoutPromise(500);
+
+  try {
+    for (item of bcResponse8.data.data) {
+      bcResponse.push(item);
+    }
+  } catch (err) {
+    console.log('Error on bcCreate: ', err);
+
+  }
+
+  await timeoutPromise(500);
+
+  try {
+    for (item of bcResponse9.data.data) {
+      bcResponse.push(item);
+    }
+  } catch (err) {
+    console.log('Error on bcCreate: ', err);
+
+  }
+
+  await timeoutPromise(500);
+
+  try {
+    for (item of bcResponse10.data.data) {
+      bcResponse.push(item);
+    }
+  } catch (err) {
+    console.log('Error on bcCreate: ', err);
+
+  }
+
+  await timeoutPromise(500);
+
+  try {
+    for (item of bcResponse11.data.data) {
+      bcResponse.push(item);
+    }
+  } catch (err) {
+    console.log('Error on bcCreate: ', err);
+
+  }
+
+  await timeoutPromise(500);
+
+  try {
+    for (item of bcResponse12.data.data) {
+      bcResponse.push(item);
+    }
+  } catch (err) {
+    console.log('Error on bcCreate: ', err);
+
+  }
+
+  await timeoutPromise(500);
+
+  try {
+    for (item of bcResponse13.data.data) {
+      bcResponse.push(item);
+    }
+  } catch (err) {
+    console.log('Error on bcCreate: ', err);
+
+  }
+
+  await timeoutPromise(500);
+
+  try {
+    for (item of bcResponse14.data.data) {
+      bcResponse.push(item);
+    }
+  } catch (err) {
+    console.log('Error on bcCreate: ', err);
+
+  }
+
+  await timeoutPromise(500);
+
+  try {
+    for (item of bcResponse15.data.data) {
+      bcResponse.push(item);
+    }
+  } catch (err) {
+    console.log('Error on bcCreate: ', err);
+
+  }
+
+  await timeoutPromise(500);
+
+  try {
+    for (item of bcResponse16.data.data) {
+      bcResponse.push(item);
+    }
+  } catch (err) {
+    console.log('Error on bcCreate: ', err);
+
+  }
+
+  await timeoutPromise(500);
+
+  try {
+    for (item of bcResponse17.data.data) {
+      bcResponse.push(item);
+    }
+  } catch (err) {
+    console.log('Error on bcCreate: ', err);
+
+  }
+
+  await timeoutPromise(500);
+
+  try {
+    for (item of bcResponse18.data.data) {
+      bcResponse.push(item);
+    }
+  } catch (err) {
+    console.log('Error on bcCreate: ', err);
+
+  }
+
+  await timeoutPromise(500);
+
+  try {
+    for (item of bcResponse19.data.data) {
+      bcResponse.push(item);
+    }
+  } catch (err) {
+    console.log('Error on bcCreate: ', err);
+
+  }
+
+  await timeoutPromise(500);
+
+  try {
+    for (item of bcResponse20.data.data) {
+      bcResponse.push(item);
+    }
+  } catch (err) {
+    console.log('Error on bcCreate: ', err);
+
+  }
+
+  await timeoutPromise(500);
+
+  try {
+    for (item of bcResponse21.data.data) {
+      bcResponse.push(item);
+    }
+  } catch (err) {
+    console.log('Error on bcCreate: ', err);
+
+  }
+
+  await timeoutPromise(500);
+
+  try {
+    for (item of bcResponse22.data.data) {
+      bcResponse.push(item);
+    }
+  } catch (err) {
+    console.log('Error on bcCreate: ', err);
+
+  }
+
+  await timeoutPromise(500);
+
+  try {
+    for (item of bcResponse23.data.data) {
+      bcResponse.push(item);
+    }
+  } catch (err) {
+    console.log('Error on bcCreate: ', err);
+
+  }
+
+  await timeoutPromise(500);
+
+  try {
+    for (item of bcResponse24.data.data) {
+      bcResponse.push(item);
+    }
+  } catch (err) {
+    console.log('Error on bcCreate: ', err);
+
+  }
+
+  await timeoutPromise(500);
+
+  try {
+    for (item of bcResponse25.data.data) {
+      bcResponse.push(item);
+    }
+  } catch (err) {
+    console.log('Error on bcCreate: ', err);
+
+  }
+
+  await timeoutPromise(500);
+
+  try {
+    for (item of bcResponse26.data.data) {
+      bcResponse.push(item);
+    }
+  } catch (err) {
+    console.log('Error on bcCreate: ', err);
+
+  }
+
+  await timeoutPromise(500);
+
+  try {
+    for (item of bcResponse27.data.data) {
+      bcResponse.push(item);
+    }
+  } catch (err) {
+    console.log('Error on bcCreate: ', err);
+
+  }
+
+  await timeoutPromise(500);
+
+  try {
+    for (item of bcResponse28.data.data) {
+      bcResponse.push(item);
+    }
+  } catch (err) {
+    console.log('Error on bcCreate: ', err);
+  }
+
+  await timeoutPromise(200);
+
+  return bcResponse;
+}
+
+async function calculateSales(products) {
+  let newProducts = [];
+
+  for (const prod of products) {
+    let preNewName = prod.name.replace(/™/g, "");
+    let extraNewName = preNewName.replace(/Æ/g, "");
+    let extraNewName2 = extraNewName.replace(/¬/g, "");
+    let newNewName2 = extraNewName2.replace(/Ñ/g, "");
+    let newNewName = newNewName2.replace(/¢/g, "");
+    let newName = newNewName.replace(/®/g, "");
+    if (prod.brand_id === 87 || prod.brand_id === 83 || prod.brand_id === 79 || prod.brand_id === 77 || prod.brand_id === 75 || prod.brand_id === 84 || prod.brand_id === 80 || prod.brand_id === 81 || prod.brand_id === 92 || prod.brand_id === 91 || prod.brand_id === 96 || prod.brand_id === 90 || prod.brand_id === 89 || prod.brand_id === 88 || prod.brand_id === 86 || prod.brand_id === 97 || prod.brand_id === 82 || prod.brand_id === 85 || prod.brand_id === 78 || prod.brand_id === 76 || prod.brand_id === 73 || prod.brand_id === 74) {
+      newProducts.push({
+        id: prod.id,
+        name: newName
+      });
+    }
+  }
+
+  return newProducts;
+}
+
 
 router.put("/updatePrices", async function (req, res) {
   console.log("We are updating sanmar prices..");
@@ -320,6 +1024,100 @@ router.put("/ftp", async function (req, res) {
     res.send('NO').status(500);
   }
 
+});
+
+router.put("/ftpPrices", async function (req, res) {
+  console.log("We are connecting to the ftp client..");
+  const host = req.body.host;
+  const password = req.body.password;
+  const user = req.body.user;
+  const c = new Client();
+
+
+  try {
+    console.log('Logging into FTP Client..');
+
+    const ftpConfig = {
+      host: `${host}`,
+      port: 21,
+      user: `${user}`,
+      password: `${password}`,
+    }
+
+    c.connect(ftpConfig);
+
+    c.on('ready', function () {
+      console.log('Downloading Sanmar Prices..');
+      c.get(`/SanMarPDD/SanMar_SDL_DI.zip`, function (err, stream) {
+        if (err) throw err;
+        stream.once('close', function () {
+          c.end();
+        });
+        stream.pipe(res);
+
+        stream.on('end', function () {
+          res.end()
+        });
+      });
+    });
+    //res.send('YES').status(201);
+  } catch (err) {
+    console.log('Error on connect ftp: ', err);
+    res.send('NO').status(500);
+  }
+
+});
+
+router.post("/sanmarDB", async function (req, res) {
+  console.log("We are about to update the sanmar list");
+
+  response = req.body;
+
+  try {
+
+    const queryText = `DELETE from "sanmar-prices"`;
+    await pool
+      .query(queryText)
+  } catch (err) {
+    console.log('Error on delete sanmar prices: ', err);
+    return res.status(500);
+  }
+
+  for (const product of response) {
+    try {
+      let name = product.PRODUCT_TITLE;
+      let sku = product.UNIQUE_KEY;
+      let color = product.COLOR_NAME;
+      let size = product.SIZE;
+      let price = product.PIECE_PRICE;
+
+      const queryText2 = `insert into "sanmar-prices" (name, sku, color, size, price) VALUES ($1, $2, $3, $4, $5);`;
+      await pool
+        .query(queryText2, [name, sku, color, size, price])
+    } catch (err) {
+      console.log('Error on post single item: ', err);
+      res.sendStatus(500);
+    }
+  }
+
+  res.sendStatus(201);
+});
+
+router.get("/getSanmarPrices", async function (req, res) {
+  console.log("We are about to get the sanmar price list");
+
+  let response = [];
+
+  try {
+    const queryText = `select * from "sanmar-prices"`;
+    response = await pool
+      .query(queryText)
+  } catch (err) {
+    console.log('Error on delete sanmar prices: ', err);
+    return res.status(500);
+  }
+
+  res.send(response.rows);
 });
 
 router.put("/email", async function (req, res) {
@@ -461,6 +1259,63 @@ router.get("/getsanmar", (req, res) => {
       console.log(`Error on item query ${error}`);
       res.sendStatus(500);
     });
+});
+
+router.get("/refreshBC", async function (req, res) {
+  console.log("We are about to update the bc list");
+
+  let response = [];
+
+  try {
+
+    const queryText = `DELETE from "bc-prices"`;
+    await pool
+      .query(queryText)
+  } catch (err) {
+    console.log('Error on delete bc prices: ', err);
+    return res.status(500);
+  }
+
+  try {
+    response = await getBCItems();
+  } catch (err) {
+    res.sendStatus(500);
+  }
+
+  let newResponse = await calculateSales(response);
+
+  for (const product of newResponse) {
+    try {
+      let name = product.name;
+      let sku = product.id;
+
+      const queryText2 = `insert into "bc-prices" (name, sku) VALUES ($1, $2);`;
+      await pool
+        .query(queryText2, [name, sku])
+    } catch (err) {
+      console.log('Error on post single bc price: ', err);
+      res.sendStatus(500);
+    }
+  }
+
+  res.sendStatus(201);
+});
+
+router.get("/getBC", async function (req, res) {
+  console.log("We are about to get the bc price list");
+
+  let response = [];
+
+  try {
+    const queryText = `select * from "bc-prices"`;
+    response = await pool
+      .query(queryText)
+  } catch (err) {
+    console.log('Error on delete bc prices: ', err);
+    return res.status(500);
+  }
+
+  res.send(response.rows);
 });
 
 router.post("/addOrder", async function (req, res) {

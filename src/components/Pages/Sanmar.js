@@ -26,6 +26,12 @@ function Sanmar () {
     dispatch({
       type: "GET_SANMAR_LIST",
     });
+    dispatch({
+      type: "GET_SANMAR_PRICES",
+    });
+    dispatch({
+      type: "GET_BC_PRICES",
+    });
   }, [])
 
   const SanmarItems = useSelector(store => store.item.clothinglist);
@@ -193,6 +199,31 @@ const addSent = (o) => {
   }
 }
 
+async function refreshBC() {
+  swal('Refreshing BC Data!');
+  dispatch({
+    type: "RESET_BC_CLOTHING",
+  });
+  dispatch({
+    type: "REFRESH_BC",
+  });
+}
+
+async function refreshSanmar() {
+  swal('Refreshing Sanmar Data!');
+  dispatch({
+    type: "RESET_CLOTHING",
+  });
+  dispatch({
+    type: "REFRESH_SANMAR",
+        payload: {
+          host: host,
+          user: user,
+          password: password,
+        }
+  });
+}
+
   const tracking = sanmarTracking.map((item) => [
     item.order,
     item.tracking,
@@ -240,13 +271,12 @@ const addSent = (o) => {
       <br></br>
       <br></br>
       <br></br>
-      <section className="ftp-form">
-        <div>
+      <section className="container">
+        <div className="row">
+          <h1>SanMar Orders</h1>
+        </div>
+        <div className="row">
           <div>
-            <h1>SanMar Orders</h1>
-            <h4>Host: </h4><input value={host} placeholder="www.example.com" onChange={(e) => {setHost(e.target.value)}}></input>
-            <h4>Username: </h4><input value={user} placeholder="1231234" onChange={(e) => {setUser(e.target.value)}}></input>
-            <h4>Password: </h4><input value={password} placeholder="super secret" type="password" onChange={(e) => {setPassword(e.target.value)}}></input>
             <br />
             <LocalizationProvider dateAdapter={AdapterDateFns}>
               <Grid container justify="space-around">
@@ -269,13 +299,9 @@ const addSent = (o) => {
           {sanmarDisplay}
           </div>
         </div>
-        <div>
-          <br />
-          <br />
-          <br />
-          <br />
-          <br />
-          <br />
+        <br/>
+        <div className="row">
+          <br/>
           <h4>Order #: </h4><input value={order} placeholder="3201122" onChange={(e) => {setOrder(e.target.value)}}></input>
          <div>
           <Button onClick={() => {sendEmail()}}>Send Email</Button>
@@ -352,16 +378,17 @@ const addSent = (o) => {
       </section>
       <section className="sanmar-form">
       <div className="container">
-        <div className="row">
-        <div className="clothing-importer">
-          <h3>Import Clothing Prices from SanMar</h3>
-          <SanmarImporter />
+      <div className="row">
+        <div className="clothing-data">
+          <Button onClick={(e) => {refreshSanmar()}}>Refresh SanMar Prices</Button>
         </div>
-        <div className="clothing-importer">
-          <h3>Import Clothing Prices from BC</h3>
-          <BCClothingImporter />
+        <div className="clothing-data">
+          <Button onClick={(e) => {refreshBC()}}>Refresh BC Prices</Button>
         </div>
+        <div className="total-form">
+      <Button onClick={(e) => {updatePrices()}} className='sales-input'><QueueIcon/> Update Prices</Button>
         </div>
+      </div>
       <br></br>
       <br></br>
       <div className="row">
@@ -410,9 +437,6 @@ const addSent = (o) => {
         </div>
       </div>
       </div>
-      </section>
-      <section className="total-form">
-      <Button onClick={(e) => {updatePrices()}} className='sales-input'><QueueIcon/> Update Prices</Button>
       </section>
       </>
     )

@@ -118,11 +118,64 @@ function* addSent(action) {
   }
 }
 
+function* refreshBC() {
+  try {
+    yield axios.get(`/api/item/refreshBC`);
+    const response = yield axios.get(`/api/item/getBC`);
+    yield put({
+      type: "SET_BC_CLOTHING",
+      payload: response.data,
+    });
+  } catch (error) {
+    console.log("Error with refreshing bc:", error);
+  }
+}
+
+function* refreshSanmar(action) {
+  try {
+    const db = yield axios.put(`/api/item/ftpPrices`, action.payload);
+    yield axios.post(`/api/item/sanmarDB`, db.data);
+    const response = yield axios.get(`/api/item/getSanmarPrices`);
+    yield put({
+      type: "SET_CLOTHING",
+      payload: response.data,
+    });
+  } catch (error) {
+    console.log("Error with refreshing sanmar:", error);
+  }
+}
+
+function* getBcPrices() {
+  try {
+    const response = yield axios.get(`/api/item/getBC`);
+    yield put({
+      type: "SET_BC_CLOTHING",
+      payload: response.data,
+    });
+  } catch (error) {
+    console.log("Error with getting bc prices:", error);
+  }
+}
+
+function* getSanmarPrices() {
+  try {
+    const response = yield axios.get(`/api/item/getSanmarPrices`);
+    yield put({
+      type: "SET_CLOTHING",
+      payload: response.data,
+    });
+  } catch (error) {
+    console.log("Error with getting sanmar prices:", error);
+  }
+}
+
 
 
 //this takes all of the Saga functions and dispatches them
 function* itemSaga() {
     yield takeLatest('GET_ITEM_LIST', getitemlist);
+    yield takeLatest('REFRESH_BC', refreshBC);
+    yield takeLatest('REFRESH_SANMAR', refreshSanmar);
     yield takeLatest('GET_SANMAR_LIST', getsanmarlist);
     yield takeLatest('ADD_ITEM', addItem);
     yield takeLatest('DELETE_ITEM', deleteItem);
@@ -132,6 +185,8 @@ function* itemSaga() {
     yield takeLatest('CONNECT_FTP', connectFtp);
     yield takeLatest('SEND_EMAIL', sendEmail);
     yield takeLatest('ADD_SENT', addSent);
+    yield takeLatest('GET_SANMAR_PRICES', getSanmarPrices);
+    yield takeLatest('GET_BC_PRICES', getBcPrices);
 }
 
 export default itemSaga;

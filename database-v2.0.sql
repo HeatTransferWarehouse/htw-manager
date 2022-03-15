@@ -17,3 +17,20 @@ CREATE TABLE "sanmar"
 	"ref" varchar(255) NOT NULL,
 	"tracking" varchar(255) NOT NULL
 );
+
+CREATE TABLE "sanmar-prices"
+(
+	"id" serial NOT NULL,
+	"name" varchar(255),
+	"sku" varchar(255),
+	"color" varchar(255),
+	"size" varchar(255),
+	"price" varchar(255)
+);
+
+CREATE TABLE "bc-prices"
+(
+	"id" serial NOT NULL,
+	"name" varchar(255),
+	"sku" varchar(255)
+);
