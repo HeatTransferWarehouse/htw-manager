@@ -41,11 +41,11 @@ async function updatePrices(bc, sanmar) {
   try {
       if (bc[0]) {
         for (const item of bc) {
-          //if (item.sku == 5926) {
+          if (item.sku > 5767) {
           console.log(`Updating Product with ID: ${item.sku}`);
           await eachPrice(item, sanmar);
-          await timeoutPromise(500);
-          //}
+          await timeoutPromise(1000);
+          }
         }
         console.log('DONE');
         return;
@@ -1074,7 +1074,6 @@ router.post("/sanmarDB", async function (req, res) {
   console.log("We are about to update the sanmar list");
 
   let response = req.body.products;
-  console.log(response);
 
   try {
 
