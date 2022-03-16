@@ -18,11 +18,22 @@ const sanmarlist = (state = [], action) => {
   }
 };
 
-const clothinglist = (state = [], action) => {
+const clothingtemplist = (state = [], action) => {
   switch (action.type) {
     case "SET_CLOTHING":
-      return action.payload;
+      return [...state, ...action.payload.products];
     case "RESET_CLOTHING":
+      return [];
+    default:
+      return state;
+  }
+};
+
+const clothinglist = (state = [], action) => {
+  switch (action.type) {
+    case "SET_SANMAR_CLOTHING":
+      return action.payload;
+    case "RESET_SANMAR_CLOTHING":
       return [];
     default:
       return state;
@@ -69,4 +80,5 @@ export default combineReducers({
   bcClothinglist,
   sanmar,
   tracking,
+  clothingtemplist,
 });

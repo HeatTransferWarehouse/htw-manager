@@ -133,12 +133,10 @@ function* refreshBC() {
 
 function* refreshSanmar(action) {
   try {
-    const db = yield axios.put(`/api/item/ftpPrices`, action.payload);
-    console.log(db);
-    yield axios.post(`/api/item/sanmarDB`, db);
+    yield axios.post(`/api/item/sanmarDB`, action.payload);
     const response = yield axios.get(`/api/item/getSanmarPrices`);
     yield put({
-      type: "SET_CLOTHING",
+      type: "SET_SANMAR_CLOTHING",
       payload: response.data,
     });
   } catch (error) {
@@ -162,7 +160,7 @@ function* getSanmarPrices() {
   try {
     const response = yield axios.get(`/api/item/getSanmarPrices`);
     yield put({
-      type: "SET_CLOTHING",
+      type: "SET_SANMAR_CLOTHING",
       payload: response.data,
     });
   } catch (error) {

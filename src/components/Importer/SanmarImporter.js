@@ -1,6 +1,6 @@
 import { Importer, ImporterField } from 'react-csv-importer';
 import React from "react";
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 
 // include the widget CSS file whichever way your bundler supports it
 import 'react-csv-importer/dist/index.css';
@@ -8,6 +8,7 @@ import 'react-csv-importer/dist/index.css';
 function Main () {
 
 const dispatch = useDispatch();
+const SanmarItems = useSelector(store => store.item.clothingtemplist);
 
 async function calculateSales (products) {
 
@@ -44,6 +45,13 @@ return (
       onComplete={({ file, fields }) => {
         // optional, invoked right after import is done (but user did not dismiss/reset the widget yet)
         console.log("finished import of file", file, "with fields", fields);
+
+        dispatch({
+          type: "REFRESH_SANMAR", 
+          payload: {
+            products: SanmarItems,
+          }
+        })
       }}
       onClose={() => {
         // optional, invoked when import is done and user clicked "Finish"

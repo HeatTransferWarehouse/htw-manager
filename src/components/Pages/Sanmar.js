@@ -380,13 +380,14 @@ async function refreshSanmar() {
       <div className="container">
       <div className="row">
         <div className="clothing-data">
-          <Button onClick={(e) => {refreshSanmar()}}>Refresh SanMar Prices</Button>
-        </div>
-        <div className="clothing-data">
-          <Button onClick={(e) => {refreshBC()}}>Refresh BC Prices</Button>
+          <SanmarImporter />
+          {/* <Button onClick={(e) => {refreshSanmar()}}>Refresh SanMar Prices</Button> */}
         </div>
         <div className="total-form">
-      <Button onClick={(e) => {updatePrices()}} className='sales-input'><QueueIcon/> Update Prices</Button>
+          <Button onClick={(e) => {refreshBC()}} className='sales-input'>Refresh BC Prices</Button>
+        </div>
+        <div className="total-form">
+          <Button onClick={(e) => {updatePrices()}} className='sales-input'><QueueIcon/> Update Prices</Button>
         </div>
       </div>
       <br></br>

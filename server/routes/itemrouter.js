@@ -5,6 +5,7 @@ const axios = require("axios");
 const Client = require('ftp');
 const moment = require('moment');
 const sgMail = require("@sendgrid/mail");
+const fs = require("fs");
 sgMail.setApiKey(process.env.SENDGRID_API_KEY);
 
 const {
@@ -40,11 +41,11 @@ async function updatePrices(bc, sanmar) {
   try {
       if (bc[0]) {
         for (const item of bc) {
-          if (item.sku == 5926) {
+          //if (item.sku == 5926) {
           console.log(`Updating Product with ID: ${item.sku}`);
           await eachPrice(item, sanmar);
           await timeoutPromise(500);
-          }
+          //}
         }
         console.log('DONE');
         return;
@@ -146,43 +147,42 @@ async function getSanmarId(product) {
   }
 
   if (items1.data.data[0]) {
-      console.log('Page 1');
+      //console.log('Page 1');
   for (const item of items1.data.data) {
     items.push(item);
    }
   }
 
   if (items2.data.data[0]) {
-      console.log('Page 2');
+      //console.log('Page 2');
   for (const item of items2.data.data) {
     items.push(item);
    }
   }
 
   if (items3.data.data[0]) {
-      console.log('Page 3');
+      //console.log('Page 3');
   for (const item of items3.data.data) {
     items.push(item);
    }
   }
 
   if (items4.data.data[0]) {
-      console.log('Page 4');
+      //console.log('Page 4');
   for (const item of items4.data.data) {
     items.push(item);
    }
   }
 
   if (items5.data.data[0]) {
-    console.log('Page 5');
-    console.log(items5.data.data);
+    //console.log('Page 5');
   for (const item of items5.data.data) {
     items.push(item);
    }
   }
 
   if (items6.data.data[0]) {
-    console.log('Page 6');
+    //console.log('Page 6');
   for (const item of items6.data.data) {
     items.push(item);
    }
@@ -206,7 +206,7 @@ async function eachSanmarItem(product, item, vars) {
 
     if (putId !== 0) {
     
-    console.log(`${product.sku} at ${putVar} and $${newPrice}`);
+    //console.log(`${product.sku} at ${putVar} and $${newPrice}`);
 
     const http = require("https");
 
@@ -230,8 +230,8 @@ async function eachSanmarItem(product, item, vars) {
       });
 
       res.on("end", function () {
-        const body = Buffer.concat(chunks);
-        console.log(body.toString());
+        // const body = Buffer.concat(chunks);
+        // console.log(body.toString());
       });
     });
 
@@ -239,6 +239,8 @@ async function eachSanmarItem(product, item, vars) {
       price: newPrice
     }));
     req.end();
+
+    await timeoutPromise(100);
 
     } else {
       //console.log('No Variant Found to sync ID!');
@@ -1053,10 +1055,10 @@ router.put("/ftpPrices", async function (req, res) {
         stream.once('close', function () {
           c.end();
         });
-        stream.pipe(res);
+        stream.pipe(fs.createWriteStream('download.zip'));
 
         stream.on('end', function () {
-          res.end()
+          res.sendStatus(201);
         });
       });
     });
@@ -1071,7 +1073,7 @@ router.put("/ftpPrices", async function (req, res) {
 router.post("/sanmarDB", async function (req, res) {
   console.log("We are about to update the sanmar list");
 
-  let response = req.body;
+  let response = req.body.products;
   console.log(response);
 
   try {
@@ -1086,11 +1088,11 @@ router.post("/sanmarDB", async function (req, res) {
 
   for (const product of response) {
     try {
-      let name = product.PRODUCT_TITLE;
-      let sku = product.UNIQUE_KEY;
-      let color = product.COLOR_NAME;
-      let size = product.SIZE;
-      let price = product.PIECE_PRICE;
+      let name = product.name;
+      let sku = product.sku;
+      let color = product.color;
+      let size = product.size;
+      let price = product.price;
 
       const queryText2 = `insert into "sanmar-prices" (name, sku, color, size, price) VALUES ($1, $2, $3, $4, $5);`;
       await pool
