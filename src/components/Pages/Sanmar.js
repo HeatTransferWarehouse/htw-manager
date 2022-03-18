@@ -6,7 +6,6 @@ import Button from "react-bootstrap/Button";
 import QueueIcon from "@material-ui/icons/Queue";
 import swal from "sweetalert";
 import SanmarImporter from '../Importer/SanmarImporter';
-import BCClothingImporter from '../Importer/BCClothingImporter';
 import * as CSV from 'csv-string';
 import DesktopDatePicker from '@mui/lab/DesktopDatePicker';
 import LocalizationProvider from '@mui/lab/LocalizationProvider';
@@ -26,12 +25,6 @@ function Sanmar () {
     dispatch({
       type: "GET_SANMAR_LIST",
     });
-    dispatch({
-      type: "GET_SANMAR_PRICES",
-    });
-    dispatch({
-      type: "GET_BC_PRICES",
-    });
   }, [])
 
   const SanmarItems = useSelector(store => store.item.clothinglist);
@@ -41,9 +34,9 @@ function Sanmar () {
   const sanmarList = useSelector(store => store.item.sanmarlist);
   const [order, setOrder] = useState();
   const [date, setDate] = useState();
-  const [host, setHost] = useState('ftp.sanmar.com');
-  const [user, setUser] = useState('175733');
-  const [password, setPassword] = useState('Sanmar33');
+  const host = 'ftp.sanmar.com';
+  const user = '175733';
+  const password = 'Sanmar33';
   const dispatch = useDispatch();
   let sanmarDisplay = <h4></h4>
 
@@ -200,7 +193,7 @@ const addSent = (o) => {
 }
 
 async function refreshBC() {
-  swal('Refreshing BC Data!');
+  swal('Getting BC Data!');
   dispatch({
     type: "RESET_BC_CLOTHING",
   });
@@ -209,18 +202,10 @@ async function refreshBC() {
   });
 }
 
-async function refreshSanmar() {
-  swal('Refreshing Sanmar Data!');
+async function getSanmar() {
+  swal('Getting Sanmar Data!');
   dispatch({
-    type: "RESET_CLOTHING",
-  });
-  dispatch({
-    type: "REFRESH_SANMAR",
-        payload: {
-          host: host,
-          user: user,
-          password: password,
-        }
+    type: "GET_SANMAR_PRICES",
   });
 }
 
@@ -384,7 +369,10 @@ async function refreshSanmar() {
           {/* <Button onClick={(e) => {refreshSanmar()}}>Refresh SanMar Prices</Button> */}
         </div>
         <div className="total-form">
-          <Button onClick={(e) => {refreshBC()}} className='sales-input'>Refresh BC Prices</Button>
+          <Button onClick={(e) => {refreshBC()}} className='sales-input'>Get BC Prices</Button>
+        </div>
+        <div className="total-form">
+          <Button onClick={(e) => {getSanmar()}} className='sales-input'>Get SanMar Prices</Button>
         </div>
         <div className="total-form">
           <Button onClick={(e) => {updatePrices()}} className='sales-input'><QueueIcon/> Update Prices</Button>
