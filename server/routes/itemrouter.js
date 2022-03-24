@@ -1480,8 +1480,8 @@ router.put("/items/:id", async function (req, res) {
 router.post("/updateCart", async function (req, res) {
   console.log("We are about to update a cart on BC");
 
-  const id = req.body.id;
-  const token = req.body.token;
+  const id = req.body;
+  const token = req;
   console.log(id, ' and ', token);
   let cr = [];
   let ir = [];
