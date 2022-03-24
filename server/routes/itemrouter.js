@@ -1482,6 +1482,7 @@ router.post("/updateCart", async function (req, res) {
 
   const id = req.body.id;
   const token = req.body.token;
+  console.log(id, ' and ', token);
   let cr = [];
   let ir = [];
 
@@ -1514,7 +1515,7 @@ router.post("/updateCart", async function (req, res) {
   const cartId = cr.rows.customer.id;
 
   try {
-    ir = await axios
+    await axios
       .post(
         `https://api.bigcommerce.com/stores/et4qthkygq/v3/carts/${cartId}/items`,
         config
