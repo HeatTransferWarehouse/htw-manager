@@ -1477,5 +1477,55 @@ router.put("/items/:id", async function (req, res) {
     
 });
 
+router.post("/updateCart", async function (req, res) {
+  console.log("We are about to update a cart on BC");
+
+  const id = req.body.id;
+  const token = req.body.token;
+  let cr = [];
+  let ir = [];
+
+  try {
+    cr = await axios
+      .get(
+        `https://api.bigcommerce.com/stores/et4qthkygq/v3/customer/current.jwt?app_client_id=8sliv4t4rurkp0i057rggy1iet37q3p`,
+        config
+      )
+  } catch (err) {
+    console.log('Error on get customer: ', err);
+    return res.status(500);
+  }
+
+  console.log(cr);
+
+  try {
+    ir = await axios
+      .get(
+        `https://stores.inksoft.com/DS350156262/Api2/GetCartPackage?SessionToken=${token}&Format=JSON&SessionId=${id}`,
+        config
+      )
+  } catch (err) {
+    console.log('Error on get inksoft: ', err);
+    return res.status(500);
+  }
+
+  console.log(ir);
+
+  const cartId = cr.rows.customer.id;
+
+  try {
+    ir = await axios
+      .post(
+        `https://api.bigcommerce.com/stores/et4qthkygq/v3/carts/${cartId}/items`,
+        config
+      )
+  } catch (err) {
+    console.log('Error on update cart: ', err);
+    return res.status(500);
+  }
+
+  res.send(200);
+});
+
 
 module.exports = router;
