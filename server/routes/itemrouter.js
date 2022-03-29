@@ -7,6 +7,46 @@ const moment = require('moment');
 const sgMail = require("@sendgrid/mail");
 const fs = require("fs");
 sgMail.setApiKey(process.env.SENDGRID_API_KEY);
+const PythonShell = require('python-shell');
+
+let python = false;
+
+// Run Python Files
+setInterval(() => {
+  // set this to true to activate
+  python = true;
+
+  if (python) {
+    console.log('Running SanMar Inventory Sync..');
+    let options = {
+      pythonOptions: ['-u'], // get print results in real-time
+      args: ['pandas', 'bigcommerce', 'log', 'mail', 'colorama']
+    };
+
+    PythonShell.PythonShell.run('server/SanMar/Inventory-Sync/main.py', options, function (err, results) {
+      if (err) throw err;
+      console.log('results: %j', results);
+    });
+  }
+}, 1000 * 60 * 1440);
+
+setInterval(() => {
+  // set this to true to activate
+  python = true;
+
+  if (python) {
+    console.log('Running New SanMar Products..');
+    let options = {
+      pythonOptions: ['-u'], // get print results in real-time
+      args: ['pandas', 'bigcommerce', 'log', 'mail', 'colorama', 'zeep', 'pymongo']
+    };
+
+    PythonShell.PythonShell.run('server/SanMar/Get-New-Products/main.py', options, function (err, results) {
+      if (err) throw err;
+      console.log('results: %j', results);
+    });
+  }
+}, 1000 * 60 * 1440);
 
 const {
   updateNote,
@@ -1513,6 +1553,26 @@ router.post("/updateCart", async function (req, res) {
   }
 
   res.send(200);
+});
+
+router.post("/python", (req, res) => {
+  console.log('Running Python Files..');
+
+  try {
+    let options = {
+      pythonOptions: ['-u'], // get print results in real-time
+      args: ['pandas', 'bigcommerce', 'log', 'mail', 'colorama']
+    };
+
+    PythonShell.PythonShell.run('server/SanMar/Inventory-Sync/main.py', options, function (err, results) {
+      if (err) throw err;
+      console.log('results: %j', results);
+    });
+    res.sendStatus(200);
+  } catch (err) {
+    console.log('Error on Run Python Files: ', err);
+    res.sendStatus(500);
+  }
 });
 
 

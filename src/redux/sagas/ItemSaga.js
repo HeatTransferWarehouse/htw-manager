@@ -168,6 +168,14 @@ function* getSanmarPrices() {
   }
 }
 
+function* python() {
+  try {
+    yield axios.post(`/api/item/python`);
+  } catch (error) {
+    console.log("Error with running python files:", error);
+  }
+}
+
 
 
 //this takes all of the Saga functions and dispatches them
@@ -186,6 +194,7 @@ function* itemSaga() {
     yield takeLatest('ADD_SENT', addSent);
     yield takeLatest('GET_SANMAR_PRICES', getSanmarPrices);
     yield takeLatest('GET_BC_PRICES', getBcPrices);
+    yield takeLatest('PYTHON', python);
 }
 
 export default itemSaga;

@@ -160,3 +160,7 @@ form {
     top: .5em;
     right: .5em;
 }
+
+.invis {
+    display: none;
+}
