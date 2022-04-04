@@ -76,12 +76,12 @@ function timeoutPromise(interval) {
   });
 };
 
-
-async function updatePrices(bc, sanmar) {
+async function updatePrices(bc, sanmar, start) {
   try {
       if (bc[0]) {
+        const number = Number(start);
         for (const item of bc) {
-          if (item.sku > 0) {
+          if (item.sku > number) {
           console.log(`Updating Product with ID: ${item.sku}`);
           await eachPrice(item, sanmar);
           await timeoutPromise(1000);
@@ -1017,11 +1017,12 @@ router.put("/updatePrices", async function (req, res) {
   console.log("We are updating sanmar prices..");
   const bc = req.body.bcItems;
   const sanmar = req.body.sanmar;
+  const start = req.body.start;
 
   res.sendStatus(200).send();
 
   try {
-    await updatePrices(bc, sanmar);
+    await updatePrices(bc, sanmar, start);
   } catch (err) {
     console.log('Error on update Prices: ', err);
   }

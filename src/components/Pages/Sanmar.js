@@ -34,6 +34,7 @@ function Sanmar () {
   const sanmarTracking = useSelector(store => store.item.tracking);
   const sanmarList = useSelector(store => store.item.sanmarlist);
   const [order, setOrder] = useState();
+  const [start, setStart] = useState(0);
   const [date, setDate] = useState();
   const host = 'ftp.sanmar.com';
   const user = '175733';
@@ -129,6 +130,7 @@ const updatePrices = () => {
         payload: {
           bcItems: BcItems,
           sanmar: SanmarItems,
+          start: start,
         }
       });
   } else {
@@ -391,6 +393,9 @@ async function getSanmar() {
         </div>
         <div className="total-form">
           <Button onClick={(e) => {updatePrices()}} className='sales-input'><QueueIcon/> Update Prices</Button>
+        </div>
+        <div className="total-form">
+          <h4>ID Start: </h4><input value={start} placeholder="0" onChange={(e) => {setStart(e.target.value)}}></input>
         </div>
       </div>
       <br></br>
