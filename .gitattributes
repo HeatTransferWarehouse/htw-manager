@@ -1,3 +1,2 @@
-*.csv filter=lfs diff=lfs merge=lfs -text
 sanmar_activeproductsexport.txt filter=lfs diff=lfs merge=lfs -text
 SanMar_EPDD.csv filter=lfs diff=lfs merge=lfs -text
