@@ -392,10 +392,10 @@ async function getSanmar() {
           <Button onClick={(e) => {getSanmar()}} className='sales-input'>Get SanMar Prices</Button>
         </div>
         <div className="total-form">
-          <Button onClick={(e) => {updatePrices()}} className='sales-input'><QueueIcon/> Update Prices</Button>
+          <h4>ID Start: </h4><input value={start} placeholder="0" onChange={(e) => {setStart(e.target.value)}}></input>
         </div>
         <div className="total-form">
-          <h4>ID Start: </h4><input value={start} placeholder="0" onChange={(e) => {setStart(e.target.value)}}></input>
+          <Button onClick={(e) => {updatePrices()}} className='sales-input'><QueueIcon/> Update Prices</Button>
         </div>
       </div>
       <br></br>
