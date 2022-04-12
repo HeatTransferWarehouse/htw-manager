@@ -11,6 +11,4 @@ pycosat==0.6.3
 pycurl==7.44.1
 pyls-spyder==0.4.0
 pymongo==4.0.2
-pyodbc===4.0.0-unsupported
-pytest==6.2.4
 zeep==4.1.0
