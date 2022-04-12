@@ -254,11 +254,11 @@ async function eachSanmarItem(product, item, vars) {
       "method": "PUT",
       "hostname": "api.bigcommerce.com",
       "port": null,
-      "path": `/stores/et4qthkygq/v3/catalog/products/${product.sku}/variants/${putId}`,
+      "path": `/stores/${process.env.STORE_HASH}/v3/catalog/products/${product.sku}/variants/${putId}`,
       "headers": {
         "accept": "application/json",
         "content-type": "application/json",
-        "x-auth-token": "13n6uxj2je2wbnc0vggmz8sqjl93d1d"
+        "x-auth-token": process.env.BG_AUTH_TOKEN
       }
     };
 

@@ -12,8 +12,8 @@ date = datetime.date
 log_filename = './product-skus-%s.log' % date.today().strftime('%m-%d-%y')
 log.basicConfig(filename=log_filename, format='%(asctime)s %(message)s',
                 datefmt='%m/%d/%Y %I:%M:%S %p', level=log.INFO)
-api = bigcommerce.api.BigcommerceApi(host='www.heattransferwarehouse.com', basic_auth=(
-    'Main', 'a1hgctnb1aabqsqzwjua1dtgbov3xfp'))
+api = bigcommerce.api.BigcommerceApi(
+            client_id=process.env.BG_AUTH_CLIENT, store_hash=process.env.STORE_HASH, access_token=process.env.BG_AUTH_TOKEN)
 sanmar = Sanmar()
 
 

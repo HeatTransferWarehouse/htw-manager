@@ -5,7 +5,7 @@ import re
 class BC():
     def __init__(self):
         self.api = bigcommerce.api.BigcommerceApi(
-            client_id='tw2come9pccgmcr0ybk555jkqcceiih', store_hash='et4qthkygq', access_token='13n6uxj2je2wbnc0vggmz8sqjl93d1d')
+            client_id=process.env.BG_AUTH_CLIENT, store_hash=process.env.STORE_HASH, access_token=process.env.BG_AUTH_TOKEN)
         self.cats = self.api.Categories.all(limit=250, is_visible=True)
         self.mens_cat_id = 42
         self.womens_cat_id = 52

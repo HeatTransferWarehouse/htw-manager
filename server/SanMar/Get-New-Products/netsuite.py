@@ -4,7 +4,7 @@ from colorama import Fore, Style
 from datetime import date
 
 api = bigcommerce.api.BigcommerceApi(
-            client_id='tw2come9pccgmcr0ybk555jkqcceiih', store_hash='et4qthkygq', access_token='13n6uxj2je2wbnc0vggmz8sqjl93d1d')
+            client_id=process.env.BG_AUTH_CLIENT, store_hash=process.env.STORE_HASH, access_token=process.env.BG_AUTH_TOKEN)
 
 
 def add_product_to_netsuite_df(product):

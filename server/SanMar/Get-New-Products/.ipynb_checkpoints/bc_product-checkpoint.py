@@ -5,7 +5,7 @@ import pandas as pd
 from bc_brands import get_brand_names
 
 api = bigcommerce.api.BigcommerceApi(
-            client_id='tw2come9pccgmcr0ybk555jkqcceiih', store_hash='et4qthkygq', access_token='13n6uxj2je2wbnc0vggmz8sqjl93d1d')
+            client_id=process.env.BG_AUTH_CLIENT, store_hash=process.env.STORE_HASH, access_token=process.env.BG_AUTH_TOKEN)
 
 
 def parse_product_description(description_field):

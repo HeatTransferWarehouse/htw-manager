@@ -11,7 +11,7 @@ SSH_USER = "root"
 SSH_PASS = "22Pixie@"
 
 api = bigcommerce.api.BigcommerceApi(
-            client_id='tw2come9pccgmcr0ybk555jkqcceiih', store_hash='et4qthkygq', access_token='13n6uxj2je2wbnc0vggmz8sqjl93d1d')
+            client_id=process.env.BG_AUTH_CLIENT, store_hash=process.env.STORE_HASH, access_token=process.env.BG_AUTH_TOKEN)
 client = MongoClient(
     'mongodb://%s:%s@192.241.149.120' % (MONGO_USER, MONGO_PASS), authSource='admin')
 db = db = client[MONGO_DB]
