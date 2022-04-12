@@ -1,5 +1,4 @@
 import bigcommerce
-import random
 from colorama import Fore, Style
 import time
 
