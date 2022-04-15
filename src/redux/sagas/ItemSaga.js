@@ -176,6 +176,14 @@ function* python() {
   }
 }
 
+function* webhook() {
+  try {
+    yield axios.get(`/api/item/webhook/order`);
+  } catch (error) {
+    console.log("Error with adding webhook:", error);
+  }
+}
+
 
 
 //this takes all of the Saga functions and dispatches them
@@ -195,6 +203,7 @@ function* itemSaga() {
     yield takeLatest('GET_SANMAR_PRICES', getSanmarPrices);
     yield takeLatest('GET_BC_PRICES', getBcPrices);
     yield takeLatest('PYTHON', python);
+    yield takeLatest('WEBHOOK', webhook);
 }
 
 export default itemSaga;

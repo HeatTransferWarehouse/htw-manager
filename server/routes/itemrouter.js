@@ -1012,6 +1012,35 @@ async function calculateSales(products) {
   return newProducts;
 }
 
+router.get("/webhook/order", async function (req, res) {
+  console.log("Hooking into BC Cart Webhooks..");
+
+  const webhookConfig =
+  {
+  "scope": "store/order/created",
+  "destination": "https://665b65a6.ngrok.io/webhooks",
+  "is_active": true
+  "Content-Type": "application/json"
+  "Accept": "application/json"
+  "X-Auth-Token": process.env.BG_AUTH_TOKEN,
+  }
+
+  let response = []
+
+  try {
+    response = await axios
+      .post(
+        `https://api.bigcommerce.com/stores/et4qthkygq/v2/hooks`,
+        webhookConfig
+      )
+  } catch (err) {
+    console.log('Error on add Webhook: ', err);
+  }
+
+  console.log(response);
+
+  res.send(200);
+});
 
 router.put("/updatePrices", async function (req, res) {
   console.log("We are updating sanmar prices..");

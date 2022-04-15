@@ -79,6 +79,20 @@ function BrightPearl () {
       <br></br>
       <br></br>
       <br></br>
+      <Button
+      className="invis"
+      variant = "contained"
+      color = "primary"
+      onClick = {
+        (event) => {
+          event.preventDefault();
+          dispatch({
+            type: "WEBHOOK",
+          });
+      swal("Added Webhook. Check console!");
+        }
+      }
+      ><FlagIcon/> Add Order Webhook</Button>
       <section className="capture-form">
       <h2>BrightPearl Order Capture</h2>
       <br></br>
