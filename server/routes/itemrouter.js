@@ -1013,31 +1013,54 @@ async function calculateSales(products) {
 }
 
 router.get("/webhook/order", async function (req, res) {
-  console.log("Hooking into BC Cart Webhooks..");
 
-  const webhookConfig =
-  {
-  "scope": "store/order/created",
-  "destination": "https://665b65a6.ngrok.io/webhooks",
-  "is_active": true,
-  "Content-Type": "application/json",
-  "Accept": "application/json",
-  "X-Auth-Token": process.env.BG_AUTH_TOKEN,
-  }
+  console.log('Request: ', req.body);
 
-  let response = []
+  let id = req.body.data.id;
 
-  try {
-    response = await axios
-      .post(
-        `https://api.bigcommerce.com/stores/et4qthkygq/v2/hooks`,
-        webhookConfig
+  if (req.body.data.id) {
+    console.log("Sending and order to Inksoft..");
+
+    let order = [];
+
+    try {
+      order = await axios
+      .get(
+        `https://api.bigcommerce.com/stores/et4qthkygq/v2/orders/${id}`,
+        config
       )
-  } catch (err) {
-    console.log('Error on add Webhook: ', err);
-  }
+    } catch (err) {
+      console.log('Error on get Order: ', err);
+    }
 
-  console.log(response);
+    console.log(order);
+
+  }  
+  
+
+  // const webhookConfig =
+  // {
+  // "scope": "store/order/created",
+  // "destination": "https://665b65a6.ngrok.io/webhooks",
+  // "is_active": true,
+  // "Content-Type": "application/json",
+  // "Accept": "application/json",
+  // "X-Auth-Token": process.env.BG_AUTH_TOKEN,
+  // }
+
+  // let response = []
+
+  // try {
+  //   response = await axios
+  //     .post(
+  //       `https://api.bigcommerce.com/stores/et4qthkygq/v2/hooks`,
+  //       webhookConfig
+  //     )
+  // } catch (err) {
+  //   console.log('Error on add Webhook: ', err);
+  // }
+
+  // console.log(response);
 
   res.send(200);
 });
