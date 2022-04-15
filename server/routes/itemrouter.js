@@ -1020,9 +1020,8 @@ router.get("/webhook/order", async function (req, res) {
   "scope": "store/order/created",
   "destination": "https://665b65a6.ngrok.io/webhooks",
   "is_active": true
-  Content-Type: "application/json"
-  Accept: "application/json"
-  X-Auth-Token: process.env.BG_AUTH_TOKEN,
+  "Accept": "application/json"
+  "X-Auth-Token": process.env.BG_AUTH_TOKEN,
   }
 
   let response = []
@@ -1396,14 +1395,14 @@ router.post("/addOrder", async function (req, res) {
   const tracking = req.body.tracking;
   console.log(o, tracking);
 
-try {
+  try {
   const queryText = `INSERT INTO "sanmar" (ref, tracking) VALUES ($1, $2);`;
   await pool
     .query(queryText, [o, tracking])
-} catch (err) {
+  } catch (err) {
   console.log('Error on add order: ', err);
   return res.status(500);
-}
+  }
 
   console.log("We are about to get the sanmar list");
 
@@ -1423,19 +1422,19 @@ try {
 router.post("/items", async function (req, res) {
   console.log("We are about to add to the item list");
 
-try {
+  try {
   await addItems();
-} catch (err) {
+  } catch (err) {
   console.log('Error on add items: ', err);
   return res.status(500);
-}
+  }
 
-try {
+  try {
   res.sendStatus(200);
-} catch (err) {
+  } catch (err) {
   console.log('Error on send 200: ', err);
   return res.status(500);
-}
+  }
 
   async function addItems () {
 
