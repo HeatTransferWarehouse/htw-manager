@@ -1019,8 +1019,9 @@ router.get("/webhook/order", async function (req, res) {
   {
   "scope": "store/order/created",
   "destination": "https://665b65a6.ngrok.io/webhooks",
-  "is_active": true
-  "Accept": "application/json"
+  "is_active": true,
+  "Content-Type": "application/json",
+  "Accept": "application/json",
   "X-Auth-Token": process.env.BG_AUTH_TOKEN,
   }
 
