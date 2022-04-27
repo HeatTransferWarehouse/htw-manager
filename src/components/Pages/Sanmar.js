@@ -3,7 +3,6 @@ import { useSelector, useDispatch } from 'react-redux';
 import './Main.css'
 import MUITable from "mui-datatables";
 import Button from "react-bootstrap/Button";
-import FlagIcon from "@material-ui/icons/Flag";
 import QueueIcon from "@material-ui/icons/Queue";
 import swal from "sweetalert";
 import SanmarImporter from '../Importer/SanmarImporter';
@@ -259,20 +258,6 @@ async function getSanmar() {
       <br></br>
       <br></br>
       <br></br>
-      <Button
-      className="invis"
-      variant = "contained"
-      color = "primary"
-      onClick = {
-        (event) => {
-          event.preventDefault();
-          dispatch({
-            type: "PYTHON",
-          });
-      swal("Syncing SanMar Inventory!");
-        }
-      }
-      ><FlagIcon/> SanMar Inventory Sync</Button>
       <section className="container">
         <div className="row">
           <h1>SanMar Orders</h1>

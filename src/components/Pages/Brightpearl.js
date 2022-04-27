@@ -4,7 +4,6 @@ import './Main.css'
 import MUITable from "mui-datatables";
 import Button from "react-bootstrap/Button";
 import PlayArrowIcon from "@material-ui/icons/PlayArrow";
-import FlagIcon from "@material-ui/icons/Flag";
 import DeleteIcon from "@material-ui/icons/Delete";
 import QueueIcon from "@material-ui/icons/Queue";
 import swal from "sweetalert";
@@ -80,20 +79,6 @@ function BrightPearl () {
       <br></br>
       <br></br>
       <br></br>
-      <Button
-      className="invis"
-      variant = "contained"
-      color = "primary"
-      onClick = {
-        (event) => {
-          event.preventDefault();
-          dispatch({
-            type: "WEBHOOK",
-          });
-      swal("Added Webhook. Check console!");
-        }
-      }
-      ><FlagIcon/> Add Order Webhook</Button>
       <section className="capture-form">
       <h2>BrightPearl Order Capture</h2>
       <br></br>

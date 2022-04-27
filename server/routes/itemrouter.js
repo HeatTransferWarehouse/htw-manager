@@ -7,52 +7,11 @@ const moment = require('moment');
 const sgMail = require("@sendgrid/mail");
 const fs = require("fs");
 sgMail.setApiKey(process.env.SENDGRID_API_KEY);
-const PythonShell = require('python-shell');
-
-let python = false;
-
-// Run Python Files
-setInterval(() => {
-  // set this to true to activate
-  python = true;
-
-  if (python) {
-    console.log('Running SanMar Inventory Sync..');
-    let options = {
-      pythonOptions: ['-u'], // get print results in real-time
-      args: ['pandas', 'bigcommerce', 'log', 'mail', 'colorama']
-    };
-
-    PythonShell.PythonShell.run('server/SanMar/Inventory-Sync/main.py', options, function (err, results) {
-      if (err) throw err;
-      console.log('results: %j', results);
-    });
-  }
-}, 1000 * 60 * 1440);
-
-setInterval(() => {
-  // set this to true to activate
-  python = true;
-
-  if (python) {
-    console.log('Running New SanMar Products..');
-    let options = {
-      pythonOptions: ['-u'], // get print results in real-time
-      args: ['pandas', 'bigcommerce', 'log', 'mail', 'colorama', 'zeep', 'pymongo']
-    };
-
-    PythonShell.PythonShell.run('server/SanMar/Get-New-Products/main.py', options, function (err, results) {
-      if (err) throw err;
-      console.log('results: %j', results);
-    });
-  }
-}, 1000 * 60 * 1440);
 
 const {
   updateNote,
   getSO,
 } = require('./Capture/api');
-const { response } = require('express');
 
 const createNote = async (e) => {
   console.log('Updating Note on BP...');
@@ -1012,59 +971,6 @@ async function calculateSales(products) {
   return newProducts;
 }
 
-router.get("/webhook/order", async function (req, res) {
-
-  console.log('Request: ', req.body);
-
-  let id = req.body.data.id;
-
-  if (req.body.data.id) {
-    console.log("Sending and order to Inksoft..");
-
-    let order = [];
-
-    try {
-      order = await axios
-      .get(
-        `https://api.bigcommerce.com/stores/et4qthkygq/v2/orders/${id}`,
-        config
-      )
-    } catch (err) {
-      console.log('Error on get Order: ', err);
-    }
-
-    console.log(order);
-
-  }  
-  
-
-  // const webhookConfig =
-  // {
-  // "scope": "store/order/created",
-  // "destination": "https://665b65a6.ngrok.io/webhooks",
-  // "is_active": true,
-  // "Content-Type": "application/json",
-  // "Accept": "application/json",
-  // "X-Auth-Token": process.env.BG_AUTH_TOKEN,
-  // }
-
-  // let response = []
-
-  // try {
-  //   response = await axios
-  //     .post(
-  //       `https://api.bigcommerce.com/stores/et4qthkygq/v2/hooks`,
-  //       webhookConfig
-  //     )
-  // } catch (err) {
-  //   console.log('Error on add Webhook: ', err);
-  // }
-
-  // console.log(response);
-
-  res.send(200);
-});
-
 router.put("/updatePrices", async function (req, res) {
   console.log("We are updating sanmar prices..");
   const bc = req.body.bcItems;
@@ -1606,26 +1512,6 @@ router.post("/updateCart", async function (req, res) {
   }
 
   res.send(200);
-});
-
-router.post("/python", (req, res) => {
-  console.log('Running Python Files..');
-
-  try {
-    let options = {
-      pythonOptions: ['-u'], // get print results in real-time
-      args: ['pandas', 'bigcommerce', 'log', 'mail', 'colorama']
-    };
-
-    PythonShell.PythonShell.run('server/SanMar/Inventory-Sync/main.py', options, function (err, results) {
-      if (err) throw err;
-      console.log('results: %j', results);
-    });
-    res.sendStatus(200);
-  } catch (err) {
-    console.log('Error on Run Python Files: ', err);
-    res.sendStatus(500);
-  }
 });
 
 
