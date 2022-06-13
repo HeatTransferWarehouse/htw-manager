@@ -6,6 +6,7 @@ const Client = require('ftp');
 const moment = require('moment');
 const sgMail = require("@sendgrid/mail");
 const fs = require("fs");
+const jwt = require('jsonwebtoken');
 sgMail.setApiKey(process.env.SENDGRID_API_KEY);
 
 const {
@@ -1517,7 +1518,7 @@ router.post("/updateCart", async function (req, res) {
 router.post("/jwt", async function (req, res) {
   console.log("We are about to decode a JWT token");
 
-  const token = req.body;
+  const token = req;
   console.log('Token: ', token);
   let decoded = '0';
 
