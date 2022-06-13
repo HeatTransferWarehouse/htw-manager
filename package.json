@@ -32,6 +32,7 @@
     "express": "^4.16.4",
     "fs": "0.0.1-security",
     "ftp": "^0.3.10",
+    "jsonwebtoken": "^8.5.1",
     "luxon": "^2.3.0",
     "moment": "^2.29.1",
     "mui-datatables": "^3.7.1",

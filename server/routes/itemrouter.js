@@ -1514,5 +1514,24 @@ router.post("/updateCart", async function (req, res) {
   res.send(200);
 });
 
+router.post("/jwt", async function (req, res) {
+  console.log("We are about to decode a JWT token");
+
+  const token = req.body;
+  console.log('Token: ', token);
+  let decoded = '0';
+
+  try {
+    decoded = jwt.verify(token, '9461605d7e247c64d913b6ec2ec75f9c72f873b6edc81b6e944a54d8daef984a');
+  } catch (err) {
+    console.log('Invalid: ', err);
+    return res.status(400);
+  }
+
+  console.log(decoded);
+
+  res.send(decoded);
+});
+
 
 module.exports = router;
