@@ -7,7 +7,13 @@ const moment = require('moment');
 const sgMail = require("@sendgrid/mail");
 const fs = require("fs");
 const jwt = require('jsonwebtoken');
+const app = express();
+const cors = require('cors');
 sgMail.setApiKey(process.env.SENDGRID_API_KEY);
+
+app.use(cors({
+  origin: ['https://www.heattransferwarehouse.com']
+}));
 
 const {
   updateNote,
@@ -1515,7 +1521,7 @@ router.post("/updateCart", async function (req, res) {
   res.send(200);
 });
 
-router.post("/jwt", async function (req, res) {
+router.post("/jwt", cors(), async function (req, res) {
   console.log("We are about to decode a JWT token");
 
   const token = req.body.token;
