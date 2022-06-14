@@ -1549,7 +1549,7 @@ router.post("/jwt", cors(), async function (req, res) {
     console.log('Error on Get Customer: ', err);
   }
 
-  console.log('Response: ', customer);
+  //console.log('Response: ', customer);
 
   const cust = customer.data;
 
