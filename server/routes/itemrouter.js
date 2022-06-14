@@ -1518,7 +1518,7 @@ router.post("/updateCart", async function (req, res) {
 router.post("/jwt", async function (req, res) {
   console.log("We are about to decode a JWT token");
 
-  const token = req;
+  const token = req.body.token;
   console.log('Token: ', token);
   let decoded = '0';
 
