@@ -1551,6 +1551,8 @@ router.post("/jwt", cors(), async function (req, res) {
 
   const cust = customer.data.data;
 
+  console.log('Sending Back: ', cust);
+
   res.send(cust);
 });
 
