@@ -1525,7 +1525,7 @@ router.post("/jwt", cors(), async function (req, res) {
   console.log("We are about to decode a JWT token");
 
   const token = req.body.token;
-  console.log('Token: ', token);
+  //console.log('Token: ', token);
   let decoded = '0';
 
   try {
@@ -1534,7 +1534,7 @@ router.post("/jwt", cors(), async function (req, res) {
     console.log('Invalid: ', err);
   }
 
-  console.log(decoded);
+  //console.log(decoded);
 
   let customer = [];
   const customer_id = decoded.customer.id;
@@ -1549,7 +1549,9 @@ router.post("/jwt", cors(), async function (req, res) {
     console.log('Error on Get Customer: ', err);
   }
 
-  const cust = customer.data.data;
+  console.log('Response: ', customer);
+
+  const cust = customer.data;
 
   console.log('Sending Back: ', cust);
 
