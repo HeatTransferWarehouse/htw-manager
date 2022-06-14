@@ -1526,12 +1526,26 @@ router.post("/jwt", async function (req, res) {
     decoded = jwt.verify(token, '9461605d7e247c64d913b6ec2ec75f9c72f873b6edc81b6e944a54d8daef984a');
   } catch (err) {
     console.log('Invalid: ', err);
-    return res.status(400);
   }
 
   console.log(decoded);
 
-  res.send(decoded);
+  let customer = [];
+  const customer_id = decoded.customer.id;
+
+  try {
+    customer = await axios
+      .get(
+        `https://api.bigcommerce.com/stores/et4qthkygq/v2/customers/${customer_id}`,
+        config
+      )
+  } catch (err) {
+    console.log('Error on Get Customer: ', err);
+  }
+
+  const cust = customer.data.data;
+
+  res.send(cust);
 });
 
 
