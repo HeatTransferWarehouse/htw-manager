@@ -1558,5 +1558,102 @@ router.post("/jwt", cors(), async function (req, res) {
   res.send(cust);
 });
 
+router.post("/bcRegister", async function (req, res) {
+  console.log("We are about to register and signin to inksoft..");
+
+  const cust = req.body.customer;
+
+  //sessionToken = sessionToken.replace(/"/g, "'");
+  const inksoftPassword = "t@91bW7He2!0Lo21";
+  let email = JSON.stringify(cust.email);
+  let first_name = JSON.stringify(cust.first_name);
+  let last_name = JSON.stringify(cust.last_name);
+  //email = email.replace(/"/g, "'");
+  //first_name = first_name.replace(/"/g, "'");
+  //last_name = last_name.replace(/"/g, "'");
+
+  console.log('Session Token: ', sessionToken);
+  console.log('Email: ', email);
+  console.log('First Name: ', first_name);
+  console.log('Last Name: ', last_name);
+  const apiKey = process.env.INKSOFT_API_KEY;
+
+
+  const register = `Email=${email}&FirstName=${first_name}&LastName=${last_name}&Password=${inksoftPassword}&ConfirmPassword=${inksoftPassword}&SessionToken=${sessionToken}&ApiKey=${apiKey}&NonTaxable=false&RememberMe=true&SubscribeToNewsletter=false&Format=JSON`;
+
+  const newRegister = register.replace(/"/g, "");
+
+  console.log('Register Data being sent: ', newRegister);
+
+  try {
+    await $.ajax({
+      type: 'POST',
+      url: 'https://stores.inksoft.com/DS350156262/Api2/Register',
+      dataType: 'text',
+      data: newRegister,
+      processData: false,
+      crossDomain: true,
+      success: function (res) {
+        const sess = JSON.parse(res).Data;
+
+        let sessionTokenRegister = sess.Token;
+
+        console.log('SessionToken after Register: ', sessionTokenRegister);
+        //$.cookie('SessionToken', sessionTokenRegister);
+      }
+    });
+  } catch (err) {
+    console.log('Error on Register User: ', err, err.responseText);
+  }
+
+
+  const signIn = `Email=${email}&Password=${inksoftPassword}&Format=JSON`;
+
+  const newSignIn = signIn.replace(/"/g, "");
+
+  console.log('Sign In Data being sent: ', newSignIn);
+
+  try {
+    await $.ajax({
+      type: 'POST',
+      url: 'https://stores.inksoft.com/DS350156262/Api2/SignIn',
+      dataType: 'text',
+      data: newSignIn,
+      processData: false,
+      crossDomain: true,
+      success: function (res) {
+        const sess = JSON.parse(res).Data;
+
+        let sessionTokenLogin = sess.Token;
+
+        console.log('SessionToken after Login: ', sessionTokenLogin);
+        //$.cookie('SessionToken', sessionTokenLogin);
+      }
+    });
+  } catch (err) {
+    console.log('Error on Login User: ', err, err.responseText);
+  }
+
+  try {
+    //console.log('Session Token before validation: ', sessionToken);
+    await $.ajax({
+      type: 'GET',
+      url: `https://stores.inksoft.com/DS350156262/Api2/GetSession?SessionToken=${sessionToken}&Format=JSON`,
+      dataType: 'text',
+      data: '',
+      processData: false,
+      crossDomain: true,
+      success: function (res) {
+        const sess = JSON.parse(res).Data;
+        console.log('Session Verified: ', sess.Token);
+      }
+    });
+  } catch (err) {
+    console.log('Error on Verify Session: ', err, err.responseText);
+  }
+
+  res.send(200);
+});
+
 
 module.exports = router;
