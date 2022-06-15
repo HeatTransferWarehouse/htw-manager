@@ -1558,10 +1558,11 @@ router.post("/jwt", cors(), async function (req, res) {
   res.send(cust);
 });
 
-router.post("/bcRegister", async function (req, res) {
+router.post("/bcRegister", cors(), async function (req, res) {
   console.log("We are about to register and signin to inksoft..");
 
   const cust = req.body.customer;
+  const sessionToken = req.body.session;
 
   //sessionToken = sessionToken.replace(/"/g, "'");
   const inksoftPassword = "t@91bW7He2!0Lo21";
