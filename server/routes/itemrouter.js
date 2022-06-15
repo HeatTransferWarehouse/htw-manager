@@ -1586,26 +1586,27 @@ router.post("/bcRegister", cors(), async function (req, res) {
 
   console.log('Register Data being sent: ', newRegister);
 
+  let inksoftConfig = {
+        dataType: 'text',
+        data: newRegister,
+        processData: false,
+        crossDomain: true,
+  }
+
+  let reg = [];
+  let signin = [];
+  let verify = [];
+
   try {
-    await $.ajax({
-      type: 'POST',
-      url: 'https://stores.inksoft.com/DS350156262/Api2/Register',
-      dataType: 'text',
-      data: newRegister,
-      processData: false,
-      crossDomain: true,
-      success: function (res) {
-        const sess = JSON.parse(res).Data;
-
-        let sessionTokenRegister = sess.Token;
-
-        console.log('SessionToken after Register: ', sessionTokenRegister);
-        //$.cookie('SessionToken', sessionTokenRegister);
-      }
-    });
+    reg = await axios.post(
+      'https://stores.inksoft.com/DS350156262/Api2/Register',
+      inksoftConfig
+    );
   } catch (err) {
     console.log('Error on Register User: ', err, err.responseText);
   }
+
+  console.log('Registered: ', reg);
 
 
   const signIn = `Email=${email}&Password=${inksoftPassword}&Format=JSON`;
@@ -1614,44 +1615,41 @@ router.post("/bcRegister", cors(), async function (req, res) {
 
   console.log('Sign In Data being sent: ', newSignIn);
 
+  inksoftConfig = {
+    dataType: 'text',
+    data: newSignIn,
+    processData: false,
+    crossDomain: true,
+  }
+
   try {
-    await $.ajax({
-      type: 'POST',
-      url: 'https://stores.inksoft.com/DS350156262/Api2/SignIn',
-      dataType: 'text',
-      data: newSignIn,
-      processData: false,
-      crossDomain: true,
-      success: function (res) {
-        const sess = JSON.parse(res).Data;
-
-        let sessionTokenLogin = sess.Token;
-
-        console.log('SessionToken after Login: ', sessionTokenLogin);
-        //$.cookie('SessionToken', sessionTokenLogin);
-      }
-    });
+    signin = await axios.post(
+      'https://stores.inksoft.com/DS350156262/Api2/SignIn',
+      inksoftConfig
+    );
   } catch (err) {
     console.log('Error on Login User: ', err, err.responseText);
   }
 
+  console.log('Signed In: ', signin);
+
+  inksoftConfig = {
+    dataType: 'text',
+    processData: false,
+    crossDomain: true,
+  }
+
   try {
     //console.log('Session Token before validation: ', sessionToken);
-    await $.ajax({
-      type: 'GET',
-      url: `https://stores.inksoft.com/DS350156262/Api2/GetSession?SessionToken=${sessionToken}&Format=JSON`,
-      dataType: 'text',
-      data: '',
-      processData: false,
-      crossDomain: true,
-      success: function (res) {
-        const sess = JSON.parse(res).Data;
-        console.log('Session Verified: ', sess.Token);
-      }
-    });
+    verify = await axios.get(
+      `https://stores.inksoft.com/DS350156262/Api2/GetSession?SessionToken=${sessionToken}&Format=JSON`,
+      inksoftConfig
+    );
   } catch (err) {
     console.log('Error on Verify Session: ', err, err.responseText);
   }
+
+  console.log('Verified: ', verify);
 
   res.send(200);
 });

@@ -11,11 +11,15 @@ class Footer extends Component {
     let thisYear = thisDate.getFullYear();
     const copyright = "\u00A9";
     return (
-      <footer className="App-footer">
-        <p>
-          {copyright}  Heat Transfer Warehouse  {thisYear}
-        </p>
-      </footer>
+    <footer class="section">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-12">
+                    <p class="copyright">Copyright {copyright} {thisYear} Heat Transfer Warehouse</p>
+                </div>
+            </div>
+        </div>
+    </footer>
     ); // end return
   } // end render
 } // end class Footer

@@ -149,3 +149,7 @@ form {
     top: .5em;
     right: .5em;
 }
+
+.section {
+        background-color: rgb(255, 255, 255);
+}

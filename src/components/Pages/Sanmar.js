@@ -1,6 +1,9 @@
 import React, {useState, useEffect} from "react";
 import { useSelector, useDispatch } from 'react-redux';
-import './Main.css'
+import './Main.css';
+import './css/bootstrap.min.css';
+import './css/font-awesome.css';
+import './css/templatemo-softy-pinko.css';
 import MUITable from "mui-datatables";
 import Button from "react-bootstrap/Button";
 import QueueIcon from "@material-ui/icons/Queue";
@@ -255,6 +258,9 @@ async function getSanmar() {
     //defines the dataselector to know which items to preform actions on
     return (
       <>
+      <br></br>
+      <br></br>
+      <br></br>
       <br></br>
       <br></br>
       <br></br>

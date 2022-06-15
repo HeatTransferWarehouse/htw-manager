@@ -6,14 +6,6 @@
     padding-left: 10px;
 }
 
-.nav {
-  overflow: hidden;
-  width:100%;
-  text-align: center;
-  background-color: #40e6d8;
-  
-}
-
 .nav-logo {
   text-align: center;
 }
@@ -25,7 +17,6 @@
 .nav-link {
   font-family: Verdana;
   float: left;
-  background-color: #40e6d8;
   color: #303030;
   text-align: center;
   padding: 24px 10px;
@@ -39,7 +30,6 @@
 .nav-link2 {
   float: left;
   background-color: #8B008B;
-  color: #f2f2f2;
   text-align: center;
   padding: 24px 10px;
   text-decoration: none;
@@ -52,7 +42,6 @@
 .active-nav-link {
   float: left;
   background-color: #00008B;
-  color: #0e8baa;
   text-align: center;
   padding: 24px 10px;
   text-decoration: none;
@@ -65,7 +54,6 @@
 .active-nav-link2 {
   float: left;
   background-color: #8B008B;
-  color: #0e8baa;
   text-align: center;
   padding: 24px 10px;
   text-decoration: none;

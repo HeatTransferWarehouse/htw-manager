@@ -3,7 +3,6 @@ import "bootstrap/dist/css/bootstrap.min.css";
 import {
   HashRouter as Router,
   Route,
-  Redirect,
   Switch,
 } from "react-router-dom";
 import { connect } from 'react-redux';
@@ -12,6 +11,7 @@ import Footer from "../Footer/Footer";
 import Main from "../Home/Main";
 import Sanmar from "../Pages/Sanmar";
 import Brightpearl from "../Pages/Brightpearl";
+import Resources from "../Pages/Resources";
 import "./App.css";
 class App extends Component {
 
@@ -30,6 +30,8 @@ class App extends Component {
             <Route exact path="/sanmar" component={Sanmar} />
 
             <Route exact path="/brightpearl" component={Brightpearl} />
+
+            <Route exact path="/resources" component={Resources} />
             {/* If none of the other routes matched, we will show a 404. */}
             <Route render={() => <h1>404</h1>} />
           </Switch>
