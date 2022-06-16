@@ -1603,7 +1603,9 @@ router.post("/bcRegister", cors(), async function (req, res) {
       inksoftConfig
     );
   } catch (err) {
+    if (err.data.messages) {
     console.log('Error on Register User: ', err.data.messages);
+    }
   }
 
   console.log('Registered: ', reg);
@@ -1628,7 +1630,9 @@ router.post("/bcRegister", cors(), async function (req, res) {
       inksoftConfig
     );
   } catch (err) {
+    if (err.data.messages) {
     console.log('Error on Login User: ', err.data.messages);
+    }
   }
 
   console.log('Signed In: ', signin);
@@ -1646,7 +1650,9 @@ router.post("/bcRegister", cors(), async function (req, res) {
       inksoftConfig
     );
   } catch (err) {
+    if (err.data.messages) {
     console.log('Error on Verify Session: ', err.data.messages);
+    }
   }
 
   console.log('Verified: ', verify);
