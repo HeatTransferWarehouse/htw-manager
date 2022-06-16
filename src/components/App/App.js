@@ -8,10 +8,12 @@ import {
 import { connect } from 'react-redux';
 import Nav from "../Nav/Nav";
 import Footer from "../Footer/Footer";
+import Register from "../RegisterForm/RegisterForm";
 import Main from "../Home/Main";
 import Sanmar from "../Pages/Sanmar";
 import Brightpearl from "../Pages/Brightpearl";
 import Resources from "../Pages/Resources";
+import ProtectedRoute from "../ProtectedRoute/ProtectedRoute";
 import "./App.css";
 class App extends Component {
 
@@ -25,15 +27,17 @@ class App extends Component {
           <Switch>
             {/* Visiting localhost:3000 will redirect to localhost:3000/home */}
 
-            <Route exact path="/" component={Main} />
+            <ProtectedRoute exact path="/" component={Main} />
 
-            <Route exact path="/sanmar" component={Sanmar} />
+            <Route exact path="/register" component={Register} />
 
-            <Route exact path="/brightpearl" component={Brightpearl} />
+            <ProtectedRoute exact path="/sanmar" component={Sanmar} />
 
-            <Route exact path="/resources" component={Resources} />
+            <ProtectedRoute exact path="/brightpearl" component={Brightpearl} />
+
+            <ProtectedRoute exact path="/resources" component={Resources} />
             {/* If none of the other routes matched, we will show a 404. */}
-            <Route render={() => <h1>404</h1>} />
+            <Route render={() => <><br/><br/><br/><br/><br/><br/><h1 className="fourfour">404</h1></>} />
           </Switch>
           <Footer />
         </div>

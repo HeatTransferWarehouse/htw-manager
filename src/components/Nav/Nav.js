@@ -11,7 +11,7 @@ class Nav extends Component {
             <div class="row">
                 <div class="col-12">
                     <nav class="main-nav">
-                        <a href="https://heattransferwarehouse.com" target="_blank" class="logo">
+                        <a href="/" class="logo">
                             <img src="https://cdn11.bigcommerce.com/s-et4qthkygq/images/stencil/177x60/htwlogo_web_1573140308__59565.original.png" alt="Heat Transfer Warehouse"/>
                         </a>
                         <div className="nav">

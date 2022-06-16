@@ -1,6 +1,9 @@
 import { combineReducers } from 'redux';
 import item from './itemReducer';
 import redirect from './redirectReducer';
+import error from './errorsReducer';
+import login from './loginModeReducer';
+import user from './userReducer';
 
 // rootReducer is the primary reducer for our entire project
 // It bundles up all of the other reducers so our project can use them.
@@ -11,6 +14,9 @@ import redirect from './redirectReducer';
 const rootReducer = combineReducers({
   item,
   redirect,
+  error,
+  login,
+  user,
 });
 
 export default rootReducer;

@@ -28,9 +28,8 @@ function Resources () {
                 <div class="row">
                     <div class="offset-xl-3 col-xl-6 offset-lg-2 col-lg-8 col-md-12 col-sm-12">
                         <h1>Your Trusted Source for <strong>HTV</strong>,<br/> <strong>Craft Vinyl</strong>, <strong>Presses</strong>, <strong>Equipment</strong>, <strong>Sublimation</strong>, and More</h1>
-                        <p>This is our Admin App that serves as a Portal 
+                        <p>This is a list of all Resources and links 
                         to all of our Websites, Custom Apps, and more</p>
-                        <a href="#custom" class="main-button-slider">Custom Apps</a>
                     </div>
                 </div>
             </div>

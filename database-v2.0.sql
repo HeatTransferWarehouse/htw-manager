@@ -34,3 +34,12 @@ CREATE TABLE "bc-prices"
 	"name" varchar(255),
 	"sku" varchar(255)
 );
+
+CREATE TABLE "user" (
+"id" serial NOT NULL,
+	"email" VARCHAR (320) UNIQUE NOT NULL,
+	"password" varchar(255) NOT NULL,
+	"join_date" DATE NOT NULL DEFAULT 'now()',
+	"last_login" DATE,
+	"access_level" varchar(10)
+);
