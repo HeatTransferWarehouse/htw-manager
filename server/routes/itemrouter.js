@@ -984,7 +984,7 @@ router.put("/updatePrices", async function (req, res) {
   const sanmar = req.body.sanmar;
   const start = req.body.start;
 
-  res.sendStatus(200).send();
+  res.status(200).send();
 
   try {
     await updatePrices(bc, sanmar, start);
@@ -1029,7 +1029,7 @@ router.put("/ftp", async function (req, res) {
     //res.send('YES').status(201);
   } catch (err) {
     console.log('Error on connect ftp: ', err);
-    res.send('NO').status(500);
+    res.status(500).send('NO');
   }
 
 });
@@ -1071,7 +1071,7 @@ router.put("/ftpPrices", async function (req, res) {
     //res.send('YES').status(201);
   } catch (err) {
     console.log('Error on connect ftp: ', err);
-    res.send('NO').status(500);
+    res.status(500).send('NO');
   }
 
 });
@@ -1125,7 +1125,7 @@ router.get("/getSanmarPrices", async function (req, res) {
     return res.status(500);
   }
 
-  res.send(response.rows);
+  res.status(200).send(response.rows);
 });
 
 router.put("/email", async function (req, res) {
@@ -1246,7 +1246,7 @@ router.get("/getitems", (req, res) => {
   pool
     .query(queryText)
     .then((selectResult) => {
-      res.send(selectResult.rows);
+      res.status(201).send(selectResult.rows);
     })
     .catch((error) => {
       console.log(`Error on item query ${error}`);
@@ -1261,7 +1261,7 @@ router.get("/getsanmar", (req, res) => {
   pool
     .query(queryText)
     .then((selectResult) => {
-      res.send(selectResult.rows);
+      res.status(201).send(selectResult.rows);
     })
     .catch((error) => {
       console.log(`Error on item query ${error}`);
@@ -1323,7 +1323,7 @@ router.get("/getBC", async function (req, res) {
     return res.status(500);
   }
 
-  res.send(response.rows);
+  res.status(200).send(response.rows);
 });
 
 router.post("/addOrder", async function (req, res) {
@@ -1347,7 +1347,7 @@ router.post("/addOrder", async function (req, res) {
   pool
     .query(queryText)
     .then((selectResult) => {
-      res.send(selectResult.rows);
+      res.status(201).send(selectResult.rows);
     })
     .catch((error) => {
       console.log(`Error on item query ${error}`);
@@ -1470,7 +1470,7 @@ router.put("/items/:id", async function (req, res) {
     await pool
       .query(queryText)
       .then((selectResult) => {
-        res.send(selectResult.rows);
+        res.status(201).send(selectResult.rows);
       })
       .catch((error) => {
         console.log(`Error on item query ${error}`);
@@ -1518,7 +1518,7 @@ router.post("/updateCart", async function (req, res) {
     return res.status(500);
   }
 
-  res.send(200);
+  res.sendStatus(200);
 });
 
 router.post("/jwt", cors(), async function (req, res) {
@@ -1555,7 +1555,7 @@ router.post("/jwt", cors(), async function (req, res) {
 
   console.log('Sending Back: ', cust);
 
-  res.send(cust);
+  res.status(200).send(cust);
 });
 
 router.post("/bcRegister", cors(), async function (req, res) {
@@ -1603,8 +1603,8 @@ router.post("/bcRegister", cors(), async function (req, res) {
       inksoftConfig
     );
   } catch (err) {
-    if (err.data) {
-    console.log('Error on Register User: ', err.data);
+    if (err.response.data) {
+    console.log('Error on Register User: ', err.response.data);
     }
   }
 
@@ -1630,8 +1630,8 @@ router.post("/bcRegister", cors(), async function (req, res) {
       inksoftConfig
     );
   } catch (err) {
-    if (err.data) {
-    console.log('Error on Login User: ', err.data);
+    if (err.response.data) {
+    console.log('Error on Login User: ', err.response.data);
     }
   }
 
@@ -1650,14 +1650,14 @@ router.post("/bcRegister", cors(), async function (req, res) {
       inksoftConfig
     );
   } catch (err) {
-    if (err.data) {
-    console.log('Error on Verify Session: ', err.data);
+    if (err.response.data) {
+    console.log('Error on Verify Session: ', err.response.data);
     }
   }
 
   console.log('Verified: ', verify);
 
-  res.send(200);
+  res.sendStatus(200);
 });
 
 
