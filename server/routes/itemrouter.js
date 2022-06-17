@@ -1577,8 +1577,8 @@ router.post("/bcRegister", cors(), async function (req, res) {
   console.log('Email: ', email);
   console.log('First Name: ', first_name);
   console.log('Last Name: ', last_name);
-  const apiKey = process.env.INKSOFT_API_KEY;
-  const captchaKey = process.end.CAPTCHA_KEY;
+  //const apiKey = process.env.INKSOFT_API_KEY;
+  const captchaKey = process.env.CAPTCHA_KEY;
 
 
   const register = `Email=${email}&FirstName=${first_name}&LastName=${last_name}&Password=${inksoftPassword}&ConfirmPassword=${inksoftPassword}&SessionToken=${sessionToken}&CaptchaKey=${captchaKey}&NonTaxable=false&RememberMe=true&SubscribeToNewsletter=false&Format=JSON`;
