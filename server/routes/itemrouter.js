@@ -1580,7 +1580,7 @@ router.post("/bcRegister", cors(), async function (req, res) {
   const apiKey = process.env.INKSOFT_API_KEY;
 
 
-  const register = `Email=${email}&FirstName=${first_name}&LastName=${last_name}&Password=${inksoftPassword}&ConfirmPassword=${inksoftPassword}&SessionToken=${sessionToken}&ApiKey=${apiKey}&NonTaxable=false&RememberMe=true&SubscribeToNewsletter=false&Format=JSON`;
+  const register = `Email=${email}&FirstName=${first_name}&LastName=${last_name}&Password=${inksoftPassword}&ConfirmPassword=${inksoftPassword}&SessionToken=${sessionToken}&NonTaxable=false&RememberMe=true&SubscribeToNewsletter=false&Format=JSON`;
 
   const newRegister = register.replace(/"/g, "");
 
@@ -1591,6 +1591,10 @@ router.post("/bcRegister", cors(), async function (req, res) {
         data: newRegister,
         processData: false,
         crossDomain: true,
+        headers: {
+          "Content-Type": "application/json",
+          "x-api-key": apiKey,
+        }
   }
 
   let reg = [];
