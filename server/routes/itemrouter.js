@@ -1562,7 +1562,7 @@ router.post("/bcRegister", cors(), async function (req, res) {
   console.log("We are about to register and signin to inksoft..");
 
   const cust = req.body.customer;
-  const sessionToken = req.body.session;
+  //const sessionToken = req.body.session;
 
   //sessionToken = sessionToken.replace(/"/g, "'");
   const inksoftPassword = "t@91bW7He2!0Lo21";
@@ -1573,96 +1573,119 @@ router.post("/bcRegister", cors(), async function (req, res) {
   //first_name = first_name.replace(/"/g, "'");
   //last_name = last_name.replace(/"/g, "'");
 
-  console.log('Session Token: ', sessionToken);
+  //console.log('Session Token: ', sessionToken);
   console.log('Email: ', email);
   console.log('First Name: ', first_name);
   console.log('Last Name: ', last_name);
-  //const apiKey = process.env.INKSOFT_API_KEY;
-  const captchaKey = process.env.CAPTCHA_KEY;
+  const apiKey = process.env.INKSOFT_API_KEY;
+  //const captchaKey = process.env.CAPTCHA_KEY;
 
 
-  const register = `Email=${email}&FirstName=${first_name}&LastName=${last_name}&Password=${inksoftPassword}&ConfirmPassword=${inksoftPassword}&SessionToken=${sessionToken}&CaptchaKey=${captchaKey}&NonTaxable=false&RememberMe=true&SubscribeToNewsletter=false&Format=JSON`;
+  const sessData = `ApiKey=${apiKey}Email=${email}&CreateNewCart=false&FirstName=${first_name}&LastName=${last_name}&Password=${inksoftPassword}&Format=JSON`;
 
-  const newRegister = register.replace(/"/g, "");
+  const newSess = sessData.replace(/"/g, "");
 
-  console.log('Register Data being sent: ', newRegister);
+  console.log('Get/Create Session Data being sent: ', newSess);
 
   let inksoftConfig = {
         dataType: 'text',
-        data: newRegister,
+        data: newSess,
         processData: false,
         crossDomain: true,
-        //headers: {
-        //  "Content-Type": "application/json",
-        //  "x-api-key": apiKey,
-       // }
   }
 
-  let reg = [];
-  let signin = [];
-  let verify = [];
+  //let reg = [];
+  //let signin = [];
+  //let verify = [];
+  let sess = [];
 
   try {
-    reg = await axios.post(
-      'https://stores.inksoft.com/DS350156262/Api2/Register',
+    sess = await axios.post(
+      'https://stores.inksoft.com/DS350156262/Api2/GetOrCreateSessionWithApiKey',
       inksoftConfig
     );
   } catch (err) {
     if (err.response.data) {
-    console.log('Error on Register User: ', err.response.data);
+    console.log('Error on Get/Create Sessoin User: ', err.response.data);
     }
   }
 
-  console.log('Registered: ', reg);
+  console.log('Session: ', sess);
+
+  // const register = `Email=${email}&FirstName=${first_name}&LastName=${last_name}&Password=${inksoftPassword}&ConfirmPassword=${inksoftPassword}&SessionToken=${sessionToken}&CaptchaKey=${captchaKey}&NonTaxable=false&RememberMe=true&SubscribeToNewsletter=false&Format=JSON`;
+
+  // const newRegister = register.replace(/"/g, "");
+
+  // console.log('Register Data being sent: ', newRegister);
+
+  // inksoftConfig = {
+  //   dataType: 'text',
+  //   data: newRegister,
+  //   processData: false,
+  //   crossDomain: true,
+  // }
+
+  // try {
+  //   reg = await axios.post(
+  //     'https://stores.inksoft.com/DS350156262/Api2/Register',
+  //     inksoftConfig
+  //   );
+  // } catch (err) {
+  //   if (err.response.data) {
+  //   console.log('Error on Register User: ', err.response.data);
+  //   }
+  // }
+
+  // console.log('Registered: ', reg);
 
 
-  const signIn = `Email=${email}&Password=${inksoftPassword}&Format=JSON`;
+  // const signIn = `Email=${email}&Password=${inksoftPassword}&Format=JSON`;
 
-  const newSignIn = signIn.replace(/"/g, "");
+  // const newSignIn = signIn.replace(/"/g, "");
 
-  console.log('Sign In Data being sent: ', newSignIn);
+  // console.log('Sign In Data being sent: ', newSignIn);
 
-  inksoftConfig = {
-    dataType: 'text',
-    data: newSignIn,
-    processData: false,
-    crossDomain: true,
-  }
+  // inksoftConfig = {
+  //   dataType: 'text',
+  //   data: newSignIn,
+  //   processData: false,
+  //   crossDomain: true,
+  // }
 
-  try {
-    signin = await axios.post(
-      'https://stores.inksoft.com/DS350156262/Api2/SignIn',
-      inksoftConfig
-    );
-  } catch (err) {
-    if (err.response.data) {
-    console.log('Error on Login User: ', err.response.data);
-    }
-  }
+  // try {
+  //   signin = await axios.post(
+  //     'https://stores.inksoft.com/DS350156262/Api2/SignIn',
+  //     inksoftConfig
+  //   );
+  // } catch (err) {
+  //   if (err.response.data) {
+  //   console.log('Error on Login User: ', err.response.data);
+  //   }
+  // }
 
-  console.log('Signed In: ', signin);
+  // console.log('Signed In: ', signin);
 
-  inksoftConfig = {
-    dataType: 'text',
-    processData: false,
-    crossDomain: true,
-  }
+  // inksoftConfig = {
+  //   dataType: 'text',
+  //   processData: false,
+  //   crossDomain: true,
+  // }
 
-  try {
-    //console.log('Session Token before validation: ', sessionToken);
-    verify = await axios.get(
-      `https://stores.inksoft.com/DS350156262/Api2/GetSession?SessionToken=${sessionToken}&Format=JSON`,
-      inksoftConfig
-    );
-  } catch (err) {
-    if (err.response.data) {
-    console.log('Error on Verify Session: ', err.response.data);
-    }
-  }
+  // try {
+  //   //console.log('Session Token before validation: ', sessionToken);
+  //   verify = await axios.get(
+  //     `https://stores.inksoft.com/DS350156262/Api2/GetSession?SessionToken=${sessionToken}&Format=JSON`,
+  //     inksoftConfig
+  //   );
+  // } catch (err) {
+  //   if (err.response.data) {
+  //   console.log('Error on Verify Session: ', err.response.data);
+  //   }
+  // }
 
-  console.log('Verified: ', verify);
+  // console.log('Verified: ', verify);
 
-  res.sendStatus(200);
+  res.status(200).send(sess);
 });
 
 
