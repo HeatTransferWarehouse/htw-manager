@@ -1581,7 +1581,7 @@ router.post("/bcRegister", cors(), async function (req, res) {
   //const captchaKey = process.env.CAPTCHA_KEY;
 
 
-  const sessData = `ApiKey=${apiKey}Email=${email}&CreateNewCart=false&FirstName=${first_name}&LastName=${last_name}&Password=${inksoftPassword}&Format=JSON`;
+  const sessData = `ApiKey=${apiKey}&Email=${email}&CreateNewCart=false&FirstName=${first_name}&LastName=${last_name}&Password=${inksoftPassword}&Format=JSON`;
 
   const newSess = sessData.replace(/"/g, "");
 
