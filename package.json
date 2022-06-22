@@ -1,8 +1,8 @@
 {
-  "name": "htw-manager",
-  "version": "0.1.0",
+  "name": "heat-transfer-warehouse-admin",
+  "version": "1.0.0",
   "private": false,
-  "homepage": "https://manager.heattransferwarehouse.com/",
+  "homepage": "https://admin.heattransferwarehouse.com/",
   "repository": "git://github.com/Traizel/htw-manager.git",
   "proxy": "http://localhost:5000",
   "dependencies": {
