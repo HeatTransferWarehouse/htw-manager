@@ -25,7 +25,7 @@ app.use(cors({
 }));
 
 
-//change this to push update 2
+//change this to push update 1
 
 app.use('/api/user', userRouter);
 app.use('/api/item', itemRouter);
