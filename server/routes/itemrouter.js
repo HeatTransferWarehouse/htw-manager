@@ -1588,10 +1588,10 @@ router.post("/bcRegister", cors(), async function (req, res) {
   console.log('Get/Create Session Data being sent: ', newSess);
 
   let inksoftConfig = {
-        dataType: 'text',
+        headers: {
+          'Content-Type': 'application/json'
+        },
         data: newSess,
-        processData: false,
-        crossDomain: true,
   }
 
   //let reg = [];
