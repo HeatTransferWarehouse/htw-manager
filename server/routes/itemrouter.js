@@ -1569,48 +1569,58 @@ router.post("/bcRegister", cors(), async function (req, res) {
   let email = JSON.stringify(cust.email);
   let first_name = JSON.stringify(cust.first_name);
   let last_name = JSON.stringify(cust.last_name);
+  const apiKey = process.env.INKSOFT_API_KEY;
+
+  const info = {
+    password: inksoftPassword,
+    email: email,
+    first_name: first_name,
+    last_name: last_name,
+    apiKey: apiKey
+  }
   //email = email.replace(/"/g, "'");
   //first_name = first_name.replace(/"/g, "'");
   //last_name = last_name.replace(/"/g, "'");
 
   //console.log('Session Token: ', sessionToken);
-  console.log('Email: ', email);
-  console.log('First Name: ', first_name);
-  console.log('Last Name: ', last_name);
-  const apiKey = process.env.INKSOFT_API_KEY;
+  //console.log('Email: ', email);
+  //console.log('First Name: ', first_name);
+  //console.log('Last Name: ', last_name);
   //const captchaKey = process.env.CAPTCHA_KEY;
 
+  res.status(200).send(info);
 
-  const sessData = `ApiKey=${apiKey}&Email=${email}&CreateNewCart=false&FirstName=${first_name}&LastName=${last_name}&Password=${inksoftPassword}&Format=JSON`;
 
-  const newSess = sessData.replace(/"/g, "");
+  // const sessData = `ApiKey=${apiKey}&Email=${email}&CreateNewCart=false&FirstName=${first_name}&LastName=${last_name}&Password=${inksoftPassword}&Format=JSON`;
 
-  console.log('Get/Create Session Data being sent: ', newSess);
+  // const newSess = sessData.replace(/"/g, "");
 
-  let inksoftConfig = {
-        headers: {
-          'Content-Type': 'application/x-www-form-urlencoded'
-        },
-        data: `${newSess}`,
-  }
+  // console.log('Get/Create Session Data being sent: ', newSess);
 
-  //let reg = [];
-  //let signin = [];
-  //let verify = [];
-  let sess = [];
+  // let inksoftConfig = {
+  //       headers: {
+  //         'Content-Type': 'application/x-www-form-urlencoded'
+  //       },
+  //       data: `${newSess}`,
+  // }
 
-  try {
-    sess = await axios.post(
-      'https://stores.inksoft.com/DS350156262/Api2/GetOrCreateSessionWithApiKey',
-      inksoftConfig
-    );
-  } catch (err) {
-    if (err.response.data) {
-    console.log('Error on Get/Create Sessoin User: ', err.response.data);
-    }
-  }
+  // //let reg = [];
+  // //let signin = [];
+  // //let verify = [];
+  // let sess = [];
 
-  console.log('Session: ', sess);
+  // try {
+  //   sess = await axios.post(
+  //     'https://stores.inksoft.com/DS350156262/Api2/GetOrCreateSessionWithApiKey',
+  //     inksoftConfig
+  //   );
+  // } catch (err) {
+  //   if (err.response.data) {
+  //   console.log('Error on Get/Create Sessoin User: ', err.response.data);
+  //   }
+  // }
+
+  // console.log('Session: ', sess);
 
   // const register = `Email=${email}&FirstName=${first_name}&LastName=${last_name}&Password=${inksoftPassword}&ConfirmPassword=${inksoftPassword}&SessionToken=${sessionToken}&CaptchaKey=${captchaKey}&NonTaxable=false&RememberMe=true&SubscribeToNewsletter=false&Format=JSON`;
 
@@ -1685,7 +1695,6 @@ router.post("/bcRegister", cors(), async function (req, res) {
 
   // console.log('Verified: ', verify);
 
-  res.status(200).send(sess);
 });
 
 
