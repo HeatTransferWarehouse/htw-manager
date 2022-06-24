@@ -1589,7 +1589,7 @@ router.post("/bcRegister", cors(), async function (req, res) {
 
   let inksoftConfig = {
         headers: {
-          'Content-Type': 'application/json'
+          'Content-Type': 'application/x-www-form-urlencoded'
         },
         data: newSess,
   }
