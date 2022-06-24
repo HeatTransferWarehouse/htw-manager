@@ -1581,7 +1581,7 @@ router.post("/bcRegister", cors(), async function (req, res) {
   //const captchaKey = process.env.CAPTCHA_KEY;
 
 
-  const sessData = `APIKey=${apiKey}&Email=${email}&CreateNewCart=false&FirstName=${first_name}&LastName=${last_name}&Password=${inksoftPassword}&Format=JSON`;
+  const sessData = `ApiKey=${apiKey}&Email=${email}&CreateNewCart=false&FirstName=${first_name}&LastName=${last_name}&Password=${inksoftPassword}&Format=JSON`;
 
   const newSess = sessData.replace(/"/g, "");
 
@@ -1591,7 +1591,7 @@ router.post("/bcRegister", cors(), async function (req, res) {
         headers: {
           'Content-Type': 'application/x-www-form-urlencoded'
         },
-        data: '',
+        data: `${newSess}`,
   }
 
   //let reg = [];
@@ -1601,7 +1601,7 @@ router.post("/bcRegister", cors(), async function (req, res) {
 
   try {
     sess = await axios.post(
-      `https://stores.inksoft.com/DS350156262/Api2/GetOrCreateSessionWithApiKey?ApiKey=${apiKey}&Email=${email}&CreateNewCart=false&FirstName=${first_name}&LastName=${last_name}&Password=${inksoftPassword}&Format=JSON`,
+      'https://stores.inksoft.com/DS350156262/Api2/GetOrCreateSessionWithApiKey',
       inksoftConfig
     );
   } catch (err) {
