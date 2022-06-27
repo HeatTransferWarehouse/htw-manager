@@ -1553,7 +1553,7 @@ router.post("/jwt", cors(), async function (req, res) {
 
   const cust = customer.data;
 
-  console.log('Sending Back: ', cust);
+  console.log('Sending Back: ', cust.email);
 
   res.status(200).send(cust);
 });
