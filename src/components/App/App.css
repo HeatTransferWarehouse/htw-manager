@@ -119,3 +119,40 @@ input {
 .fourfour {
   text-align: center;
 }
+
+.btn-primary {
+  color: #fff;
+  background-color: #8261ee;
+  border-color: #a759d1;
+}
+
+.btn-primary:hover {
+  background-color: #a759d1;
+  border-color: #8261ee;
+}
+
+.MuiButtonBase-root.MuiPickersDay-root.Mui-selected.MuiPickersDay-dayWithMargin.MuiPickersDay-today.css-wed0tz {
+  background-color: #8261ee;
+  border-color: #a759d1;
+}
+
+.MuiButtonBase-root.MuiPickersDay-root.Mui-selected.MuiPickersDay-dayWithMargin.MuiPickersDay-today.css-wed0tz:hover {
+  background-color: #a759d1;
+  border-color: #8261ee;
+}
+
+tbody tr:nth-child(2n) {
+  background-color: #8261eebf;
+}
+
+tbody tr:nth-child(2n):hover {
+  background-color: #8261eee7;
+}
+
+.MuiPaper-root.jss432.undefined.MuiPaper-elevation4.MuiPaper-rounded {
+  border-radius: 3%;
+}
+
+.MuiTableCell-root {
+  border-bottom: 0px solid rgba(224, 224, 224, 1);
+}

@@ -44,12 +44,23 @@ form {
     margin-top: 20px;
     margin-left: 10%;
     margin-right: 10%;
+    justify-content: space-around;
+}
+
+.sanmar-row {
+    display: flex;
+    margin-right: -15px;
+    margin-left: -15px;
+    align-items: center;
+    flex-direction: row-reverse;
+    justify-content: space-between;
+    flex-wrap: wrap;
 }
 
 .capture-form {
     text-align: center;
     margin-top: 20px;
-    background-color: rgb(228, 228, 228);
+    background-color: #a759d1d6;
     padding: 20px;
 }
 
@@ -78,7 +89,7 @@ form {
 }
 
 .sales-form {
-    background-color: #c0c0c0;
+    background-color: #ffffff;
     padding: 30px;
 }
 
@@ -163,4 +174,10 @@ form {
 
 .invis {
     display: none;
+}
+
+#sanmar-nav {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
 }

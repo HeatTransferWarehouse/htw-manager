@@ -371,7 +371,7 @@ async function getSanmar() {
       </section>
       <section className="sanmar-form">
       <div className="container">
-      <div className="row">
+      <div className="sanmar-row">
         <div className="clothing-data">
           <SanmarImporter />
           {/* <Button onClick={(e) => {refreshSanmar()}}>Refresh SanMar Prices</Button> */}
@@ -391,7 +391,7 @@ async function getSanmar() {
       </div>
       <br></br>
       <br></br>
-      <div className="row">
+      <div className="sanmar-row">
         <div className="clothing-data">
             <MUITable
               title={"SanMar Prices"}
