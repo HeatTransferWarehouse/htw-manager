@@ -181,3 +181,11 @@ form {
     justify-content: space-between;
     align-items: center;
 }
+
+.MuiPaper-root.jss432.undefined.MuiPaper-elevation4.MuiPaper-rounded {
+    border-radius: 3%;
+}
+  
+.MuiTableCell-root {
+    border-bottom: 0px solid rgba(224, 224, 224, 1);
+}
