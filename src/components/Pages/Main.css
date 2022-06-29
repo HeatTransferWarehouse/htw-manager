@@ -189,3 +189,11 @@ form {
 .MuiTableCell-root {
     border-bottom: 0px solid rgba(224, 224, 224, 1);
 }
+
+.MuiTableCell-root.MuiTableCell-body.jss40.jss42.MuiTableCell-paddingCheckbox {
+    display: none;
+}
+
+.MuiTableCell-root.MuiTableCell-head.jss40.jss41.jss42.jss46.MuiTableCell-paddingCheckbox {
+    display: none;
+}
