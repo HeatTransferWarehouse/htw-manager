@@ -347,6 +347,7 @@ function Main () {
                     filter: false,
                     sort: false,
                     empty: true,
+                    selectableRowsHideCheckboxes: true,
                     customBodyRenderLite: (dataIndex, rowIndex) => {
                       return (
                         <input
@@ -404,6 +405,7 @@ function Main () {
                     filter: false,
                     sort: false,
                     empty: true,
+                    selectableRowsHideCheckboxes: true,
                     customBodyRenderLite: (dataIndex, rowIndex) => {
                       return (
                         <input
