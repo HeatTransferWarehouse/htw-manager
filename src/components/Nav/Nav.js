@@ -22,6 +22,7 @@ class Nav extends Component {
               <Link to="/resources" className="nav-link">Resources</Link>
               <Link to="/sanmar" className="nav-link">SanMar</Link>
               <Link to="/brightpearl" className="nav-link">Brightpearl</Link>
+              <Link to="/nostock" className="nav-link">No Stock</Link>
           </div>
           </Router>
       </div>

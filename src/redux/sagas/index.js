@@ -3,6 +3,7 @@ import ItemSaga from './ItemSaga';
 import LoginSaga from './loginSaga';
 import RegisterSaga from './registrationSaga';
 import UserSaga from './userSaga';
+import NoStockSaga from './nostockSaga';
 
 
 // rootSaga is the primary saga.
@@ -13,6 +14,7 @@ export default function* rootSaga() {
     ItemSaga(),
     LoginSaga(),
     RegisterSaga(),
-    UserSaga()
+    UserSaga(),
+    NoStockSaga(),
   ]);
 }

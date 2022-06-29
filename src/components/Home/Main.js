@@ -16,7 +16,7 @@ function Main () {
         <div class="container">
         <div class="offset-lg-3 col-lg-6">
                     <div class="info">
-      <h2>Heat Transfer Warehouse Manager</h2>
+      <h2>Heat Transfer Warehouse Admin</h2>
       <br></br>
       <h4>Various Apps to manage and track info and data</h4>
       <br></br>

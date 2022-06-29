@@ -115,7 +115,7 @@ form {
 .loader {
     border: 66px solid rgb(172, 172, 172);
     border-radius: 50%;
-    border-top: 66px solid #a3c0ff;
+    border-top: 66px solid #a759d1d6;
     width: 420px;
     height: 420px;
     -webkit-animation: spin 2s linear infinite;

@@ -13,6 +13,7 @@ app.use(express.static("build"));
 // Route includes
 const userRouter = require('./routes/userrouter');
 const itemRouter = require('./routes/itemrouter');
+const nostockRouter = require('./routes/nostockrouter');
 const captureRouter = require('./routes/index');
 
 app.use(sessionMiddleware);
@@ -30,6 +31,7 @@ app.use(cors({
 app.use('/api/user', userRouter);
 app.use('/api/item', itemRouter);
 app.use('/api/capture', captureRouter);
+app.use('/api/nostock', nostockRouter);
 
 
 app.get("/healthcheck", (req, res) => {
@@ -39,7 +41,7 @@ app.get("/healthcheck", (req, res) => {
 app.use(express.static('build'));
      
 
- const PORT = process.env.PORT || 5000;
+ const PORT = process.env.PORT || 8000;
  app.listen(PORT, () => {
    console.log("server running on: ", PORT);
  });
