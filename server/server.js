@@ -15,6 +15,7 @@ const userRouter = require('./routes/userrouter');
 const itemRouter = require('./routes/itemrouter');
 const nostockRouter = require('./routes/nostockrouter');
 const captureRouter = require('./routes/index');
+const affiliateRouter = require('./routes/affiliaterouter');
 
 app.use(sessionMiddleware);
 app.use(passport.initialize());
@@ -32,6 +33,7 @@ app.use('/api/user', userRouter);
 app.use('/api/item', itemRouter);
 app.use('/api/capture', captureRouter);
 app.use('/api/nostock', nostockRouter);
+app.use('/api/affiliate', affiliateRouter);
 
 
 app.get("/healthcheck", (req, res) => {

@@ -56,3 +56,30 @@ CREATE TABLE "no-stock"
 	"notes" varchar(50),
 	"reason" varchar(255) DEFAULT 'temp'
 );
+
+CREATE TABLE "affiliate"
+(
+    "id" serial primary key,
+    "email" varchar(255) not null,
+    "order_number" VARCHAR(100),
+    "order_total" VARCHAR(100),
+    "qty" INT,
+    "created_at" TIMESTAMP
+); 
+
+CREATE TABLE "sku"
+(
+    "id" serial primary key,
+    "email" VARCHAR(255),
+    "order_number" VARCHAR(100),
+    "sku" varchar(50),
+    "created_at" TIMESTAMP,
+    "description" TEXT
+); 
+
+CREATE TABLE "viewed"
+(
+    "id" serial primary key,
+    "sku" varchar(50),
+    "timestamp" DATE NOT NULL DEFAULT NOW()
+); 

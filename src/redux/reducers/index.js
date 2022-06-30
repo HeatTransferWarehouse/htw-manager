@@ -5,6 +5,7 @@ import error from './errorsReducer';
 import login from './loginModeReducer';
 import user from './userReducer';
 import nostock from './nostockReducer';
+import affiliate from './affiliateReducer';
 
 // rootReducer is the primary reducer for our entire project
 // It bundles up all of the other reducers so our project can use them.
@@ -19,6 +20,7 @@ const rootReducer = combineReducers({
   login,
   user,
   nostock,
+  affiliate,
 });
 
 export default rootReducer;
