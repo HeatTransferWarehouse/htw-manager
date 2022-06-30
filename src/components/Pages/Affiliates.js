@@ -8,17 +8,14 @@ import { MuiPickersUtilsProvider, DatePicker } from '@material-ui/pickers';
 import LuxonUtils from '@date-io/luxon';
 import Form from "react-bootstrap/Form";
 import moment from "moment";
-import { Paper, Button } from "@material-ui/core";
+import { Button } from "@material-ui/core";
 
 function Affilates () {
 
   const dispatch = useDispatch();
 
-  const viewed = useSelector(store => store.affiliate.viewed);
   const topfive = useSelector(store => store.affiliate.topfive);
   const skunumlist = useSelector(store => store.affiliate.skunumlist);
-  const skulist = useSelector(store => store.affiliate.skulist);
-  const detailslist = useSelector(store => store.affiliate.detailslist);
   const itemlist = useSelector(store => store.affiliate.itemlist);
   const emaillist = useSelector(store => store.affiliate.emaillist);
   const totallist = useSelector(store => store.affiliate.totallist);
@@ -94,6 +91,10 @@ const skunumdata = skunumlist.map((skunum) => [skunum.sku, skunum.description, s
 return (
       <>
         <div>
+          <br />
+          <br />
+          <br />
+          <br />
           <br />
           <br />
           <div style={{ padding: "1.5%" }}>

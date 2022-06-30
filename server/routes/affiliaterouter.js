@@ -341,9 +341,7 @@ slackEvents.start().then(() => {
         console.log("Message sent: ", res);
       })();
       console.log("bot listening on port", PORT);
-});
-  
-  
+});    
   
 router.get("/itemlist", (req, res) => {
     console.log("We are about to get the affiliate list");
@@ -376,8 +374,6 @@ router.get("/topfive", (req, res) => {
         res.sendStatus(500);
       });
 });
-  
-  
   
 router.get("/total", (req, res) => {
     console.log("We are about to get the affiliate list");

@@ -27,8 +27,6 @@ class App extends Component {
             <Nav />
           </div>
           <Switch>
-            {/* Visiting localhost:3000 will redirect to localhost:3000/home */}
-
             <ProtectedRoute exact path="/" component={Main} />
 
             <Route exact path="/register" component={Register} />
