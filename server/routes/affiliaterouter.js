@@ -320,8 +320,8 @@ const web = new WebClient(token);
   
 const conversationId = "C0139RJPUEM";
   
-  
-  
+const PORT = process.env.PORT || 8000;
+
 // Handle errors (see `errorCodes` export)
 slackEvents.on('error', console.error);
   
