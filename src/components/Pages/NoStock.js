@@ -160,7 +160,6 @@ function Main () {
           dispatch({
             type: "UPDATE_ITEMS",
           });
-      console.log('Sending Manual Check..');
       swal("Refreshing Zero Stock..");
         }
       }
