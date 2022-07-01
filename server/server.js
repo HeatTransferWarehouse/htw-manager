@@ -12,7 +12,7 @@ app.use(express.static("build"));
 
 // Route includes
 const userRouter = require('./routes/userrouter');
-const itemRouter = require('./routes/itemrouter');
+const sanmarBP = require('./routes/sanmarBPRouter');
 const nostockRouter = require('./routes/nostockrouter');
 const captureRouter = require('./routes/index');
 const affiliateRouter = require('./routes/affiliaterouter');
@@ -30,7 +30,7 @@ app.use(cors({
 //change this to push update 2
 
 app.use('/api/user', userRouter);
-app.use('/api/item', itemRouter);
+app.use('/api/item', sanmarBP);
 app.use('/api/capture', captureRouter);
 app.use('/api/nostock', nostockRouter);
 app.use('/api/affiliate', affiliateRouter);

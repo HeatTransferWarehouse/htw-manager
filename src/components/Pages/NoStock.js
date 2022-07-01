@@ -163,7 +163,7 @@ function Main () {
       swal("Refreshing Zero Stock..");
         }
       }
-    ><FlagIcon/> Check BC</Button>
+    ><FlagIcon/> Manual Check</Button>
     <Button 
       variant = "contained"
       color = "primary"
