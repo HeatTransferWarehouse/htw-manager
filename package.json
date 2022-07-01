@@ -20,6 +20,7 @@
     "@mui/lab": "^5.0.0-alpha.69",
     "@mui/material": "^5.4.2",
     "@mui/styled-engine": "^5.4.2",
+    "@mui/x-date-pickers": "^5.0.0-alpha.7",
     "@popperjs/core": "^2.11.5",
     "@sendgrid/mail": "^7.6.1",
     "@slack/events-api": "^3.0.1",

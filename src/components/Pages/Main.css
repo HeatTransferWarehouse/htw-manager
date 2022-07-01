@@ -182,18 +182,25 @@ form {
     align-items: center;
 }
 
-.MuiPaper-root.jss432.undefined.MuiPaper-elevation4.MuiPaper-rounded {
-    border-radius: 3%;
+.MuiPaper-rounded {
+    border-radius: 30px;
+}
+
+.MuiPaper-root {
+    margin: 2%;
 }
   
 .MuiTableCell-root {
     border-bottom: 0px solid rgba(224, 224, 224, 1);
 }
 
-.MuiTableCell-root.MuiTableCell-body.jss40.jss42.MuiTableCell-paddingCheckbox {
+.MuiTable-root.jss688 {
     display: none;
 }
 
-.MuiTableCell-root.MuiTableCell-head.jss40.jss41.jss42.jss46.MuiTableCell-paddingCheckbox {
-    display: none;
+.nav {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-evenly;
+    align-items: center;
 }
