@@ -338,7 +338,7 @@ slackEvents.start().then(() => {
   
         // `res` contains information about the posted message
         
-        console.log("Message sent: ", res);
+        console.log("Message sent: ", res.message.text);
       })();
       console.log("bot listening on port", PORT);
 });    
@@ -390,50 +390,6 @@ router.get("/total", (req, res) => {
       });
 });
   
-router.get("/getviewed", (req, res) => {
-    console.log("We are about to get the affiliate list");
-  
-    const queryText = `SELECT * FROM viewed`;
-    pool
-      .query(queryText)
-      .then((result) => {
-        res.send(result.rows);
-      })
-      .catch((error) => {
-        console.log(`Error on affiliate query ${error}`);
-        res.sendStatus(500);
-      });
-});
-  
-router.post("/viewed", (req, res) => {
-    //api to set priority of new stock items
-    const { sku } = req.body;
-    const queryText = 'INSERT INTO "viewed" (sku) VALUES ($1)';
-  
-    pool
-      .query(queryText, [sku])
-      .then((result) => {
-        res.sendStatus(204); //No Content
-      })
-      .catch((error) => {
-        console.log("Error UPDATE ", error);
-        res.sendStatus(500);
-      });
-});
-  
-router.delete("/unviewed/:id", (req, res) => {
-    //api to set priority of new stock items
-   pool
-     .query('DELETE FROM "viewed" WHERE sku=$1', [req.params.id])
-     .then((result) => {
-       res.sendStatus(204); //No Content
-     })
-     .catch((error) => {
-       console.log("Error DELETE ", error);
-       res.sendStatus(500);
-     });
-});
-  
 router.post("/checkemail", (req, res) => {
     let skuinfo = req.body; 
         let {
@@ -480,21 +436,6 @@ router.get("/email", (req, res) => {
     console.log("We are about to get the affiliate list");
   
     const queryText = `select array_agg(DISTINCT email) as email from affiliate group by email`;
-    pool
-      .query(queryText)
-      .then((result) => {
-        res.send(result.rows);
-      })
-      .catch((error) => {
-        console.log(`Error on affiliate query ${error}`);
-        res.sendStatus(500);
-      });
-});
-  
-router.get("/skus", (req, res) => {
-    console.log("We are about to get the affiliate list");
-  
-    const queryText = `select * from sku order by "created_at"`;
     pool
       .query(queryText)
       .then((result) => {

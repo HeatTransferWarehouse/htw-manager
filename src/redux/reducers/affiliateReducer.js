@@ -27,14 +27,6 @@ const totallist = (state = [], action) => {
   }
 };
 
-const viewed = (state = [], action) => {
-  switch (action.type) {
-    case "SET_VIEWED":
-      return action.payload;
-    default:
-      return state;
-  }
-};
 const skunumlist = (state = [], action) => {
   switch (action.type) {
     case "SET_SKUNUM":
@@ -44,23 +36,6 @@ const skunumlist = (state = [], action) => {
   }
 };
 
-const skulist = (state = [], action) => {
-  switch (action.type) {
-    case "SET_SKUS":
-      return action.payload;
-    default:
-      return state;
-  }
-};
-
-const detailslist = (state = [], action) => {
-  switch (action.type) {
-    case "SET_DETAILS":
-      return action.payload;
-    default:
-      return state;
-  }
-};
 const emaillist = (state = [], action) => {
   switch (action.type) {
     case "SET_EMAIL":
@@ -72,12 +47,9 @@ const emaillist = (state = [], action) => {
 
 
 export default combineReducers({
-  viewed,
   topfive,
   itemlist,
   skunumlist,
-  skulist,
-  detailslist,
   emaillist,
   totallist,
 });

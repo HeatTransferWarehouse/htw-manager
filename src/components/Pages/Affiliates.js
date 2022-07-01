@@ -26,12 +26,6 @@ function Affilates () {
 
 useEffect(() => {
     dispatch({
-      type: "GET_VIEWED",
-    });
-    dispatch({
-      type: "GET_SKUS",
-    });
-    dispatch({
       type: "GET_TOP_FIVE",
     });
     dispatch({
@@ -62,9 +56,6 @@ const checkEmail = (event) => {
         endDate: endDate,
       },
     });
-    dispatch({
-      type: "GET_SKUNUM_LIST",
-    });
 };
 
 const data = itemlist.map((item) => [
@@ -76,16 +67,20 @@ const data = itemlist.map((item) => [
 ]);
 
 const topdata = topfive.map((item) => [
-    item.email,
-    item.count
+  item.email,
+  item.count
 ]);
 
 const totaldata = totallist.map((total) => [
-    total.email,
-    total.count,
+  total.email,
+  total.count,
 ]);
 
-const skunumdata = skunumlist.map((skunum) => [skunum.sku, skunum.description, skunum.count]);
+const skunumdata = skunumlist.map((skunum) => [
+  skunum.sku, 
+  skunum.description, 
+  skunum.count
+]);
 
 
 return (
