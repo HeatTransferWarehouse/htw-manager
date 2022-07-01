@@ -27,7 +27,7 @@ class App extends Component {
             <Nav />
           </div>
           <Switch>
-            <ProtectedRoute exact path="/" component={Main} />
+            <ProtectedRoute exact path="/home" component={Main} />
 
             <Route exact path="/register" component={Register} />
 
