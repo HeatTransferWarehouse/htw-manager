@@ -1783,7 +1783,7 @@ setInterval(() => {
 router.get("/items", async function getItems(req, res) {
 
   console.log('running MANUAL Slack Notify..');
-  getItems(false);
+  await getItems(false);
   res.status(200).send();
 
 });

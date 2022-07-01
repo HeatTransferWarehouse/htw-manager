@@ -70,55 +70,55 @@ router.post("/events", async (req, res) => {
           if (text !== undefined) {
             if (channel === "C0139RJPUEM" && text.includes("Referral ")) {
            splitText = text.split(" ");
-           console.log("this is splitText", splitText);
+           //console.log("this is splitText", splitText);
            let emailIndex = splitText.indexOf("the");
-           console.log("this is emailIndex", emailIndex);
+           //console.log("this is emailIndex", emailIndex);
            let checkIndex = splitText.indexOf("details:\n*User:*");
-           console.log("this is checkIndex", checkIndex);
+           //console.log("this is checkIndex", checkIndex);
   
            let newEmailIndex = emailIndex + 1;
-           console.log("this is newEmailIndex", newEmailIndex);
+           //console.log("this is newEmailIndex", newEmailIndex);
            let email = splitText[newEmailIndex];
-           console.log("this is email", email);
+           //console.log("this is email", email);
            let newEmail = email.slice(25, email.length - 11);
-           console.log("this is newEmail", newEmail);
+           //console.log("this is newEmail", newEmail);
            if (checkIndex !== -1) {
              newEmailIndex = checkIndex + 1;
-             console.log("this is newEmailIndex updated", newEmailIndex);
+             //console.log("this is newEmailIndex updated", newEmailIndex);
              email = splitText[newEmailIndex];
-             console.log("this is email updated", email);
+             //console.log("this is email updated", email);
              newEmail = email.slice(8, email.length - 11);
-             console.log("this is newEmail updated", newEmail);
+             //console.log("this is newEmail updated", newEmail);
            }
-           console.log("this is newEmailIndex", newEmailIndex);
+           //console.log("this is newEmailIndex", newEmailIndex);
            let checkIndex2 = splitText.indexOf("Amount:*");
-           console.log("this is checkIndex2", checkIndex2);
+           //console.log("this is checkIndex2", checkIndex2);
            let checkIndex3 = splitText.indexOf("ID:*");
-           console.log("This is checkIndex3", checkIndex3);
+           //console.log("This is checkIndex3", checkIndex3);
            let newOrderNumberIndex = splitText.length - 3;
-           console.log("this is newOrderNumberIndex", newOrderNumberIndex);
+           //console.log("this is newOrderNumberIndex", newOrderNumberIndex);
            let orderNumber = splitText[newOrderNumberIndex];
-           console.log("this is orderNumber", orderNumber);
+           //console.log("this is orderNumber", orderNumber);
            let newOrderNumber = orderNumber.slice(5, 12);
-           console.log("this is newerOrderNumber", newOrderNumber);
+           //console.log("this is newerOrderNumber", newOrderNumber);
            if (checkIndex3 !== -1) {
              newOrderNumberIndex = checkIndex3 + 1;
-             console.log("this is newOrderNumberIndex", newOrderNumberIndex);
+             //console.log("this is newOrderNumberIndex", newOrderNumberIndex);
              orderNumber = splitText[newOrderNumberIndex];
-             console.log("this is orderNumber", orderNumber);
+             //console.log("this is orderNumber", orderNumber);
              newOrderNumber = orderNumber.slice(0, 7);
-             console.log("this is newerOrderNumber", newOrderNumber);
+             //console.log("this is newerOrderNumber", newOrderNumber);
            } else if (checkIndex2 !== -1) {
              newOrderNumberIndex = splitText.length - 5;
-             console.log("this is newOrderNumberIndex", newOrderNumberIndex);
+             //console.log("this is newOrderNumberIndex", newOrderNumberIndex);
              orderNumber = splitText[newOrderNumberIndex];
-             console.log("this is orderNumber", orderNumber);
+             //console.log("this is orderNumber", orderNumber);
              newOrderNumber = orderNumber.slice(0, 7);
-             console.log("this is newerOrderNumber", newOrderNumber);
+             //console.log("this is newerOrderNumber", newOrderNumber);
            }
   
            let newerEmail = newEmail.slice(newEmail.length / 2 + 1);
-           console.log("this is newerEmail", newerEmail);
+           //console.log("this is newerEmail", newerEmail);
            axios
              .get(
                `https://api.bigcommerce.com/stores/et4qthkygq/v2/orders/${newOrderNumber}`,
@@ -415,14 +415,14 @@ router.post("/checkemail", (req, res) => {
   
 router.post("/orderdetails", (req, res) => {
     let order_number = req.body.order_number;
-    console.log("this is the payload before it reaches the get", order_number);
+    //console.log("this is the payload before it reaches the get", order_number);
     axios
       .get(
         `https://api.bigcommerce.com/stores/et4qthkygq/v2/orders/${order_number}/products`,
         config
       )
       .then(function (response) {
-        console.log("this is the response", response.data)  
+        //console.log("this is the response", response.data)  
      
           res.send(response.data);
         })
