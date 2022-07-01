@@ -762,7 +762,7 @@ let bcResponse = [];
 
 
 //Add Items to Slack Notify and Database
-async function addItems(bcResponse) {
+async function addItems(bcResponse, notify) {
 
       let bcItemId;
       let varItems = [];
@@ -783,6 +783,8 @@ async function addItems(bcResponse) {
     await timeoutPromise(500);
 
     console.log('Checking Product Level..');
+    console.log('BigCommerce TEST: ', bcResponse[0]);
+    console.log('NSN Database TEST: ', getItems[0]);
 
     try {
       if (!getItems[0]) {
@@ -968,6 +970,7 @@ async function addItems(bcResponse) {
 
     await timeoutPromise(500);
 
+    console.log('New Items TEST: ', newItems[0]);
   
   if (newItems[0]) {
    for (const item of newItems) {
@@ -994,6 +997,8 @@ async function addItems(bcResponse) {
     } catch (err) {
       console.log('Error on getItems: ', err);
     }
+
+  if (notify) {
 
     try {
       if (!newItems[0]) {
@@ -1028,11 +1033,15 @@ async function addItems(bcResponse) {
     } catch (err) {
       console.log('Error on slack message: ', err);
     }
+
+  } else {
+    console.log('No Message Sent to slack!');
+  }
 }
 
 
 //Get Zero Stock Items & Notify
-async function getItems() {
+async function getItems(notify) {
 
     let bcResponse = [];
 
@@ -1044,7 +1053,7 @@ async function getItems() {
 
     await timeoutPromise(1000);
 
-    addItems(bcResponse);
+    addItems(bcResponse, notify);
 }
 
 
@@ -1418,7 +1427,7 @@ console.log('Checking Variant Level..');
       }
     }
   }
-}, 1000 * 60 * 13);
+}, 1000 * 60 * 33);
 
 
 // Auto Restock Notify TEST
@@ -1750,9 +1759,9 @@ setInterval(() => {
   if (slackNotify) {
     console.log('running Slack Notify..');
     slackNotify = false;
-    getItems();
+    getItems(true);
  }
-}, 1000 * 60 * 17);
+}, 1000 * 60 * 27);
 
 
 // Auto No Stock Notify Single Page
@@ -1773,249 +1782,8 @@ setInterval(() => {
 
 router.get("/items", async function getItems(req, res) {
 
-  let bcResponse = [];
-  let bcItemId;
-  let varItems = [];
-  let getItems = [];
-  let newItems = [];
-
-  try {
-    bcResponse = await getBCItems();
-  } catch (err) {
-    console.log('Error on getBCItems: ', err);
-    return res.status(500).send();
-  }
-
-await timeoutPromise(500);
-
-  try {
-    const queryText = `select * from "no-stock" ORDER BY id DESC`;
-    await pool
-      .query(queryText)
-      .then((getResult) => {
-        getItems = getResult.rows;
-      })
-  } catch (err) {
-    console.log('Error on getItems: ', err);
-    return res.status(500).send();
-  }
-
-  await timeoutPromise(500);
-
-  console.log('Checking Product Level..');
-
-  try {
-    if (!getItems[0]) {
-      console.log('Item DB Empty!');
-      for (let i = 0; i < bcResponse.length; i++) {
-        let bcItemName = bcResponse[i].name.replace(/"|`|'/g, ' ');
-        bcItemId = bcResponse[i].id;
-        let bcItemSku = bcResponse[i].sku;
-        let bcItemInv = bcResponse[i].inventory_level;
-        let bcItemTrack = bcResponse[i].inventory_tracking;
-
-        const district = 'District';
-        const portauth = 'Port Authority';
-        const sporttek = 'Sport-Tek';
-        const newera = 'New Era';
-        const ade = 'Alternative Dodgeball Eco';
-        const aec = 'Alternative';
-        const ej = 'Eco-Jersey';
-        const champ = 'Champion';
-        const vo = 'Volunteer';
-        const mm = 'MERCER+METTLE';
-        const nv = 'Nike';
-        const gildan = 'Gildan';
-        const cc = 'COMFORT COLORS';
-        const hanes = 'Hanes';
-        const aa = 'American Apparel';
-        const tm = 'TravisMathew';
-        const jer = 'JERZEES';
-        const fotl = 'Fruit of the Loom';
-        const anvil = 'Anvil';
-        const bac = 'BELLA+CANVAS';
-        const cs = 'CornerStone';
-        const pac = 'Port & Company';
-        const red = 'Red House';
-        const rabbit = 'Rabbit Skins';
-        const uni = 'Unisex';
-        const rk = 'Red Kap';
-        const ro = 'Russell Outdoors';
-        const nl = 'Next Level';
-        const am = 'Allmade';
-
-        if (bcItemInv === 0 && bcItemTrack !== 'variant' && bcItemName.includes(mm) === false && bcItemName.includes(vo) === false && bcItemName.includes(tm) === false && bcItemName.includes(am) === false && bcItemName.includes(nl) === false && bcItemName.includes(ro) === false && bcItemName.includes(rk) === false && bcItemName.includes(uni) === false && bcItemName.includes(rabbit) === false && bcItemName.includes(red) === false && bcItemName.includes(pac) === false && bcItemName.includes(cs) === false && bcItemName.includes(bac) === false && bcItemName.includes(anvil) === false && bcItemName.includes(fotl) === false && bcItemName.includes(jer) === false && bcItemName.includes(aa) === false && bcItemName.includes(hanes) === false && bcItemName.includes(cc) === false && bcItemName.includes(gildan) === false && bcItemName.includes(district) === false && bcItemName.includes(portauth) === false && bcItemName.includes(sporttek) === false && bcItemName.includes(newera) === false && bcItemName.includes(ade) === false && bcItemName.includes(aec) === false && bcItemName.includes(ej) === false && bcItemName.includes(champ) === false && bcItemName.includes(champ) === false && bcItemName.includes(nv) === false) {
-        let product = {
-          name: bcItemName,
-          sku: bcItemSku,
-          id: bcItemId,
-          inventory_tracking: bcItemTrack,
-          inventory_level: bcItemInv,
-          level: 'Product'
-        };
-        newItems.push(product);
-        }
-      }
-    } else {
-      for (const bc of bcResponse) {
-        bcItemId = bc.id;
-        let bcItemName = bc.name.replace(/"|`|'/g, ' ');
-        let bcItemSku = bc.sku;
-        let bcItemInv = bc.inventory_level;
-        let bcItemTrack = bc.inventory_tracking;
-        let canInsert = true;
-
-        for (const item of getItems) {
-          if (bcItemId === item.id) {
-            canInsert = false;
-          }
-        }
-
-        const district = 'District';
-        const portauth = 'Port Authority';
-        const sporttek = 'Sport-Tek';
-        const newera = 'New Era';
-        const ade = 'Alternative Dodgeball Eco';
-        const aec = 'Alternative Eco-Fleece';
-        const ej = 'Eco-Jersey';
-        const champ = 'Champion';
-        const vo = 'Volunteer';
-        const mm = 'MERCER+METTLE';
-        const nv = 'Nike';
-        const gildan = 'Gildan';
-        const cc = 'COMFORT COLORS';
-        const hanes = 'Hanes';
-        const aa = 'American Apparel';
-        const jer = 'JERZEES';
-        const tm = 'TravisMathew';
-        const fotl = 'Fruit of the Loom';
-        const anvil = 'Anvil';
-        const bac = 'BELLA+CANVAS';
-        const cs = 'CornerStone';
-        const pac = 'Port & Company';
-        const red = 'Red House';
-        const rabbit = 'Rabbit Skins';
-        const uni = 'Unisex';
-        const rk = 'Red Kap';
-        const ro = 'Russell Outdoors';
-        const nl = 'Next Level';
-        const am = 'Allmade';
-
-        if (canInsert === true && bcItemInv === 0 && bcItemName.includes(mm) === false && bcItemName.includes(vo) === false && bcItemName.includes(tm) === false && bcItemTrack !== 'variant' && bcItemName.includes(am) === false && bcItemName.includes(nl) === false && bcItemName.includes(ro) === false && bcItemName.includes(rk) === false && bcItemName.includes(uni) === false && bcItemName.includes(rabbit) === false && bcItemName.includes(red) === false && bcItemName.includes(pac) === false && bcItemName.includes(cs) === false && bcItemName.includes(bac) === false && bcItemName.includes(anvil) === false && bcItemName.includes(fotl) === false && bcItemName.includes(jer) === false && bcItemName.includes(aa) === false && bcItemName.includes(hanes) === false && bcItemName.includes(cc) === false && bcItemName.includes(gildan) === false && bcItemName.includes(district) === false && bcItemName.includes(portauth) === false && bcItemName.includes(sporttek) === false && bcItemName.includes(newera) === false && bcItemName.includes(ade) === false && bcItemName.includes(aec) === false && bcItemName.includes(ej) === false && bcItemName.includes(champ) === false && bcItemName.includes(champ) === false && bcItemName.includes(nv) === false) {
-          let product = {
-            name: bcItemName,
-            sku: bcItemSku,
-            id: bcItemId,
-            inventory_tracking: bcItemTrack,
-            inventory_level: bcItemInv,
-            level: 'Product'
-          };
-          newItems.push(product);
-        }
-      }
-    }
-
-  } catch (err) {
-    console.log('Error on productMsg: ', err);
-    return res.status(500).send();
-  }
-
-  await timeoutPromise(2000);
-
-    try {
-      varItems = await getVars(bcResponse);
-      } catch (err) {
-        console.log('Error on getVars: ', err);
-      }
-
-      console.log('Checking Variant Level..');
-
-    try {
-      //console.log(varItems);
-        if (!getItems[0]) {
-          for (const v of varItems) {
-            if (v.inventory_level === 0) {
-              let bcItemName = v.name;
-              let bcItemSku = v.sku;
-              bcItemId = v.id;
-              let variant = {
-                name: bcItemName,
-                sku: bcItemSku,
-                id: bcItemId,
-                inventory_tracking: v.inventory_tracking,
-                inventory_level: v.inventory_level,
-                level: 'Variant',
-              };
-              newItems.push(variant);
-            } else {
-              //console.log('Variant not at 0 stock!');
-            }
-          }
-        } else {
-          for (const v of varItems) {
-            bcItemId = v.id;
-            let canInsert = true;
-
-            for (const item of getItems) {
-              if (bcItemId === item.id) {
-                canInsert = false;
-              }
-            }
-
-            if (v.inventory_level === 0 && canInsert === true) {
-              let bcItemSku = v.sku;
-              bcItemId = v.id;
-              let bcItemName = v.name;
-              let variant = {
-                name: bcItemName,
-                sku: bcItemSku,
-                id: bcItemId,
-                inventory_tracking: v.inventory_tracking,
-                inventory_level: v.inventory_level,
-                level: 'Variant',
-              };
-              newItems.push(variant);
-            } else {
-              //console.log('Variant not at 0 stock!');
-            }
-          }
-        }
-    } catch (err) {
-      console.log('Error on varMsg: ', err);
-    }
-
-  await timeoutPromise(500);
-
-if (newItems[0]) {
- for (const item of newItems) {
-  try {
-      const queryText = `INSERT INTO "no-stock" (name, sku, inventory_level, id, level) VALUES ($1, $2, $3, $4, $5);`;
-      await pool
-        .query(queryText, [item.name, item.sku, item.inventory_level, item.id, item.level])
-  } catch (err) {
-    console.log('SKU: ', item.sku + 'ID: ', item.id + ' Error on insert: ', err);
-    return res.status(500).send();
-  }
- }
-} else {
-  console.log('No new items!');
-}
-
-  await timeoutPromise(500);
-
-  try {
-    console.log("We are about to get the item list");
-
-    const queryText = `select * from "no-stock" ORDER BY id DESC`;
-    await pool
-      .query(queryText)
-      .then((selectResult) => {
-        res.send(selectResult.rows);
-      })
-  } catch (err) {
-    console.log('Error on getItems: ', err);
-    return res.status(500).send();
-  }
+  console.log('running MANUAL Slack Notify..');
+  getItems(false);
 
 });
 

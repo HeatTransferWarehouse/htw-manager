@@ -30,7 +30,7 @@ function Main () {
   const isChecked = useSelector(store => store.nostock.setView);
   const checkedList = useSelector(store => store.nostock.addChecked);
   const trackChecked = useSelector(store => store.nostock.trackChecked);
-  const [reason, setReason] = React.useState('temp');
+  const [reason, setReason] = React.useState('new');
   const [note, setNote] = React.useState('');
   const dispatch = useDispatch();
 
