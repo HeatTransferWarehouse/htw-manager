@@ -1240,7 +1240,7 @@ router.put("/email", async function (req, res) {
 });
 
 router.get("/getitems", (req, res) => {
-  console.log("We are about to get the item list");
+  console.log("We are about to get the BP list");
 
   const queryText = `select * from "item" ORDER BY id DESC`;
   pool

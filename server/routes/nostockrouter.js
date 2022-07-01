@@ -1789,7 +1789,7 @@ router.get("/items", async function getItems(req, res) {
 });
 
 router.get("/getitems", (req, res) => {
-  console.log("We are about to get the item list");
+  console.log("We are about to get the NSN list");
 
   const queryText = `select * from "no-stock" ORDER BY id DESC`;
   pool
@@ -1804,7 +1804,7 @@ router.get("/getitems", (req, res) => {
 });
 
 router.delete("/items/:id", async function (req, res) {
-  console.log("We are deleting items as dead with id:", req.params.id);
+  console.log("We are deleting NSN items as dead with id:", req.params.id);
   const ids = req.params.id;
 
   let items = [];
@@ -1853,7 +1853,7 @@ router.delete("/items/:id", async function (req, res) {
 });
 
 router.put("/items/mark", async function (req, res) {
-  console.log("We are updating items as dead..");
+  console.log("We are updating NSN items as dead..");
   const items = req.body.items;
   const reason = req.body.reason;
 
@@ -1938,7 +1938,7 @@ router.put("/items/notes", async function (req, res) {
 });
 
 router.put("/deadItems", async function (req, res) {
-  console.log("We are updating items as not dead");
+  console.log("We are updating NSN items as not dead");
   const items = req.body.items;
 
     try {
@@ -1977,7 +1977,7 @@ router.put("/updateReason", (req, res) => {
   const payload = req.body.payload;
   const id = payload.id
   const reason = payload.reason;
-  console.log("We are updating a reason of " + reason + " on item with id: ", id);
+  console.log("We are updating a reason of " + reason + " on NSN item with id: ", id);
 
   const queryText = `UPDATE "no-stock" SET reason = $1 WHERE id = $2`;
   pool
