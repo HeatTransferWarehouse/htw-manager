@@ -103,6 +103,14 @@ function* updateNotes(action) {
   }
 }
 
+function* testNSN(action) {
+  try {
+    yield axios.get(`/api/nostock/test`, action.payload.test);
+  } catch (error) {
+    console.log("Error with testing NSN:", error);
+  }
+}
+
 
 //this takes all of the Saga functions and dispatches them
 function* itemSaga() {
@@ -113,6 +121,7 @@ function* itemSaga() {
     yield takeLatest('UNMARK_DEAD', unmarkDead);
     yield takeLatest('CHANGE_REASON', changeReason);
     yield takeLatest('UPDATE_NOTES', updateNotes);
+    yield takeLatest('TEST_NSN', testNSN);
 }
 
 export default itemSaga;

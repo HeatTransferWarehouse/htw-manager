@@ -1086,8 +1086,7 @@ async function getVars(bcResponse) {
     try {
       for (const bc of bcResponse) {
         if (bc.inventory_tracking === 'variant') {
-        let pusher = [];
-        pusher = await eachVar(bc);
+        let pusher = await eachVar(bc);
         if (pusher[0]) {
          for (const item of pusher) {
 
@@ -1159,7 +1158,9 @@ async function eachVar(bc) {
           config
         )
 
-      let varToPush = [];
+        let varToPush = [];
+
+     if (getVar.data.data[0]) {
 
      for (const variant of getVar.data.data) {
 
@@ -1179,7 +1180,9 @@ async function eachVar(bc) {
 
      }
 
-      return varToPush;
+     }
+
+     return varToPush;
 
     }
   } catch (err) {
@@ -1218,10 +1221,12 @@ async function updateProducts(page) {
 
 
 // TEST
-test();
-async function test(req, res) {
+//test();
+async function test(test) {
 
   console.log('(TEST)');
+
+  const tester = test;
 
   let bcResponse = [];
   let getItems = [];
@@ -1247,13 +1252,13 @@ async function test(req, res) {
   }
 
   for (const item of bcResponse) {
-    if (item.name === 'Siser EasyWeed 12"') {
+    if (item.name === tester) {
       console.log('BC Found!');
       try {
         let checkedItem = [];
         checkedItem.push(item);
         varItems = await getVars(checkedItem);
-        console.log(varItems);
+        console.log('Vars (TEST): ', varItems);
       } catch (err) {
         console.log('Error on getVar: ', err);
       }
@@ -1261,10 +1266,73 @@ async function test(req, res) {
   }
 
   for (const item of getItems) {
-    if (item.name === 'Siser EasyWeed 12"') {
+    if (item.name === tester) {
       console.log('DB Found!');
      }
   }
+
+  let newItems = [];
+
+  try {
+
+    if (!getItems[0]) {
+      //console.log('Item DB Empty!');
+      for (const v of varItems) {
+
+        if (v.inventory_level === 0) {
+          let bcItemName = v.name;
+          let bcItemSku = v.sku;
+          let bcItemId = v.id;
+          let variant = {
+            name: bcItemName,
+            sku: bcItemSku,
+            id: bcItemId,
+            inventory_tracking: v.inventory_tracking,
+            inventory_level: v.inventory_level,
+            level: 'Variant',
+          };
+          newItems.push(variant);
+        } else {
+          //console.log('Variant not at 0 stock!');
+        }
+      }
+    } else {
+
+      for (const v of varItems) {
+        let bcItemId = v.id;
+        let canInsert = true;
+
+        for (const item of getItems) {
+          if (bcItemId === item.id) {
+            canInsert = false;
+          }
+        }
+
+        if (v.inventory_level === 0 && canInsert === true) {
+          let bcItemSku = v.sku;
+          let bcItemId = v.id;
+          let bcItemName = v.name;
+          let variant = {
+            name: bcItemName,
+            sku: bcItemSku,
+            id: bcItemId,
+            inventory_tracking: v.inventory_tracking,
+            inventory_level: v.inventory_level,
+            level: 'Variant',
+          };
+          newItems.push(variant);
+        } else {
+          //console.log('Variant not at 0 stock!');
+        }
+      }
+    }
+  } catch (err) {
+    console.log('Error on varMsg: ', err);
+  }
+
+  console.log('New Items (TEST): ', newItems);
+
+
 
       try {
         if (getItems[0]) {
@@ -1276,13 +1344,13 @@ async function test(req, res) {
               let itemId = item.id;
               let itemSku = item.sku;
               if (bcItemId === itemId && bcItemSku === itemSku && bcItemInv !== 0) {
-                console.log(`BCId: ${bcItemId}, ItemId: ${itemId}`);
-                console.log(`BCSku: ${bcItemSku}, ItemSku: ${itemSku}`);
-                console.log('Stock: ', bcItemInv);
+                //console.log(`BCId: ${bcItemId}, ItemId: ${itemId}`);
+                //console.log(`BCSku: ${bcItemSku}, ItemSku: ${itemSku}`);
+                //console.log('Stock: ', bcItemInv);
                 let itemToPush = {
                   id: itemId,
                 }
-                console.log('Found this id: ', itemToPush);
+                console.log('Found this id for removing from NSN: ', itemToPush);
               }
             }
           }
@@ -2000,6 +2068,16 @@ router.put("/updateReason", (req, res) => {
       console.log(`Error on item query ${error}`);
       res.sendStatus(500);
     });
+});
+
+router.get("/test", (req, res) => {
+  console.log(req.body.test);
+  const test = req.body.test;
+  console.log("We are running an NSN test for: ", test);
+
+  test(test);
+  
+  res.sendStatus(200);
 });
 
 

@@ -32,6 +32,7 @@ function Main () {
   const trackChecked = useSelector(store => store.nostock.trackChecked);
   const [reason, setReason] = React.useState('new');
   const [note, setNote] = React.useState('');
+  const [test, setTest] = React.useState('');
   const dispatch = useDispatch();
 
   //Get all new stock items with 0 stock
@@ -151,6 +152,28 @@ function Main () {
       <br></br>
       <br></br>
     <section className="nav">
+    <div style={'display=none;'}>
+    <FormControl component="fieldset">
+      <FormLabel component="legend"></FormLabel>
+      <TextField value={test} onChange={(e) => {setTest(e.target.value)}}/>
+    </FormControl>
+    <Button 
+      variant = "contained"
+      color = "primary"
+      onClick = {
+        (event) => {
+          event.preventDefault();
+          dispatch({
+            type: "TEST_NSN",
+            payload: {
+              test: test,
+            },
+          });
+      swal("Running Test, check console..");
+        }
+      }
+    ><FlagIcon/> Test</Button>
+    </div>
     <Button 
       variant = "contained"
       color = "primary"
