@@ -909,7 +909,7 @@ async function addItems(bcResponse, notify) {
       console.log('Error on getVars: ', err);
     }
 
-    console.log('Variants TEST: ', getVars);
+    console.log('Variants TEST: ', varItems);
 
     console.log('Checking Variant Level..');
 

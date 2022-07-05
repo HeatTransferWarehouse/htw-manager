@@ -1023,13 +1023,19 @@ router.put("/ftp", async function (req, res) {
         });
         stream.pipe(res);
 
-        stream.on('end', function(){ res.end() });
+        stream.on('end', function(){
+          if (err) {
+            res.status(500).end()
+          } else {
+            res.status(201).end()
+          }
+        });
       });
     });
     //res.send('YES').status(201);
   } catch (err) {
     console.log('Error on connect ftp: ', err);
-    res.status(500).send('NO');
+    res.status(500).end();
   }
 
 });
