@@ -783,8 +783,8 @@ async function addItems(bcResponse, notify) {
     await timeoutPromise(500);
 
     console.log('Checking Product Level..');
-    console.log('BigCommerce TEST: ', bcResponse[0]);
-    console.log('NSN Database TEST: ', getItems[0]);
+    //console.log('BigCommerce TEST: ', bcResponse[0]);
+    //console.log('NSN Database TEST: ', getItems[0]);
 
     try {
       if (!getItems[0]) {
@@ -908,6 +908,8 @@ async function addItems(bcResponse, notify) {
     } catch (err) {
       console.log('Error on getVars: ', err);
     }
+
+    console.log('Variants TEST: ', getVars[0]);
 
     console.log('Checking Variant Level..');
 

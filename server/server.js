@@ -41,7 +41,7 @@ app.get("/healthcheck", (req, res) => {
 });
 
 app.use(express.static('build'));
-     
+
 
  const PORT = process.env.PORT || 8000;
  app.listen(PORT, () => {
