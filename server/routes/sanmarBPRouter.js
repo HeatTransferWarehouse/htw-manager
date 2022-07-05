@@ -1017,7 +1017,7 @@ router.put("/ftp", async function (req, res) {
 
     c.on('ready', function () {
       c.get(`/000175733Status/${file}`, function (err, stream) {
-        if (err) { console.log(err); res.status(500).send('NO'); }
+        if (err) { console.log(err); }
         stream.once('close', function () {
           c.end();
         });

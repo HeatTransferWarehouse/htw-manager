@@ -160,10 +160,10 @@ router.post("/events", async (req, res) => {
                           AmPm = "AM";
                           normalHour = 12;
                         }
-                 console.log(response.data);
-                 console.log(response.data.date_created);
+                 //console.log(response.data);
+                 //console.log(response.data.date_created);
                  let created_at = `${nowMonth}/${nowDay}/${nowYear} ${normalHour}:${min}:${sec}${AmPm}`;
-                 console.log(response.data.subtotal_ex_tax);
+                 //console.log(response.data.subtotal_ex_tax);
                  let order_total = response.data.subtotal_ex_tax;
                  axios
                    .get(
@@ -222,7 +222,7 @@ router.post("/events", async (req, res) => {
                        }
                        let joinedArray = newArray.join("");
                        let finalArray = titleString + joinedArray;
-                       console.log(finalArray);
+                       //console.log(finalArray);
                        const queryText =
                          'INSERT INTO "affiliate" (email, order_number, order_total, qty, created_at) VALUES ($1, $2, $3, $4, $5) RETURNING id';
                        pool
@@ -280,7 +280,7 @@ router.post("/events", async (req, res) => {
   
                         // `res` contains information about the posted message
   
-                        console.log("Message sent");
+                        console.log("Email Message sent to Affiliate");
                       })();
                   
                    })
@@ -297,7 +297,7 @@ router.post("/events", async (req, res) => {
   
                         // `res` contains information about the posted message
   
-                        console.log("Message sent");
+                        console.log("Email Message sent to Affiliate");
                       })();
                    });
                }
@@ -313,7 +313,7 @@ router.post("/events", async (req, res) => {
      }
     }
 });
-    
+
 const token = process.env.SLACK_TOKEN;
   
 const web = new WebClient(token);
@@ -323,25 +323,7 @@ const conversationId = "C0139RJPUEM";
 const PORT = process.env.PORT || 8000;
 
 // Handle errors (see `errorCodes` export)
-slackEvents.on('error', console.error);
-  
-  // Start a basic HTTP server
-slackEvents.start().then(() => {
-    // Listening on path '/slack/events' by default
-      (async () => {
-        // See: https://api.slack.com/methods/chat.postMessage
-        const res = await web.chat.postMessage({
-          icon_emoji: ":email:",
-          channel: conversationId,
-          text: "Connected",
-        });
-  
-        // `res` contains information about the posted message
-        
-        console.log("Message sent: ", res.message.text);
-      })();
-      console.log("bot listening on port", PORT);
-});    
+slackEvents.on('error', console.error);  
   
 router.get("/itemlist", (req, res) => {
     console.log("We are about to get the affiliate list");
