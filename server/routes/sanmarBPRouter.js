@@ -1017,10 +1017,15 @@ router.put("/ftp", async function (req, res) {
 
     c.on('ready', function () {
       c.get(`/000175733Status/${file}`, function (err, stream) {
-        if (err) { console.log(err); }
+        if (err) { 
+          console.log(err); 
+          c.end(); 
+        }
+
         stream.once('close', function () {
           c.end();
         });
+        
         stream.pipe(res);
 
         stream.on('end', function(){
