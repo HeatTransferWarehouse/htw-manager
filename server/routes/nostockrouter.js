@@ -1218,7 +1218,7 @@ async function updateProducts(page) {
 
 
 // TEST
-//test();
+test();
 async function test(req, res) {
 
   console.log('(TEST)');
@@ -1247,7 +1247,7 @@ async function test(req, res) {
   }
 
   for (const item of bcResponse) {
-    if (item.name === 'Reflective Frosty Clear Dye Sublimatable HTV') {
+    if (item.name === 'Siser EasyWeed 12"') {
       console.log('BC Found!');
       try {
         let checkedItem = [];
@@ -1261,7 +1261,7 @@ async function test(req, res) {
   }
 
   for (const item of getItems) {
-    if (item.name === 'Reflective Frosty Clear Dye Sublimatable HTV') {
+    if (item.name === 'Siser EasyWeed 12"') {
       console.log('DB Found!');
      }
   }
@@ -1429,7 +1429,7 @@ console.log('Checking Variant Level..');
       }
     }
   }
-}, 1000 * 60 * 33);
+}, 1000 * 60 * 47);
 
 
 // Auto Restock Notify TEST
@@ -1763,7 +1763,7 @@ setInterval(() => {
     slackNotify = false;
     getItems(true);
  }
-}, 1000 * 60 * 27);
+}, 1000 * 60 * 33);
 
 
 // Auto No Stock Notify Single Page

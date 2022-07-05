@@ -31,7 +31,7 @@ if (process.env.DATABASE_URL) {
       "localhost" ||
       "app-27425cfb-c67d-4082-aa02-effa3f0e556e-do-user-8379856-0.b.db.ondigitalocean.com",
     port: 5432 || 25060,
-    database: process.env.DATABASE_NAME || "conway_db",
+    database: process.env.DATABASE_NAME || "db",
     max: 10, // max number of clients in the pool
     idleTimeoutMillis: 30000, // how long a client is allowed to remain idle before being closed
   };
