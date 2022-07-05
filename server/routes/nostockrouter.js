@@ -909,7 +909,7 @@ async function addItems(bcResponse, notify) {
       console.log('Error on getVars: ', err);
     }
 
-    console.log('Variants TEST: ', varItems);
+    //console.log('Variants TEST: ', varItems);
 
     console.log('Checking Variant Level..');
 
@@ -972,7 +972,7 @@ async function addItems(bcResponse, notify) {
 
     await timeoutPromise(500);
 
-    console.log('New Items TEST: ', newItems);
+    //console.log('New Items TEST: ', newItems);
   
   if (newItems[0]) {
    for (const item of newItems) {
