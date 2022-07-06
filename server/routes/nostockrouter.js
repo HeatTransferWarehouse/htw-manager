@@ -1220,151 +1220,6 @@ async function updateProducts(page) {
 }
 
 
-// TEST
-//test();
-async function test(test) {
-
-  console.log('(TEST)');
-
-  const tester = test;
-
-  let bcResponse = [];
-  let getItems = [];
-  let varItems = [];
-
-  try {
-    bcResponse = await getBCItems();
-  } catch (err) {
-    console.log('Error on getBCItems: ', err);
-  }
-
-  await timeoutPromise(500);
-
-  try {
-    const queryText = `select * from "no-stock" WHERE reason <> 'clothing' ORDER BY id DESC`;
-    await pool
-      .query(queryText)
-      .then((getResult) => {
-        getItems = getResult.rows;
-      })
-  } catch (err) {
-    console.log('Error on getItems: ', err);
-  }
-
-  for (const item of bcResponse) {
-    if (item.name === tester) {
-      console.log('BC Found!');
-      try {
-        let checkedItem = [];
-        checkedItem.push(item);
-        varItems = await getVars(checkedItem);
-        console.log('Vars (TEST): ', varItems);
-      } catch (err) {
-        console.log('Error on getVar: ', err);
-      }
-    }
-  }
-
-  for (const item of getItems) {
-    if (item.name === tester) {
-      console.log('DB Found!');
-     }
-  }
-
-  let newItems = [];
-
-  try {
-
-    if (!getItems[0]) {
-      //console.log('Item DB Empty!');
-      for (const v of varItems) {
-
-        if (v.inventory_level === 0) {
-          let bcItemName = v.name;
-          let bcItemSku = v.sku;
-          let bcItemId = v.id;
-          let variant = {
-            name: bcItemName,
-            sku: bcItemSku,
-            id: bcItemId,
-            inventory_tracking: v.inventory_tracking,
-            inventory_level: v.inventory_level,
-            level: 'Variant',
-          };
-          newItems.push(variant);
-        } else {
-          //console.log('Variant not at 0 stock!');
-        }
-      }
-    } else {
-
-      for (const v of varItems) {
-        let bcItemId = v.id;
-        let canInsert = true;
-
-        for (const item of getItems) {
-          if (bcItemId === item.id) {
-            canInsert = false;
-          }
-        }
-
-        if (v.inventory_level === 0 && canInsert === true) {
-          let bcItemSku = v.sku;
-          let bcItemId = v.id;
-          let bcItemName = v.name;
-          let variant = {
-            name: bcItemName,
-            sku: bcItemSku,
-            id: bcItemId,
-            inventory_tracking: v.inventory_tracking,
-            inventory_level: v.inventory_level,
-            level: 'Variant',
-          };
-          newItems.push(variant);
-        } else {
-          //console.log('Variant not at 0 stock!');
-        }
-      }
-    }
-  } catch (err) {
-    console.log('Error on varMsg: ', err);
-  }
-
-  console.log('New Items (TEST): ', newItems);
-
-
-
-      try {
-        if (getItems[0]) {
-          for (const v of varItems) {
-            bcItemId = v.id;
-            let bcItemSku = v.sku;
-            let bcItemInv = v.inventory_level;
-            for (const item of getItems) {
-              let itemId = item.id;
-              let itemSku = item.sku;
-              if (bcItemId === itemId && bcItemSku === itemSku && bcItemInv !== 0) {
-                //console.log(`BCId: ${bcItemId}, ItemId: ${itemId}`);
-                //console.log(`BCSku: ${bcItemSku}, ItemSku: ${itemSku}`);
-                //console.log('Stock: ', bcItemInv);
-                let itemToPush = {
-                  id: itemId,
-                }
-                console.log('Found this id for removing from NSN: ', itemToPush);
-              }
-            }
-          }
-        }
-      } catch (err) {
-        console.log('Error on get Var Stocked: ', err);
-      }
-
-  console.log('Test Done');
-
-}
-
-
-
 // Auto Update Product
 setInterval(() => {
   // set this to true to activate
@@ -2071,11 +1926,153 @@ router.put("/updateReason", (req, res) => {
 });
 
 router.get("/test", (req, res) => {
-  console.log(req.body.test);
-  const test = req.body.test;
+  console.log(req.body);
+  const test = req.body;
   console.log("We are running an NSN test for: ", test);
 
-  test(test);
+  t(test);
+
+
+  async function t(test) {
+
+    console.log('(TEST)');
+  
+    const tester = test;
+  
+    let bcResponse = [];
+    let getItems = [];
+    let varItems = [];
+  
+    try {
+      bcResponse = await getBCItems();
+    } catch (err) {
+      console.log('Error on getBCItems: ', err);
+    }
+  
+    await timeoutPromise(500);
+  
+    try {
+      const queryText = `select * from "no-stock" WHERE reason <> 'clothing' ORDER BY id DESC`;
+      await pool
+        .query(queryText)
+        .then((getResult) => {
+          getItems = getResult.rows;
+        })
+    } catch (err) {
+      console.log('Error on getItems: ', err);
+    }
+  
+    for (const item of bcResponse) {
+      if (item.name === tester) {
+        console.log('BC Found!');
+        try {
+          let checkedItem = [];
+          checkedItem.push(item);
+          varItems = await getVars(checkedItem);
+          console.log('Vars (TEST): ', varItems);
+        } catch (err) {
+          console.log('Error on getVar: ', err);
+        }
+      }
+    }
+  
+    for (const item of getItems) {
+      if (item.name === tester) {
+        console.log('DB Found!');
+       }
+    }
+  
+    let newItems = [];
+  
+    try {
+  
+      if (!getItems[0]) {
+        //console.log('Item DB Empty!');
+        for (const v of varItems) {
+  
+          if (v.inventory_level === 0) {
+            let bcItemName = v.name;
+            let bcItemSku = v.sku;
+            let bcItemId = v.id;
+            let variant = {
+              name: bcItemName,
+              sku: bcItemSku,
+              id: bcItemId,
+              inventory_tracking: v.inventory_tracking,
+              inventory_level: v.inventory_level,
+              level: 'Variant',
+            };
+            newItems.push(variant);
+          } else {
+            //console.log('Variant not at 0 stock!');
+          }
+        }
+      } else {
+  
+        for (const v of varItems) {
+          let bcItemId = v.id;
+          let canInsert = true;
+  
+          for (const item of getItems) {
+            if (bcItemId === item.id) {
+              canInsert = false;
+            }
+          }
+  
+          if (v.inventory_level === 0 && canInsert === true) {
+            let bcItemSku = v.sku;
+            let bcItemId = v.id;
+            let bcItemName = v.name;
+            let variant = {
+              name: bcItemName,
+              sku: bcItemSku,
+              id: bcItemId,
+              inventory_tracking: v.inventory_tracking,
+              inventory_level: v.inventory_level,
+              level: 'Variant',
+            };
+            newItems.push(variant);
+          } else {
+            //console.log('Variant not at 0 stock!');
+          }
+        }
+      }
+    } catch (err) {
+      console.log('Error on varMsg: ', err);
+    }
+  
+    console.log('New Items (TEST): ', newItems);
+  
+  
+  
+        try {
+          if (getItems[0]) {
+            for (const v of varItems) {
+              bcItemId = v.id;
+              let bcItemSku = v.sku;
+              let bcItemInv = v.inventory_level;
+              for (const item of getItems) {
+                let itemId = item.id;
+                let itemSku = item.sku;
+                if (bcItemId === itemId && bcItemSku === itemSku && bcItemInv !== 0) {
+                  //console.log(`BCId: ${bcItemId}, ItemId: ${itemId}`);
+                  //console.log(`BCSku: ${bcItemSku}, ItemSku: ${itemSku}`);
+                  //console.log('Stock: ', bcItemInv);
+                  let itemToPush = {
+                    id: itemId,
+                  }
+                  console.log('Found this id for removing from NSN: ', itemToPush);
+                }
+              }
+            }
+          }
+        } catch (err) {
+          console.log('Error on get Var Stocked: ', err);
+        }
+  
+    console.log('Test Done');
+  
+  }
   
   res.sendStatus(200);
 });

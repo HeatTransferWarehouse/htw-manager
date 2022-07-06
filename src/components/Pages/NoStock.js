@@ -169,7 +169,7 @@ function Main () {
               test: test,
             },
           });
-      swal("Running Test, check console..");
+      swal(`Running Test for ${test}, check console..`);
         }
       }
     ><FlagIcon/> Test</Button>
