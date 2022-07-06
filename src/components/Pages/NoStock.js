@@ -152,7 +152,7 @@ function Main () {
       <br></br>
       <br></br>
     <section className="nav">
-    <div style={{display: none}}>
+    <div style={{display: "none"}}>
     <FormControl component="fieldset">
       <FormLabel component="legend"></FormLabel>
       <TextField value={test} onChange={(e) => {setTest(e.target.value)}}/>
