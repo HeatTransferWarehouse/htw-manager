@@ -105,7 +105,7 @@ function* updateNotes(action) {
 
 function* testNSN(action) {
   try {
-    yield axios.get(`/api/nostock/test`, action.payload);
+    yield axios.put(`/api/nostock/test`, action.payload);
   } catch (error) {
     console.log("Error with testing NSN:", error);
   }
