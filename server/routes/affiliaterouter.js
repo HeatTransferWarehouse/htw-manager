@@ -275,7 +275,7 @@ router.post("/events", async (req, res) => {
                           icon_emoji: ":email:",
                           channel: conversationId,
                           text:
-                            `Order details have been emailed to ${newerEmail}`,
+                            `Order details have been emailed to ${newerEmail}! Wally B out!`,
                         });
   
                         // `res` contains information about the posted message
@@ -292,7 +292,7 @@ router.post("/events", async (req, res) => {
                         const res = await web.chat.postMessage({
                           icon_emoji: ":email:",
                           channel: conversationId,
-                          text: `Email failed to send, please contact web support`,
+                          text: `Email failed to send, please contact web support! Wally B out!`,
                         });
   
                         // `res` contains information about the posted message

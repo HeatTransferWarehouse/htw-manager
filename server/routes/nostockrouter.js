@@ -1006,7 +1006,7 @@ async function addItems(bcResponse, notify) {
       if (!newItems[0]) {
         console.log('No Message Sent to slack!');
       } else {
-        let slackText = `:warning: *NO STOCK NOTIFY!* :warning:\n\n<!channel>\n\n`;
+        let slackText = `:warning: *NO STOCK NOTIFY!* :warning:\n\n<!channel>\n\nWALLY B FOUND SOME NEW PRODUCTS OUT OF STOCK!\n\n`;
 
         for (let i = 0; i < newItems.length; i++) {
           let itemTrack = newItems[i].inventory_tracking;
@@ -2081,7 +2081,7 @@ router.get("/test/message", (req, res) => {
 
   console.log("We are sending a test slack message..");
 
-  let slackText = `:test_tube: *THIS IS A TEST MESSAGE* :test_tube:`;
+  let slackText = `:test_tube: *THIS IS A TEST MESSAGE! WALLY B OUT!* :test_tube:`;
 
   (async () => {
     // See: https://api.slack.com/methods/chat.postMessage
