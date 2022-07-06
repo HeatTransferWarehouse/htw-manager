@@ -25,24 +25,24 @@ function Affilates () {
   const [endDate, setEndDate] = useState('');
 
 useEffect(() => {
-    dispatch({
-      type: "GET_TOP_FIVE",
-    });
-    dispatch({
-      type: "GET_AFFILIATE_LIST",
-    });
-    dispatch({
-      type: "GET_EMAIL_LIST",
-    });
-    dispatch({
-      type: "GET_TOTAL_LIST",
-    });
-    dispatch({
-      type: "DELETE_ITEM_RANGE",
-    });
-    dispatch({
-      type: "DELETE_SKU_RANGE",
-    });
+    //dispatch({
+   //   type: "GET_TOP_FIVE",
+   // });
+   // dispatch({
+  //    type: "GET_AFFILIATE_LIST",
+  //  });
+  //  dispatch({
+  //    type: "GET_EMAIL_LIST",
+  //  });
+   // dispatch({
+  //    type: "GET_TOTAL_LIST",
+   // });
+  //  dispatch({
+   //   type: "DELETE_ITEM_RANGE",
+  //  });
+  //  dispatch({
+  //    type: "DELETE_SKU_RANGE",
+  //  });
 }, [])
 
 const checkEmail = (event) => {
