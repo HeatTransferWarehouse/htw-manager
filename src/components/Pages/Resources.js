@@ -10,17 +10,7 @@ function Resources () {
     //defines the dataselector to know which items to preform actions on
     return (
 <>
-  <head>
-
-    
-
-  </head>
-    
-    <body>
-    
-    
-   
-
+  <body>
     <div class="welcome-area" id="welcome">
 
         <div class="header-text">
@@ -406,9 +396,6 @@ function Resources () {
             </div>
         </div>
     </section>
-    
-    
-
   </body>
 </>
     )

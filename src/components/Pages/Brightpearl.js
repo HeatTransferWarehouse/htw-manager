@@ -137,7 +137,7 @@ function BrightPearl () {
                 { name: "Date" },
               ]}
               options={options}
-              />
+        />
       <br></br>
       <section className='total-form'>
       <h4 className='big-number'>{total}</h4>
