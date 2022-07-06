@@ -173,6 +173,19 @@ function Main () {
         }
       }
     ><FlagIcon/> Test</Button>
+    <Button 
+      variant = "contained"
+      color = "primary"
+      onClick = {
+        (event) => {
+          event.preventDefault();
+          dispatch({
+            type: "TEST_NSN_MESSAGE",
+          });
+      swal(`Running Test Slack Message, check console and slack..`);
+        }
+      }
+    ><FlagIcon/> Test Slack Message</Button>
     </div>
     <Button 
       variant = "contained"

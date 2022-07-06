@@ -2077,5 +2077,27 @@ router.put("/test", (req, res) => {
   res.sendStatus(200);
 });
 
+router.get("/test/message", (req, res) => {
+
+  console.log("We are sending a test slack message..");
+
+  let slackText = `:test_tube: *THIS IS A TEST MESSAGE* :test_tube:`;
+
+  (async () => {
+    // See: https://api.slack.com/methods/chat.postMessage
+    const msg = await web.chat.postMessage({
+      icon_emoji: ":test_tube:",
+      channel: conversationId,
+      text: `${slackText}`,
+    });
+
+    // `msg` contains information about the posted message
+
+    console.log("Message sent: ", msg);
+  })();
+  
+  res.sendStatus(200);
+});
+
 
 module.exports = router;

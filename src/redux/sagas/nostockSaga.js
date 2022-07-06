@@ -111,6 +111,14 @@ function* testNSN(action) {
   }
 }
 
+function* testNSNMessage(action) {
+  try {
+    yield axios.get(`/api/nostock/test/message`);
+  } catch (error) {
+    console.log("Error with testing NSN Slack Message:", error);
+  }
+}
+
 
 //this takes all of the Saga functions and dispatches them
 function* itemSaga() {
@@ -122,6 +130,7 @@ function* itemSaga() {
     yield takeLatest('CHANGE_REASON', changeReason);
     yield takeLatest('UPDATE_NOTES', updateNotes);
     yield takeLatest('TEST_NSN', testNSN);
+    yield takeLatest('TEST_NSN_MESSAGE', testNSNMessage);
 }
 
 export default itemSaga;
