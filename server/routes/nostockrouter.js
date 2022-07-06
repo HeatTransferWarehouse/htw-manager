@@ -1926,8 +1926,8 @@ router.put("/updateReason", (req, res) => {
 });
 
 router.get("/test", (req, res) => {
-  console.log(req.body.test);
-  const test = req.body.test;
+  console.log(req.body);
+  const test = req.body;
   console.log("We are running an NSN test for: ", test);
 
   t(test);
