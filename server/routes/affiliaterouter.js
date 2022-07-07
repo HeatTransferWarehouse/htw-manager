@@ -64,10 +64,23 @@ router.post("/events", async (req, res) => {
            let text = req.body.event.text;
            let channel = req.body.event.channel;
            let type = req.body.event.type;
-          if (type !== "message") {
+           let user = req.body.event.user;
+          if (type === "app_mention") {
+            (async () => {
+              // See: https://api.slack.com/methods/chat.postMessage
+              const res = await web.chat.postMessage({
+                icon_emoji: ":smile:",
+                channel: channel,
+                text: `Oh hey <@${user}>! What's Poppin?`,
+              });
+    
+              // `res` contains information about the posted message
+    
+              console.log("Message sent: ", res);
+            })();
+          } else if (type !== "message") {
             return;
-          }
-          if (text !== undefined) {
+          } else if (text !== undefined) {
             if (channel === "C0139RJPUEM" && text.includes("Referral ")) {
            splitText = text.split(" ");
            //console.log("this is splitText", splitText);
