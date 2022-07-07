@@ -1030,11 +1030,7 @@ router.put("/ftp", async function (req, res) {
         stream.pipe(res);
 
         stream.on('end', function(){
-          if (isError) {
-            res.status(500).end()
-          } else {
-            res.end()
-          }
+          res.end()
         });
       });
     });
