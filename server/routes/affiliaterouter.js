@@ -612,7 +612,7 @@ router.put("/wallyBMessages", (req, res) => {
         const res = await web.chat.postMessage({
           icon_emoji: ":smile:",
           channel: channel,
-          text: `But I'm not a computer..`,
+          text: `I am not a computer, I am Wally B!`,
         });
   
         // `res` contains information about the posted message
