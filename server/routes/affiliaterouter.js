@@ -418,7 +418,7 @@ router.get("/email", (req, res) => {
 router.put("/wallyBMessages", (req, res) => {
   console.log("We are about to send a slack message via Wally B");
 
-  const payload = req.body.payload;
+  const payload = req.body;
 
   const user = payload.user;
   const channel = payload.channel;
@@ -431,7 +431,7 @@ router.put("/wallyBMessages", (req, res) => {
       const res = await web.chat.postMessage({
         icon_emoji: ":smile:",
         channel: channel,
-        text: `Hey <@${user}>!`,
+        text: `Hey ${user}!`,
       });
 
       // `res` contains information about the posted message
@@ -459,7 +459,7 @@ router.put("/wallyBMessages", (req, res) => {
       const res = await web.chat.postMessage({
         icon_emoji: ":smile:",
         channel: channel,
-        text: `Hi <@${user}>!`,
+        text: `Hi ${user}!`,
       });
 
       // `res` contains information about the posted message
@@ -487,7 +487,7 @@ router.put("/wallyBMessages", (req, res) => {
       const res = await web.chat.postMessage({
         icon_emoji: ":smile:",
         channel: channel,
-        text: `No <@${user}>..`,
+        text: `No ${user}..`,
       });
 
       // `res` contains information about the posted message
@@ -515,7 +515,7 @@ router.put("/wallyBMessages", (req, res) => {
       const res = await web.chat.postMessage({
         icon_emoji: ":smile:",
         channel: channel,
-        text: `Yes <@${user}>!`,
+        text: `Yes ${user}!`,
       });
 
       // `res` contains information about the posted message
@@ -543,7 +543,7 @@ router.put("/wallyBMessages", (req, res) => {
       const res = await web.chat.postMessage({
         icon_emoji: ":smile:",
         channel: channel,
-        text: `Maybe <@${user}>..`,
+        text: `Maybe ${user}..`,
       });
 
       // `res` contains information about the posted message
@@ -571,7 +571,7 @@ router.put("/wallyBMessages", (req, res) => {
       const res = await web.chat.postMessage({
         icon_emoji: ":smile:",
         channel: channel,
-        text: `Kinda <@${user}>`,
+        text: `Kinda ${user}`,
       });
 
       // `res` contains information about the posted message
@@ -599,7 +599,7 @@ router.put("/wallyBMessages", (req, res) => {
       const res = await web.chat.postMessage({
         icon_emoji: ":smile:",
         channel: channel,
-        text: `<@${user}> but I am not a computer!`,
+        text: `${user} but I am not a computer!`,
       });
 
       // `res` contains information about the posted message
