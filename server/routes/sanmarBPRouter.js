@@ -1017,11 +1017,7 @@ router.put("/ftp", async function (req, res) {
 
     c.on('ready', function () {
       c.get(`/000175733Status/${file}`, function (err, stream) {
-        let isError = false;
-        if (err) { 
-          console.log(err);
-          isError = true
-        }
+        if (err) throw err;
 
         stream.once('close', function () {
           c.end();
@@ -1036,7 +1032,7 @@ router.put("/ftp", async function (req, res) {
     });
   } catch (err) {
     console.log('Error on connect ftp: ', err);
-    res.status(500).end();
+    res.status(500).send('NO');
   }
 
 });

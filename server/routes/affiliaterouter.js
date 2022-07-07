@@ -304,7 +304,7 @@ router.post("/events", async (req, res) => {
              });
         
       } else {
-        console.log('No Events Matched!');
+        //console.log('No Events Matched!');
         return;
       }
      }
@@ -433,7 +433,7 @@ router.put("/wallyBMessages", (req, res) => {
 
       // `res` contains information about the posted message
 
-      console.log("Message sent: ", res);
+      console.log("Message sent..");
     })();
 
   res.sendStatus(200);
