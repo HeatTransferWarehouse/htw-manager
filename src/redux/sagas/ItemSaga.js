@@ -84,7 +84,7 @@ function* updatePrices(action) {
 function* connectFtp(action) {
   try {
     const response = yield axios.put(`/api/item/ftp`, action.payload);
-    if (response.data.status === 201) {
+    if (response.data.status !== 500) {
     yield put({
       type: "SET_SANMAR",
       payload: 'YES',

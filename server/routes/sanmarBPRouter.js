@@ -1033,7 +1033,7 @@ router.put("/ftp", async function (req, res) {
           if (isError) {
             res.status(500).end()
           } else {
-            res.status(201).end()
+            res.end()
           }
         });
       });

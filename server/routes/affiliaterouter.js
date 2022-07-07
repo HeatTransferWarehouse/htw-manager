@@ -32,7 +32,7 @@ let config = {
 };
 
 slackEvents.on('error', console.error);  
-  
+
 
 router.delete("/deleteitemrange", (req, res) => {
     pool
@@ -413,6 +413,217 @@ router.get("/email", (req, res) => {
         console.log(`Error on affiliate query ${error}`);
         res.sendStatus(500);
       });
+});
+
+router.put("/wallyBMessages", (req, res) => {
+  console.log("We are about to send a slack message via Wally B");
+
+  const payload = req.body.payload;
+
+  const user = payload.user;
+  const channel = payload.channel;
+  const message = payload.channel;
+
+  if (message === 1) {
+    if (user !== '') {
+    (async () => {
+      // See: https://api.slack.com/methods/chat.postMessage
+      const res = await web.chat.postMessage({
+        icon_emoji: ":smile:",
+        channel: channel,
+        text: `Hey <@${user}>!`,
+      });
+
+      // `res` contains information about the posted message
+
+      console.log("Message sent: ", res);
+    })();
+    } else {
+      (async () => {
+        // See: https://api.slack.com/methods/chat.postMessage
+        const res = await web.chat.postMessage({
+          icon_emoji: ":smile:",
+          channel: channel,
+          text: `Hey!`,
+        });
+  
+        // `res` contains information about the posted message
+  
+        console.log("Message sent: ", res);
+      })();
+    }
+  } else if (message === 2) {
+    if (user !== '') {
+    (async () => {
+      // See: https://api.slack.com/methods/chat.postMessage
+      const res = await web.chat.postMessage({
+        icon_emoji: ":smile:",
+        channel: channel,
+        text: `Hi <@${user}>!`,
+      });
+
+      // `res` contains information about the posted message
+
+      console.log("Message sent: ", res);
+    })();
+    } else {
+      (async () => {
+        // See: https://api.slack.com/methods/chat.postMessage
+        const res = await web.chat.postMessage({
+          icon_emoji: ":smile:",
+          channel: channel,
+          text: `Hi!`,
+        });
+  
+        // `res` contains information about the posted message
+  
+        console.log("Message sent: ", res);
+      })();
+    }
+  } else if (message === 3) {
+    if (user !== '') {
+    (async () => {
+      // See: https://api.slack.com/methods/chat.postMessage
+      const res = await web.chat.postMessage({
+        icon_emoji: ":smile:",
+        channel: channel,
+        text: `No <@${user}>..`,
+      });
+
+      // `res` contains information about the posted message
+
+      console.log("Message sent: ", res);
+    })();
+    } else {
+      (async () => {
+        // See: https://api.slack.com/methods/chat.postMessage
+        const res = await web.chat.postMessage({
+          icon_emoji: ":smile:",
+          channel: channel,
+          text: `No..`,
+        });
+  
+        // `res` contains information about the posted message
+  
+        console.log("Message sent: ", res);
+      })();
+    }
+  } else if (message === 4) {
+    if (user !== '') {
+    (async () => {
+      // See: https://api.slack.com/methods/chat.postMessage
+      const res = await web.chat.postMessage({
+        icon_emoji: ":smile:",
+        channel: channel,
+        text: `Yes <@${user}>!`,
+      });
+
+      // `res` contains information about the posted message
+
+      console.log("Message sent: ", res);
+    })();
+    } else {
+      (async () => {
+        // See: https://api.slack.com/methods/chat.postMessage
+        const res = await web.chat.postMessage({
+          icon_emoji: ":smile:",
+          channel: channel,
+          text: `Yes!`,
+        });
+  
+        // `res` contains information about the posted message
+  
+        console.log("Message sent: ", res);
+      })();
+    }
+  } else if (message === 5) {
+    if (user !== '') {
+    (async () => {
+      // See: https://api.slack.com/methods/chat.postMessage
+      const res = await web.chat.postMessage({
+        icon_emoji: ":smile:",
+        channel: channel,
+        text: `Maybe <@${user}>..`,
+      });
+
+      // `res` contains information about the posted message
+
+      console.log("Message sent: ", res);
+    })();
+    } else {
+      (async () => {
+        // See: https://api.slack.com/methods/chat.postMessage
+        const res = await web.chat.postMessage({
+          icon_emoji: ":smile:",
+          channel: channel,
+          text: `Maybe..`,
+        });
+  
+        // `res` contains information about the posted message
+  
+        console.log("Message sent: ", res);
+      })();
+    }
+  } else if (message === 6) {
+    if (user !== '') {
+    (async () => {
+      // See: https://api.slack.com/methods/chat.postMessage
+      const res = await web.chat.postMessage({
+        icon_emoji: ":smile:",
+        channel: channel,
+        text: `Kinda <@${user}>`,
+      });
+
+      // `res` contains information about the posted message
+
+      console.log("Message sent: ", res);
+    })();
+    } else {
+      (async () => {
+        // See: https://api.slack.com/methods/chat.postMessage
+        const res = await web.chat.postMessage({
+          icon_emoji: ":smile:",
+          channel: channel,
+          text: `Kinda`,
+        });
+  
+        // `res` contains information about the posted message
+  
+        console.log("Message sent: ", res);
+      })();
+    }
+  } else if (message === 7) {
+    if (user !== '') {
+    (async () => {
+      // See: https://api.slack.com/methods/chat.postMessage
+      const res = await web.chat.postMessage({
+        icon_emoji: ":smile:",
+        channel: channel,
+        text: `<@${user}> but I am not a computer!`,
+      });
+
+      // `res` contains information about the posted message
+
+      console.log("Message sent: ", res);
+    })();
+    } else {
+      (async () => {
+        // See: https://api.slack.com/methods/chat.postMessage
+        const res = await web.chat.postMessage({
+          icon_emoji: ":smile:",
+          channel: channel,
+          text: `But I'm not a computer..`,
+        });
+  
+        // `res` contains information about the posted message
+  
+        console.log("Message sent: ", res);
+      })();
+    }
+  }
+
+  res.sendStatus(200);
+
 });
        
 
