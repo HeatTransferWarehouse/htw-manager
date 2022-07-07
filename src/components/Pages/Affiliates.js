@@ -25,24 +25,24 @@ function Affilates () {
   const [endDate, setEndDate] = useState('');
 
 useEffect(() => {
-    //dispatch({
-   //   type: "GET_TOP_FIVE",
-   // });
-   // dispatch({
-  //    type: "GET_AFFILIATE_LIST",
-  //  });
-  //  dispatch({
-  //    type: "GET_EMAIL_LIST",
-  //  });
-   // dispatch({
-  //    type: "GET_TOTAL_LIST",
-   // });
-  //  dispatch({
-   //   type: "DELETE_ITEM_RANGE",
-  //  });
-  //  dispatch({
-  //    type: "DELETE_SKU_RANGE",
-  //  });
+    dispatch({
+      type: "GET_TOP_FIVE",
+    });
+    dispatch({
+      type: "GET_AFFILIATE_LIST",
+    });
+    dispatch({
+      type: "GET_EMAIL_LIST",
+    });
+    dispatch({
+      type: "GET_TOTAL_LIST",
+    });
+    dispatch({
+      type: "DELETE_ITEM_RANGE",
+    });
+    dispatch({
+      type: "DELETE_SKU_RANGE",
+    });
 }, [])
 
 const checkEmail = (event) => {
@@ -151,12 +151,11 @@ return (
           <br />
           <br />
           <div style={{ padding: "1.5%" }}>
-            <center>
+            {/* <center>
               <>
                 <h1>Select a Date Range</h1>
                 <MuiPickersUtilsProvider utils={LuxonUtils}>
                   <Grid container justify="space-around">
-                  {/* used to filter by date */}
                   <DatePicker
                   label="Start Date"
                   inputFormat="MM/dd/yyyy"
@@ -220,7 +219,7 @@ return (
                   </Form>
                 </>
               )}
-            </center>
+            </center> */}
             <MUITable
               data={skunumdata} //brings in data as an array, in this case, list of items
               columns={[
