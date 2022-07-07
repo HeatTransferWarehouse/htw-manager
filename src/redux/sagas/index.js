@@ -5,7 +5,6 @@ import RegisterSaga from './registrationSaga';
 import UserSaga from './userSaga';
 import NoStockSaga from './nostockSaga';
 import affiliateSaga from './affiliateSaga';
-import WallyB from './wallybSaga';
 
 
 // rootSaga is the primary saga.
@@ -19,6 +18,5 @@ export default function* rootSaga() {
     UserSaga(),
     NoStockSaga(),
     affiliateSaga(),
-    WallyB(),
   ]);
 }

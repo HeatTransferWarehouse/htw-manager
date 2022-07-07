@@ -114,6 +114,16 @@ function* deleteSkuRange(action) {
   }
 }
 
+function* wallyBHello(action) {
+  try {
+
+    yield axios.put(`/api/affiliate/wallyBMessages`, action.payload);
+
+  } catch (error) {
+    console.log("Error with sending Wally B Message: ", error);
+  }
+}
+
 
 
 
@@ -126,6 +136,7 @@ function* itemSaga() {
     yield takeLatest('GET_TOTAL_LIST', gettotallist);
     yield takeLatest('DELETE_ITEM_RANGE', deleteItemRange);
     yield takeLatest('DELETE_SKU_RANGE', deleteSkuRange);
+    yield takeLatest('WALLY_B_MESSAGE', wallyBHello);
 }
 
 export default itemSaga;
