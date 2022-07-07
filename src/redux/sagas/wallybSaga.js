@@ -21,6 +21,7 @@ function* wallybSaga() {
     yield takeLatest('WALLY_B_MAYBE', wallyBHello);
     yield takeLatest('WALLY_B_NOT_ROBOT', wallyBHello);
     yield takeLatest('WALLY_B_KINDA', wallyBHello);
+    yield takeLatest('WALLY_B_CUSTOM', wallyBHello);
 }
 
 export default wallybSaga;

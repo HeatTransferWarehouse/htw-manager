@@ -20,7 +20,7 @@ function Affilates () {
   const emaillist = useSelector(store => store.affiliate.emaillist);
   const totallist = useSelector(store => store.affiliate.totallist);
 
-  const [email, setEmail] = useState('');
+  const [email, setEmail] = useState('--SELECT EMAIL FIRST!--');
   const [startDate, setStartDate] = useState({});
   const [endDate, setEndDate] = useState('');
 
@@ -151,8 +151,8 @@ return (
           <br />
           <br />
           <div style={{ padding: "1.5%" }}>
-            {/* <center>
-              <>
+            <center>
+              {/* <>
                 <h1>Select a Date Range</h1>
                 <MuiPickersUtilsProvider utils={LuxonUtils}>
                   <Grid container justify="space-around">
@@ -180,7 +180,7 @@ return (
                   />
                   </Grid>
                 </MuiPickersUtilsProvider>
-              </>
+              </> */}
               {startDate === null || endDate === null ? (
                 <span></span>
               ) : startDate > endDate ? (
@@ -219,7 +219,7 @@ return (
                   </Form>
                 </>
               )}
-            </center> */}
+            </center>
             <MUITable
               data={skunumdata} //brings in data as an array, in this case, list of items
               columns={[

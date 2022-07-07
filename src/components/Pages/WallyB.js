@@ -13,6 +13,7 @@ function WallyB () {
 
   const [user, setUser] = React.useState('');
   const [channel, setChannel] = React.useState('C0139RJPUEM');
+  const [message, setMessage] = React.useState('');
   const dispatch = useDispatch();
   
     return (
@@ -160,6 +161,29 @@ function WallyB () {
         }
       }
     ><FlagIcon/> I am not a Robot</Button>
+    <FormControl component="fieldset">
+      <FormLabel component="legend"></FormLabel>
+      <TextField value={message} onChange={(e) => {setMessage(e.target.value)}}/>
+    </FormControl>
+    <Button 
+      variant = "contained"
+      color = "primary"
+      onClick = {
+        (event) => {
+          event.preventDefault();
+          dispatch({
+            type: "WALLY_B_CUSTOM",
+            payload: {
+                user: user,
+                message: message,
+                channel: channel,
+                message: 8,
+            }
+          });
+      swal("Sending Message..");
+        }
+      }
+    ><FlagIcon/> Custom Message</Button>
     </section>
       </>
     )

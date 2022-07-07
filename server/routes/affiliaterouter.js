@@ -620,6 +620,22 @@ router.put("/wallyBMessages", (req, res) => {
         console.log("Message sent: ", res);
       })();
     }
+  } else if (message === 8) {
+
+    const message = payload.message;
+
+    (async () => {
+      // See: https://api.slack.com/methods/chat.postMessage
+      const res = await web.chat.postMessage({
+        icon_emoji: ":smile:",
+        channel: channel,
+        text: message,
+      });
+
+      // `res` contains information about the posted message
+
+      console.log("Message sent: ", res);
+    })();
   }
 
   res.sendStatus(200);
