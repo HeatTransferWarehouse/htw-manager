@@ -2,7 +2,10 @@ import React from "react";
 import { useDispatch } from 'react-redux';
 import './Main.css'
 import Button from "react-bootstrap/Button";
+import FormLabel from '@material-ui/core/FormLabel';
+import FormControl from '@material-ui/core/FormControl';
 import FlagIcon from "@material-ui/icons/Flag";
+import TextField from '@material-ui/core/TextField';
 import swal from "sweetalert";
 
 
@@ -146,7 +149,7 @@ function WallyB () {
         (event) => {
           event.preventDefault();
           dispatch({
-            type: "WALLY_B_KINDA",
+            type: "WALLY_B_NOT_ROBOT",
             payload: {
                 user: user,
                 channel: channel,
