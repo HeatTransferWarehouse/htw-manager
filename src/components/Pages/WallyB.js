@@ -4,7 +4,7 @@ import './Main.css'
 import Button from "react-bootstrap/Button";
 import FormLabel from '@material-ui/core/FormLabel';
 import FormControl from '@material-ui/core/FormControl';
-import FlagIcon from "@material-ui/icons/Flag";
+import QueueIcon from "@material-ui/icons/Queue";
 import TextField from '@material-ui/core/TextField';
 import swal from "sweetalert";
 
@@ -24,11 +24,23 @@ function WallyB () {
       <br/>
       <br/>
     <section className="nav">
-    <FormControl component="fieldset">
-      <FormLabel component="legend"></FormLabel>
-      <TextField value={channel} onChange={(e) => {setChannel(e.target.value)}}/>
-    </FormControl>
-    <h3>Channel</h3>
+    <Box sx={{ minWidth: 120 }}>
+        <FormControl fullWidth>
+          <InputLabel id="demo-simple-select-label">Channel</InputLabel>
+          <Select
+          className="dead-inventory"
+          value={reason}
+          label="Channel"
+          onChange={(e) => {setChannel(e)}}
+          >
+            <MenuItem value={'C0139RJPUEM'}>#osiaffiliate</MenuItem>
+            <MenuItem value={'C0J6SU483'}>#social-htw</MenuItem>
+            <MenuItem value={'C01CBRYK57V'}>#darkweb</MenuItem>
+            <MenuItem value={'C02EV4JKSLA'}>#no-stock-notify</MenuItem>
+            <MenuItem value={'C0JBP7GBS'}>#htw-news-update</MenuItem>
+          </Select>
+        </FormControl>
+    </Box>
     <FormControl component="fieldset">
       <FormLabel component="legend"></FormLabel>
       <TextField value={message} onChange={(e) => {setMessage(e.target.value)}}/>
@@ -49,7 +61,7 @@ function WallyB () {
       swal("Sending Message..");
         }
       }
-    ><FlagIcon/> Send Message</Button>
+    ><QueueIcon/> Send Message</Button>
     </section>
       </>
     )

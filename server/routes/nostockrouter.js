@@ -1029,7 +1029,7 @@ async function addItems(bcResponse, notify) {
 
           // `res` contains information about the posted message
 
-          console.log("Message sent: ", res);
+          console.log("NSN Slack Notify Message sent..");
         })();
       }
     } catch (err) {
