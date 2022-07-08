@@ -273,7 +273,7 @@ async function getSanmar() {
                 <DesktopDatePicker
                 label="Date"
                 value={date}
-                minDate={new Date('2009-01-01')}
+                minDate={new Date('2019-01-01')}
                 onChange={(newValue) => {
                 setDate(newValue);
                 }}

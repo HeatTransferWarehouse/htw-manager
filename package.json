@@ -40,6 +40,7 @@
     "express": "^4.18.1",
     "fs": "0.0.1-security",
     "ftp": "^0.3.10",
+    "jquery": "^3.6.0",
     "jsonwebtoken": "^8.5.1",
     "lupus": "^0.0.1",
     "luxon": "^2.3.0",
