@@ -3,13 +3,6 @@ import './Main.css';
 import './css/bootstrap.min.css';
 import './css/font-awesome.css';
 import './css/templatemo-softy-pinko.css';
-import './js/bootstrap.min.js';
-import './js/custom.js';
-import './js/imgfix.min.js';
-import './js/jquery-2.1.0.min.js';
-import './js/jquery.counterup.min.js';
-import './js/scrollreveal.min.js';
-import './js/waypoints.min.js';
 
 
 function Resources () {
