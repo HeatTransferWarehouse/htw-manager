@@ -150,7 +150,7 @@ return (
           <br />
           <br />
           <br />
-          <div style={{ padding: "1.5%" }}>
+          {/* <div style={{ padding: "1.5%" }}>
             <center>
               <>
                 <h1>Select a Date Range</h1>
@@ -230,7 +230,7 @@ return (
               ]}
               title={`Skus for ${email}`} //give the table a name
             />
-          </div>
+          </div> */}
         </div>
       </>
     )
