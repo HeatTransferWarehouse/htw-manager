@@ -1017,7 +1017,9 @@ router.put("/ftp", async function (req, res) {
 
     c.on('ready', function () {
       c.get(`/000175733Status/${file}`, function (err, stream) {
-        if (err) throw err;
+        if (err) { 
+          console.log('Error on SanMar FTP Download: ', err); 
+        }
 
         stream.once('close', function () {
           c.end();

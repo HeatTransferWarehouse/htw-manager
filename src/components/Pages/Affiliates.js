@@ -21,8 +21,8 @@ function Affilates () {
   const totallist = useSelector(store => store.affiliate.totallist);
 
   const [email, setEmail] = useState('--SELECT EMAIL FIRST!--');
-  const [startDate, setStartDate] = useState({});
-  const [endDate, setEndDate] = useState('');
+  const [startDate, setStartDate] = useState({startDate: {year: '2022', month: '01', day: '01'}});
+  const [endDate, setEndDate] = useState({endDate: {year: '2022', month: '01', day: '01'}});
 
 useEffect(() => {
     dispatch({
@@ -152,7 +152,7 @@ return (
           <br />
           <div style={{ padding: "1.5%" }}>
             <center>
-              {/* <>
+              <>
                 <h1>Select a Date Range</h1>
                 <MuiPickersUtilsProvider utils={LuxonUtils}>
                   <Grid container justify="space-around">
@@ -180,7 +180,7 @@ return (
                   />
                   </Grid>
                 </MuiPickersUtilsProvider>
-              </> */}
+              </>
               {startDate === null || endDate === null ? (
                 <span></span>
               ) : startDate > endDate ? (

@@ -245,11 +245,11 @@ async function getSanmar() {
     case 'WAIT':
       sanmarDisplay = <h4></h4>
       break;
-    case 'YES':
-      sanmarDisplay = <h4>Download Succesful!</h4>
-      break;
     case 'NO':
       sanmarDisplay = <h4>Download Failed! File may not be available yet</h4>
+      break;
+    case 'YES':
+      download();
       break;
     default:
       download();
