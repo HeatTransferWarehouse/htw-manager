@@ -1,7 +1,7 @@
 import React from 'react';
 import {Route} from 'react-router-dom'
 import {connect} from 'react-redux';
-import LoginPage from '../LoginPage/LoginPage';
+import Main from '../Home/Main';
 
 const AdminRoute = (props) => {
   // Using destructuring, this takes ComponentToProtect from component
@@ -20,14 +20,10 @@ const AdminRoute = (props) => {
     // if the user is logged in (only logged in users have ids)
     // show the component that is protected
     ComponentToShow = ComponentToProtect;
-  } else if (loginMode === 'login') {
-    // if they are not logged in, check the loginMode on Redux State
-    // if the mode is 'login', show the LoginPage
-    ComponentToShow = LoginPage;
   } else {
     // if they are not logged in, check the loginMode on Redux State
-    // if the mode is 'login', show the LoginPage
-    ComponentToShow = LoginPage;
+    // if the mode is 'login', show the Main
+    ComponentToShow = Main;
   }
   return (
       <Route
