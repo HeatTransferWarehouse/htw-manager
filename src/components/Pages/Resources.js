@@ -1,7 +1,8 @@
 import React from "react";
-import './Main.css';
+import "./css/Main.css";
 import './css/bootstrap.min.css';
 import './css/font-awesome.css';
+import './css/flex-slider.css';
 import './css/templatemo-softy-pinko.css';
 
 
