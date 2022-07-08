@@ -1017,8 +1017,8 @@ router.put("/ftp", async function (req, res) {
 
     c.on('ready', function () {
       c.get(`/000175733Status/${file}`, function (err, stream) {
-        if (err) { 
-          console.log('Error on SanMar FTP Download: ', err); 
+        if (err) {
+          console.log('Error on SanMar FTP Download: ', err);
         }
 
         stream.once('close', function () {
@@ -1028,13 +1028,17 @@ router.put("/ftp", async function (req, res) {
         stream.pipe(res);
 
         stream.on('end', function(){
-          res.end()
+          if (err) {
+            res.status(500).end();
+          } else {
+            res.end();
+          }
         });
       });
     });
   } catch (err) {
     console.log('Error on connect ftp: ', err);
-    res.status(500).send('NO');
+    res.status(500).end();
   }
 
 });

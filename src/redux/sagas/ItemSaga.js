@@ -92,7 +92,7 @@ function* connectFtp(action) {
   } else {
     yield put({
       type: "SET_SANMAR",
-      payload: 'YES',
+      payload: response.data,
     })
   }
   } catch (error) {

@@ -248,9 +248,6 @@ async function getSanmar() {
     case 'NO':
       sanmarDisplay = <h4>Download Failed! File may not be available yet</h4>
       break;
-    case 'YES':
-      download();
-      break;
     default:
       download();
   }
