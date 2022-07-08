@@ -2,8 +2,12 @@ import React from "react";
 import { useDispatch } from 'react-redux';
 import './Main.css'
 import Button from "react-bootstrap/Button";
+import Box from '@material-ui/core/Box';
 import FormLabel from '@material-ui/core/FormLabel';
 import FormControl from '@material-ui/core/FormControl';
+import InputLabel from '@material-ui/core/InputLabel';
+import MenuItem from '@material-ui/core/MenuItem';
+import Select from '@material-ui/core/Select';
 import QueueIcon from "@material-ui/icons/Queue";
 import TextField from '@material-ui/core/TextField';
 import swal from "sweetalert";
@@ -29,7 +33,7 @@ function WallyB () {
           <InputLabel id="demo-simple-select-label">Channel</InputLabel>
           <Select
           className="dead-inventory"
-          value={reason}
+          value={channel}
           label="Channel"
           onChange={(e) => {setChannel(e)}}
           >
