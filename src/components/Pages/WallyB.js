@@ -39,7 +39,7 @@ function WallyB () {
           className="dead-inventory"
           value={channel}
           label="Channel"
-          onChange={(e) => {setChannel(e)}}
+          onChange={(e) => {setChannel(e.target.value)}}
           >
             <MenuItem value={'C0139RJPUEM'}>#osiaffiliate</MenuItem>
             <MenuItem value={'C0J6SU483'}>#social-htw</MenuItem>
