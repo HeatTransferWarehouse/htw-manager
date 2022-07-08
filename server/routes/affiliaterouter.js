@@ -68,7 +68,7 @@ router.post("/events", async (req, res) => {
            let channel = req.body.event.channel;
            let type = req.body.event.type;
            let user = req.body.event.user;
-          if (type === "app_mention" && user !== undefined && channel !== undefined) {
+          if (type === "app_mention" && user !== undefined && channel !== undefined && text.includes("Hey")) {
             (async () => {
               // See: https://api.slack.com/methods/chat.postMessage
               const res = await web.chat.postMessage({
