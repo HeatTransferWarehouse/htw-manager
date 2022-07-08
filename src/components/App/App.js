@@ -18,6 +18,8 @@ import Affilates from "../Pages/Affiliates";
 import ProtectedRoute from "../ProtectedRoute/ProtectedRoute";
 import AdminRoute from "../ProtectedRoute/AdminRoute";
 import WallyB from "../Pages/WallyB";
+import Admin from "../Pages/Admin";
+import Login from "../LoginPage/LoginPage";
 import "./App.css";
 class App extends Component {
 
@@ -29,9 +31,9 @@ class App extends Component {
             <Nav />
           </div>
           <Switch>
-            <ProtectedRoute exact path="/" component={Main} />
+            <Route exact path="/login" component={Login} />
 
-            <AdminRoute exact path="/register" component={Register} />
+            <ProtectedRoute exact path="/" component={Main} />
 
             <ProtectedRoute exact path="/sanmar" component={Sanmar} />
 
@@ -44,6 +46,10 @@ class App extends Component {
             <ProtectedRoute exact path="/resources" component={Resources} />
 
             <AdminRoute exact path="/wallyb" component={WallyB} />
+
+            <AdminRoute exact path="/register" component={Register} />
+
+            <AdminRoute exact path="/admin" component={Admin} />
             {/* If none of the other routes matched, we will show a 404. */}
             <Route render={() => <><br/><br/><br/><br/><br/><br/><h1 className="fourfour">404</h1></>} />
           </Switch>

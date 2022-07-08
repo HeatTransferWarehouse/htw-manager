@@ -1,5 +1,6 @@
 import React, { Component } from "react";
 import { HashRouter as Router, Link } from "react-router-dom";
+import Logout from "../LogOutButton/LogOutButton";
 import './Nav.css';
 
 class Nav extends Component {
@@ -24,6 +25,7 @@ class Nav extends Component {
               <Link to="/brightpearl" className="nav-link">Brightpearl</Link>
               <Link to="/nostock" className="nav-link">No Stock</Link>
               <Link to="/affiliates" className="nav-link">Affiliates</Link>
+              <Link to="/admin" className="nav-link">Admin</Link>
           </div>
           </Router>
       </div>
