@@ -92,6 +92,7 @@ function BrightPearl () {
       <input value={changeCapture} type="number" onChange={(e) => (setChangeCapture(e.target.value))} className="order-input"></input>
       <h4>Minutes</h4>
       <br></br>
+      <a target="_blank" href="https://docs.google.com/document/d/1cPpGSRBYkQWa-LvjjqfeRTP3jd4rLTzE_i5xz6KmTgs/edit"><strong>How to Use</strong></a>
       <Button onClick={(e) => {captureOrder(changeCapture)}} className="sales-input"><PlayArrowIcon/> Capture BP Orders</Button>
       </section>
       <section className="sales-form">

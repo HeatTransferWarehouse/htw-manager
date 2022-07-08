@@ -297,8 +297,11 @@ async function getSanmar() {
           <Button onClick={() => {sendEmail()}}>Send Email</Button>
          </div>
         </div>
-        </section>
-        <div className="tracking-data">
+        <div className="row">
+          <a target="_blank" href="https://docs.google.com/document/d/1pNqWk_UBeeMdLhqeGsU7Ghy1K052SWxpz05x2VEpARk/edit"><strong>How to Use</strong></a>
+        </div>
+      </section>
+      <div className="tracking-data">
             <MUITable
               title={"Sanmar Tracking"}
               data={tracking}
@@ -340,8 +343,8 @@ async function getSanmar() {
               ]}
               options={SanmarOptions}
               />
-        </div>
-        <div className="tracking-data">
+      </div>
+      <div className="tracking-data">
             <MUITable
               title={"Sent Emails"}
               data={emails}
@@ -360,7 +363,7 @@ async function getSanmar() {
               ]}
               options={SanmarOptions}
               />
-        </div>
+      </div>
       <br></br>
       <br></br>
       <section className="sanmar-form">
@@ -368,7 +371,7 @@ async function getSanmar() {
       </section>
       <section className="sanmar-form">
       <div className="container">
-      <div className="sanmar-row">
+       <div className="sanmar-row">
         <div className="clothing-data">
           <SanmarImporter />
           {/* <Button onClick={(e) => {refreshSanmar()}}>Refresh SanMar Prices</Button> */}
@@ -385,10 +388,13 @@ async function getSanmar() {
         <div className="total-form">
           <Button onClick={(e) => {updatePrices()}} className='sales-input'><QueueIcon/> Update Prices</Button>
         </div>
-      </div>
-      <br></br>
-      <br></br>
-      <div className="sanmar-row">
+        <div className="total-form">
+          <a target="_blank" href="https://docs.google.com/document/d/1DUhwG-jtleKPVWdxK5kMGYlkdnE0BPGDA-PWtmvz8SA/edit"><strong>How to Use</strong></a>
+        </div>
+       </div>
+       <br></br>
+       <br></br>
+       <div className="sanmar-row">
         <div className="clothing-data">
             <MUITable
               title={"SanMar Prices"}
@@ -411,8 +417,8 @@ async function getSanmar() {
               ]}
               options={SanmarOptions}
               />
-        </div>
-        <div className="clothing-data">
+         </div>
+         <div className="clothing-data">
             <MUITable
               title={"BC Prices"}
               data={bcPrices}
@@ -431,8 +437,8 @@ async function getSanmar() {
               ]}
               options={SanmarOptions}
               />
-        </div>
-      </div>
+         </div>
+       </div>
       </div>
       </section>
       </>

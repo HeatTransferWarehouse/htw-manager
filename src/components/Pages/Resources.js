@@ -8,7 +8,6 @@ import './js/custom.js';
 import './js/imgfix.min.js';
 import './js/jquery-2.1.0.min.js';
 import './js/jquery.counterup.min.js';
-import './js/popper.js';
 import './js/scrollreveal.min.js';
 import './js/waypoints.min.js';
 

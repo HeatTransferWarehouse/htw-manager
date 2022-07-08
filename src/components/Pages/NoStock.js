@@ -152,6 +152,7 @@ function Main () {
       <br></br>
       <br></br>
     <section className="nav">
+    <a target="_blank" href="https://docs.google.com/document/d/1oWjzp5W3-0VVA5PM2tFqQSZGPzOcHhaHETqZXKgAIEE/edit"><strong>How to Use</strong></a>
     <div style={{display: "none"}}>
     <FormControl component="fieldset">
       <FormLabel component="legend"></FormLabel>
