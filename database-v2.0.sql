@@ -51,6 +51,7 @@ CREATE TABLE "no-stock"
 	"sku" varchar(255) DEFAULT 'NO SKU',
 	"inventory_level" INTEGER,
 	"level" varchar(255) DEFAULT 'Product',
+	"brand" varchar(255) DEFAULT 'No Brand',
 	"dead" boolean DEFAULT false,
 	"date" DATE NOT NULL DEFAULT NOW(),
 	"notes" varchar(50),

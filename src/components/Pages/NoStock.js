@@ -125,6 +125,7 @@ function Main () {
     item.name,
     item.notes,
     item.sku,
+    item.brand,
     item.id,
     item.level,
     moment(item.date).format("MMM Do YY"),
@@ -135,6 +136,7 @@ function Main () {
     item.name,
     item.notes,
     item.sku,
+    item.brand,
     item.id,
     item.level,
     item.reason,
@@ -424,6 +426,7 @@ function Main () {
                     filter: false,
                   }
                 },
+                { name: "Brand" },
                 { name: "ID",
                   options: {
                     filter: false,
@@ -482,6 +485,7 @@ function Main () {
                     filter: false,
                   }
                 },
+                { name: "Brand" },
                 { name: "ID",
                   options: {
                     filter: false,
