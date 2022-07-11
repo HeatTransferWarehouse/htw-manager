@@ -945,7 +945,7 @@ async function addItems(bcResponse, notify) {
     await timeoutPromise(500);
 
     try {
-      varItems = await getVars(bcResponse, brands);
+      varItems = await getVars(bcResponse);
     } catch (err) {
       console.log('Error on getVars: ', err);
     }
@@ -961,6 +961,16 @@ async function addItems(bcResponse, notify) {
         for (const v of varItems) {
 
           if (v.inventory_level === 0) {
+
+            let bcItemBrand = v.brandId;
+            let brand = 'No Brand';
+
+            for (const b of brands) {
+              if (b.id === bcItemBrand) {
+                brand = b.name;
+              }
+            }
+
             let bcItemName = v.name;
             let bcItemSku = v.sku;
             bcItemId = v.id;
@@ -970,7 +980,7 @@ async function addItems(bcResponse, notify) {
               id: bcItemId,
               inventory_tracking: v.inventory_tracking,
               inventory_level: v.inventory_level,
-              brand: v.brand,
+              brand: brand,
               level: 'Variant',
             };
             newItems.push(variant);
@@ -991,8 +1001,18 @@ async function addItems(bcResponse, notify) {
           }
 
           if (v.inventory_level === 0 && canInsert === true) {
+
+            let bcItemBrand = v.brandId;
+            let brand = 'No Brand';
+
+            for (const b of brands) {
+              if (b.id === bcItemBrand) {
+                brand = b.name;
+              }
+            }
+
             let bcItemSku = v.sku;
-            let bcItemId = v.id;
+            bcItemId = v.id;
             let bcItemName = v.name;
             let variant = {
               name: bcItemName,
@@ -1000,7 +1020,7 @@ async function addItems(bcResponse, notify) {
               id: bcItemId,
               inventory_tracking: v.inventory_tracking,
               inventory_level: v.inventory_level,
-              brand: v.brand,
+              brand: brand,
               level: 'Variant',
             };
             newItems.push(variant);
@@ -1120,7 +1140,7 @@ async function getItemsSinglePage(pageToUse) {
 
 
 //Get All Variants of All Products
-async function getVars(bcResponse, brands) {
+async function getVars(bcResponse) {
 
   console.log('Getting Variants..');
 
@@ -1129,7 +1149,7 @@ async function getVars(bcResponse, brands) {
     try {
       for (const bc of bcResponse) {
         if (bc.inventory_tracking === 'variant') {
-        let pusher = await eachVar(bc, brands);
+        let pusher = await eachVar(bc);
         if (pusher[0]) {
          for (const item of pusher) {
 
@@ -1164,12 +1184,15 @@ async function getVars(bcResponse, brands) {
           const am = 'Allmade';
 
           if (item.name.includes(am) === false && item.name.includes(mm) === false && item.name.includes(vo) === false && item.name.includes(tm) === false && item.name.includes(ro) === false && item.name.includes(nl) === false && item.name.includes(rk) === false && item.name.includes(uni) === false && item.name.includes(rabbit) === false && item.name.includes(red) === false && item.name.includes(pac) === false && item.name.includes(cs) === false && item.name.includes(bac) === false && item.name.includes(anvil) === false && item.name.includes(fotl) === false && item.name.includes(jer) === false && item.name.includes(aa) === false && item.name.includes(hanes) === false && item.name.includes(cc) === false && item.name.includes(gildan) === false && item.name.includes(district) === false && item.name.includes(portauth) === false && item.name.includes(sporttek) === false && item.name.includes(newera) === false && item.name.includes(ade) === false && item.name.includes(aec) === false && item.name.includes(ej) === false && item.name.includes(champ) === false && item.name.includes(champ) === false && item.name.includes(nv) === false) {
-        varItems.push({
+        
+        let bcItemBrand = bc.brand_id;
+        
+         varItems.push({
           sku: item.sku,
           id: item.id,
           inventory_level: item.inventory_level,
           name: item.name,
-          brand: item.brand,
+          brandId: bcItemBrand,
           inventory_tracking: item.inventory_tracking,
         });
         //await timeoutPromise(5);
@@ -1187,13 +1210,11 @@ async function getVars(bcResponse, brands) {
 
 
 //Get Each Variant of a specific Product
-async function eachVar(bc, brands) {
+async function eachVar(bc) {
   try {
     let bcItemId = bc.id;
     let bcItemTrack = bc.inventory_tracking;
     let bcItemName = bc.name.replace(/"|`|'/g, ' ');
-    let bcItemBrand = bc.brand_id;
-    let brand = 'No Brand';
 
     if (bcItemTrack === 'variant') {
       let getVar = [];
@@ -1208,12 +1229,6 @@ async function eachVar(bc, brands) {
 
      if (getVar.data.data[0]) {
 
-      for (const b of brands) {
-        if (b.id === bcItemBrand) {
-          brand = b.name;
-        }
-      }
-
      for (const variant of getVar.data.data) {
 
       let varSku = variant.sku;
@@ -1225,13 +1240,12 @@ async function eachVar(bc, brands) {
         id: varId,
         inventory_level: varInv,
         name: bcItemName,
-        brand: brand,
         inventory_tracking: bcItemTrack,
       }
 
       varToPush.push(pusher);
 
-     }
+      }
 
      }
 
