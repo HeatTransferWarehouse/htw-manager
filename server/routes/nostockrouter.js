@@ -871,12 +871,12 @@ async function addItems(bcResponse, notify) {
           }
         }
       } else {
-        for (let i = 0; i < bcResponse.length; i++) {
-          bcItemId = bcResponse[i].id;
-          let bcItemName = bcResponse[i].name.replace(/"|`|'/g, ' ');
-          let bcItemSku = bcResponse[i].sku;
-          let bcItemInv = bcResponse[i].inventory_level;
-          let bcItemTrack = bcResponse[i].inventory_tracking;
+        for (const bc of bcResponse) {
+          bcItemId = bc.id;
+          let bcItemName = bc.name.replace(/"|`|'/g, ' ');
+          let bcItemSku = bc.sku;
+          let bcItemInv = bc.inventory_level;
+          let bcItemTrack = bc.inventory_tracking;
           let bcItemBrand = bc.brand_id;
           let brand = 'No Brand';
           let canInsert = true;
