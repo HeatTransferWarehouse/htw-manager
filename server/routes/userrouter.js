@@ -10,6 +10,12 @@ const axios = require("axios");
 const sgMail = require("@sendgrid/mail");
 sgMail.setApiKey(process.env.SENDGRID_API_KEY);
 require("dotenv").config();
+const app = express();
+const cors = require('cors');
+
+app.use(cors({
+  origin: ['https://www.heattransferwarehouse.com']
+}));
 
 let storeHash = process.env.STORE_HASH
 
@@ -27,7 +33,7 @@ router.get("/", rejectUnauthenticated, (req, res) => {
   res.send(req.user);
 });
 
-router.post("/addadmin", rejectUnauthenticated, (req, res, next) => {
+router.post("/addadmin", rejectUnauthenticated, (req, res) => {
   // used to reset user logins. It's on a permenent restricted path, only accessesable by manaully changing the code. Extremely secure and protected
   const first_name = req.body.first_name;
   const last_name = req.body.last_name;
@@ -70,7 +76,7 @@ router.post("/logout", (req, res) => {
   res.sendStatus(200);
 });
 
-router.post('/register', (req, res, next) => {
+router.post('/register', (req, res) => {
   const username = req.body.username;
   const password = encryptLib.encryptPassword(req.body.password);
 
@@ -85,7 +91,7 @@ router.post('/register', (req, res, next) => {
     });
 });
 
-router.post("/inksoft", async function (req, res) {
+router.post("/inksoft", cors(), async function (req, res) {
   const orderID = req.body.orderId;
   console.log('Fetching products for inksoft: ', orderID);
 
