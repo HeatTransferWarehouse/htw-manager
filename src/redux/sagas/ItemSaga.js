@@ -175,6 +175,18 @@ function* getSanmarPrices() {
   }
 }
 
+function* supacolorSubmit(action) {
+  try {
+    const response = yield axios.post(`/api/item/supacolor`, action.payload);
+    yield put({
+      type: "SET_SUPACOLOR_ORDER",
+      payload: response.data,
+    });
+  } catch (error) {
+    console.log("Error with getting inksoft order:", error);
+  }
+}
+
 
 
 //this takes all of the Saga functions and dispatches them
@@ -193,6 +205,7 @@ function* itemSaga() {
     yield takeLatest('ADD_SENT', addSent);
     yield takeLatest('GET_SANMAR_PRICES', getSanmarPrices);
     yield takeLatest('GET_BC_PRICES', getBcPrices);
+    yield takeLatest('SUPACOLOR_SUBMIT_ORDER', supacolorSubmit);
 }
 
 export default itemSaga;

@@ -1,5 +1,4 @@
 import React from "react";
-import { useDispatch } from 'react-redux';
 import "./css/Main.css";
 import './css/bootstrap.min.css';
 import './css/font-awesome.css';

@@ -20,6 +20,7 @@ import AdminRoute from "../ProtectedRoute/AdminRoute";
 import WallyB from "../Pages/WallyB";
 import Admin from "../Pages/Admin";
 import Login from "../LoginPage/LoginPage";
+import Supacolor from "../Pages/Supacolor";
 import "./App.css";
 class App extends Component {
 
@@ -44,6 +45,8 @@ class App extends Component {
             <ProtectedRoute exact path="/affiliates" component={Affilates} />
 
             <ProtectedRoute exact path="/resources" component={Resources} />
+
+            <AdminRoute exact path="/supacolor" component={Supacolor} />
 
             <AdminRoute exact path="/wallyb" component={WallyB} />
 

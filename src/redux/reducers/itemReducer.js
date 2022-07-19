@@ -73,6 +73,17 @@ const tracking = (state = [], action) => {
   }
 };
 
+const supacolor = (state = [], action) => {
+  switch (action.type) {
+    case "SET_SUPACOLOR_ORDER":
+      return action.payload;
+    case "RESET_SUPACOLOR_ORDER":
+      return [];
+    default:
+      return state;
+  }
+};
+
 export default combineReducers({
   itemlist,
   sanmarlist,
@@ -81,4 +92,5 @@ export default combineReducers({
   sanmar,
   tracking,
   clothingtemplist,
+  supacolor,
 });
