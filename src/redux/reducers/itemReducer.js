@@ -73,12 +73,12 @@ const tracking = (state = [], action) => {
   }
 };
 
-const supacolor = (state = [], action) => {
+const supacolor = (state = 'WAIT', action) => {
   switch (action.type) {
     case "SET_SUPACOLOR_ORDER":
       return action.payload;
     case "RESET_SUPACOLOR_ORDER":
-      return [];
+      return 'WAIT';
     default:
       return state;
   }

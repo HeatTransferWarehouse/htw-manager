@@ -33,6 +33,8 @@ function Supacolor () {
     switch (supacolor) {
         case []:
           break;
+        case 'WAIT':
+          break;
         default:
           robotAutomation();
       }
