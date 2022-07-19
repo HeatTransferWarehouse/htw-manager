@@ -24,7 +24,6 @@ class Nav extends Component {
               <Link to="/sanmar" className="nav-link">SanMar</Link>
               <Link to="/brightpearl" className="nav-link">Brightpearl</Link>
               <Link to="/nostock" className="nav-link">No Stock</Link>
-              <Link to="/supacolor" className="nav-link">Supacolor</Link>
               <Link to="/affiliates" className="nav-link">Affiliates</Link>
               <Link to="/admin" className="nav-link">Admin</Link>
           </div>

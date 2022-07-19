@@ -11,7 +11,7 @@ import FormLabel from '@material-ui/core/FormLabel';
 import FormControl from '@material-ui/core/FormControl';
 import TextField from '@material-ui/core/TextField';
 
-const robot = require("robotjs");
+
 const dispatch = useDispatch();
 const [order, setOrder] = useState('');
 const supacolor = useSelector(store => store.item.supacolor);
