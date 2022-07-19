@@ -6,6 +6,7 @@ import './css/font-awesome.css';
 import './css/flex-slider.css';
 import './css/templatemo-softy-pinko.css';
 import Button from "react-bootstrap/Button";
+import swal from "sweetalert";
 import FlagIcon from "@material-ui/icons/Flag";
 import FormLabel from '@material-ui/core/FormLabel';
 import FormControl from '@material-ui/core/FormControl';
