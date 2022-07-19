@@ -13,30 +13,29 @@ import FormControl from '@material-ui/core/FormControl';
 import TextField from '@material-ui/core/TextField';
 
 
-const dispatch = useDispatch();
-const [order, setOrder] = useState('');
-const supacolor = useSelector(store => store.item.supacolor);
-
-async function robotAutomation() {
-
-    console.log('Robot triggered: ', supacolor);
-
-    dispatch({
-      type: "RESET_SUPACOLOR_ORDER",
-    });
-
-    swal('Order Sent!');
-  }
-
-switch (supacolor) {
-    case []:
-      break;
-    default:
-      robotAutomation();
-  }
-
-
 function Supacolor () {
+
+    const dispatch = useDispatch();
+    const [order, setOrder] = useState('');
+    const supacolor = useSelector(store => store.item.supacolor);
+    
+    async function robotAutomation() {
+    
+        console.log('Robot triggered: ', supacolor);
+    
+        dispatch({
+          type: "RESET_SUPACOLOR_ORDER",
+        });
+    
+        swal('Order Sent!');
+      }
+    
+    switch (supacolor) {
+        case []:
+          break;
+        default:
+          robotAutomation();
+      }
   
     return (
       <>
