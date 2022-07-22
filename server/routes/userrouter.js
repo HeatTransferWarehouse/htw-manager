@@ -93,6 +93,7 @@ router.post('/register', (req, res) => {
 
 router.post("/inksoft", cors(), async function (req, res) {
   const orderId = req.body.orderId;
+  const email = req.body.email;
   console.log('Fetching products for inksoft: ', orderId);
 
   let inksoft = await axios
@@ -200,10 +201,10 @@ router.post("/inksoft", cors(), async function (req, res) {
         currentCart.Cart.ShippingMethod = shippingMethods;
         currentCart.Cart.GuestEmail = '';
 
-        console.log('New Cart Before Send: ', currentCart);
-
         let newCart = JSON.stringify(currentCart.Cart);
         let newNewCart = newCart.replace(/"/g, "'");
+
+        console.log('New Cart Before Send: ', newNewCart);
 
 
         try {
@@ -238,6 +239,8 @@ router.post("/inksoft", cors(), async function (req, res) {
 
         try {
 
+          const fileData = 'file';
+
           config = {
             data: `ExternalOrderId=${orderId}&PurchaseOrderNumber=${orderId}&SessionToken=${mainToken}&Email=${email}&StoreId=296924&FileData=${fileData}&IgnoreTotalDueCheck=true`,
             headers: {
@@ -247,8 +250,6 @@ router.post("/inksoft", cors(), async function (req, res) {
               Accept: "application/x-www-form-urlencoded"
             },
           };
-
-            const fileData = 'file';
 
             await axios
             .post(
