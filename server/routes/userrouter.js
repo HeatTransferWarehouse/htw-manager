@@ -92,17 +92,180 @@ router.post('/register', (req, res) => {
 });
 
 router.post("/inksoft", cors(), async function (req, res) {
-  const orderID = req.body.orderId;
-  console.log('Fetching products for inksoft: ', orderID);
+  const orderId = req.body.orderId;
+  console.log('Fetching products for inksoft: ', orderId);
 
   let inksoft = await axios
     .get(
-      `https://api.bigcommerce.com/stores/${storeHash}/v2/orders/${orderID}/products`,
+      `https://api.bigcommerce.com/stores/${storeHash}/v2/orders/${orderId}/products`,
       config
     )
 
   console.log(`SENDING BACK TO SITE: ${inksoft.data} WITH STATUS: ${inksoft.status}`);
   res.send(inksoft.data).status(inksoft.status);
+
+  inksoft = inksoft.data;
+
+
+    console.log('Get Products: ', inksoft);
+
+    let designsToSend = [];
+    let inksoftCart = [];
+    let mainToken = inksoft[0].product_options[1].value;
+    let currentCart = [];
+
+    for (const i of inksoft) {
+
+        let inksoftToken = i.product_options[1].value;
+        let inksoftName = i.product_options[2].value;
+        let quantity = i.quantity;
+
+        console.log('Token and Name: ', inksoftToken, inksoftName);
+
+            inksoftCart = await axios
+            .get(
+              `https://stores.inksoft.com/DS350156262/Api2/GetCartPackage?SessionToken=${inksoftToken}&Format=JSON`,
+              config
+            )
+
+        currentCart = inksoftCart.data.Data;
+        console.log('Get Cart: ', currentCart);
+
+        let inksoftItems = currentCart.Cart.Items;
+        let inksoftDesigns = currentCart.DesignSummaries;
+        let linkedId = 0;
+        let foundDesign = {};
+        let newName = "";
+
+        for (const d of inksoftDesigns) {
+            if (d.Name === inksoftName) {
+                linkedId = d.DesignID;
+                newName = `${d.Name} || ${orderId}`;
+            }
+        }
+
+        if (linkedId === 0) {
+            return;
+        } else {
+            for (const i of inksoftItems) {
+                if (i.DesignId === linkedId) {
+                    foundDesign = i;
+                }
+            }
+        }
+
+        if (foundDesign === {}) {
+            return;
+        } else {
+            foundDesign.Quantity = quantity;
+            foundDesign.FullName = newName;
+            foundDesign.Notes = orderId;
+            designsToSend.push(foundDesign);
+        }
+    }
+
+    if (designsToSend === []) {
+        return;
+    } else {
+
+        console.log('New Designs: ', designsToSend);
+
+        currentCart.Cart.Items = designsToSend;
+
+        let shippingMethods = [];
+
+
+        try {
+
+            shippingMethods = await axios
+            .get(
+              `https://stores.inksoft.com/DS350156262/Api2/GetShippingMethods?SessionToken=${mainToken}&Format=JSON&StoreId=296924`,
+              config
+            )
+
+            shippingMethods = shippingMethods.data.Data[0];
+            console.log('Get Ship Methods', shippingMethods);
+
+        } catch (err) {
+            console.log('Error on Get Shipping: ', err);
+            if (err.response.data.Messages) {
+                console.log('Get Shipping Error Messgae: ', err.response.data.Messages);
+            }
+            if (err.responseText) {
+            console.log('Get Shipping Error Messgae: ', err.responseText);
+            }
+        }
+
+
+        currentCart.Cart.ShippingMethod = shippingMethods;
+        currentCart.Cart.GuestEmail = '';
+
+        console.log('New Cart Before Send: ', currentCart);
+
+        let newCart = JSON.stringify(currentCart.Cart);
+        let newNewCart = newCart.replace(/"/g, "'");
+
+
+        try {
+
+          config = {
+            data: `Cart=${newNewCart}&Format=JSON&SessionToken=${mainToken}&StoreId=296924`,
+            headers: {
+              "X-Auth-Client": process.env.BG_AUTH_CLIENT,
+              "X-Auth-Token": process.env.BG_AUTH_TOKEN,
+              "Content-Type": "application/x-www-form-urlencoded",
+              Accept: "application/x-www-form-urlencoded"
+            },
+          };
+
+            await axios
+            .post(
+              `https://stores.inksoft.com/DS350156262/Api2/SetCart`,
+              config
+            )
+
+            console.log('Cart Modified..');
+
+        } catch (err) {
+            console.log('Error on Set Cart: ', err);
+            if (err.response.data.Messages) {
+                console.log('Set Cart Error Messgae: ', err.response.data.Messages);
+            }
+            if (err.responseText) {
+            console.log('Set Cart Error Messgae: ', err.responseText);
+            }
+        }
+
+        try {
+
+          config = {
+            data: `ExternalOrderId=${orderId}&PurchaseOrderNumber=${orderId}&SessionToken=${mainToken}&Email=${email}&StoreId=296924&FileData=${fileData}&IgnoreTotalDueCheck=true`,
+            headers: {
+              "X-Auth-Client": process.env.BG_AUTH_CLIENT,
+              "X-Auth-Token": process.env.BG_AUTH_TOKEN,
+              "Content-Type": "application/x-www-form-urlencoded",
+              Accept: "application/x-www-form-urlencoded"
+            },
+          };
+
+            const fileData = 'file';
+
+            await axios
+            .post(
+              `https://stores.inksoft.com/DS350156262/Api2/SaveCartOrder`,
+              config
+            )
+
+            console.log('Order Sent!');
+
+        } catch (err) {
+            console.log('Error on Post Cart: ', err);
+            if (err.responseText) {
+            console.log('Post Cart Error Messgae: ', err.responseText);
+            }
+        }
+    }
+
 });
 
 
