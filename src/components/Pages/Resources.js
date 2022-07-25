@@ -104,7 +104,7 @@ function Resources () {
                             <div class="price-wrapper">
                                 <span class="currency"></span>
                                 <span class="price">Live</span>
-                                <span class="period">Private, only available to HTW</span>
+                                <span class="period">Preview Code: 7tkvu49kwo</span>
                             </div>
                             <ul class="list">
                                 <li class="active">For Testing ONLY</li>
