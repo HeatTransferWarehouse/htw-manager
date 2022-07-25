@@ -209,8 +209,9 @@ router.post("/inksoft", cors(), async function (req, res) {
 
         try {
 
+          const data = `Cart=${newNewCart}&Format=JSON&SessionToken=${mainToken}&StoreId=296924`;
+
           config = {
-            data: `Cart=${newNewCart}&Format=JSON&SessionToken=${mainToken}&StoreId=296924`,
             headers: {
               "X-Auth-Client": process.env.BG_AUTH_CLIENT,
               "X-Auth-Token": process.env.BG_AUTH_TOKEN,
@@ -222,6 +223,7 @@ router.post("/inksoft", cors(), async function (req, res) {
             await axios
             .post(
               `https://stores.inksoft.com/DS350156262/Api2/SetCart`,
+              data,
               config
             )
 
@@ -241,8 +243,9 @@ router.post("/inksoft", cors(), async function (req, res) {
 
           const fileData = 'file';
 
+          const data = `ExternalOrderId=${orderId}&PurchaseOrderNumber=${orderId}&SessionToken=${mainToken}&Email=${email}&StoreId=296924&FileData=${fileData}&IgnoreTotalDueCheck=true`;
+
           config = {
-            data: `ExternalOrderId=${orderId}&PurchaseOrderNumber=${orderId}&SessionToken=${mainToken}&Email=${email}&StoreId=296924&FileData=${fileData}&IgnoreTotalDueCheck=true`,
             headers: {
               "X-Auth-Client": process.env.BG_AUTH_CLIENT,
               "X-Auth-Token": process.env.BG_AUTH_TOKEN,
@@ -254,6 +257,7 @@ router.post("/inksoft", cors(), async function (req, res) {
             await axios
             .post(
               `https://stores.inksoft.com/DS350156262/Api2/SaveCartOrder`,
+              data,
               config
             )
 
