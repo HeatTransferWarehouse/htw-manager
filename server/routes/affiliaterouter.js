@@ -327,7 +327,7 @@ router.get("/itemlist", (req, res) => {
 });
   
 router.get("/topfive", (req, res) => {
-    console.log("--AFFILIATES-- We are about to get the affiliate list");
+    //console.log("--AFFILIATES-- We are about to get the affiliate list");
   
     const queryText = `SELECT array_agg(DISTINCT email) as email, count(*)
   FROM sku where "created_at" <= '${dateNow}' AND "created_at" >= '${dateThen}' GROUP BY email ORDER BY count DESC LIMIT 5`;
@@ -344,7 +344,7 @@ router.get("/topfive", (req, res) => {
 });
   
 router.get("/total", (req, res) => {
-    console.log("--AFFILIATES-- We are about to get the affiliate list");
+    //console.log("--AFFILIATES-- We are about to get the affiliate list");
   
     const queryText = `SELECT array_agg(DISTINCT email) as email, COUNT(*) FROM sku GROUP BY email;`;
     pool
@@ -401,7 +401,7 @@ router.post("/orderdetails", (req, res) => {
 });
 
 router.get("/email", (req, res) => {
-    console.log("--AFFILIATES-- We are about to get the affiliate list");
+    //console.log("--AFFILIATES-- We are about to get the affiliate list");
   
     const queryText = `select array_agg(DISTINCT email) as email from affiliate group by email`;
     pool

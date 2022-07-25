@@ -21,9 +21,9 @@ const {
 } = require('./Capture/api');
 
 const createNote = async (e) => {
-  console.log('Updating Note on BP...');
+  console.log('--SANMAR-- Updating Note on BP...');
   await updateNote(e);
-  console.log('Note Updated..');
+  console.log('--SANMAR-- Note Updated..');
 };
 
 let config = {
@@ -48,19 +48,19 @@ async function updatePrices(bc, sanmar, start) {
         const number = Number(start);
         for (const item of bc) {
           if (item.sku > number) {
-          console.log(`Updating Product with ID: ${item.sku}`);
+          console.log(`--SANMAR-- Updating Product with ID: ${item.sku}`);
           await eachPrice(item, sanmar);
           await timeoutPromise(1000);
           }
         }
-        console.log('DONE');
+        console.log('--SANMAR-- DONE');
         return;
       } else {
-        console.log('No items in BC Items! Canceling!');
+        console.log('--SANMAR-- No items in BC Items! Canceling!');
         return;
       }
     } catch (err) {
-      console.log('Error on Update Product: ', err);
+      console.log('--SANMAR-- Error on Update Product: ', err);
     }
 }
 
@@ -99,7 +99,7 @@ async function getSanmarId(product) {
         config
       )
   } catch (err) {
-    console.log('Error on Get Items1: ', err);
+    console.log('--SANMAR-- Error on Get Items1: ', err);
   }
 
   try {
@@ -109,7 +109,7 @@ async function getSanmarId(product) {
         config
       )
   } catch (err) {
-    console.log('Error on Get Items2: ', err);
+    console.log('--SANMAR-- Error on Get Items2: ', err);
   }
 
   try {
@@ -119,7 +119,7 @@ async function getSanmarId(product) {
         config
       )
   } catch (err) {
-    console.log('Error on Get Items3: ', err);
+    console.log('--SANMAR-- Error on Get Items3: ', err);
   }
 
   try {
@@ -129,7 +129,7 @@ async function getSanmarId(product) {
         config
       )
   } catch (err) {
-    console.log('Error on Get Items4: ', err);
+    console.log('--SANMAR-- Error on Get Items4: ', err);
   }
 
   try {
@@ -139,7 +139,7 @@ async function getSanmarId(product) {
         config
       )
   } catch (err) {
-    console.log('Error on Get Items5: ', err);
+    console.log('--SANMAR-- Error on Get Items5: ', err);
   }
 
   try {
@@ -149,7 +149,7 @@ async function getSanmarId(product) {
         config
       )
   } catch (err) {
-    console.log('Error on Get Items6: ', err);
+    console.log('--SANMAR-- Error on Get Items6: ', err);
   }
 
   if (items1.data.data[0]) {
@@ -278,7 +278,7 @@ async function getFile(date) {
 //Get All BC Items Function
 async function getBCItems() {
 
-  console.log('Getting Products..');
+  console.log('--SANMAR-- Getting Products..');
 
   let bcResponse1;
   let bcResponse2;
@@ -979,7 +979,7 @@ async function calculateSales(products) {
 }
 
 router.put("/updatePrices", async function (req, res) {
-  console.log("We are updating sanmar prices..");
+  console.log("--SANMAR-- We are updating sanmar prices..");
   const bc = req.body.bcItems;
   const sanmar = req.body.sanmar;
   const start = req.body.start;
@@ -995,7 +995,7 @@ router.put("/updatePrices", async function (req, res) {
 });
 
 router.put("/ftp", async function (req, res) {
-  console.log("We are connecting to the ftp client..");
+  console.log("--SANMAR-- We are connecting to the ftp client..");
   const host = req.body.host;
   const password = req.body.password;
   const user = req.body.user;
@@ -1003,7 +1003,7 @@ router.put("/ftp", async function (req, res) {
   const c = new Client();
 
   try {
-    console.log('Logging into FTP Client..');
+    console.log('--SANMAR-- Logging into FTP Client..');
 
     const ftpConfig = {
       host: `${host}`,
@@ -1018,7 +1018,7 @@ router.put("/ftp", async function (req, res) {
     c.on('ready', function () {
       c.get(`/000175733Status/${file}`, function (err, stream) {
         if (err) {
-          console.log('Error on SanMar FTP Download: ', err);
+          console.log('--SANMAR-- Error on SanMar FTP Download: ', err);
           c.end();
         }
 
@@ -1038,14 +1038,14 @@ router.put("/ftp", async function (req, res) {
       });
     });
   } catch (err) {
-    console.log('Error on connect ftp: ', err);
+    console.log('--SANMAR-- Error on connect ftp: ', err);
     res.status(500).end();
   }
 
 });
 
 router.put("/ftpPrices", async function (req, res) {
-  console.log("We are connecting to the ftp client..");
+  console.log("--SANMAR-- We are connecting to the ftp client..");
   const host = req.body.host;
   const password = req.body.password;
   const user = req.body.user;
@@ -1053,7 +1053,7 @@ router.put("/ftpPrices", async function (req, res) {
 
 
   try {
-    console.log('Logging into FTP Client..');
+    console.log('--SANMAR-- Logging into FTP Client..');
 
     const ftpConfig = {
       host: `${host}`,
@@ -1065,7 +1065,7 @@ router.put("/ftpPrices", async function (req, res) {
     c.connect(ftpConfig);
 
     c.on('ready', function () {
-      console.log('Downloading Sanmar Prices..');
+      console.log('--SANMAR-- Downloading Sanmar Prices..');
       c.get(`/SanMarPDD/SanMar_SDL_DI.zip`, function (err, stream) {
         if (err) throw err;
         stream.once('close', function () {
@@ -1080,14 +1080,14 @@ router.put("/ftpPrices", async function (req, res) {
     });
     //res.send('YES').status(201);
   } catch (err) {
-    console.log('Error on connect ftp: ', err);
+    console.log('--SANMAR-- Error on connect ftp: ', err);
     res.status(500).send('NO');
   }
 
 });
 
 router.post("/sanmarDB", async function (req, res) {
-  console.log("We are about to update the sanmar list");
+  console.log("--SANMAR-- We are about to update the sanmar list");
 
   let response = req.body.products;
 
@@ -1097,7 +1097,7 @@ router.post("/sanmarDB", async function (req, res) {
     await pool
       .query(queryText)
   } catch (err) {
-    console.log('Error on delete sanmar prices: ', err);
+    console.log('--SANMAR-- Error on delete sanmar prices: ', err);
     return res.status(500);
   }
 
@@ -1113,7 +1113,7 @@ router.post("/sanmarDB", async function (req, res) {
       await pool
         .query(queryText2, [name, sku, color, size, price])
     } catch (err) {
-      console.log('Error on post single item: ', err);
+      console.log('--SANMAR-- Error on post single item: ', err);
       res.sendStatus(500);
     }
   }
@@ -1122,7 +1122,7 @@ router.post("/sanmarDB", async function (req, res) {
 });
 
 router.get("/getSanmarPrices", async function (req, res) {
-  console.log("We are about to get the sanmar price list");
+  console.log("--SANMAR-- We are about to get the sanmar price list");
 
   let response = [];
 
@@ -1131,7 +1131,7 @@ router.get("/getSanmarPrices", async function (req, res) {
     response = await pool
       .query(queryText)
   } catch (err) {
-    console.log('Error on delete sanmar prices: ', err);
+    console.log('--SANMAR-- Error on delete sanmar prices: ', err);
     return res.status(500);
   }
 
@@ -1139,7 +1139,7 @@ router.get("/getSanmarPrices", async function (req, res) {
 });
 
 router.put("/email", async function (req, res) {
-  console.log("We are sending an email..");
+  console.log("--SANMAR-- We are sending an email..");
   const order = req.body.order;
   const tracking = req.body.tracking;
   let response = [];
@@ -1151,7 +1151,7 @@ router.put("/email", async function (req, res) {
         config
       )
   } catch (err) {
-    console.log('Error on get order: ', err);
+    console.log('--SANMAR-- Error on get order: ', err);
     res.sendStatus(500);
   }
 
@@ -1159,7 +1159,7 @@ router.put("/email", async function (req, res) {
             const email = response.data.billing_address.email;
             //const email = 'tre@heattransferwarehouse.com';
             let first_name = response.data.billing_address.first_name;
-            console.log(email, first_name);
+            console.log('--SANMAR-- ', email, first_name);
             let titleString = `
             <div>
               <img
@@ -1228,29 +1228,29 @@ router.put("/email", async function (req, res) {
             await sgMail
               .send(msg)
               .then(() => {
-                console.log('Email sent')
+                console.log('--SANMAR-- Email sent')
               })
               .catch((error) => {
                 console.error(error)
               })
   
           } catch (err) {
-            console.log('Error on send email: ', err);
+            console.log('--SANMAR-- Error on send email: ', err);
             res.sendStatus(500);
           }
         
   try {
     const so = await getSO(order);
-    console.log(so.response.results[0][0]);
+    console.log('--SANMAR-- ', so.response.results[0][0]);
     await createNote(so.response.results[0][0]);
   } catch (err) {
-    console.log('Error on add note: ', err);
+    console.log('--SANMAR-- Error on add note: ', err);
     res.sendStatus(500);
   }
 });
 
 router.get("/getitems", (req, res) => {
-  console.log("We are about to get the BP list");
+  console.log("--BRIGHTPEARL-- We are about to get the BP list");
 
   const queryText = `select * from "item" ORDER BY id DESC`;
   pool
@@ -1259,13 +1259,13 @@ router.get("/getitems", (req, res) => {
       res.status(201).send(selectResult.rows);
     })
     .catch((error) => {
-      console.log(`Error on item query ${error}`);
+      console.log(`--BRIGHTPEARL-- Error on item query ${error}`);
       res.sendStatus(500);
     });
 });
 
 router.get("/getsanmar", (req, res) => {
-  console.log("We are about to get the sanmar list");
+  console.log("--SANMAR-- We are about to get the sanmar list");
 
   const queryText = `select * from "sanmar" ORDER BY id DESC`;
   pool
@@ -1274,13 +1274,13 @@ router.get("/getsanmar", (req, res) => {
       res.status(201).send(selectResult.rows);
     })
     .catch((error) => {
-      console.log(`Error on item query ${error}`);
+      console.log(`--SANMAR-- Error on item query ${error}`);
       res.sendStatus(500);
     });
 });
 
 router.get("/refreshBC", async function (req, res) {
-  console.log("We are about to update the bc list");
+  console.log("--SANMAR-- We are about to update the bc list");
 
   let response = [];
 
@@ -1290,7 +1290,7 @@ router.get("/refreshBC", async function (req, res) {
     await pool
       .query(queryText)
   } catch (err) {
-    console.log('Error on delete bc prices: ', err);
+    console.log('--SANMAR-- Error on delete bc prices: ', err);
     return res.status(500);
   }
 
@@ -1311,7 +1311,7 @@ router.get("/refreshBC", async function (req, res) {
       await pool
         .query(queryText2, [name, sku])
     } catch (err) {
-      console.log('Error on post single bc price: ', err);
+      console.log('--SANMAR-- Error on post single bc price: ', err);
       res.sendStatus(500);
     }
   }
@@ -1320,7 +1320,7 @@ router.get("/refreshBC", async function (req, res) {
 });
 
 router.get("/getBC", async function (req, res) {
-  console.log("We are about to get the bc price list");
+  console.log("--SANMAR-- We are about to get the bc price list");
 
   let response = [];
 
@@ -1329,7 +1329,7 @@ router.get("/getBC", async function (req, res) {
     response = await pool
       .query(queryText)
   } catch (err) {
-    console.log('Error on delete bc prices: ', err);
+    console.log('--SANMAR-- Error on delete bc prices: ', err);
     return res.status(500);
   }
 
@@ -1337,7 +1337,7 @@ router.get("/getBC", async function (req, res) {
 });
 
 router.post("/addOrder", async function (req, res) {
-  console.log("We are about to add an order to sanmar db");
+  console.log("--SANMAR-- We are about to add an order to sanmar db");
   const o = req.body.order;
   const tracking = req.body.tracking;
   console.log(o, tracking);
@@ -1347,11 +1347,11 @@ router.post("/addOrder", async function (req, res) {
   await pool
     .query(queryText, [o, tracking])
   } catch (err) {
-  console.log('Error on add order: ', err);
+  console.log('--SANMAR-- Error on add order: ', err);
   return res.status(500);
   }
 
-  console.log("We are about to get the sanmar list");
+  console.log("--SANMAR-- We are about to get the sanmar list");
 
   const queryText = `select * from "sanmar" ORDER BY id DESC`;
   pool
@@ -1360,26 +1360,26 @@ router.post("/addOrder", async function (req, res) {
       res.status(201).send(selectResult.rows);
     })
     .catch((error) => {
-      console.log(`Error on item query ${error}`);
+      console.log(`--SANMAR-- Error on item query ${error}`);
       res.sendStatus(500);
     });
 
 });
 
 router.post("/items", async function (req, res) {
-  console.log("We are about to add to the item list");
+  console.log("--BRIGHTPEARL-- We are about to add to the item list");
 
   try {
   await addItems();
   } catch (err) {
-  console.log('Error on add items: ', err);
+  console.log('--BRIGHTPEARL-- Error on add items: ', err);
   return res.status(500);
   }
 
   try {
   res.sendStatus(200);
   } catch (err) {
-  console.log('Error on send 200: ', err);
+  console.log('--BRIGHTPEARL-- Error on send 200: ', err);
   return res.status(500);
   }
 
@@ -1399,7 +1399,7 @@ router.post("/items", async function (req, res) {
           await pool
             .query(queryText2, [name, sku, bulk, width, type, color, sales])
         } catch (err) {
-          console.log('Error on get single item: ', err);
+          console.log('--BRIGHTPEARL-- Error on get single item: ', err);
           return res.status(500);
         }
   }
@@ -1407,28 +1407,28 @@ router.post("/items", async function (req, res) {
 });
 
 router.delete("/all", async function (req, res) {
-  console.log("We are about to delete the item list");
+  console.log("--BRIGHTPEARL-- We are about to delete the item list");
 
   try {
-    console.log('deleting items');
+    console.log('--BRIGHTPEARL-- deleting items');
     const queryText = `DELETE from "item";`;
     await pool
       .query(queryText)
   } catch (err) {
-    console.log('Error on delete items: ', err);
+    console.log('--BRIGHTPEARL-- Error on delete items: ', err);
     return res.status(500);
   }
 
   try {
     res.sendStatus(200);
   } catch (err) {
-    console.log('Error on send 200: ', err);
+    console.log('--BRIGHTPEARL-- Error on send 200: ', err);
     return res.status(500);
   }
 });
 
 router.delete("/items:id", async function (req, res) {
-  console.log("We are deleting items with id:", req.params.id);
+  console.log("--BRIGHTPEARL-- We are deleting items with id:", req.params.id);
   const id = req.params.id;
   console.log(id);
   
@@ -1438,14 +1438,14 @@ router.delete("/items:id", async function (req, res) {
         .query(queryText, [id])
       return res.status(200).send();
   } catch (err) {
-    console.log('Error on delete: ', err);
+    console.log('--BRIGHTPEARL-- Error on delete: ', err);
     return res.status(500).send();
   }
     
 });
 
 router.put("/items/:id", async function (req, res) {
-  console.log("We are updating items as dead with id:", req.params.id);
+  console.log("--BRIGHTPEARL-- We are updating items as dead with id:", req.params.id);
   const ids = req.params.id;
 
   let items = [];
@@ -1469,12 +1469,12 @@ router.put("/items/:id", async function (req, res) {
       .query(queryText)
     }
   } catch (err) {
-    console.log('Error on update: ', err);
+    console.log('--BRIGHTPEARL-- Error on update: ', err);
     return res.status(500).send();
   }
   
   try {
-    console.log("We are about to get the item list");
+    console.log("--BRIGHTPEARL-- We are about to get the item list");
 
     const queryText = `select * from "item" ORDER BY id DESC`;
     await pool
@@ -1483,11 +1483,11 @@ router.put("/items/:id", async function (req, res) {
         res.status(201).send(selectResult.rows);
       })
       .catch((error) => {
-        console.log(`Error on item query ${error}`);
+        console.log(`--BRIGHTPEARL-- Error on item query ${error}`);
         res.sendStatus(500);
       });
   } catch (err) {
-    console.log('Error on Get: ', err);
+    console.log('--BRIGHTPEARL-- Error on Get: ', err);
     return res.status(500).send();
   }
     
@@ -1591,7 +1591,7 @@ router.post("/bcRegister", cors(), async function (req, res) {
 });
 
 router.post("/supacolor", cors(), async function (req, res) {
-  console.log("We are about to get an order from inksoft..");
+  console.log("--INKSOFT-- We are about to get an order from inksoft..");
 
   const order = req.body.order;
 
@@ -1604,10 +1604,10 @@ router.post("/supacolor", cors(), async function (req, res) {
         config
       )
   } catch (err) {
-    console.log('Error on Get Customer: ', err);
+    console.log('--INKSOFT-- Error on Get Customer: ', err);
   }
 
-  console.log('Get Inksoft Order: ', inksoftOrder);
+  console.log('--INKSOFT-- Get Inksoft Order: ', inksoftOrder);
 
 
   res.status(200).send(inksoftOrder.Data);
