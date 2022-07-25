@@ -94,7 +94,7 @@ router.post('/register', (req, res) => {
 router.post("/inksoft", cors(), async function (req, res) {
   const orderId = req.body.orderId;
   const email = req.body.email;
-  console.log('Fetching products for inksoft: ', orderId);
+  console.log('--INKSOFT-- Fetching products for inksoft: ', orderId);
 
   let inksoft = await axios
     .get(
@@ -102,13 +102,13 @@ router.post("/inksoft", cors(), async function (req, res) {
       config
     )
 
-  console.log(`SENDING BACK TO SITE: ${inksoft.data} WITH STATUS: ${inksoft.status}`);
+  console.log(`--INKSOFT-- SENDING BACK STATUS: ${inksoft.status}`);
   res.send(inksoft.data).status(inksoft.status);
 
   inksoft = inksoft.data;
 
 
-    console.log('Get Products: ', inksoft);
+    //console.log('--INKSOFT-- Get Products: ', inksoft);
 
     let designsToSend = [];
     let inksoftCart = [];
@@ -121,7 +121,7 @@ router.post("/inksoft", cors(), async function (req, res) {
         let inksoftName = i.product_options[2].value;
         let quantity = i.quantity;
 
-        console.log('Token and Name: ', inksoftToken, inksoftName);
+        console.log('--INKSOFT-- Token and Name: ', inksoftToken, inksoftName);
 
             inksoftCart = await axios
             .get(
@@ -130,7 +130,7 @@ router.post("/inksoft", cors(), async function (req, res) {
             )
 
         currentCart = inksoftCart.data.Data;
-        console.log('Get Cart: ', currentCart);
+        //console.log('--INKSOFT-- Get Cart: ', currentCart);
 
         let inksoftItems = currentCart.Cart.Items;
         let inksoftDesigns = currentCart.DesignSummaries;
@@ -169,7 +169,7 @@ router.post("/inksoft", cors(), async function (req, res) {
         return;
     } else {
 
-        console.log('New Designs: ', designsToSend);
+        //console.log('--INKSOFT-- New Designs: ', designsToSend);
 
         currentCart.Cart.Items = designsToSend;
 
@@ -185,15 +185,15 @@ router.post("/inksoft", cors(), async function (req, res) {
             )
 
             shippingMethods = shippingMethods.data.Data[0];
-            console.log('Get Ship Methods', shippingMethods);
+            //console.log('--INKSOFT-- Get Ship Methods', shippingMethods);
 
         } catch (err) {
-            console.log('Error on Get Shipping: ', err);
+            console.log('--INKSOFT-- Error on Get Shipping: ', err);
             if (err.response.data.Messages) {
-                console.log('Get Shipping Error Messgae: ', err.response.data.Messages);
+                console.log('--INKSOFT-- Get Shipping Error Messgae: ', err.response.data.Messages);
             }
             if (err.responseText) {
-            console.log('Get Shipping Error Messgae: ', err.responseText);
+            console.log('--INKSOFT-- Get Shipping Error Messgae: ', err.responseText);
             }
         }
 
@@ -204,7 +204,7 @@ router.post("/inksoft", cors(), async function (req, res) {
         let newCart = JSON.stringify(currentCart.Cart);
         let newNewCart = newCart.replace(/"/g, "'");
 
-        console.log('New Cart Before Send: ', newNewCart);
+        //console.log('--INKSOFT-- New Cart Before Send: ', newNewCart);
 
 
         try {
@@ -227,15 +227,15 @@ router.post("/inksoft", cors(), async function (req, res) {
               config
             )
 
-            console.log('Cart Modified..');
+            console.log('--INKSOFT-- Cart Modified..');
 
         } catch (err) {
-            console.log('Error on Set Cart: ', err);
+            console.log('--INKSOFT-- Error on Set Cart: ', err);
             if (err.response.data.Messages) {
-                console.log('Set Cart Error Messgae: ', err.response.data.Messages);
+                console.log('--INKSOFT-- Set Cart Error Messgae: ', err.response.data.Messages);
             }
             if (err.responseText) {
-            console.log('Set Cart Error Messgae: ', err.responseText);
+            console.log('--INKSOFT-- Set Cart Error Messgae: ', err.responseText);
             }
         }
 
@@ -261,12 +261,12 @@ router.post("/inksoft", cors(), async function (req, res) {
               config
             )
 
-            console.log('Order Sent!');
+            console.log('--INKSOFT-- Order Sent!');
 
         } catch (err) {
-            console.log('Error on Post Cart: ', err);
+            console.log('--INKSOFT-- Error on Post Cart: ', err);
             if (err.responseText) {
-            console.log('Post Cart Error Messgae: ', err.responseText);
+            console.log('--INKSOFT-- Post Cart Error Messgae: ', err.responseText);
             }
         }
     }

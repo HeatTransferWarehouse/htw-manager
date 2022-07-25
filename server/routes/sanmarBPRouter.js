@@ -1494,7 +1494,7 @@ router.put("/items/:id", async function (req, res) {
 });
 
 router.post("/updateCart", async function (req, res) {
-  console.log("We are about to update a cart on BC");
+  console.log("--INKSOFT-- We are about to update a cart on BC");
 
   const customer = req.body.customer;
   const id = req.body.id;
@@ -1511,7 +1511,7 @@ router.post("/updateCart", async function (req, res) {
         config
       )
   } catch (err) {
-    console.log('Error on get inksoft: ', err);
+    console.log('--INKSOFT-- Error on get inksoft: ', err);
     return res.status(500);
   }
 
@@ -1524,7 +1524,7 @@ router.post("/updateCart", async function (req, res) {
         config
       )
   } catch (err) {
-    console.log('Error on update cart: ', err);
+    console.log('--INKSOFT-- Error on update cart: ', err);
     return res.status(500);
   }
 
@@ -1532,7 +1532,7 @@ router.post("/updateCart", async function (req, res) {
 });
 
 router.post("/jwt", cors(), async function (req, res) {
-  console.log("We are about to decode a JWT token");
+  console.log("--INKSOFT-- We are about to decode a JWT token");
 
   const token = req.body.token;
   //console.log('Token: ', token);
@@ -1556,20 +1556,20 @@ router.post("/jwt", cors(), async function (req, res) {
         config
       )
   } catch (err) {
-    console.log('Error on Get Customer: ', err);
+    console.log('--INKSOFT-- Error on Get Customer: ', err);
   }
 
   //console.log('Response: ', customer);
 
   const cust = customer.data;
 
-  console.log('Sending Back: ', cust.email);
+  console.log('--INKSOFT-- Sending Back: ', cust.email);
 
   res.status(200).send(cust);
 });
 
 router.post("/bcRegister", cors(), async function (req, res) {
-  console.log("We are about to register and signin to inksoft..");
+  console.log("--INKSOFT-- We are about to register and signin to inksoft..");
 
   const cust = req.body.customer;
   const inksoftPassword = "t@91bW7He2!0Lo21";

@@ -51,7 +51,7 @@ function timeoutPromise(interval) {
 //Get All BC Items Function
 async function getBCItems () {
 
-  console.log('Getting Products..');
+  console.log('--NSN-- Getting Products..');
 
     let bcResponse1;
     let bcResponse2;
@@ -733,7 +733,7 @@ return bcResponse;
 //Get All Brands
 async function GetAllBrands () {
 
-  console.log('Getting Brands..');
+  console.log('--NSN-- Getting Brands..');
 
   let brands = []
 
@@ -744,7 +744,7 @@ async function GetAllBrands () {
         config
       )
   } catch (err) {
-    console.log('Error on Get Brands: ', err);
+    console.log('--NSN-- Error on Get Brands: ', err);
   }
 
   return brands.data.data;
@@ -765,7 +765,7 @@ let bcResponse = [];
         config
       )
   } catch (err) {
-    console.log('Error on Get: ', err);
+    console.log('--NSN-- Error on Get: ', err);
   }
 
   await timeoutPromise(1000);
@@ -775,7 +775,7 @@ let bcResponse = [];
           bcResponse.push(item);
         }
       } catch (err) {
-        console.log('Error on bcCreate: ', err);
+        console.log('--NSN-- Error on bcCreate: ', err);
       }
 
   return bcResponse;
@@ -800,18 +800,18 @@ async function addItems(bcResponse, notify) {
         getItems = getResult.rows;
       })
   } catch (err) {
-    console.log('Error on getItems: ', err);
+    console.log('--NSN-- Error on getItems: ', err);
   }
 
   await timeoutPromise(500);
 
-  console.log('Checking Product Level..');
+  console.log('--NSN-- Checking Product Level..');
   //console.log('BigCommerce TEST: ', bcResponse[0]);
   //console.log('NSN Database TEST: ', getItems[0]);
 
   try {
     if (!getItems[0]) {
-      console.log('Item DB Empty!');
+      console.log('--NSN-- Item DB Empty!');
       for (const bc of bcResponse) {
         let bcItemName = bc.name.replace(/"|`|'/g, ' ');
         bcItemId = bc.id;
@@ -947,7 +947,7 @@ async function addItems(bcResponse, notify) {
     }
 
   } catch (err) {
-    console.log('Error on productMsg: ', err);
+    console.log('--NSN-- Error on productMsg: ', err);
   }
 
   await timeoutPromise(500);
@@ -955,12 +955,12 @@ async function addItems(bcResponse, notify) {
   try {
     varItems = await getVars(bcResponse);
   } catch (err) {
-    console.log('Error on getVars: ', err);
+    console.log('--NSN-- Error on getVars: ', err);
   }
 
   //console.log('Variants TEST: ', varItems);
 
-  console.log('Checking Variant Level..');
+  console.log('--NSN-- Checking Variant Level..');
 
   try {
 
@@ -1038,7 +1038,7 @@ async function addItems(bcResponse, notify) {
       }
     }
   } catch (err) {
-    console.log('Error on varMsg: ', err);
+    console.log('--NSN-- Error on varMsg: ', err);
   }
 
   await timeoutPromise(500);
@@ -1056,7 +1056,7 @@ if (newItems[0]) {
   }
  }
 } else {
- console.log('No new items!');
+ console.log('--NSN-- No new items!');
 }
 
   await timeoutPromise(500);
@@ -1068,14 +1068,14 @@ if (newItems[0]) {
     await pool
       .query(queryText)
   } catch (err) {
-    console.log('Error on getItems: ', err);
+    console.log('--NSN-- Error on getItems: ', err);
   }
 
 if (notify) {
 
   try {
     if (!newItems[0]) {
-      console.log('No Message Sent to slack!');
+      console.log('--NSN-- No Message Sent to slack!');
     } else {
       let slackText = `:warning: *NO STOCK NOTIFY!* :warning:\n\n<!channel>\n\nWALLY B FOUND SOME NEW PRODUCTS OUT OF STOCK!\n\n`;
 
@@ -1100,15 +1100,15 @@ if (notify) {
 
         // `res` contains information about the posted message
 
-        console.log("NSN Slack Notify Message sent..");
+        console.log("--NSN-- Slack Notify Message sent..");
       })();
     }
   } catch (err) {
-    console.log('Error on slack message: ', err);
+    console.log('--NSN-- Error on slack message: ', err);
   }
 
 } else {
-  console.log('No Message Sent to slack!');
+  console.log('--NSN-- No Message Sent to slack!');
 }
 }
 
@@ -1121,7 +1121,7 @@ async function getItems(notify) {
     try {
       bcResponse = await getBCItems();
     } catch (err) {
-      console.log('Error on getBCItems: ', err);
+      console.log('--NSN-- Error on getBCItems: ', err);
     }
 
     await timeoutPromise(1000);
@@ -1138,7 +1138,7 @@ async function getItemsSinglePage(pageToUse) {
   try {
     bcResponse = await getSingleBCPage(pageToUse);
   } catch (err) {
-    console.log('Error on getBCItems: ', err);
+    console.log('--NSN-- Error on getBCItems: ', err);
   }
 
   await timeoutPromise(1000);
@@ -1150,7 +1150,7 @@ async function getItemsSinglePage(pageToUse) {
 //Get All Variants of All Products
 async function getVars(bcResponse) {
 
-  console.log('Getting Variants..');
+  console.log('--NSN-- Getting Variants..');
 
   let varItems = [];
 
@@ -1210,7 +1210,7 @@ async function getVars(bcResponse) {
        }
       }
     } catch (err) {
-      console.log('Error on makeVarArray: ', err);
+      console.log('--NSN-- Error on makeVarArray: ', err);
     }
 
     return varItems;
@@ -1261,7 +1261,7 @@ async function eachVar(bc) {
 
     }
   } catch (err) {
-    console.log('Error on getVar: ', err);
+    console.log('--NSN-- Error on getVar: ', err);
   }
 }
 
@@ -1306,7 +1306,7 @@ setInterval(() => {
     if (pageToUse > 28) {
       pageToUse = 1;
     }
-    console.log(`Updating Items on page ${pageToUse}..`);
+    console.log(`--NSN-- Updating Items on page ${pageToUse}..`);
     update = false;
     updateProducts(pageToUse);
   }
@@ -1319,7 +1319,7 @@ setInterval(() => {
   stockNotify = true;
 
   if (stockNotify) {
-    console.log('Checking for Stocked Items..');
+    console.log('--NSN-- Checking for Stocked Items..');
     stockNotify = false;
     checkItems();
 
@@ -1334,7 +1334,7 @@ setInterval(() => {
   try {
     bcResponse = await getBCItems();
   } catch (err) {
-    console.log('Error on getBCItems: ', err);
+    console.log('--NSN-- Error on getBCItems: ', err);
   }
 
 await timeoutPromise(500);
@@ -1347,12 +1347,12 @@ await timeoutPromise(500);
         getItems = getResult.rows;
       })
   } catch (err) {
-    console.log('Error on getItems: ', err);
+    console.log('--NSN-- Error on getItems: ', err);
   }
 
 await timeoutPromise(500);
 
-console.log('Checking Product Level..');
+console.log('--NSN-- Checking Product Level..');
 
       try {
         if (getItems[0]) {
@@ -1373,7 +1373,7 @@ console.log('Checking Product Level..');
           }
         }
       } catch (err) {
-        console.log('Error on getStocked: ', err);
+        console.log('--NSN-- Error on getStocked: ', err);
       }
 
   await timeoutPromise(500);
@@ -1381,10 +1381,10 @@ console.log('Checking Product Level..');
   try {
   varItems = await getVars(bcResponse);
   } catch (err) {
-    console.log('Error on getVars: ', err);
+    console.log('--NSN-- Error on getVars: ', err);
   }
 
-console.log('Checking Variant Level..');
+console.log('--NSN-- Checking Variant Level..');
 
       try {
         if (getItems[0]) {
@@ -1405,13 +1405,13 @@ console.log('Checking Variant Level..');
           }
         }
       } catch (err) {
-        console.log('Error on get Var Stocked: ', err);
+        console.log('--NSN-- Error on get Var Stocked: ', err);
       }
 
   await timeoutPromise(500);
 
       if (stockedItems[0]) {
-        console.log('Deleting Items..');
+        console.log('--NSN-- Deleting Items..');
               try {
                 for (item of stockedItems) {
                   console.log(item);
@@ -1420,10 +1420,10 @@ console.log('Checking Variant Level..');
                     .query(queryText)
                 }
               } catch (err) {
-                console.log('Error on delete: ', err);
+                console.log('--NSN-- Error on delete: ', err);
               }
       } else {
-        console.log('No Items to Delete..');
+        console.log('--NSN-- No Items to Delete..');
       }
     }
   }
@@ -1436,7 +1436,7 @@ setInterval(() => {
   stockNotifyTest = false;
 
   if (stockNotifyTest) {
-    console.log('Checking for Stocked Items.. (TEST)');
+    console.log('--NSN-- Checking for Stocked Items.. (TEST)');
     stockNotify = false;
     checkItemsTest();
 
@@ -1451,7 +1451,7 @@ setInterval(() => {
       try {
         bcResponse = await getBCItems();
       } catch (err) {
-        console.log('Error on getBCItems: ', err);
+        console.log('--NSN-- Error on getBCItems: ', err);
       }
 
       await timeoutPromise(500);
@@ -1464,12 +1464,12 @@ setInterval(() => {
             getItems = getResult.rows;
           })
       } catch (err) {
-        console.log('Error on getItems: ', err);
+        console.log('--NSN-- Error on getItems: ', err);
       }
 
       await timeoutPromise(500);
 
-      console.log('Checking Product Level..');
+      console.log('--NSN-- Checking Product Level..');
 
       try {
         if (getItems[0]) {
@@ -1494,7 +1494,7 @@ setInterval(() => {
         }
 
       } catch (err) {
-        console.log('Error on getStocked: ', err);
+        console.log('--NSN-- Error on getStocked: ', err);
       }
 
       await timeoutPromise(500);
@@ -1502,10 +1502,10 @@ setInterval(() => {
       try {
         varItems = await getVars(bcResponse);
       } catch (err) {
-        console.log('Error on getVars: ', err);
+        console.log('--NSN-- Error on getVars: ', err);
       }
 
-      console.log('Checking Variant Level..');
+      console.log('--NSN-- Checking Variant Level..');
 
       try {
         if (getItems[0]) {
@@ -1529,13 +1529,13 @@ setInterval(() => {
           }
         }
       } catch (err) {
-        console.log('Error on get Var Stocked: ', err);
+        console.log('--NSN-- Error on get Var Stocked: ', err);
       }
 
       await timeoutPromise(500);
 
       if (stockedItems[0]) {
-        console.log('Deleting Items..');
+        console.log('--NSN-- Deleting Items..');
         try {
           for (item of stockedItems) {
             console.log(item);
@@ -1544,10 +1544,10 @@ setInterval(() => {
               .query(queryText)
           }
         } catch (err) {
-          console.log('Error on delete: ', err);
+          console.log('--NSN-- Error on delete: ', err);
         }
       } else {
-        console.log('No Items to Delete..');
+        console.log('--NSN-- No Items to Delete..');
       }
 
     }
@@ -1561,7 +1561,7 @@ setInterval(() => {
   resetNoStock = false;
 
   if (resetNoStock) {
-    console.log('Resetting Database..');
+    console.log('--NSN-- Resetting Database..');
     resetNoStock = false;
     resetDb();
 
@@ -1576,7 +1576,7 @@ let getItems = [];
   try {
     bcResponse = await getBCItems();
   } catch (err) {
-    console.log('Error on getBCItems: ', err);
+    console.log('--NSN-- Error on getBCItems: ', err);
     return res.status(500).send();
   }
 
@@ -1590,7 +1590,7 @@ try {
     .then((deleteResult) => {
     })
 } catch (err) {
-  console.log('Error on deleteItems: ', err);
+  console.log('--NSN-- Error on deleteItems: ', err);
   return res.status(500).send();
 }
 
@@ -1604,7 +1604,7 @@ try {
       getItems = getResult;
     })
 } catch (err) {
-  console.log('Error on getItems: ', err);
+  console.log('--NSN-- Error on getItems: ', err);
   return res.status(500).send();
 }
 
@@ -1612,7 +1612,7 @@ await timeoutPromise(2000);
 
 try {
   if (!getItems.rows[0]) {
-    console.log('Item DB Empty!');
+    console.log('--NSN-- Item DB Empty!');
     for (let i = 0; i < bcResponse.length; i++) {
       let bcItemName = bcResponse[i].name.replace(/"|`|'/g, ' ');
       bcItemId = bcResponse[i].id;
@@ -1707,7 +1707,7 @@ try {
    }
   })
 } catch (err) {
-  console.log('Error on varMsg: ', err);
+  console.log('--NSN-- Error on varMsg: ', err);
   return res.status(500).send();
 }
 
@@ -1715,7 +1715,7 @@ await timeoutPromise(12000);
 
 try {
   if (msg === '') {
-    console.log('No new items!');
+    console.log('--NSN-- No new items!');
   } else {
 
     let newMsg = msg.slice(0, -2);
@@ -1732,7 +1732,7 @@ try {
 await timeoutPromise(3000);
 
 try {
-  console.log("We are about to get the item list");
+  console.log("--NSN-- We are about to get the item list");
 
   const queryText = `select * from "no-stock" ORDER BY id DESC`;
   await pool
@@ -1741,7 +1741,7 @@ try {
       res.send(selectResult.rows);
     })
 } catch (err) {
-  console.log('Error on getItems: ', err);
+  console.log('--NSN-- Error on getItems: ', err);
   return res.status(500).send();
 }
 
@@ -1757,7 +1757,7 @@ setInterval(() => {
   slackNotify = true;
 
   if (slackNotify) {
-    console.log('running Slack Notify..');
+    console.log('--NSN-- running Slack Notify..');
     slackNotify = false;
     getItems(true);
  }
@@ -1774,7 +1774,7 @@ setInterval(() => {
     if (pageToUse > 28) {
       pageToUse = 1;
     }
-    console.log(`running Slack Notify on page ${pageToUse}..`);
+    console.log(`--NSN-- running Slack Notify on page ${pageToUse}..`);
     getSinglePage = false;
     getItemsSinglePage(pageToUse);
   }
@@ -1782,14 +1782,14 @@ setInterval(() => {
 
 router.get("/items", async function (req, res) {
 
-  console.log('running MANUAL Slack Notify..');
+  console.log('--NSN-- running MANUAL Slack Notify..');
   await getItems(false);
   res.status(200).send();
 
 });
 
 router.get("/getitems", (req, res) => {
-  console.log("We are about to get the NSN list");
+  console.log("--NSN-- We are about to get the NSN list");
 
   const queryText = `select * from "no-stock" ORDER BY id DESC`;
   pool
@@ -1798,13 +1798,13 @@ router.get("/getitems", (req, res) => {
       res.send(selectResult.rows);
     })
     .catch((error) => {
-      console.log(`Error on item query ${error}`);
+      console.log(`--NSN-- Error on item query ${error}`);
       res.sendStatus(500);
     });
 });
 
 router.delete("/items/:id", async function (req, res) {
-  console.log("We are deleting NSN items as dead with id:", req.params.id);
+  console.log("--NSN-- We are deleting NSN items as dead with id:", req.params.id);
   const ids = req.params.id;
 
   let items = [];
@@ -1828,7 +1828,7 @@ router.delete("/items/:id", async function (req, res) {
         .query(queryText)
     }
   } catch (err) {
-    console.log('Error on delete: ', err);
+    console.log('--NSN-- Error on delete: ', err);
     return res.status(500).send();
   }
 
@@ -1841,11 +1841,11 @@ router.delete("/items/:id", async function (req, res) {
         res.send(selectResult.rows);
       })
       .catch((error) => {
-        console.log(`Error on item query ${error}`);
+        console.log(`--NSN-- Error on item query ${error}`);
         res.sendStatus(500);
       });
   } catch (err) {
-    console.log('Error on Get: ', err);
+    console.log('--NSN-- Error on Get: ', err);
     return res.status(500).send();
   }
  
@@ -1853,36 +1853,36 @@ router.delete("/items/:id", async function (req, res) {
 });
 
 router.put("/items/mark", async function (req, res) {
-  console.log("We are updating NSN items as dead..");
+  console.log("--NSN-- We are updating NSN items as dead..");
   const items = req.body.items;
   const reason = req.body.reason;
 
   try {
     for (const item of items) {
-      console.log(item);
+      console.log('--NSN-- ', item);
     const queryText = `UPDATE "no-stock" SET dead = true WHERE id = ${item}`;
     await pool
       .query(queryText)
     }
   } catch (err) {
-    console.log('Error on update: ', err);
+    console.log('--NSN-- Error on update: ', err);
     return res.status(500).send();
   }
 
   try {
     for (const item of items) {
-      console.log(item, reason);
+      console.log('--NSN-- ', item, reason);
       const queryText = `UPDATE "no-stock" SET reason = '${reason}' WHERE id = ${item}`;
       await pool
         .query(queryText)
     }
   } catch (err) {
-    console.log('Error on setReason: ', err);
+    console.log('--NSN-- Error on setReason: ', err);
     return res.status(500).send();
   }
   
   try {
-    console.log("We are about to get the item list");
+    console.log("--NSN-- We are about to get the item list");
 
     const queryText = `select * from "no-stock" ORDER BY id DESC`;
     await pool
@@ -1891,18 +1891,18 @@ router.put("/items/mark", async function (req, res) {
         res.send(selectResult.rows);
       })
       .catch((error) => {
-        console.log(`Error on item query ${error}`);
+        console.log(`--NSN-- Error on item query ${error}`);
         res.sendStatus(500);
       });
   } catch (err) {
-    console.log('Error on Get: ', err);
+    console.log('--NSN-- Error on Get: ', err);
     return res.status(500).send();
   }
     
 });
 
 router.put("/items/notes", async function (req, res) {
-  console.log("We are updating notes..");
+  console.log("--NSN-- We are updating notes..");
   const items = req.body.items;
   const note = req.body.note;
 
@@ -1918,7 +1918,7 @@ router.put("/items/notes", async function (req, res) {
     }
 
   try {
-    console.log("We are about to get the item list");
+    console.log("--NSN-- We are about to get the item list");
 
     const queryText = `select * from "no-stock" ORDER BY id DESC`;
     await pool
@@ -1927,34 +1927,34 @@ router.put("/items/notes", async function (req, res) {
         res.send(selectResult.rows);
       })
       .catch((error) => {
-        console.log(`Error on item query ${error}`);
+        console.log(`--NSN-- Error on item query ${error}`);
         res.sendStatus(500);
       });
   } catch (err) {
-    console.log('Error on Get: ', err);
+    console.log('--NSN-- Error on Get: ', err);
     return res.status(500).send();
   }
 
 });
 
 router.put("/deadItems", async function (req, res) {
-  console.log("We are updating NSN items as not dead");
+  console.log("--NSN-- We are updating NSN items as not dead");
   const items = req.body.items;
 
     try {
       for (const item of items) {
-        console.log(item);
+        console.log('--NSN-- ', item);
         const queryText = `UPDATE "no-stock" SET dead = false WHERE id = $1`;
         await pool
           .query(queryText, [item])
       }
     } catch (err) {
-      console.log('Error on update: ', err);
+      console.log('--NSN-- Error on update: ', err);
       return res.status(500).send();
     }
 
     try {
-      console.log("We are about to get the item list");
+      console.log("--NSN-- We are about to get the item list");
 
       const queryText = `select * from "no-stock" ORDER BY id DESC`;
       await pool
@@ -1963,21 +1963,21 @@ router.put("/deadItems", async function (req, res) {
           res.send(selectResult.rows);
         })
         .catch((error) => {
-          console.log(`Error on item query ${error}`);
+          console.log(`--NSN-- Error on item query ${error}`);
           res.sendStatus(500);
         });
     } catch (err) {
-      console.log('Error on Get: ', err);
+      console.log('--NSN-- Error on Get: ', err);
       return res.status(500).send();
     }
 });
                                             
 router.put("/updateReason", (req, res) => {
-  console.log(req.body.payload);
+  //console.log(req.body.payload);
   const payload = req.body.payload;
   const id = payload.id
   const reason = payload.reason;
-  console.log("We are updating a reason of " + reason + " on NSN item with id: ", id);
+  console.log("--NSN-- We are updating a reason of " + reason + " on NSN item with id: ", id);
 
   const queryText = `UPDATE "no-stock" SET reason = $1 WHERE id = $2`;
   pool
@@ -1990,27 +1990,27 @@ router.put("/updateReason", (req, res) => {
           res.send(selectResult.rows);
         })
         .catch((error) => {
-          console.log(`Error on item query ${error}`);
+          console.log(`--NSN-- Error on item query ${error}`);
           res.sendStatus(500);
         });
     })
     .catch((error) => {
-      console.log(`Error on item query ${error}`);
+      console.log(`--NSN-- Error on item query ${error}`);
       res.sendStatus(500);
     });
 });
 
 router.put("/test", (req, res) => {
-  console.log(req.body.test);
+  //console.log(req.body.test);
   const test = req.body.test;
-  console.log("We are running an NSN test for: ", test);
+  console.log("--NSN-- We are running an NSN test for: ", test);
 
   t(test);
 
 
   async function t(test) {
 
-    console.log('(TEST)');
+    console.log('(--NSN-- TEST)');
   
     const tester = test;
   
@@ -2021,7 +2021,7 @@ router.put("/test", (req, res) => {
     try {
       bcResponse = await getBCItems();
     } catch (err) {
-      console.log('Error on getBCItems: ', err);
+      console.log('--NSN-- Error on getBCItems: ', err);
     }
   
     await timeoutPromise(500);
@@ -2034,26 +2034,26 @@ router.put("/test", (req, res) => {
           getItems = getResult.rows;
         })
     } catch (err) {
-      console.log('Error on getItems: ', err);
+      console.log('--NSN-- Error on getItems: ', err);
     }
   
     for (const item of bcResponse) {
       if (item.name === tester) {
-        console.log('BC Found!');
+        console.log('--NSN-- BC Found!');
         try {
           let checkedItem = [];
           checkedItem.push(item);
           varItems = await getVars(checkedItem);
-          console.log('Vars (TEST): ', varItems);
+          console.log('--NSN-- Vars (TEST): ', varItems);
         } catch (err) {
-          console.log('Error on getVar: ', err);
+          console.log('--NSN-- Error on getVar: ', err);
         }
       }
     }
   
     for (const item of getItems) {
       if (item.name === tester) {
-        console.log('DB Found!');
+        console.log('--NSN-- DB Found!');
        }
     }
   
@@ -2113,10 +2113,10 @@ router.put("/test", (req, res) => {
         }
       }
     } catch (err) {
-      console.log('Error on varMsg: ', err);
+      console.log('--NSN-- Error on varMsg: ', err);
     }
   
-    console.log('New Items (TEST): ', newItems);
+    console.log('--NSN-- New Items (TEST): ', newItems);
   
   
   
@@ -2136,16 +2136,16 @@ router.put("/test", (req, res) => {
                   let itemToPush = {
                     id: itemId,
                   }
-                  console.log('Found this id for removing from NSN: ', itemToPush);
+                  console.log('--NSN-- Found this id for removing from NSN: ', itemToPush);
                 }
               }
             }
           }
         } catch (err) {
-          console.log('Error on get Var Stocked: ', err);
+          console.log('--NSN-- Error on get Var Stocked: ', err);
         }
   
-    console.log('Test Done');
+    console.log('--NSN-- Test Done');
   
   }
   
@@ -2154,7 +2154,7 @@ router.put("/test", (req, res) => {
 
 router.get("/test/message", (req, res) => {
 
-  console.log("We are sending a test slack message..");
+  console.log("--NSN-- We are sending a test slack message..");
 
   let slackText = `:test_tube: *THIS IS A TEST MESSAGE! WALLY B OUT!* :test_tube:`;
 
@@ -2168,7 +2168,7 @@ router.get("/test/message", (req, res) => {
 
     // `msg` contains information about the posted message
 
-    console.log("Message sent: ", msg);
+    console.log("--NSN-- Message sent: ", msg);
   })();
   
   res.sendStatus(200);
