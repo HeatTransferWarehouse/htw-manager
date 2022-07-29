@@ -22,7 +22,8 @@ const {
 
 const createNote = async (e) => {
   console.log('--SANMAR-- Updating Note on BP...');
-  await updateNote(e);
+  const note = "Email Sent via Admin app. https://admin.heattransferwarehouse.com";
+  await updateNote(e, note);
   console.log('--SANMAR-- Note Updated..');
 };
 

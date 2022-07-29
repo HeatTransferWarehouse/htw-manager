@@ -17,6 +17,17 @@ app.use(cors({
   origin: ['https://www.heattransferwarehouse.com']
 }));
 
+const {
+  updateNote,
+  getSO,
+} = require('./Capture/api');
+
+const createNote = async (e, n) => {
+  console.log('--INKSOFT-- Updating Note on BP...');
+  await updateNote(e, n);
+  console.log('--INKSOFT-- Note Updated..');
+};
+
 let storeHash = process.env.STORE_HASH
 
 //BigCommerce API tokens and keys
@@ -239,6 +250,8 @@ router.post("/inksoft", cors(), async function (req, res) {
             }
         }
 
+        let newOrder = [];
+
         try {
 
           const fileData = 'file';
@@ -254,7 +267,7 @@ router.post("/inksoft", cors(), async function (req, res) {
             },
           };
 
-            await axios
+          newOrder = await axios
             .post(
               `https://stores.inksoft.com/DS350156262/Api2/SaveCartOrder`,
               data,
@@ -269,6 +282,21 @@ router.post("/inksoft", cors(), async function (req, res) {
             console.log('--INKSOFT-- Post Cart Error Messgae: ', err.responseText);
             }
         }
+
+        const newOrderId = newOrder.data.Data;
+
+        console.log('--INKSOFT-- New Order: ', newOrderId);
+
+        try {
+          const so = await getSO(orderId);
+          console.log('--INKSOFT-- ', so.response.results[0][0]);
+          const note = `Inksoft Order Number: ${newOrderId} --- Note made via Admin app. https://admin.heattransferwarehouse.com`;
+          await createNote(so.response.results[0][0], note);
+        } catch (err) {
+          console.log('--INKSOFT-- Error on add note: ', err);
+          res.sendStatus(500);
+        }
+
     }
 
 });
