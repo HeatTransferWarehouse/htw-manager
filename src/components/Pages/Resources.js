@@ -227,23 +227,10 @@ function Resources () {
                     <div class="blog-post-thumb">
                         <div class="blog-content">
                             <h3>
-                                <a href="https://id.heroku.com/login" target="_blank">Heroku</a>
-                            </h3>
-                            <div class="text">
-                               Houses more of our custom servers, apps, and databases. Deploy, redeploy, and manage our data.
-                            </div>
-                            <a href="https://www.heroku.com/support" target="_blank" class="main-button">Support Docs</a>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-lg-4 col-md-6 col-sm-12">
-                    <div class="blog-post-thumb">
-                        <div class="blog-content">
-                            <h3>
                                 <a href="https://app.sendgrid.com/login" target="_blank">SendGrid</a>
                             </h3>
                             <div class="text">
-                               Used to send custom emails to customers. Mostly used for the Decoqueue.
+                               Used to send custom emails to customers. Used for emails with SanMar, OSIAffiliate, etc.
                             </div>
                             <a href="https://support.sendgrid.com/hc/en-us" target="_blank" class="main-button">Support Docs</a>
                         </div>
@@ -253,12 +240,12 @@ function Resources () {
                     <div class="blog-post-thumb">
                         <div class="blog-content">
                             <h3>
-                                <a href="https://app.sendgrid.com/login" target="_blank">Filestack</a>
+                                <a href="https://tariehktest.ositracker.com/admin/" target="_blank">OSIAffiliate</a>
                             </h3>
                             <div class="text">
-                               Used in our custom apps to upload images and files back and forth to customers.
+                               Used for our affiliates to generate custom links to our site and refer our products.
                             </div>
-                            <a href="https://www.filestack.com/docs/" target="_blank" class="main-button">Support Docs</a>
+                            <a href="https://support.osiaffiliate.com/support/home" target="_blank" class="main-button">Support Docs</a>
                         </div>
                     </div>
                 </div>
