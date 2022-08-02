@@ -147,6 +147,7 @@ router.post("/inksoft", cors(), async function (req, res) {
         let inksoftDesigns = currentCart.DesignSummaries;
         let linkedId = 0;
         let foundDesign = {};
+        let alreadyFound = false;
         let newName = "";
 
         for (const d of inksoftDesigns) {
@@ -166,7 +167,13 @@ router.post("/inksoft", cors(), async function (req, res) {
             }
         }
 
-        if (foundDesign === {}) {
+        for (const f of designsToSend) {
+          if (f.DesignId === foundDesign.DesignId) {
+            alreadyFound = true;
+          }
+        }
+
+        if (foundDesign === {} || alreadyFound) {
             return;
         } else {
             foundDesign.Quantity = quantity;
