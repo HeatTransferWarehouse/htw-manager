@@ -194,17 +194,13 @@ form {
     border-bottom: 0px solid rgba(224, 224, 224, 1);
 }
 
-td.MuiTableCell-root.MuiTableCell-body.jss319.jss321.MuiTableCell-paddingCheckbox {
-    display: none;
-}
-
-th.MuiTableCell-root.MuiTableCell-head.jss319.jss320.jss321.jss325.MuiTableCell-paddingCheckbox {
-    display: none;
-}
-
 .nav {
     display: flex;
     flex-wrap: wrap;
     justify-content: space-evenly;
     align-items: center;
+}
+
+.MuiTableCell-paddingCheckbox {
+    display: none;
 }
