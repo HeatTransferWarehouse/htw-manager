@@ -128,6 +128,11 @@ router.post("/inksoft", cors(), async function (req, res) {
 
     for (const i of inksoft) {
 
+      let sku = i.sku;
+      const skuSlice = sku.slice(0, 7);
+
+      if (skuSlice === 'INKSOFT') {
+
         let inksoftToken = i.product_options[1].value;
         let inksoftName = i.product_options[2].value;
         let quantity = i.quantity;
@@ -305,6 +310,8 @@ router.post("/inksoft", cors(), async function (req, res) {
         }
 
     }
+
+  }
 
 });
 
