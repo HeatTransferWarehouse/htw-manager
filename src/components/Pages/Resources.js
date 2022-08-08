@@ -318,6 +318,19 @@ function Resources () {
                     <div class="blog-post-thumb">
                         <div class="blog-content">
                             <h3>
+                                <a href="https://login.bigcommerce.com/login" target="_blank">BigCommerce</a>
+                            </h3>
+                            <div class="text">
+                               Hosts our main websites and tracks new orders, customers, and sales.
+                            </div>
+                            <a href="https://support.bigcommerce.com/s/?language=en_US" target="_blank" class="main-button">Support Docs</a>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-4 col-md-6 col-sm-12">
+                    <div class="blog-post-thumb">
+                        <div class="blog-content">
+                            <h3>
                                 <a href="https://use1.brightpearlapp.com/admin_login.php?clients_id=heattransfer" target="_blank">Brightpearl</a>
                             </h3>
                             <div class="text">
