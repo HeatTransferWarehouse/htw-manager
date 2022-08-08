@@ -118,7 +118,6 @@ router.post("/inksoft", cors(), async function (req, res) {
 
   inksoft = inksoft.data;
 
-
     //console.log('--INKSOFT-- Get Products: ', inksoft);
 
     let designsToSend = [];
@@ -133,15 +132,15 @@ router.post("/inksoft", cors(), async function (req, res) {
 
       if (skuSlice === 'INKSOFT') {
 
-        let inksoftToken = i.product_options[1].value;
+        mainToken = i.product_options[1].value;
         let inksoftName = i.product_options[2].value;
         let quantity = i.quantity;
 
-        console.log('--INKSOFT-- Token and Name: ', inksoftToken, inksoftName);
+        console.log('--INKSOFT-- Token and Name: ', mainToken, inksoftName);
 
             inksoftCart = await axios
             .get(
-              `https://stores.inksoft.com/DS350156262/Api2/GetCartPackage?SessionToken=${inksoftToken}&Format=JSON`,
+              `https://stores.inksoft.com/DS350156262/Api2/GetCartPackage?SessionToken=${mainToken}&Format=JSON`,
               config
             )
 
@@ -163,7 +162,6 @@ router.post("/inksoft", cors(), async function (req, res) {
         }
 
         if (linkedId === 0) {
-            return;
         } else {
             for (const i of inksoftItems) {
                 if (i.DesignId === linkedId) {
@@ -179,7 +177,6 @@ router.post("/inksoft", cors(), async function (req, res) {
         }
 
         if (foundDesign === {} || alreadyFound) {
-            return;
         } else {
             foundDesign.Quantity = quantity;
             foundDesign.FullName = newName;
@@ -187,9 +184,9 @@ router.post("/inksoft", cors(), async function (req, res) {
             designsToSend.push(foundDesign);
         }
     }
+  }
 
     if (designsToSend === []) {
-        return;
     } else {
 
         //console.log('--INKSOFT-- New Designs: ', designsToSend);
@@ -310,8 +307,6 @@ router.post("/inksoft", cors(), async function (req, res) {
         }
 
     }
-
-  }
 
 });
 
