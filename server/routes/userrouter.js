@@ -105,11 +105,15 @@ router.post('/register', (req, res) => {
 router.post("/inksoft", cors(), async function (req, res) {
   const orderId = req.body.orderId;
 
+  res.sendStatus(200);
+
   let inksoft = await axios
     .get(
       `https://api.bigcommerce.com/stores/${storeHash}/v2/orders/${orderId}/products`,
       config
     )
+
+    inksoft = inksoft.data;
 
     let isInksoft = false;
 
@@ -125,7 +129,8 @@ router.post("/inksoft", cors(), async function (req, res) {
     }
 
 if (isInksoft) {
-  
+
+  console.log('--INKSOFT-- Fetching order for inksoft: ', orderId);
 
   let newOrder = await axios
     .get(
@@ -136,13 +141,6 @@ if (isInksoft) {
   newOrder = newOrder.data;
 
   const email = newOrder.billingAddress.email;
-
-  console.log('--INKSOFT-- Fetching products for inksoft: ', orderId);
-
-  console.log(`--INKSOFT-- SENDING BACK STATUS: ${inksoft.status}`);
-  res.send(inksoft.data).status(inksoft.status);
-
-  inksoft = inksoft.data;
 
     //console.log('--INKSOFT-- Get Products: ', inksoft);
 
