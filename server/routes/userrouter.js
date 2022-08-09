@@ -104,14 +104,40 @@ router.post('/register', (req, res) => {
 
 router.post("/inksoft", cors(), async function (req, res) {
   const orderId = req.body.orderId;
-  const email = req.body.email;
-  console.log('--INKSOFT-- Fetching products for inksoft: ', orderId);
 
   let inksoft = await axios
     .get(
       `https://api.bigcommerce.com/stores/${storeHash}/v2/orders/${orderId}/products`,
       config
     )
+
+    let isInksoft = false;
+
+    for (const i of inksoft) {
+
+      let sku = i.sku;
+      const skuSlice = sku.slice(0, 7);
+
+      if (skuSlice === 'INKSOFT') {
+        isInksoft = true;
+      }
+
+    }
+
+if (isInksoft) {
+  
+
+  let newOrder = await axios
+    .get(
+      `https://api.bigcommerce.com/stores/${storeHash}/v2/orders/${orderId}`,
+      config
+    )
+
+  newOrder = newOrder.data;
+
+  const email = newOrder.billingAddress.email;
+
+  console.log('--INKSOFT-- Fetching products for inksoft: ', orderId);
 
   console.log(`--INKSOFT-- SENDING BACK STATUS: ${inksoft.status}`);
   res.send(inksoft.data).status(inksoft.status);
@@ -307,6 +333,7 @@ router.post("/inksoft", cors(), async function (req, res) {
         }
 
     }
+  }
 
 });
 
