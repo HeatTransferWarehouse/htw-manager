@@ -105,6 +105,8 @@ router.post('/register', (req, res) => {
 router.post("/inksoft", cors(), async function (req, res) {
   const orderId = req.body.orderId;
 
+  console.log('Received Order. Checking Inksoft..');
+
   res.sendStatus(200);
 
   let inksoft = await axios
