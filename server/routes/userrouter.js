@@ -105,7 +105,7 @@ router.post('/register', (req, res) => {
 router.post("/inksoft", cors(), async function (req, res) {
   const orderId = req.body.orderId;
 
-  console.log('Received Order. Checking Inksoft..');
+  console.log(`Received Order: ${orderId}. Checking Inksoft..`);
 
   res.sendStatus(200);
 
@@ -129,6 +129,8 @@ router.post("/inksoft", cors(), async function (req, res) {
       }
 
     }
+
+    console.log('Is Inksoft? ', isInksoft);
 
 if (isInksoft) {
 
