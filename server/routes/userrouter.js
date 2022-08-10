@@ -117,6 +117,8 @@ router.post("/inksoft", cors(), async function (req, res) {
 
     inksoft = inksoft.data;
 
+    console.log('--INKSOFT-- Get Products: ', inksoft);
+
     let isInksoft = false;
 
     for (const i of inksoft) {
@@ -145,8 +147,6 @@ if (isInksoft) {
   newOrder = newOrder.data;
 
   const email = newOrder.billingAddress.email;
-
-    //console.log('--INKSOFT-- Get Products: ', inksoft);
 
     let designsToSend = [];
     let inksoftCart = [];
