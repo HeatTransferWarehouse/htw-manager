@@ -178,32 +178,26 @@ if (isInksoft) {
         //console.log('--INKSOFT-- Get Cart: ', currentCart);
 
         let inksoftItems = currentCart.Cart.Items;
-        //let inksoftDesigns = currentCart.DesignSummaries;
-        //let linkedId = 0;
+        let inksoftDesigns = currentCart.DesignSummaries;
+        let linkedId = 0;
         let foundDesign = {};
         let alreadyFound = false;
         let newName = "";
 
-        // for (const d of inksoftDesigns) {
-        //     if (d.Name === inksoftName) {
-        //         linkedId = d.DesignID;
-        //         newName = `${d.Name} || ${orderId}`;
-        //     }
-        // }
+        for (const d of inksoftDesigns) {
+            if (d.Name === inksoftName) {
+                linkedId = d.DesignID;
+                newName = `${d.Name} || ${orderId}`;
+            }
+        }
 
-        // if (linkedId === 0) {
-        // } else {
-        //     for (const i of inksoftItems) {
-        //         if (i.DesignId === linkedId) {
-        //             foundDesign = i;
-        //         }
-        //     }
-        // }
-
-        for (const i of inksoftItems) {
-          if (i.CartRetailItemId === inksoftName) {
-            foundDesign = i;
-          }
+        if (linkedId === 0) {
+        } else {
+            for (const i of inksoftItems) {
+                if (i.DesignId === linkedId) {
+                    foundDesign = i;
+                }
+            }
         }
 
         for (const f of designsToSend) {
