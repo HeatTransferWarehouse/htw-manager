@@ -3,7 +3,10 @@
   "version": "1.0.0",
   "private": false,
   "homepage": "https://admin.heattransferwarehouse.com/",
-  "repository": "git://github.com/Traizel/htw-manager.git",
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/Traizel/htw-manager.git"
+  },
   "proxy": "http://localhost:8000",
   "dependencies": {
     "@date-io/date-fns": "^2.13.1",
@@ -93,5 +96,12 @@
     "not ie <= 11",
     "not op_mini all"
   ],
-  "heroku-run-build-script": true
+  "heroku-run-build-script": true,
+  "description": "HTW App with misc tools, sales data tools, and more",
+  "bugs": {
+    "url": "https://github.com/Traizel/htw-manager/issues"
+  },
+  "main": "index.js",
+  "author": "",
+  "license": "ISC"
 }
