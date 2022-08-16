@@ -21,10 +21,10 @@ import WallyB from "../Pages/WallyB";
 import Admin from "../Pages/Admin";
 import Login from "../LoginPage/LoginPage";
 import Supacolor from "../Pages/Supacolor";
+import DecoQueue from "../Pages/DecoQueue";
 import "./App.css";
-class App extends Component {
+function App () {
 
-  render() {
     return (
       <Router>
         <div>
@@ -52,6 +52,8 @@ class App extends Component {
 
             <AdminRoute exact path="/register" component={Register} />
 
+            <ProtectedRoute exact path="/decoqueue" component={DecoQueue} />
+
             <AdminRoute exact path="/admin" component={Admin} />
             {/* If none of the other routes matched, we will show a 404. */}
             <Route render={() => <><br/><br/><br/><br/><br/><br/><h1 className="fourfour">404</h1></>} />
@@ -61,11 +63,11 @@ class App extends Component {
       </Router>
     );
   }
-}
 
-const mapStateToProps = (state) => ({
-  user: state.user,
-});
+
+// const mapStateToProps = (state) => ({
+//   user: state.user,
+// });
 
 // this allows us to use <App /> in index.js
-export default connect(mapStateToProps)(App);
+export default App;

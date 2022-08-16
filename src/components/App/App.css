@@ -148,3 +148,8 @@ tbody tr:nth-child(2n) {
 tbody tr:nth-child(2n):hover {
   background-color: #8261eee7;
 }
+
+.hello {
+  color: black;
+  font-size: 50em;
+}
