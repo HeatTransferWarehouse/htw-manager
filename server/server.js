@@ -16,6 +16,8 @@ const sanmarBP = require('./routes/sanmarBPRouter');
 const nostockRouter = require('./routes/nostockrouter');
 const captureRouter = require('./routes/index');
 const affiliateRouter = require('./routes/affiliaterouter');
+const queueItemRouter = require('./routes/queueItemRouter');
+const queueUserRouter = require('./routes/queueUserRouter');
 
 app.use(sessionMiddleware);
 app.use(passport.initialize());
@@ -35,6 +37,10 @@ app.use('/api/capture', captureRouter);
 app.use('/api/nostock', nostockRouter);
 app.use('/api/affiliate', affiliateRouter);
 
+// Queue Routers
+
+app.use('/api/user/queue/', queueUserRouter);
+app.use('/api/item/queue/', queueItemRouter);
 
 app.get("/healthcheck", (req, res) => {
   res.sendStatus(200)
