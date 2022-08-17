@@ -97,7 +97,7 @@ router.get("/", rejectUnauthenticated, (req, res) => {
           let first_name = order.billing_address.first_name;
           let last_name = order.billing_address.last_name;
           let item_type = "";
-          const queryText = `SELECT * from "item" where order_number=$1;`;
+          const queryText = `SELECT * from "item_queue" where order_number=$1;`;
           pool
             .query(queryText, [orderID])
             .then((result) => {
@@ -322,7 +322,7 @@ router.get("/", rejectUnauthenticated, (req, res) => {
                                                 );
                                                 //...and throw them in the database
                                                 const query2Text =
-                                                  'INSERT INTO "item" (email, first_name, last_name, order_number, sku, qty, product_length, product_options, created_at, description) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10) RETURNING id';
+                                                  'INSERT INTO "item_queue" (email, first_name, last_name, order_number, sku, qty, product_length, product_options, created_at, description) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10) RETURNING id';
                                                 pool.query(query2Text, [
                                                   email,
                                                   first_name,
@@ -719,7 +719,7 @@ router.post("/gobacknew", rejectUnauthenticated, (req, res, next) => {
   const priority = req.body.priority;
 
   const query2Text =
-    'INSERT INTO "item" (email, first_name, last_name, order_number, sku, product_length, product_options, qty, assigned, created_at, description, priority) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12) RETURNING id';
+    'INSERT INTO "item_queue" (email, first_name, last_name, order_number, sku, product_length, product_options, qty, assigned, created_at, description, priority) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12) RETURNING id';
   pool
     .query(query2Text, [
       email,

@@ -20,7 +20,7 @@ const {
 router.delete("/deleteitem/:id", rejectUnauthenticated, (req, res) => {
   //deletes new stock orders
   pool
-    .query('DELETE FROM "item" WHERE id=$1', [req.params.id])
+    .query('DELETE FROM "item_queue" WHERE id=$1', [req.params.id])
     .then((result) => {
       res.sendStatus(204); //No Content
     })
@@ -171,7 +171,7 @@ router.put("/assignsentcustomer", rejectUnauthenticated, (req, res) => {
 router.put("/assign", rejectUnauthenticated, (req, res) => {
 //api to assign stock orders to decovibe workers
     const {assigned, id} = req.body;
-    const queryText = 'UPDATE "item" SET assigned=$1 WHERE id=$2';
+    const queryText = 'UPDATE "item_queue" SET assigned=$1 WHERE id=$2';
 
     pool.query(queryText, [assigned, id])
     .then((result) => {
@@ -224,7 +224,7 @@ router.delete("/canneddelete/:canned", rejectUnauthenticated, (req, res) => {
 router.put("/run", rejectUnauthenticated, (req, res) => {
   //api to set priority of new stock items
   const { need_to_run, id } = req.body;
-  const queryText = 'UPDATE "item" SET need_to_run=$1 WHERE id=$2';
+  const queryText = 'UPDATE "item_queue" SET need_to_run=$1 WHERE id=$2';
 
   pool
     .query(queryText, [need_to_run, id])
@@ -240,7 +240,7 @@ router.put("/run", rejectUnauthenticated, (req, res) => {
 router.put("/priority", rejectUnauthenticated, (req, res) => {
   //api to set priority of new stock items
   const { priority, id } = req.body;
-  const queryText = 'UPDATE "item" SET priority=$1 WHERE id=$2';
+  const queryText = 'UPDATE "item_queue" SET priority=$1 WHERE id=$2';
 
   pool
     .query(queryText, [priority, id])
@@ -319,7 +319,7 @@ router.put("/priorityapprove", rejectUnauthenticated, (req, res) => {
 
 router.get("/itemlist", rejectUnauthenticated, (req, res) => {
 //gets all of the new stock orders
-  const queryText = `SELECT * FROM "item" ORDER BY id DESC;`;
+  const queryText = `SELECT * FROM "item_queue" ORDER BY id DESC;`;
   pool
     .query(queryText)
     .then((result) => {
@@ -378,7 +378,7 @@ router.get("/customitemlist", rejectUnauthenticated, (req, res) => {
 
 router.get("/itemlistcount", rejectUnauthenticated, (req, res) => {
 //gets a total number of new stock items
-  const queryText = `SELECT count(*) FROM "item"`;
+  const queryText = `SELECT count(*) FROM "item_queue"`;
   pool
     .query(queryText)
     .then((result) => {
