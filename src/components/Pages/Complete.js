@@ -7,6 +7,7 @@ import DeleteIcon from "@material-ui/icons/Delete";
 import ViewListIcon from "@material-ui/icons/ViewList";
 import swal from "sweetalert";
 import RestoreIcon from "@material-ui/icons/Restore";
+import QueueNav from "./QueueNav";
 
 class Complete extends Component {
   state = {
@@ -106,16 +107,22 @@ class Complete extends Component {
     let decoSku7 = "";
     let decoSku6 = "";
     let descrip = "";
-    const data = this.props.completelist.map((complete) => [
-      complete.order_number,
-      complete.sku,
-      complete.description,
-      complete.product_length,
-      complete.qty,
-      complete.assigned,
-      complete.created_at,
-      complete.priority,
-    ]);
+    let data = [];
+    if (this.props.completelist) {
+        data = this.props.completelist.map((complete) => [
+            complete.order_number,
+            complete.sku,
+            complete.description,
+            complete.product_length,
+            complete.qty,
+            complete.assigned,
+            complete.created_at,
+            complete.priority
+        ]);
+    } else {
+        data = [];
+    }
+
     return (
       <div>
         <br/>
@@ -124,6 +131,7 @@ class Complete extends Component {
         <br/>
         <br/>
         <br/>
+        <QueueNav highlighted = 'complete' />
         <div style={{ padding: "1.5%" }}>
           {this.props.user.role === "csr" ? (
             <span></span>

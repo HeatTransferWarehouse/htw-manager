@@ -16,39 +16,38 @@ class QueueNav extends Component {
   state = {
     toggle: false,
     //changes colors of navbar when toggled, used to identify which queue we are in
-    backgroundcolor: "#00080",
     backgroundcolorclass: "queue-nav-link",
     activebackgroundcolorclass: "active-nav-link",
     order_number: "",
   };
 
-  // componentDidMount() {
-  //   //grab counts of everything
-  //   this.props.dispatch({
-  //     type: "GET_ITEM_LIST_COUNT",
-  //   });
-  //   this.props.dispatch({
-  //     type: "GET_CUSTOM_ITEM_LIST_COUNT",
-  //   });
-  //   this.props.dispatch({
-  //     type: "GET_CONFIRM_LIST_COUNT",
-  //   });
-  //   this.props.dispatch({
-  //     type: "GET_RESPOND_LIST_COUNT",
-  //   });
-  //   this.props.dispatch({
-  //     type: "GET_APPROVE_LIST_COUNT",
-  //   });
-  //   this.props.dispatch({
-  //     type: "GET_PROGRESS_LIST_COUNT",
-  //   });
-  //   this.props.dispatch({
-  //     type: "GET_CONFIRM_LIST_COUNT",
-  //   });
-  //   this.props.dispatch({
-  //     type: "GET_COMPLETE_LIST_COUNT",
-  //   });
-  // }
+  componentDidMount() {
+    //grab counts of everything
+    this.props.dispatch({
+      type: "GET_ITEM_LIST_COUNT",
+    });
+    this.props.dispatch({
+      type: "GET_CUSTOM_ITEM_LIST_COUNT",
+    });
+    this.props.dispatch({
+      type: "GET_CONFIRM_LIST_COUNT",
+    });
+    this.props.dispatch({
+      type: "GET_RESPOND_LIST_COUNT",
+    });
+    this.props.dispatch({
+      type: "GET_APPROVE_LIST_COUNT",
+    });
+    this.props.dispatch({
+      type: "GET_PROGRESS_LIST_COUNT",
+    });
+    this.props.dispatch({
+      type: "GET_CONFIRM_LIST_COUNT",
+    });
+    this.props.dispatch({
+      type: "GET_COMPLETE_LIST_COUNT",
+    });
+  }
 
   handleChange = (event, fieldName) => {
     this.setState({ [fieldName]: event.target.value }); //sets to value of targeted event
@@ -128,61 +127,6 @@ class QueueNav extends Component {
                           this.handleChange(event, "order_number")
                         }
                       ></TextField>
-                      <Button
-                        variant="contained"
-                        onClick={(event) => {
-                          this.props.completelist.map((item, index) => {
-                            if (this.state.order_number === item.order_number) {
-                              swal(
-                                `${this.state.order_number} has been completed and is in the complete tab`
-                              );
-                              return null;
-                            }
-                          });
-                          this.props.customitemlist.map((item, index) => {
-                            if (this.state.order_number === item.order_number) {
-                              swal(
-                                `${this.state.order_number} is a custom order and has not been started yet, it's in the "new" tab on the custom side`
-                              );
-                              return null;
-                            }
-                          });
-                          this.props.confirmlist.map((item, index) => {
-                            if (this.state.order_number === item.order_number) {
-                              swal(
-                                `${this.state.order_number} is a custom order. An email has been sent but the customer has not responded. This can be found in the "Sent To Customer" tab`
-                              );
-                              return null;
-                            }
-                          });
-                          this.props.respondlist.map((item, index) => {
-                            if (this.state.order_number === item.order_number) {
-                              swal(
-                                `${this.state.order_number} is a custom order. The customer has responded to the order. This can be found in the "Customer Response" tab`
-                              );
-                              return null;
-                            }
-                          });
-                          this.props.itemlist.map((item, index) => {
-                            if (this.state.order_number === item.order_number) {
-                              swal(
-                                `${this.state.order_number} is a stock order. The order has not been started yet. This can be found in the "New" tab on the stock side`
-                              );
-                              return null;
-                            }
-                          });
-                          this.props.progresslist.map((item, index) => {
-                            if (this.state.order_number === item.order_number) {
-                              swal(
-                                `${this.state.order_number} is a stock order. The order has been started yet. This can be found in the "Progress" tab on the stock side`
-                              );
-                              return null;
-                            }
-                          });
-                        }}
-                      >
-                        Locate Order
-                      </Button>
                     </>
                   ) : (
                     <span></span>
@@ -249,7 +193,7 @@ class QueueNav extends Component {
                     >
                     </div>
                   </Grid>
-                  {/*<Grid
+                  <Grid
                     item
                     xs={3}
                     sm={3}
@@ -302,14 +246,7 @@ class QueueNav extends Component {
                       float: "left",
                     }}
                   >
-                    <LogOutButton
-                      style={{
-                        float: "left",
-                        backgroundColor: this.state.backgroundcolor,
-                      }}
-                      className={this.state.backgroundcolorclass}
-                    />
-                  </Grid> */}
+                  </Grid>
                 </Grid>
               </>
             ) : (
@@ -350,10 +287,10 @@ class QueueNav extends Component {
                     activeClassName={this.state.activebackgroundcolorclass}
                   >
                     <EditIcon></EditIcon>New{" "}
-                    {/* {`(${
+                    {`(${
                       this.props.customitemlistcount[0] &&
                       this.props.customitemlistcount[0].count
-                    })`} */}
+                    })`}
                   </NavLink>
                   <NavLink
                     className={this.state.backgroundcolorclass}
@@ -362,10 +299,10 @@ class QueueNav extends Component {
                   >
                     <EmailIcon></EmailIcon>
                     Sent to Customer{" "}
-                    {/* {`(${
+                    {`(${
                       this.props.confirmlistcount[0] &&
                       this.props.confirmlistcount[0].count
-                    })`} */}
+                    })`}
                   </NavLink>
                   <NavLink
                     className={this.state.backgroundcolorclass}
@@ -374,10 +311,10 @@ class QueueNav extends Component {
                   >
                     <ReplyIcon></ReplyIcon>
                     Customer response{" "}
-                    {/* {`(${
+                    {`(${
                       this.props.respondlistcount[0] &&
                       this.props.respondlistcount[0].count
-                    })`} */}
+                    })`}
                   </NavLink>
                   <NavLink
                     className={this.state.backgroundcolorclass}
@@ -386,10 +323,10 @@ class QueueNav extends Component {
                   >
                     <ThumbUpIcon></ThumbUpIcon>
                     Approved{" "}
-                    {/* {`(${
+                    {`(${
                       this.props.approvelistcount[0] &&
                       this.props.approvelistcount[0].count
-                    })`} */}
+                    })`}
                   </NavLink>
                   <NavLink
                     className={this.state.backgroundcolorclass}
@@ -398,10 +335,10 @@ class QueueNav extends Component {
                   >
                     <PlaylistAddCheckIcon></PlaylistAddCheckIcon>
                     Complete{" "}
-                    {/* {`(${
+                    {`(${
                       this.props.customcompletelistcount[0] &&
                       this.props.customcompletelistcount[0].count
-                    })`} */}
+                    })`}
                   </NavLink>
                   <NavLink
                     className={this.state.backgroundcolorclass}
@@ -426,61 +363,6 @@ class QueueNav extends Component {
                           this.handleChange(event, "order_number")
                         }
                       ></TextField>
-                      <Button
-                        variant="contained"
-                        onClick={(event) => {
-                          this.props.completelist.map((item, index) => {
-                            if (this.state.order_number === item.order_number) {
-                              swal(
-                                `${this.state.order_number} has been completed and is in the complete tab`
-                              );
-                              return null;
-                            }
-                          });
-                          this.props.customitemlist.map((item, index) => {
-                            if (this.state.order_number === item.order_number) {
-                              swal(
-                                `${this.state.order_number} is a custom order and has not been started yet, it's in the "new" tab on the custom side`
-                              );
-                              return null;
-                            }
-                          });
-                          this.props.confirmlist.map((item, index) => {
-                            if (this.state.order_number === item.order_number) {
-                              swal(
-                                `${this.state.order_number} is a custom order. An email has been sent but the customer has not responded. This can be found in the "Sent To Customer" tab`
-                              );
-                              return null;
-                            }
-                          });
-                          this.props.respondlist.map((item, index) => {
-                            if (this.state.order_number === item.order_number) {
-                              swal(
-                                `${this.state.order_number} is a custom order. The customer has responded to the order. This can be found in the "Customer Response" tab`
-                              );
-                              return null;
-                            }
-                          });
-                          this.props.itemlist.map((item, index) => {
-                            if (this.state.order_number === item.order_number) {
-                              swal(
-                                `${this.state.order_number} is a stock order. The order has not been started yet. This can be found in the "New" tab on the stock side`
-                              );
-                              return null;
-                            }
-                          });
-                          this.props.progresslist.map((item, index) => {
-                            if (this.state.order_number === item.order_number) {
-                              swal(
-                                `${this.state.order_number} is a stock order. The order has been started yet. This can be found in the "Progress" tab on the stock side`
-                              );
-                              return null;
-                            }
-                          });
-                        }}
-                      >
-                        Locate Order
-                      </Button>
                     </>
                   ) : (
                     <span></span>
@@ -554,7 +436,7 @@ class QueueNav extends Component {
                       </Link>
                     </div>
                   </Grid>
-                  {/*<Grid
+                  <Grid
                     item
                     xs={3}
                     sm={3}
@@ -607,11 +489,7 @@ class QueueNav extends Component {
                       float: "left",
                     }}
                   >
-                    <LogOutButton
-                      style={{ float: "left" }}
-                      className={this.state.backgroundcolorclass}
-                    />
-                  </Grid> */}
+                  </Grid>
                 </Grid>
               </>
             ) : (
@@ -641,20 +519,16 @@ class QueueNav extends Component {
 const mapStateToProps = (state) => ({
   user: state.user,
   itemlist: state.item.itemlist,
-  customitemlist: state.item.customitemlist,
   progresslist: state.item.progresslist,
   confirmlist: state.item.confirmlist,
   respondlist: state.item.respondlist,
   completelist: state.item.completelist,
-  customcompletelist: state.item.customcompletelist,
   itemlistcount: state.item.itemlistcount,
-  customitemlistcount: state.item.customitemlistcount,
   progresslistcount: state.item.progresslistcount,
   confirmlistcount: state.item.confirmlistcount,
   respondlistcount: state.item.respondlistcount,
   approvelistcount: state.item.approvelistcount,
   completelistcount: state.item.completelistcount,
-  customcompletelistcount: state.item.customcompletelistcount,
 });
 
 export default connect(mapStateToProps)(QueueNav);
