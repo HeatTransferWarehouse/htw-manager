@@ -1,98 +1,87 @@
 import React from "react";
+import { useSelector, useDispatch } from 'react-redux';
 import { TextField, Button } from "@material-ui/core";
 import Form from "react-bootstrap/Form";
 import Paper from "@material-ui/core/Paper";
 
 function OrderLookupPage () {
-  state = {
-    toggle: false,
-    order_number: "",
-    weight: 0,
-    ship_from: "Fargo",
-  };
 
-  //This function handles storing input values into state on change
-  handleChange = (event, fieldName) => {
-    this.setState({ [fieldName]: event.target.value });
-  }; //end handleChange
+  const details = useSelector(store => store.queue.detailslist); 
+  const orders = useSelector(store => store.queue.orderlist);
+  const shipping = useSelector(store => store.queue.shippinglist);
+  const products = useSelector(store => store.queue.productlist); 
 
-  //this function sends information to the server to store in the database
-  orderLookup = (event) => {
-    //prevents any default actions
-    event.preventDefault();
-    //grabs local state and defines it in a var of the same name
-    const { order_number } = this.state;
-    this.props.dispatch({
+  const dispatch = useDispatch();
+  const [order_number, setOrderNumber] = React.useState('');
+  const [weight, setWeight] = React.useState('');
+  const [ship_from, setShipFrom] = React.useState('');
+  const [skuHolder, setSkuHolder] = React.useState('');
+
+  const orderLookup = () => {
+
+    dispatch({
       type: "ORDER_DETAILS",
       payload: {
         order_number: order_number,
       },
     });
-    this.props.dispatch({
+
+    dispatch({
       type: "ORDER_LOOKUP",
       payload: {
         order_number: order_number,
       },
     });
-    this.props.dispatch({
+
+    dispatch({
       type: "SHIPPING_LOOKUP",
       payload: {
         order_number: order_number,
       },
     });
-    this.props.dispatch({
+
+    dispatch({
       type: "PRODUCT_LOOKUP",
       payload: {
         order_number: order_number,
       },
     });
-    this.setState({
-      weight: 0,
-    });
 
     setTimeout(() => {
-      console.log(this.props.detailslist);
-      this.props.detailslist.map((item, index) => {
+      details.map((item, index) => {
         console.log("I'm being run");
-        let weight = this.state.weight;
         let newWeight = Number(item.weight);
-        weight += newWeight;
-        this.setState({
-          weight: weight,
-        });
+        let newNewWeight = weight += newWeight;
+        setWeight(newNewWeight);
       });
     }, 1000);
-  }; //ends SubmitInfo
+  };
 
-    let skuHolder = "";
-    let productlist = this.props.productlist;
-    let itemid = this.props.orderlist.id;
-    let status = this.props.orderlist.status;
-    let items_total = this.props.orderlist.items_total;
-    let items_shipped = this.props.orderlist.items_shipped;
-    let payment_status = this.props.orderlist.payment_status;
+    let itemid = orders.id;
+    let status = orders.status;
+    let items_total = orders.items_total;
+    let items_shipped = orders.items_shipped;
+    let payment_status = orders.payment_status;
     let shipping_first_name =
-      this.props.shippinglist[0] && this.props.shippinglist[0].first_name;
+      shipping[0] && shipping[0].first_name;
     let shipping_last_name =
-      this.props.shippinglist[0] && this.props.shippinglist[0].last_name;
+      shipping[0] && shipping[0].last_name;
     let shipping_street_1 =
-      this.props.shippinglist[0] && this.props.shippinglist[0].street_1;
+      shipping[0] && shipping[0].street_1;
     let shipping_street_2 =
-      this.props.shippinglist[0] && this.props.shippinglist[0].street_2;
+      shipping[0] && shipping[0].street_2;
     let shipping_city =
-      this.props.shippinglist[0] && this.props.shippinglist[0].city;
+      shipping[0] && shipping[0].city;
     let shipping_state =
-      this.props.shippinglist[0] && this.props.shippinglist[0].state;
+      shipping[0] && shipping[0].state;
     let shipping_zip =
-      this.props.shippinglist[0] && this.props.shippinglist[0].zip;
+      shipping[0] && shipping[0].zip;
     let shipping_country =
-      this.props.shippinglist[0] && this.props.shippinglist[0].country;
+      shipping[0] && shipping[0].country;
     let shipping_phone =
-      this.props.shippinglist[0] && this.props.shippinglist[0].phone;
+      shipping[0] && shipping[0].phone;
     let shipping_email =
-      this.props.shippinglist[0] && this.props.shippinglist[0].email;
-    let weightDOM = this.state.weight;
-    weightDOM = weightDOM.toFixed(2);
+      shipping[0] && shipping[0].email;
     if (shipping_state === "Alabama" || shipping_state === "alabama") {
       shipping_state = "AL";
     } else if (shipping_state === "Alaska" || shipping_state === "alaska") {
@@ -259,7 +248,6 @@ function OrderLookupPage () {
 
     return (
       <div>
-        {this.state.toggle === false ? (
           <>
             <br />
             <br />
@@ -272,7 +260,7 @@ function OrderLookupPage () {
                 marginBottom: "5%",
               }}
             >
-              <form onSubmit={this.orderLookup}>
+              <form onSubmit={(e) => {orderLookup}}>
                 <center>
                   <p>Type the order number in below</p>
                   <TextField
@@ -284,12 +272,12 @@ function OrderLookupPage () {
                     label="Order Number here"
                     name="order_number"
                     // sets value of input to local state
-                    value={this.state.order_number}
+                    value={order_number}
                     type="text"
                     maxLength={1000}
                     //onChange of input values set local state
                     onChange={(event) =>
-                      this.handleChange(event, "order_number")
+                      setOrderNumber(event.target.value)
                     } //onChange of input values set local state
                   />
                 </center>
@@ -301,7 +289,7 @@ function OrderLookupPage () {
                     style={{ width: "300px" }}
                     as="select"
                     onChange={(event) =>
-                      this.setState({ ship_from: event.target.value })
+                      setShipFrom({ ship_from: event.target.value })
                     }
                   >
                     {" "}
@@ -545,7 +533,7 @@ function OrderLookupPage () {
                     }}
                     className="weight"
                   >
-                    <b>Weight:</b> <i>{weightDOM}</i>
+                    <b>Weight:</b> <i>{Weight}</i>
                   </td>
                 </tr>
                 <br />
@@ -619,7 +607,7 @@ function OrderLookupPage () {
                 ) : (
                   <span></span>
                 )}
-                {this.state.ship_from === "Vegas" ? (
+                {ship_from === "Vegas" ? (
                   <>
                     <tr>
                       <td
@@ -685,7 +673,7 @@ function OrderLookupPage () {
                 ) : (
                   <span></span>
                 )}
-                {this.state.ship_from === "Jacksonville" ? (
+                {ship_from === "Jacksonville" ? (
                   <>
                     <tr>
                       <td
@@ -751,7 +739,7 @@ function OrderLookupPage () {
                 ) : (
                   <span></span>
                 )}
-                {this.state.ship_from === "Fargo" ? (
+                {ship_from === "Fargo" ? (
                   <>
                     <tr>
                       <td
@@ -824,7 +812,7 @@ function OrderLookupPage () {
                     <b>Products</b>
                   </td>
                 </tr>
-                {productlist.map((item, index) => [
+                {products.map((item, index) => [
                   item.sku.slice(0, 5) === "BL_A3" ||
                   item.sku.slice(0, 5) === "BL_A4" ||
                   item.sku.slice(0, 5) === "BL_A5" ||
@@ -866,160 +854,161 @@ function OrderLookupPage () {
                         >
                           <b>SKU:</b>{" "}
                           <i>
+                            {skuHolder}
                             {" "}
                             {item.sku.slice(0, 5) === "BL_A3"
-                              ? (skuHolder = "BL_A3")
+                              ? (setSkuHolder("BL_A3"))
                               : item.sku === "INKSOFT-SUB-BLOCKER-8"
-                              ? (skuHolder = "BL_A3")
+                              ? (setSkuHolder("BL_A3"))
                               : item.sku.slice(0, 7) === "BL_A4-1"
-                              ? (skuHolder = 'BL_A4:SubBlock-A4 16.5" 5.85"')
+                              ? (setSkuHolder('BL_A4:SubBlock-A4 16.5" 5.85"'))
                               : item.sku === "INKSOFT-SUB-BLOCKER-6"
-                              ? (skuHolder = 'BL_A4 16.5')
+                              ? (setSkuHolder('BL_A4 16.5'))
                               : item.sku.slice(0, 7) === "BL_A4-8"
-                              ? (skuHolder = 'BL_A4:SubBlock-A4 8.3" 11.7"')
+                              ? (setSkuHolder('BL_A4:SubBlock-A4 8.3" 11.7"'))
                               : item.sku === "INKSOFT-SUB-BLOCKER-5"
-                              ? (skuHolder = 'BL_A4 8.3')
+                              ? (setSkuHolder('BL_A4 8.3'))
                               : item.sku.slice(0, 7) === "BL_A5-1"
-                              ? (skuHolder = 'BL_A5:SubBlock-A5 11.7" 4.25"')
+                              ? (setSkuHolder('BL_A5:SubBlock-A5 11.7" 4.25"'))
                               : item.sku === "INKSOFT-SUB-BLOCKER-4"
-                              ? (skuHolder = 'BL_A5 11.7')
+                              ? (setSkuHolder('BL_A5 11.7'))
                               : item.sku.slice(0, 7) === "BL_A5-5"
-                              ? (skuHolder = 'BL_A5:SubBlock-A5 5.8" 8.3"')
+                              ? (setSkuHolder('BL_A5:SubBlock-A5 5.8" 8.3"'))
                               : item.sku === "INKSOFT-SUB-BLOCKER-3"
-                              ? (skuHolder = 'BL_A5 5.8')
+                              ? (setSkuHolder('BL_A5 5.8'))
                               : item.sku.slice(0, 5) === "BL_LC"
-                              ? (skuHolder = "BL_LC")
+                              ? (setSkuHolder("BL_LC"))
                               : item.sku === "INKSOFT-SUB-BLOCKER-2"
-                              ? (skuHolder = "BL_LC")
+                              ? (setSkuHolder("BL_LC"))
                               : item.sku === "INKSOFT-SUB-BLOCKER-9"
-                              ? (skuHolder = "BL_XS")
+                              ? (setSkuHolder("BL_XS"))
                               : item.sku.slice(0, 5) === "BL_SM"
-                              ? (skuHolder = "BL_SM")
+                              ? (setSkuHolder("BL_SM"))
                               : item.sku === "INKSOFT-SUB-BLOCKER-7"
-                              ? (skuHolder = "BL_SQ")
+                              ? (setSkuHolder("BL_SQ"))
                               : item.sku === "INKSOFT-SUB-BLOCKER-1"
-                              ? (skuHolder = "BL_SM")
+                              ? (setSkuHolder("BL_SM"))
                               : item.sku.slice(0, 8) === "HW_CAP_L"
-                              ? (skuHolder = "HW_CAP_L")
+                              ? (setSkuHolder("HW_CAP_L"))
                               : item.sku === "INKSOFT-HEAD-2"
-                              ? (skuHolder = "HW_CAP_L")
+                              ? (setSkuHolder("HW_CAP_L"))
                               : item.sku.slice(0, 8) === "HW_CAP_S"
-                              ? (skuHolder = "HW_CAP_S")
+                              ? (setSkuHolder("HW_CAP_S"))
                               : item.sku === "INKSOFT-HEAD-1"
-                              ? (skuHolder = "HW_CAP_S")
+                              ? (setSkuHolder("HW_CAP_S"))
                               : item.sku.slice(0, 11) === "PR_BAG_A4-1"
-                              ? (skuHolder = "PR_BAG_A4:BAG-A4 16.5")
+                              ? (setSkuHolder("PR_BAG_A4:BAG-A4 16.5"))
                               : item.sku === "INKSOFT-PROMO-5"
-                              ? (skuHolder = "PR_BAG_A4:BAG-A4 16.5")
+                              ? (setSkuHolder("PR_BAG_A4:BAG-A4 16.5"))
                               : item.sku.slice(0, 11) === "PR_BAG_A4-8"
-                              ? (skuHolder = "PR_BAG_A4:BAG-A4 8.3")
+                              ? (setSkuHolder("PR_BAG_A4:BAG-A4 8.3"))
                               : item.sku === "INKSOFT-PROMO-4"
-                              ? (skuHolder = "PR_BAG_A4:BAG-A4 8.3")
+                              ? (setSkuHolder("PR_BAG_A4:BAG-A4 8.3"))
                               : item.sku === "INKSOFT-PROMO-6"
-                              ? (skuHolder = "PR_BAG_A3:Bag-A3 11.7")
+                              ? (setSkuHolder("PR_BAG_A3:Bag-A3 11.7"))
                               : item.sku.slice(0, 11) === "PR_BAG_A5-1"
-                              ? (skuHolder = "PR_BAG_A5:Bag-A5 11.7")
+                              ? (setSkuHolder("PR_BAG_A5:Bag-A5 11.7"))
                               : item.sku === "INKSOFT-PROMO-3"
-                              ? (skuHolder = "PR_BAG_A5:Bag-A5 11.7")
+                              ? (setSkuHolder("PR_BAG_A5:Bag-A5 11.7"))
                               : item.sku.slice(0, 11) === "PR_BAG_A5-5"
-                              ? (skuHolder = "PR_BAG_A5:Bag-A5 5.8")
+                              ? (setSkuHolder("PR_BAG_A5:Bag-A5 5.8"))
                               : item.sku === "INKSOFT-PROMO-2"
-                              ? (skuHolder = "PR_BAG_A5:Bag-A5 5.8")
+                              ? (setSkuHolder("PR_BAG_A5:Bag-A5 5.8"))
                               : item.sku.slice(0, 11) === "PR_BAG_A6-4"
-                              ? (skuHolder = "PR_BAG_A6:Bag-A6 4.1")
+                              ? (setSkuHolder("PR_BAG_A6:Bag-A6 4.1"))
                               : item.sku === "INKSOFT-PROMO-1"
-                              ? (skuHolder = "PR_BAG_A6:Bag-A6 4.1")
+                              ? (setSkuHolder("PR_BAG_A6:Bag-A6 4.1"))
                               : item.sku.slice(0, 8) === "PR_UM_A3"
-                              ? (skuHolder = "PR_UM_A3")
+                              ? (setSkuHolder("PR_UM_A3"))
                               : item.sku.slice(0, 11) === "PR_UM_A4-11"
-                              ? (skuHolder = "PR_UM_A4 11.7")
+                              ? (setSkuHolder("PR_UM_A4 11.7"))
                               : item.sku.slice(0, 11) === "PR_UM_A4-16"
-                              ? (skuHolder = "PR_UM_A4 16.5")
+                              ? (setSkuHolder("PR_UM_A4 16.5"))
                               : item.sku.slice(0, 11) === "PR_UM_A5-11"
-                              ? (skuHolder = "PR_UM_A5 11.7")
+                              ? (setSkuHolder("PR_UM_A5 11.7"))
                               : item.sku.slice(0, 10) === "PR_UM_A5-5"
-                              ? (skuHolder = "PR_UM_A5 5.8")
+                              ? (setSkuHolder("PR_UM_A5 5.8"))
                               : item.sku.slice(0, 5) === "SB_A3"
-                              ? (skuHolder = "SB_A3")
+                              ? (setSkuHolder("SB_A3"))
                               : item.sku === "INKSOFT-SOFT-SHELL-8"
-                              ? (skuHolder = "SB_A3")
+                              ? (setSkuHolder("SB_A3"))
                               : item.sku.slice(0, 7) === "SB_A4-1"
-                              ? (skuHolder = "SB_A4 16.5")
+                              ? (setSkuHolder("SB_A4 16.5"))
                               : item.sku === "INKSOFT-SOFT-SHELL-6"
-                              ? (skuHolder = "SB_A4 16.5")
+                              ? (setSkuHolder("SB_A4 16.5"))
                               : item.sku.slice(0, 7) === "SB_A4-8"
-                              ? (skuHolder = "SB_A4 8.3")
+                              ? (setSkuHolder("SB_A4 8.3"))
                               : item.sku === "INKSOFT-SOFT-SHELL-5"
-                              ? (skuHolder = "SB_A4 8.3")
+                              ? (setSkuHolder("SB_A4 8.3"))
                               : item.sku.slice(0, 8) === "SB_A5-11"
-                              ? (skuHolder = "SB_A5 11.7")
+                              ? (setSkuHolder("SB_A5 11.7"))
                               : item.sku === "INKSOFT-SOFT-SHELL-4"
-                              ? (skuHolder = "SB_A5 11.7")
+                              ? (setSkuHolder("SB_A5 11.7"))
                               : item.sku.slice(0, 7) === "SB_A5-5"
-                              ? (skuHolder = "SB_A5 5.8")
+                              ? (setSkuHolder("SB_A5 5.8"))
                               : item.sku === "INKSOFT-SOFT-SHELL-3"
-                              ? (skuHolder = "SB_A5 5.8")
+                              ? (setSkuHolder("SB_A5 5.8"))
                               : item.sku.slice(0, 5) === "SB_LC"
-                              ? (skuHolder = "SB_LC")
+                              ? (setSkuHolder("SB_LC"))
                               : item.sku === "INKSOFT-SOFT-SHELL-2"
-                              ? (skuHolder = "SB_LC")
+                              ? (setSkuHolder("SB_LC"))
                               : item.sku.slice(0, 5) === "SB_SM"
-                              ? (skuHolder = "SB_SM")
+                              ? (setSkuHolder("SB_SM"))
                               : item.sku === "INKSOFT-SOFT-SHELL-1"
-                              ? (skuHolder = "SB_SM")
+                              ? (setSkuHolder("SB_SM"))
                               : item.sku === "INKSOFT-SOFT-SHELL-9"
-                              ? (skuHolder = "SB_XS")
+                              ? (setSkuHolder("SB_XS"))
                               : item.sku === "INKSOFT-SOFT-SHELL-7"
-                              ? (skuHolder = "SB_SQ")
+                              ? (setSkuHolder("SB_SQ"))
                               : item.sku.slice(0, 5) === "WE_A3"
-                              ? (skuHolder = "WE_A3")
+                              ? (setSkuHolder("WE_A3"))
                               : item.sku === "INKSOFT-WEARABLES-9"
-                              ? (skuHolder = "WE_A3")
+                              ? (setSkuHolder("WE_A3"))
                               : item.sku.slice(0, 8) === "WE_A4-16"
-                              ? (skuHolder = "WE_A4 16.5")
+                              ? (setSkuHolder("WE_A4 16.5"))
                               : item.sku === "INKSOFT-WEARABLES-7"
-                              ? (skuHolder = "WE_A4 16.5")
+                              ? (setSkuHolder("WE_A4 16.5"))
                               : item.sku.slice(0, 7) === "WE_A4-8"
-                              ? (skuHolder = "WE_A4 8.3")
+                              ? (setSkuHolder("WE_A4 8.3"))
                               : item.sku === "INKSOFT-WEARABLES-6"
-                              ? (skuHolder = "WE_A4 8.3")
+                              ? (setSkuHolder("WE_A4 8.3"))
                               : item.sku.slice(0, 8) === "WE_A5-11"
-                              ? (skuHolder = "WE_A5 11.7")
+                              ? (setSkuHolder("WE_A5 11.7"))
                               : item.sku === "INKSOFT-WEARABLES-5"
-                              ? (skuHolder = "WE_A5 11.7")
+                              ? (setSkuHolder("WE_A5 11.7"))
                               : item.sku.slice(0, 7) === "WE_A5-5"
-                              ? (skuHolder = "WE_A5 5.8")
+                              ? (setSkuHolder("WE_A5 5.8"))
                               : item.sku === "INKSOFT-WEARABLES-4"
-                              ? (skuHolder = "WE_A5 5.8")
+                              ? (setSkuHolder("WE_A5 5.8"))
                               : item.sku.slice(0, 5) === "WE_LC"
-                              ? (skuHolder = "WE_LC")
+                              ? (setSkuHolder("WE_LC"))
                               : item.sku === "INKSOFT-WEARABLES-3"
-                              ? (skuHolder = "WE_LC")
+                              ? (setSkuHolder("WE_LC"))
                               : item.sku.slice(0, 5) === "WE_SM"
-                              ? (skuHolder = "WE_SM")
+                              ? (setSkuHolder("WE_SM"))
                               : item.sku === "INKSOFT-WEARABLES-2"
-                              ? (skuHolder = "WE_SM")
+                              ? (setSkuHolder("WE_SM"))
                               : item.sku.slice(0, 5) === "WE_SQ"
-                              ? (skuHolder = "WE_SQ")
+                              ? (setSkuHolder("WE_SQ"))
                               : item.sku === "INKSOFT-WEARABLES-8"
-                              ? (skuHolder = "WE_SQ")
+                              ? (setSkuHolder("WE_SQ"))
                               : item.sku.slice(0, 5) === "WE_XS"
-                              ? (skuHolder = "WE_XS")
+                              ? (setSkuHolder("WE_XS"))
                               : item.sku === "INKSOFT-WEARABLES-1"
-                              ? (skuHolder = "WE_XS")
+                              ? (setSkuHolder("WE_XS"))
                               : item.sku.slice(0, 11) === "WE_SUPAGANG"
-                              ? (skuHolder = "WE_SUPAGANG")
+                              ? (setSkuHolder("WE_SUPAGANG"))
                               : item.sku === "INKSOFT-WEARABLES-10"
-                              ? (skuHolder = "WE_SUPAGANG")
+                              ? (setSkuHolder("WE_SUPAGANG"))
                               : item.sku.slice(0, 11) === "BL_SUPAGANG" 
-                              ? (skuHolder = "BL_SUPAGANG")
+                              ? (setSkuHolder("BL_SUPAGANG"))
                               : item.sku === "INKSOFT-SUB-BLOCKER-10"
-                              ? (skuHolder = "BL_SUPAGANG")
+                              ? (setSkuHolder("BL_SUPAGANG"))
                               : item.sku.slice(0, 11) === "SB_SUPAGANG" 
-                              ? (skuHolder = "SB_SUPAGANG")
+                              ? (setSkuHolder("SB_SUPAGANG"))
                               : item.sku === "INKSOFT-SOFT-SHELL-10"
-                              ? (skuHolder = "SB_SUPAGANG")
-                              : (skuHolder = "SB_SM")}
+                              ? (setSkuHolder("SB_SUPAGANG"))
+                              : (setSkuHolder("SB_SM"))}
                           </i>
                         </td>
                       </tr>
@@ -1062,29 +1051,8 @@ function OrderLookupPage () {
             {/*Add a little buffer on the bottom of page (prevent cutoff on mobile) */}
             <br />
           </>
-        ) : (
-          <>
-            <br />
-            <br />
-            <br />
-            <br />
-            {/*show this only after the customer has submitted, to confirm submission and also prevent duplicate submissions*/}
-            <h1 style={{ textAlign: "center" }}>
-              Thank you for your feedback.
-              <br /> The art department will follow up with you after they've
-              reviewed your response
-            </h1>
-          </>
-        )}
       </div>
     );
 }
-
-const mapStateToProps = (state) => ({
-  orderlist: state.item.orderlist,
-  shippinglist: state.item.shippinglist,
-  productlist: state.item.productlist,
-  detailslist: state.item.detailslist,
-});
 
 export default OrderLookupPage;
