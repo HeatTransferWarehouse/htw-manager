@@ -36,31 +36,31 @@ function App () {
           <Switch>
             <Route exact path="/login" component={Login} />
 
-            <ProtectedRoute exact path="/" component={Main} />
+            <Route exact path="/" component={Main} />
 
-            <ProtectedRoute exact path="/sanmar" component={Sanmar} />
+            <Route exact path="/sanmar" component={Sanmar} />
 
-            <ProtectedRoute exact path="/brightpearl" component={Brightpearl} />
+            <Route exact path="/brightpearl" component={Brightpearl} />
 
-            <ProtectedRoute exact path="/nostock" component={NoStock} />
+            <Route exact path="/nostock" component={NoStock} />
 
-            <ProtectedRoute exact path="/affiliates" component={Affilates} />
+            <Route exact path="/affiliates" component={Affilates} />
 
-            <ProtectedRoute exact path="/resources" component={Resources} />
+            <Route exact path="/resources" component={Resources} />
 
-            <AdminRoute exact path="/supacolor" component={Supacolor} />
+            <Route exact path="/supacolor" component={Supacolor} />
 
-            <AdminRoute exact path="/wallyb" component={WallyB} />
+            <Route exact path="/wallyb" component={WallyB} />
 
-            <AdminRoute exact path="/register" component={Register} />
+            <Route exact path="/register" component={Register} />
 
-            <ProtectedRoute exact path="/decoqueue" component={DecoQueue} />
+            <Route exact path="/decoqueue" component={DecoQueue} />
 
-            <ProtectedRoute exact path="/Progress" component={Progress} />
+            <Route exact path="/Progress" component={Progress} />
 
-            <ProtectedRoute exact path="/Complete" component={DecoQueue} />
+            <Route exact path="/Complete" component={DecoQueue} />
 
-            <AdminRoute exact path="/admin" component={Admin} />
+            <Route exact path="/admin" component={Admin} />
             {/* If none of the other routes matched, we will show a 404. */}
             <Route render={() => <><br/><br/><br/><br/><br/><br/><h1 className="fourfour">404</h1></>} />
           </Switch>
