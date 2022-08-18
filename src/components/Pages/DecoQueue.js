@@ -37,13 +37,10 @@ class DecoQueue extends Component {
     componentDidMount() {
         //get all new stock items
         this.props.dispatch({
-            type: "GET_ITEM_LIST",
+            type: "GET_QUEUE_ITEM_LIST",
         });
         this.props.dispatch({
             type: "GET_PROGRESS_LIST",
-        });
-        this.props.dispatch({
-            type: "GET_CUSTOM_ITEM_LIST",
         });
         this.props.dispatch({
             type: "GET_CONFIRM_LIST",
@@ -66,9 +63,6 @@ class DecoQueue extends Component {
         });
         this.props.dispatch({
             type: "GET_APPROVE_LIST_COUNT",
-        });
-        this.props.dispatch({
-            type: "GET_CUSTOM_ITEM_LIST_COUNT",
         });
         this.props.dispatch({
             type: "GET_PROGRESS_LIST_COUNT",
@@ -94,7 +88,7 @@ class DecoQueue extends Component {
             toggle: !this.state.toggle,
         });
         this.props.dispatch({
-            type: "GET_ITEM_LIST",
+            type: "GET_QUEUE_ITEM_LIST",
         });
         this.props.dispatch({
             type: "GET_ITEM_LIST_COUNT",
@@ -123,7 +117,7 @@ class DecoQueue extends Component {
             toggle2: !this.state.toggle2,
         });
         this.props.dispatch({
-            type: "GET_ITEM_LIST",
+            type: "GET_QUEUE_ITEM_LIST",
         });
         this.props.dispatch({
             type: "GET_ITEM_LIST_COUNT",
@@ -152,7 +146,7 @@ class DecoQueue extends Component {
             toggle4: !this.state.toggle4,
         });
         this.props.dispatch({
-            type: "GET_ITEM_LIST",
+            type: "GET_QUEUE_ITEM_LIST",
         });
         this.props.dispatch({
             type: "GET_ITEM_LIST_COUNT",
@@ -181,7 +175,7 @@ class DecoQueue extends Component {
             toggle5: !this.state.toggle5,
         });
         this.props.dispatch({
-            type: "GET_ITEM_LIST",
+            type: "GET_QUEUE_ITEM_LIST",
         });
         this.props.dispatch({
             type: "GET_ITEM_LIST_COUNT",
@@ -210,7 +204,7 @@ class DecoQueue extends Component {
             toggle6: !this.state.toggle6,
         });
         this.props.dispatch({
-            type: "GET_ITEM_LIST",
+            type: "GET_QUEUE_ITEM_LIST",
         });
         this.props.dispatch({
             type: "GET_ITEM_LIST_COUNT",
@@ -234,45 +228,7 @@ class DecoQueue extends Component {
             type: "GET_COMPLETE_LIST_COUNT",
         });
     };
-    assignTask = (event) => {
-        //assigns the task to a decovibe worker
-        event.preventDefault();
-        const { id, assigned } = this.state;
-        this.props.dispatch({
-            type: "ASSIGN_TASK",
-            payload: {
-                id: id,
-                assigned: assigned,
-            },
-        });
-        this.setState({
-            toggle: false,
-        });
-        this.props.dispatch({
-            type: "GET_ITEM_LIST",
-        });
-        this.props.dispatch({
-            type: "GET_ITEM_LIST_COUNT",
-        });
-        this.props.dispatch({
-            type: "GET_RESPOND_LIST_COUNT",
-        });
-        this.props.dispatch({
-            type: "GET_APPROVE_LIST_COUNT",
-        });
-        this.props.dispatch({
-            type: "GET_CUSTOM_ITEM_LIST_COUNT",
-        });
-        this.props.dispatch({
-            type: "GET_CONFIRM_LIST_COUNT",
-        });
-        this.props.dispatch({
-            type: "GET_PROGRESS_LIST_COUNT",
-        });
-        this.props.dispatch({
-            type: "GET_COMPLETE_LIST_COUNT",
-        });
-    };
+
     needToRun = (event) => {
         //assigns the task to a decovibe worker
         event.preventDefault();
@@ -288,7 +244,7 @@ class DecoQueue extends Component {
             toggle5: false,
         });
         this.props.dispatch({
-            type: "GET_ITEM_LIST",
+            type: "GET_QUEUE_ITEM_LIST",
         });
         this.props.dispatch({
             type: "GET_ITEM_LIST_COUNT",
@@ -364,21 +320,6 @@ class DecoQueue extends Component {
                                 onClick={(event) => {
                                     if (dataSelector[0]) {
                                         this.setState({
-                                            toggle4: !this.state.toggle4,
-                                            toggle3: false,
-                                        });
-                                    } else {
-                                        swal('Select some orders first!');
-                                    }
-                                }}
-                            >
-                                <AssignmentIndIcon /><p>Assign</p>
-                            </Button>
-                            <Button
-                                variant="success"
-                                onClick={(event) => {
-                                    if (dataSelector[0]) {
-                                        this.setState({
                                             toggle6: !this.state.toggle6,
                                             toggle3: false,
                                         });
@@ -387,7 +328,7 @@ class DecoQueue extends Component {
                                     }
                                 }}
                             >
-                                <QueueIcon /><p>Run</p>
+                                <QueueIcon /><p>Edit Qty</p>
                             </Button>
                             <Button
                                 variant="success"
@@ -422,7 +363,7 @@ class DecoQueue extends Component {
                                             });
                                         }
                                         this.props.dispatch({
-                                            type: "GET_ITEM_LIST",
+                                            type: "GET_QUEUE_ITEM_LIST",
                                         });
                                         this.props.dispatch({
                                             type: "GET_ITEM_LIST_COUNT",
@@ -496,7 +437,7 @@ class DecoQueue extends Component {
                                             });
                                         }
                                         this.props.dispatch({
-                                            type: "GET_ITEM_LIST",
+                                            type: "GET_QUEUE_ITEM_LIST",
                                         });
                                         this.props.dispatch({
                                             type: "GET_ITEM_LIST_COUNT",
@@ -537,123 +478,6 @@ class DecoQueue extends Component {
                             >
                                 <AssignmentTurnedInIcon /><p>Finish</p>
                             </Button>
-                            {/* mark selected items high priority */}
-                            <Button
-                                variant="danger"
-                                onClick={(event) => {
-                                    if (dataSelector[0]) {
-                                        event.preventDefault();
-                                        for (let index = 0; index < dataSelector.length; index++) {
-                                            const element = dataSelector[index];
-                                            this.props.dispatch({
-                                                type: "MARK_PRIORITY",
-                                                payload: {
-                                                    id: element.id,
-                                                    priority: "high",
-                                                },
-                                            });
-                                        }
-                                        this.props.dispatch({
-                                            type: "GET_ITEM_LIST",
-                                        });
-                                        this.props.dispatch({
-                                            type: "GET_ITEM_LIST_COUNT",
-                                        });
-                                        this.props.dispatch({
-                                            type: "GET_RESPOND_LIST_COUNT",
-                                        });
-                                        this.props.dispatch({
-                                            type: "GET_APPROVE_LIST_COUNT",
-                                        });
-                                        this.props.dispatch({
-                                            type: "GET_CONFIRM_LIST_COUNT",
-                                        });
-                                        this.props.dispatch({
-                                            type: "GET_CUSTOM_ITEM_LIST_COUNT",
-                                        });
-                                        this.props.dispatch({
-                                            type: "GET_PROGRESS_LIST_COUNT",
-                                        });
-                                        this.props.dispatch({
-                                            type: "GET_COMPLETE_LIST_COUNT",
-                                        });
-                                        let checkInput = document.getElementsByTagName("input");
-                                        for (let index = 0; index < checkInput.length; index++) {
-                                            const element = checkInput[index];
-                                            console.log(element.checked);
-                                            element.checked = false;
-                                        }
-                                        dataSelector = [];
-                                        this.setState({
-                                            dataSelector: [],
-                                            toggle3: false,
-                                        });
-                                    } else {
-                                        swal('Select some orders first!');
-                                    }
-                                }}
-                            >
-                                <FlagIcon /><p>High Priority</p>
-                            </Button>
-                            {/* mark selected items low priority */}
-                            <Button
-                                variant="success"
-                                onClick={(event) => {
-                                    if (dataSelector[0]) {
-                                        event.preventDefault();
-                                        console.log(dataSelector);
-                                        for (let index = 0; index < dataSelector.length; index++) {
-                                            const element = dataSelector[index];
-                                            this.props.dispatch({
-                                                type: "MARK_PRIORITY",
-                                                payload: {
-                                                    id: element.id,
-                                                    priority: "low",
-                                                },
-                                            });
-                                        }
-                                        this.props.dispatch({
-                                            type: "GET_ITEM_LIST",
-                                        });
-                                        this.props.dispatch({
-                                            type: "GET_ITEM_LIST_COUNT",
-                                        });
-                                        this.props.dispatch({
-                                            type: "GET_RESPOND_LIST_COUNT",
-                                        });
-                                        this.props.dispatch({
-                                            type: "GET_APPROVE_LIST_COUNT",
-                                        });
-                                        this.props.dispatch({
-                                            type: "GET_CONFIRM_LIST_COUNT",
-                                        });
-                                        this.props.dispatch({
-                                            type: "GET_CUSTOM_ITEM_LIST_COUNT",
-                                        });
-                                        this.props.dispatch({
-                                            type: "GET_PROGRESS_LIST_COUNT",
-                                        });
-                                        this.props.dispatch({
-                                            type: "GET_COMPLETE_LIST_COUNT",
-                                        });
-                                        let checkInput = document.getElementsByTagName("input");
-                                        for (let index = 0; index < checkInput.length; index++) {
-                                            const element = checkInput[index];
-                                            console.log(element.checked);
-                                            element.checked = false;
-                                        }
-                                        dataSelector = [];
-                                        this.setState({
-                                            dataSelector: [],
-                                            toggle3: false,
-                                        });
-                                    } else {
-                                        swal('Select some orders first!');
-                                    }
-                                }}
-                            >
-                                <FlagIcon /><p>Low Priority</p>
-                            </Button>
                             {/* deleted selected items */}
                             <Button
                                 variant="danger"
@@ -682,7 +506,7 @@ class DecoQueue extends Component {
                                                     });
                                                 }
                                                 this.props.dispatch({
-                                                    type: "GET_ITEM_LIST",
+                                                    type: "GET_QUEUE_ITEM_LIST",
                                                 });
                                                 this.props.dispatch({
                                                     type: "GET_ITEM_LIST_COUNT",
@@ -889,6 +713,29 @@ class DecoQueue extends Component {
                                                 </div>
                                             );
                                         } else if (
+                                            decoSku5 === "SDC1" ||
+                                            decoSku5 === "SDC2" ||
+                                            decoSku5 === "SDC3" ||
+                                            decoSku5 === "SDC4" ||
+                                            decoSku5 === "SDC5" ||
+                                            decoSku5 === "SDC6" ||
+                                            decoSku5 === "SDC7" ||
+                                            decoSku5 === "SDC8" ||
+                                            decoSku5 === "SDC9"
+                                        ) {
+                                            return (
+                                                <div
+                                                    style={{
+                                                        width: "100%",
+                                                        height: "100%",
+                                                        backgroundColor: "#F48267",
+                                                        color: "black",
+                                                    }}
+                                                >
+                                                    {value}
+                                                </div>
+                                            );
+                                        } else if (
                                             decoSku3 === "SUBPAT"
                                         ) {
                                             return (
@@ -1005,7 +852,7 @@ class DecoQueue extends Component {
                                                         payload: item.id,
                                                     });
                                                     this.props.dispatch({
-                                                        type: "GET_ITEM_LIST",
+                                                        type: "GET_QUEUE_ITEM_LIST",
                                                     });
                                                     this.props.dispatch({
                                                         type: "GET_ITEM_LIST_COUNT",
@@ -1152,7 +999,7 @@ class DecoQueue extends Component {
                                                 toggle4: false,
                                             });
                                             this.props.dispatch({
-                                                type: "GET_ITEM_LIST",
+                                                type: "GET_QUEUE_ITEM_LIST",
                                             });
                                             this.props.dispatch({
                                                 type: "GET_ITEM_LIST_COUNT",
@@ -1339,7 +1186,7 @@ class DecoQueue extends Component {
                                                 toggle6: false,
                                             });
                                             this.props.dispatch({
-                                                type: "GET_ITEM_LIST",
+                                                type: "GET_QUEUE_ITEM_LIST",
                                             });
                                             this.props.dispatch({
                                                 type: "GET_ITEM_LIST_COUNT",

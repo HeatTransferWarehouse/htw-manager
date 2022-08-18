@@ -222,7 +222,7 @@ class QueueNav extends Component {
                           activebackgroundcolorclass: "active-nav-link2",
                         });
                         this.props.dispatch({
-                          type: "GET_ITEM_LIST",
+                          type: "GET_QUEUE_ITEM_LIST",
                         });
                         this.props.dispatch({
                           type: "GET_ITEM_LIST_COUNT",
@@ -265,7 +265,7 @@ class QueueNav extends Component {
                       onClick={(event) => {
                         event.preventDefault();
                         this.props.dispatch({
-                          type: "GET_ITEM_LIST",
+                          type: "GET_QUEUE_ITEM_LIST",
                         });
                         this.props.dispatch({
                           type: "GET_ITEM_LIST_COUNT",
@@ -519,7 +519,7 @@ class QueueNav extends Component {
                           activebackgroundcolorclass: "active-nav-link",
                         });
                         this.props.dispatch({
-                          type: "GET_ITEM_LIST",
+                          type: "GET_QUEUE_ITEM_LIST",
                         });
                         this.props.dispatch({
                           type: "GET_ITEM_LIST_COUNT",
@@ -570,7 +570,7 @@ class QueueNav extends Component {
                       onClick={(event) => {
                         event.preventDefault();
                         this.props.dispatch({
-                          type: "GET_ITEM_LIST",
+                          type: "GET_QUEUE_ITEM_LIST",
                         });
                         this.props.dispatch({
                           type: "GET_ITEM_LIST_COUNT",

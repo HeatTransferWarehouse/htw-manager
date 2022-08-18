@@ -193,7 +193,7 @@ class Progress extends Component {
                                         //     type: "GET_PROGRESS_LIST",
                                         // });
                                         // this.props.dispatch({
-                                        //     type: "GET_ITEM_LIST",
+                                        //     type: "GET_QUEUE_ITEM_LIST",
                                         // });
                                         // this.props.dispatch({
                                         //     type: "GET_ITEM_LIST_COUNT",
