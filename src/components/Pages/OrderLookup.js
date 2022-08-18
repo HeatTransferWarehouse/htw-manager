@@ -260,7 +260,7 @@ function OrderLookupPage () {
                 marginBottom: "5%",
               }}
             >
-              <form onSubmit={(e) => {orderLookup}}>
+              <form onSubmit={orderLookup}>
                 <center>
                   <p>Type the order number in below</p>
                   <TextField
@@ -533,7 +533,7 @@ function OrderLookupPage () {
                     }}
                     className="weight"
                   >
-                    <b>Weight:</b> <i>{Weight}</i>
+                    <b>Weight:</b> <i>{weight}</i>
                   </td>
                 </tr>
                 <br />
