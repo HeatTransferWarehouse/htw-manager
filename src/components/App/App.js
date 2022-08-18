@@ -1,11 +1,10 @@
-import React, { Component } from "react";
+import React from "react";
 import "bootstrap/dist/css/bootstrap.min.css";
 import {
   HashRouter as Router,
   Route,
   Switch,
 } from "react-router-dom";
-import { connect } from 'react-redux';
 import Nav from "../Nav/Nav";
 import Footer from "../Footer/Footer";
 import Register from "../RegisterForm/RegisterForm";
@@ -24,6 +23,7 @@ import Supacolor from "../Pages/Supacolor";
 import DecoQueue from "../Pages/DecoQueue";
 import Progress from "../Pages/Progress";
 import Complete from "../Pages/Complete";
+import OrderLookup from "../Pages/OrderLookup";
 import QueueNav from "../Pages/QueueNav";
 import "./App.css";
 function App () {
@@ -49,19 +49,22 @@ function App () {
 
             <ProtectedRoute exact path="/resources" component={Resources} />
 
-            <AdminRoute exact path="/supacolor" component={Supacolor} />
-
-            <AdminRoute exact path="/wallyb" component={WallyB} />
-
-            <AdminRoute exact path="/register" component={Register} />
-
             <ProtectedRoute exact path="/decoqueue" component={DecoQueue} />
 
             <ProtectedRoute exact path="/Progress" component={Progress} />
 
             <ProtectedRoute exact path="/Complete" component={Complete} />
 
+            <ProtectedRoute exact path="/Complete" component={OrderLookup} />
+
+            <AdminRoute exact path="/supacolor" component={Supacolor} />
+
+            <AdminRoute exact path="/wallyb" component={WallyB} />
+
+            <AdminRoute exact path="/register" component={Register} />
+
             <AdminRoute exact path="/admin" component={Admin} />
+
             {/* If none of the other routes matched, we will show a 404. */}
             <Route render={() => <><br/><br/><br/><br/><br/><br/><h1 className="fourfour">404</h1></>} />
           </Switch>
@@ -71,10 +74,4 @@ function App () {
     );
   }
 
-
-// const mapStateToProps = (state) => ({
-//   user: state.user,
-// });
-
-// this allows us to use <App /> in index.js
 export default App;
