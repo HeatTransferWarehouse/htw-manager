@@ -201,6 +201,14 @@ form {
     align-items: center;
 }
 
-.MuiTableCell-paddingCheckbox {
+.jss41 {
+    display: none;
+}
+
+.MuiTableCell-root.MuiTableCell-head.MUIDataTableSelectCell-root-35.MUIDataTableSelectCell-fixedHeader-36.MUIDataTableSelectCell-fixedLeft-37.MUIDataTableSelectCell-headerCell-41.MuiTableCell-paddingCheckbox {
+    display: none;
+}
+
+.jss45 {
     display: none;
 }
