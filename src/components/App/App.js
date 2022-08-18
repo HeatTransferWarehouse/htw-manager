@@ -23,6 +23,7 @@ import Login from "../LoginPage/LoginPage";
 import Supacolor from "../Pages/Supacolor";
 import DecoQueue from "../Pages/DecoQueue";
 import Progress from "../Pages/Progress";
+import Complete from "../Pages/Complete";
 import QueueNav from "../Pages/QueueNav";
 import "./App.css";
 function App () {
