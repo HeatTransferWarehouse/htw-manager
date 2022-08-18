@@ -193,7 +193,7 @@ class Progress extends Component {
                                         //     type: "GET_PROGRESS_LIST",
                                         // });
                                         // this.props.dispatch({
-                                        //     type: "GET_ITEM_LIST",
+                                        //     type: "GET_QUEUE_ITEM_LIST",
                                         // });
                                         // this.props.dispatch({
                                         //     type: "GET_ITEM_LIST_COUNT",
@@ -236,122 +236,6 @@ class Progress extends Component {
                                 }}
                             >
                                 <RestoreIcon /><p>Send Back</p>
-                            </Button>
-                            <Button
-                                variant="danger"
-                                onClick={(event) => {
-                                    if (dataSelector[0]) {
-                                        event.preventDefault();
-                                        console.log(dataSelector);
-                                        for (let index = 0; index < dataSelector.length; index++) {
-                                            const element = dataSelector[index];
-                                            this.props.dispatch({
-                                                type: "MARK_PRIORITY_PROGRESS",
-                                                payload: {
-                                                    id: element.id,
-                                                    priority: "high",
-                                                },
-                                            });
-                                        }
-                                        // this.props.dispatch({
-                                        //     type: "GET_PROGRESS_LIST",
-                                        // });
-                                        // this.props.dispatch({
-                                        //     type: "GET_ITEM_LIST_COUNT",
-                                        // });
-                                        // this.props.dispatch({
-                                        //     type: "GET_RESPOND_LIST_COUNT",
-                                        // });
-                                        // this.props.dispatch({
-                                        //     type: "GET_APPROVE_LIST_COUNT",
-                                        // });
-                                        // this.props.dispatch({
-                                        //     type: "GET_CONFIRM_LIST_COUNT",
-                                        // });
-                                        // this.props.dispatch({
-                                        //     type: "GET_CUSTOM_ITEM_LIST_COUNT",
-                                        // });
-                                        // this.props.dispatch({
-                                        //     type: "GET_PROGRESS_LIST_COUNT",
-                                        // });
-                                        // this.props.dispatch({
-                                        //     type: "GET_COMPLETE_LIST_COUNT",
-                                        // });
-                                        let checkInput = document.getElementsByTagName("input");
-                                        for (let index = 0; index < checkInput.length; index++) {
-                                            const element = checkInput[index];
-                                            console.log(element.checked);
-                                            element.checked = false;
-                                        }
-                                        dataSelector = [];
-                                        this.setState({
-                                            dataSelector: [],
-                                            toggle3: false,
-                                        });
-                                    } else {
-                                        swal('Select some orders first!');
-                                    }
-                                }}
-                            >
-                                <FlagIcon /><p>High Priority</p>
-                            </Button>
-                            <Button
-                                variant="success"
-                                onClick={(event) => {
-                                    if (dataSelector[0]) {
-                                        event.preventDefault();
-                                        console.log(dataSelector);
-                                        for (let index = 0; index < dataSelector.length; index++) {
-                                            const element = dataSelector[index];
-                                            this.props.dispatch({
-                                                type: "MARK_PRIORITY_PROGRESS",
-                                                payload: {
-                                                    id: element.id,
-                                                    priority: "low",
-                                                },
-                                            });
-                                        }
-                                        // this.props.dispatch({
-                                        //     type: "GET_PROGRESS_LIST",
-                                        // });
-                                        // this.props.dispatch({
-                                        //     type: "GET_ITEM_LIST_COUNT",
-                                        // });
-                                        // this.props.dispatch({
-                                        //     type: "GET_RESPOND_LIST_COUNT",
-                                        // });
-                                        // this.props.dispatch({
-                                        //     type: "GET_APPROVE_LIST_COUNT",
-                                        // });
-                                        // this.props.dispatch({
-                                        //     type: "GET_CONFIRM_LIST_COUNT",
-                                        // });
-                                        // this.props.dispatch({
-                                        //     type: "GET_CUSTOM_ITEM_LIST_COUNT",
-                                        // });
-                                        // this.props.dispatch({
-                                        //     type: "GET_PROGRESS_LIST_COUNT",
-                                        // });
-                                        // this.props.dispatch({
-                                        //     type: "GET_COMPLETE_LIST_COUNT",
-                                        // });
-                                        let checkInput = document.getElementsByTagName("input");
-                                        for (let index = 0; index < checkInput.length; index++) {
-                                            const element = checkInput[index];
-                                            console.log(element.checked);
-                                            element.checked = false;
-                                        }
-                                        dataSelector = [];
-                                        this.setState({
-                                            dataSelector: [],
-                                            toggle3: false,
-                                        });
-                                    } else {
-                                        swal('Select some orders first!');
-                                    }
-                                }}
-                            >
-                                <FlagIcon /><p>Low Priority</p>
                             </Button>
                             <Button
                                 variant="danger"

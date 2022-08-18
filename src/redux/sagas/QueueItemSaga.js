@@ -5,7 +5,7 @@ import axios from 'axios';
 function* deleteItem(action) {
   try {
     yield axios.delete(`/api/item/queue/deleteitem/${action.payload}`)
-    yield put({ type: "GET_ITEM_LIST" });
+    yield put({ type: "GET_QUEUE_ITEM_LIST" });
   } catch (error) {
     console.log("Error with adding a new item:", error);
   }
@@ -115,7 +115,7 @@ function* deleteHistoryRange(action) {
 function* addNewItem(action) {
   try {
     yield axios.post('/api/user/queue/addnewitem', action.payload);
-    yield put({ type: "GET_ITEM_LIST" });
+    yield put({ type: "GET_QUEUE_ITEM_LIST" });
   } catch (error) {
     console.log('Error with adding a new item:', error);
   }
@@ -210,7 +210,7 @@ function* backToNew(action) {
 function* goBackNew(action) {
   try {
     yield axios.post("/api/user/queue/gobacknew", action.payload);
-    yield put({ type: "GET_ITEM_LIST" });
+    yield put({ type: "GET_QUEUE_ITEM_LIST" });
   } catch (error) {
     console.log("Error with adding a new item:", error);
   }
@@ -219,7 +219,7 @@ function* goBackNew(action) {
 function* needToRun(action) {
   try {
     yield axios.put("/api/item/queue/run", action.payload);
-    yield put({ type: "GET_ITEM_LIST" });
+    yield put({ type: "GET_QUEUE_ITEM_LIST" });
   } catch (error) {
     console.log("Error with editing an item:", error);
   }
@@ -228,7 +228,7 @@ function* needToRun(action) {
 function* markPriority(action) {
   try {
     yield axios.put("/api/item/queue/priority", action.payload);
-    yield put({ type: "GET_ITEM_LIST" });
+    yield put({ type: "GET_QUEUE_ITEM_LIST" });
   } catch (error) {
     console.log("Error with editing an item:", error);
   }
@@ -271,7 +271,7 @@ function* markPriorityApprove(action) {
 function* assignTask(action) {
   try {
     yield axios.put("/api/item/queue/assign", action.payload);
-    yield put({ type: "GET_ITEM_LIST" });
+    yield put({ type: "GET_QUEUE_ITEM_LIST" });
   } catch (error) {
     console.log("Error with editing an item:", error);
   }
@@ -631,7 +631,7 @@ function* QueueItemSaga() {
   yield takeLatest('ASSIGN_CUSTOM_TASK', assignCustomTask);
   yield takeLatest('ASSIGN_SENT_CUSTOMER', assignSentCustomer);
   yield takeLatest('GET_USER', getUser);
-  yield takeLatest('GET_ITEM_LIST', getitemlist);
+  yield takeLatest('GET_QUEUE_ITEM_LIST', getitemlist);
   yield takeLatest('GET_HISTORY_LIST', gethistorylist);
   yield takeLatest('GET_CUSTOM_ITEM_LIST', getcustomitemlist);
   yield takeLatest('GET_ITEM_LIST_COUNT', getitemlistcount);
