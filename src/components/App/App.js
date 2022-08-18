@@ -23,6 +23,7 @@ import Login from "../LoginPage/LoginPage";
 import Supacolor from "../Pages/Supacolor";
 import DecoQueue from "../Pages/DecoQueue";
 import Progress from "../Pages/Progress";
+import Complete from "../Pages/Complete";
 import QueueNav from "../Pages/QueueNav";
 import "./App.css";
 function App () {
@@ -58,7 +59,7 @@ function App () {
 
             <ProtectedRoute exact path="/Progress" component={Progress} />
 
-            <ProtectedRoute exact path="/Complete" component={DecoQueue} />
+            <ProtectedRoute exact path="/Complete" component={Complete} />
 
             <AdminRoute exact path="/admin" component={Admin} />
             {/* If none of the other routes matched, we will show a 404. */}
