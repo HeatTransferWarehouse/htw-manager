@@ -51,11 +51,11 @@ function App () {
 
             <ProtectedRoute exact path="/decoqueue" component={DecoQueue} />
 
-            <ProtectedRoute exact path="/Progress" component={Progress} />
+            <ProtectedRoute exact path="/progress" component={Progress} />
 
-            <ProtectedRoute exact path="/Complete" component={Complete} />
+            <ProtectedRoute exact path="/complete" component={Complete} />
 
-            <ProtectedRoute exact path="/Complete" component={OrderLookup} />
+            <ProtectedRoute exact path="/orderlookup" component={OrderLookup} />
 
             <AdminRoute exact path="/supacolor" component={Supacolor} />
 
