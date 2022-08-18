@@ -246,22 +246,22 @@ z-index: 100000;
 }
 
 .queue-container {
-  background-color:#050592;
+  background-image: linear-gradient(127deg, #a759d1 0%, #8261ee 91%);
   position: fixed;
   display: flex;
-  justify-content: center;
+  justify-content: space-between;
   align-items: center;
-  width: 10000em;
+  width: 100%;
+  padding-left: 13em;
   top: 0;
-  border-radius: .3em;
   z-index: 999999;
 }
 
 .queue-nav-link {
   color: white;
   padding: .5em;
-  margin-left: 5em;
-  margin-right: 5em;
+  opacity: 20%;
+  transition: color .3s linear;
 }
 
 /* .queue-nav-link:hover {
@@ -271,4 +271,15 @@ z-index: 100000;
 .queueNav {
   color: white;
   z-index: 5000000000;
+}
+
+.active-nav-link {
+  color: white;
+  opacity: 100%;
+  background-color: transparent;
+  transition: color .3s linear;
+}
+
+.queue-nav-link:hover, .active-nav-link:hover {
+  color: #ddc4d5;
 }
