@@ -2,6 +2,8 @@ import React from "react";
 import { useSelector, useDispatch } from 'react-redux';
 import { TextField, Button } from "@material-ui/core";
 import Form from "react-bootstrap/Form";
+import Button from "react-bootstrap/Button";
+import QueueIcon from "@material-ui/icons/Queue";
 import Paper from "@material-ui/core/Paper";
 
 function OrderLookupPage () {
@@ -220,45 +222,6 @@ function OrderLookupPage () {
                 marginBottom: "5%",
               }}
             >
-              <form onSubmit={(e) => {
-                e.preventDefault();
-                dispatch({
-                    type: "ORDER_DETAILS",
-                    payload: {
-                      order_number: order_number,
-                    },
-                  });
-              
-                  dispatch({
-                    type: "ORDER_LOOKUP",
-                    payload: {
-                      order_number: order_number,
-                    },
-                  });
-              
-                  dispatch({
-                    type: "SHIPPING_LOOKUP",
-                    payload: {
-                      order_number: order_number,
-                    },
-                  });
-              
-                  dispatch({
-                    type: "PRODUCT_LOOKUP",
-                    payload: {
-                      order_number: order_number,
-                    },
-                  });
-
-                  setTimeout(() => {
-                    details.map((item, index) => {
-                      console.log("I'm being run");
-                      let newWeight = Number(item.weight);
-                      let newNewWeight = weight += newWeight;
-                      setWeight(newNewWeight);
-                    });
-                  }, 1000);
-                }}>
                 <center>
                   <p>Type the order number in below</p>
                   <TextField
@@ -298,24 +261,62 @@ function OrderLookupPage () {
                   </Form.Control>
                 </center>
                 <center>
-                  <Button
-                    style={{
-                      //note that it only goes through if it passes all validation
-                      marginTop: "3%",
-                      marginLeft: "5%",
-                      marginRight: "5%",
-                      backgroundColor: "green",
-                      color: "white",
+                <Button 
+                style={{
+                    //note that it only goes through if it passes all validation
+                    marginTop: "3%",
+                    marginLeft: "5%",
+                    marginRight: "5%",
+                    backgroundColor: "green",
+                    color: "white",
                     }}
-                    variant="contained"
-                    type="submit"
-                    color="primary"
-                    className="button"
-                  >
-                    CheckOrder
-                  </Button>
+                variant="contained"
+                type="submit"
+                color="primary"
+                className="button"
+                onClick = {
+                  (e) => {
+                  e.preventDefault();
+                  dispatch({
+                    type: "ORDER_DETAILS",
+                    payload: {
+                      order_number: order_number,
+                    },
+                  });
+              
+                  dispatch({
+                    type: "ORDER_LOOKUP",
+                    payload: {
+                      order_number: order_number,
+                    },
+                  });
+              
+                  dispatch({
+                    type: "SHIPPING_LOOKUP",
+                    payload: {
+                      order_number: order_number,
+                    },
+                  });
+              
+                  dispatch({
+                    type: "PRODUCT_LOOKUP",
+                    payload: {
+                      order_number: order_number,
+                    },
+                  });
+
+                  setTimeout(() => {
+                    details.map((item, index) => {
+                      console.log("I'm being run");
+                      let newWeight = Number(item.weight);
+                      let newNewWeight = weight += newWeight;
+                      setWeight(newNewWeight);
+                    });
+                  }, 1000);
+                    }
+                }
+            ><QueueIcon/> CheckOrder</Button>
                 </center>
-              </form>
               <table
                 style={{
                   marginLeft: "200px",
