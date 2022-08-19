@@ -2,7 +2,6 @@ import React from "react";
 import { useSelector, useDispatch } from 'react-redux';
 import { TextField, Button } from "@material-ui/core";
 import Form from "react-bootstrap/Form";
-import Button from "react-bootstrap/Button";
 import QueueIcon from "@material-ui/icons/Queue";
 import Paper from "@material-ui/core/Paper";
 
