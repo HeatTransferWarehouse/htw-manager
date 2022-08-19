@@ -1033,8 +1033,7 @@ function OrderLookupPage () {
                         >
                           <b>Color/Type:</b>{" "}
                           <i>
-                            {item.product_options[4].display_value}{" - "}
-                            {item.product_options[3].display_value}
+                            {item.product_options[2].display_value}
                           </i>
                         </td>
                       </tr>
