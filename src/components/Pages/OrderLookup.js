@@ -304,14 +304,15 @@ function OrderLookupPage () {
                     },
                   });
 
-                  setTimeout(() => {
                     details.map((item, index) => {
-                      console.log("I'm being run");
-                      let newWeight = Number(item.weight);
+                      for (const i of item) {
+                      //console.log("I'm being run");
+                      let newWeight = Number(i.weight);
                       let newNewWeight = weight += newWeight;
                       setWeight(newNewWeight);
+                      }
                     });
-                  }, 1000);
+
                     }
                 }
             ><QueueIcon/> CheckOrder</Button>
