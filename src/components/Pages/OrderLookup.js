@@ -13,7 +13,7 @@ function OrderLookupPage () {
 
   const dispatch = useDispatch();
   const [order_number, setOrderNumber] = React.useState('');
-  const [weight, setWeight] = React.useState('');
+  const [weight, setWeight] = React.useState(0);
   const [ship_from, setShipFrom] = React.useState('');
   const [skuHolder, setSkuHolder] = React.useState('');
 
@@ -541,7 +541,7 @@ function OrderLookupPage () {
                 <b>Ship From Address</b>
                 <br />
                 <br />
-                {this.state.ship_from === "Cincinnati" ? (
+                {ship_from === "Cincinnati" ? (
                   <>
                     <tr>
                       <td
