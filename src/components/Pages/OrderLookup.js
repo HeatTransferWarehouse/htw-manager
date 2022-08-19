@@ -17,46 +17,6 @@ function OrderLookupPage () {
   const [ship_from, setShipFrom] = React.useState('');
   const [skuHolder, setSkuHolder] = React.useState('');
 
-  const orderLookup = () => {
-
-    dispatch({
-      type: "ORDER_DETAILS",
-      payload: {
-        order_number: order_number,
-      },
-    });
-
-    dispatch({
-      type: "ORDER_LOOKUP",
-      payload: {
-        order_number: order_number,
-      },
-    });
-
-    dispatch({
-      type: "SHIPPING_LOOKUP",
-      payload: {
-        order_number: order_number,
-      },
-    });
-
-    dispatch({
-      type: "PRODUCT_LOOKUP",
-      payload: {
-        order_number: order_number,
-      },
-    });
-
-    setTimeout(() => {
-      details.map((item, index) => {
-        console.log("I'm being run");
-        let newWeight = Number(item.weight);
-        let newNewWeight = weight += newWeight;
-        setWeight(newNewWeight);
-      });
-    }, 1000);
-  };
-
     let itemid = orders.id;
     let status = orders.status;
     let items_total = orders.items_total;
@@ -260,7 +220,45 @@ function OrderLookupPage () {
                 marginBottom: "5%",
               }}
             >
-              <form onSubmit={orderLookup}>
+              <form onSubmit={(e) => {
+                e.preventDefault();
+                dispatch({
+                    type: "ORDER_DETAILS",
+                    payload: {
+                      order_number: order_number,
+                    },
+                  });
+              
+                  dispatch({
+                    type: "ORDER_LOOKUP",
+                    payload: {
+                      order_number: order_number,
+                    },
+                  });
+              
+                  dispatch({
+                    type: "SHIPPING_LOOKUP",
+                    payload: {
+                      order_number: order_number,
+                    },
+                  });
+              
+                  dispatch({
+                    type: "PRODUCT_LOOKUP",
+                    payload: {
+                      order_number: order_number,
+                    },
+                  });
+
+                  setTimeout(() => {
+                    details.map((item, index) => {
+                      console.log("I'm being run");
+                      let newWeight = Number(item.weight);
+                      let newNewWeight = weight += newWeight;
+                      setWeight(newNewWeight);
+                    });
+                  }, 1000);
+                }}>
                 <center>
                   <p>Type the order number in below</p>
                   <TextField
