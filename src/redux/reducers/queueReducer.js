@@ -201,6 +201,8 @@ const productlist = (state = [], action) => {
   switch (action.type) {
     case "SET_PRODUCT":
       return action.payload;
+      case "CLEAR_PRODUCT":
+        return false;
     default:
       return state;
   }

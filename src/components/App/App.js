@@ -37,6 +37,8 @@ function App () {
           <Switch>
             <Route exact path="/login" component={Login} />
 
+            <Route exact path="/orderlookup" component={OrderLookup} />
+
             <ProtectedRoute exact path="/" component={Main} />
 
             <ProtectedRoute exact path="/sanmar" component={Sanmar} />
@@ -54,8 +56,6 @@ function App () {
             <ProtectedRoute exact path="/progress" component={Progress} />
 
             <ProtectedRoute exact path="/complete" component={Complete} />
-
-            <ProtectedRoute exact path="/orderlookup" component={OrderLookup} />
 
             <AdminRoute exact path="/supacolor" component={Supacolor} />
 
