@@ -20,6 +20,66 @@ const {
   getSO,
 } = require('./Capture/api');
 
+const now = new Date();
+let millisTill8 = new Date(now.getFullYear(), now.getMonth(), now.getDate(), 8, 0, 0, 0) - now;
+if (millisTill8 < 0) {
+     millisTill8 += 86400000; // it's after 8am, try 8am tomorrow.
+}
+
+setTimeout(function () {
+  const today = new Date();
+  const yesterday = new Date(today);
+
+  yesterday.setDate(yesterday.getDate() - 1);
+
+  // const host = 'ftp.sanmar.com';
+  // const user = '175733';
+  // const password = 'Sanmar33';
+  // const c = new Client();
+
+  // try {
+  //   console.log('--SANMAR-- Logging into FTP Client..');
+
+  //   const ftpConfig = {
+  //     host: `${host}`,
+  //     port: 21,
+  //     user: `${user}`,
+  //     password: `${password}`,
+  //   }
+    
+  //   const file = await getFile(yesterday);
+
+  //   c.connect(ftpConfig);
+
+  //   c.on('ready', function () {
+  //     c.get(`/000175733Status/${file}`, function (err, stream) {
+  //       if (err) {
+  //         console.log('--SANMAR-- Error on SanMar FTP Download: ', err);
+  //         c.end();
+  //       }
+
+  //       stream.once('close', function () {
+  //         c.end();
+  //       });
+        
+  //       stream.pipe(res);
+
+  //       stream.on('end', function(){
+  //         if (err) {
+  //           res.status(500).end();
+  //         } else {
+  //           res.end();
+  //         }
+  //       });
+  //     });
+  //   });
+  // } catch (err) {
+  //   console.log('--SANMAR-- Error on connect ftp: ', err);
+  //   res.status(500).end();
+  // }
+
+}, millisTill8 * millisTill8 * millisTill8);
+
 const createNote = async (e) => {
   console.log('--SANMAR-- Updating Note on BP...');
   const note = "Email Sent via Admin app. https://admin.heattransferwarehouse.com";

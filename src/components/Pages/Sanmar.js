@@ -46,7 +46,7 @@ function Sanmar () {
   let sanmarDisplay = <h4></h4>
 
 
-async function connectFtp() {
+async function connectFtp(d) {
     swal('Downloading Info!');
     if (host !== 'ftp.sanmar.com' || user !== '175733' || password !== 'Sanmar33') {
       swal('Incorrect Login Info!');
@@ -57,13 +57,13 @@ async function connectFtp() {
           host: host,
           user: user,
           password: password,
-          date: date,
+          date: d,
         }
       });
     }
 }
 
-async function sendEmail() {
+async function sendEmail(o) {
   updateList();
   let found = false;
   const tracking = [];
@@ -78,7 +78,7 @@ async function sendEmail() {
     dispatch({
       type: "SEND_EMAIL",
       payload: {
-        order: order,
+        order: o,
         tracking: tracking,
       }
     });
@@ -283,7 +283,7 @@ async function getSanmar() {
                 </Grid>
             </LocalizationProvider>
             <br />
-            <Button onClick={() => {connectFtp()}}>Download Recent Sanmar Orders</Button>
+            <Button onClick={() => {connectFtp(date)}}>Download Recent Sanmar Orders</Button>
           </div>
           <br />
           <div>
@@ -295,7 +295,7 @@ async function getSanmar() {
           <br/>
           <h4>Order #: </h4><input value={order} placeholder="3201122" onChange={(e) => {setOrder(e.target.value)}}></input>
          <div>
-          <Button onClick={() => {sendEmail()}}>Send Email</Button>
+          <Button onClick={() => {sendEmail(order)}}>Send Email</Button>
          </div>
         </div>
         <div className="row">
