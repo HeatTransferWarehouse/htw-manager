@@ -868,161 +868,160 @@ function OrderLookupPage () {
                         >
                           <b>SKU:</b>{" "}
                           <i>
-                            {skuDisplay}
                             {" "}
                             {item.sku.slice(0, 5) === "BL_A3"
-                              ? (skuDisplay = "BL_A3")
+                              ? ("BL_A3")
                               : item.sku === "INKSOFT-SUB-BLOCKER-8"
-                              ? (skuDisplay = "BL_A3")
+                              ? ("BL_A3")
                               : item.sku.slice(0, 7) === "BL_A4-1"
-                              ? (skuDisplay = 'BL_A4:SubBlock-A4 16.5" 5.85"')
+                              ? ('BL_A4:SubBlock-A4 16.5" 5.85"')
                               : item.sku === "INKSOFT-SUB-BLOCKER-6"
-                              ? (skuDisplay = 'BL_A4 16.5')
+                              ? ('BL_A4 16.5')
                               : item.sku.slice(0, 7) === "BL_A4-8"
-                              ? (skuDisplay = 'BL_A4:SubBlock-A4 8.3" 11.7"')
+                              ? ('BL_A4:SubBlock-A4 8.3" 11.7"')
                               : item.sku === "INKSOFT-SUB-BLOCKER-5"
-                              ? (skuDisplay = 'BL_A4 8.3')
+                              ? ('BL_A4 8.3')
                               : item.sku.slice(0, 7) === "BL_A5-1"
-                              ? (skuDisplay = 'BL_A5:SubBlock-A5 11.7" 4.25"')
+                              ? ('BL_A5:SubBlock-A5 11.7" 4.25"')
                               : item.sku === "INKSOFT-SUB-BLOCKER-4"
-                              ? (skuDisplay = 'BL_A5 11.7')
+                              ? ('BL_A5 11.7')
                               : item.sku.slice(0, 7) === "BL_A5-5"
-                              ? (skuDisplay = 'BL_A5:SubBlock-A5 5.8" 8.3"')
+                              ? ('BL_A5:SubBlock-A5 5.8" 8.3"')
                               : item.sku === "INKSOFT-SUB-BLOCKER-3"
-                              ? (skuDisplay = 'BL_A5 5.8')
+                              ? ('BL_A5 5.8')
                               : item.sku.slice(0, 5) === "BL_LC"
-                              ? (skuDisplay = "BL_LC")
+                              ? ("BL_LC")
                               : item.sku === "INKSOFT-SUB-BLOCKER-2"
-                              ? (skuDisplay = "BL_LC")
+                              ? ("BL_LC")
                               : item.sku === "INKSOFT-SUB-BLOCKER-9"
-                              ? (skuDisplay = "BL_XS")
+                              ? ("BL_XS")
                               : item.sku.slice(0, 5) === "BL_SM"
-                              ? (skuDisplay = "BL_SM")
+                              ? ("BL_SM")
                               : item.sku === "INKSOFT-SUB-BLOCKER-7"
-                              ? (skuDisplay = "BL_SQ")
+                              ? ("BL_SQ")
                               : item.sku === "INKSOFT-SUB-BLOCKER-1"
-                              ? (skuDisplay = "BL_SM")
+                              ? ("BL_SM")
                               : item.sku.slice(0, 8) === "HW_CAP_L"
-                              ? (skuDisplay = "HW_CAP_L")
+                              ? ("HW_CAP_L")
                               : item.sku === "INKSOFT-HEAD-2"
-                              ? (skuDisplay = "HW_CAP_L")
+                              ? ("HW_CAP_L")
                               : item.sku.slice(0, 8) === "HW_CAP_S"
-                              ? (skuDisplay = "HW_CAP_S")
+                              ? ("HW_CAP_S")
                               : item.sku === "INKSOFT-HEAD-1"
-                              ? (skuDisplay = "HW_CAP_S")
+                              ? ("HW_CAP_S")
                               : item.sku.slice(0, 11) === "PR_BAG_A4-1"
-                              ? (skuDisplay = "PR_BAG_A4:BAG-A4 16.5")
+                              ? ("PR_BAG_A4:BAG-A4 16.5")
                               : item.sku === "INKSOFT-PROMO-5"
-                              ? (skuDisplay = "PR_BAG_A4:BAG-A4 16.5")
+                              ? ("PR_BAG_A4:BAG-A4 16.5")
                               : item.sku.slice(0, 11) === "PR_BAG_A4-8"
-                              ? (skuDisplay = "PR_BAG_A4:BAG-A4 8.3")
+                              ? ("PR_BAG_A4:BAG-A4 8.3")
                               : item.sku === "INKSOFT-PROMO-4"
-                              ? (skuDisplay = "PR_BAG_A4:BAG-A4 8.3")
+                              ? ("PR_BAG_A4:BAG-A4 8.3")
                               : item.sku === "INKSOFT-PROMO-6"
-                              ? (skuDisplay = "PR_BAG_A3:Bag-A3 11.7")
+                              ? ("PR_BAG_A3:Bag-A3 11.7")
                               : item.sku.slice(0, 11) === "PR_BAG_A5-1"
-                              ? (skuDisplay = "PR_BAG_A5:Bag-A5 11.7")
+                              ? ("PR_BAG_A5:Bag-A5 11.7")
                               : item.sku === "INKSOFT-PROMO-3"
-                              ? (skuDisplay = "PR_BAG_A5:Bag-A5 11.7")
+                              ? ("PR_BAG_A5:Bag-A5 11.7")
                               : item.sku.slice(0, 11) === "PR_BAG_A5-5"
-                              ? (skuDisplay = "PR_BAG_A5:Bag-A5 5.8")
+                              ? ("PR_BAG_A5:Bag-A5 5.8")
                               : item.sku === "INKSOFT-PROMO-2"
-                              ? (skuDisplay = "PR_BAG_A5:Bag-A5 5.8")
+                              ? ("PR_BAG_A5:Bag-A5 5.8")
                               : item.sku.slice(0, 11) === "PR_BAG_A6-4"
-                              ? (skuDisplay = "PR_BAG_A6:Bag-A6 4.1")
+                              ? ("PR_BAG_A6:Bag-A6 4.1")
                               : item.sku === "INKSOFT-PROMO-1"
-                              ? (skuDisplay = "PR_BAG_A6:Bag-A6 4.1")
+                              ? ("PR_BAG_A6:Bag-A6 4.1")
                               : item.sku.slice(0, 8) === "PR_UM_A3"
-                              ? (skuDisplay = "PR_UM_A3")
+                              ? ("PR_UM_A3")
                               : item.sku.slice(0, 11) === "PR_UM_A4-11"
-                              ? (skuDisplay = "PR_UM_A4 11.7")
+                              ? ("PR_UM_A4 11.7")
                               : item.sku.slice(0, 11) === "PR_UM_A4-16"
-                              ? (skuDisplay = "PR_UM_A4 16.5")
+                              ? ("PR_UM_A4 16.5")
                               : item.sku.slice(0, 11) === "PR_UM_A5-11"
-                              ? (skuDisplay = "PR_UM_A5 11.7")
+                              ? ("PR_UM_A5 11.7")
                               : item.sku.slice(0, 10) === "PR_UM_A5-5"
-                              ? (skuDisplay = "PR_UM_A5 5.8")
+                              ? ("PR_UM_A5 5.8")
                               : item.sku.slice(0, 5) === "SB_A3"
-                              ? (skuDisplay = "SB_A3")
+                              ? ("SB_A3")
                               : item.sku === "INKSOFT-SOFT-SHELL-8"
-                              ? (skuDisplay = "SB_A3")
+                              ? ("SB_A3")
                               : item.sku.slice(0, 7) === "SB_A4-1"
-                              ? (skuDisplay = "SB_A4 16.5")
+                              ? ("SB_A4 16.5")
                               : item.sku === "INKSOFT-SOFT-SHELL-6"
-                              ? (skuDisplay = "SB_A4 16.5")
+                              ? ("SB_A4 16.5")
                               : item.sku.slice(0, 7) === "SB_A4-8"
-                              ? (skuDisplay = "SB_A4 8.3")
+                              ? ("SB_A4 8.3")
                               : item.sku === "INKSOFT-SOFT-SHELL-5"
-                              ? (skuDisplay = "SB_A4 8.3")
+                              ? ("SB_A4 8.3")
                               : item.sku.slice(0, 8) === "SB_A5-11"
-                              ? (skuDisplay = "SB_A5 11.7")
+                              ? ("SB_A5 11.7")
                               : item.sku === "INKSOFT-SOFT-SHELL-4"
-                              ? (skuDisplay = "SB_A5 11.7")
+                              ? ("SB_A5 11.7")
                               : item.sku.slice(0, 7) === "SB_A5-5"
-                              ? (skuDisplay = "SB_A5 5.8")
+                              ? ("SB_A5 5.8")
                               : item.sku === "INKSOFT-SOFT-SHELL-3"
-                              ? (skuDisplay = "SB_A5 5.8")
+                              ? ("SB_A5 5.8")
                               : item.sku.slice(0, 5) === "SB_LC"
-                              ? (skuDisplay = "SB_LC")
+                              ? ("SB_LC")
                               : item.sku === "INKSOFT-SOFT-SHELL-2"
-                              ? (skuDisplay = "SB_LC")
+                              ? ("SB_LC")
                               : item.sku.slice(0, 5) === "SB_SM"
-                              ? (skuDisplay = "SB_SM")
+                              ? ("SB_SM")
                               : item.sku === "INKSOFT-SOFT-SHELL-1"
-                              ? (skuDisplay = "SB_SM")
+                              ? ("SB_SM")
                               : item.sku === "INKSOFT-SOFT-SHELL-9"
-                              ? (skuDisplay = "SB_XS")
+                              ? ("SB_XS")
                               : item.sku === "INKSOFT-SOFT-SHELL-7"
-                              ? (skuDisplay = "SB_SQ")
+                              ? ("SB_SQ")
                               : item.sku.slice(0, 5) === "WE_A3"
-                              ? (skuDisplay = "WE_A3")
+                              ? ("WE_A3")
                               : item.sku === "INKSOFT-WEARABLES-9"
-                              ? (skuDisplay = "WE_A3")
+                              ? ("WE_A3")
                               : item.sku.slice(0, 8) === "WE_A4-16"
-                              ? (skuDisplay = "WE_A4 16.5")
+                              ? ("WE_A4 16.5")
                               : item.sku === "INKSOFT-WEARABLES-7"
-                              ? (skuDisplay = "WE_A4 16.5")
+                              ? ("WE_A4 16.5")
                               : item.sku.slice(0, 7) === "WE_A4-8"
-                              ? (skuDisplay = "WE_A4 8.3")
+                              ? ("WE_A4 8.3")
                               : item.sku === "INKSOFT-WEARABLES-6"
-                              ? (skuDisplay = "WE_A4 8.3")
+                              ? ("WE_A4 8.3")
                               : item.sku.slice(0, 8) === "WE_A5-11"
-                              ? (skuDisplay = "WE_A5 11.7")
+                              ? ("WE_A5 11.7")
                               : item.sku === "INKSOFT-WEARABLES-5"
-                              ? (skuDisplay = "WE_A5 11.7")
+                              ? ("WE_A5 11.7")
                               : item.sku.slice(0, 7) === "WE_A5-5"
-                              ? (skuDisplay = "WE_A5 5.8")
+                              ? ("WE_A5 5.8")
                               : item.sku === "INKSOFT-WEARABLES-4"
-                              ? (skuDisplay = "WE_A5 5.8")
+                              ? ("WE_A5 5.8")
                               : item.sku.slice(0, 5) === "WE_LC"
-                              ? (skuDisplay = "WE_LC")
+                              ? ("WE_LC")
                               : item.sku === "INKSOFT-WEARABLES-3"
-                              ? (skuDisplay = "WE_LC")
+                              ? ("WE_LC")
                               : item.sku.slice(0, 5) === "WE_SM"
-                              ? (skuDisplay = "WE_SM")
+                              ? ("WE_SM")
                               : item.sku === "INKSOFT-WEARABLES-2"
-                              ? (skuDisplay = "WE_SM")
+                              ? ("WE_SM")
                               : item.sku.slice(0, 5) === "WE_SQ"
-                              ? (skuDisplay = "WE_SQ")
+                              ? ("WE_SQ")
                               : item.sku === "INKSOFT-WEARABLES-8"
-                              ? (skuDisplay = "WE_SQ")
+                              ? ("WE_SQ")
                               : item.sku.slice(0, 5) === "WE_XS"
-                              ? (skuDisplay = "WE_XS")
+                              ? ("WE_XS")
                               : item.sku === "INKSOFT-WEARABLES-1"
-                              ? (skuDisplay = "WE_XS")
+                              ? ("WE_XS")
                               : item.sku.slice(0, 11) === "WE_SUPAGANG"
-                              ? (skuDisplay = "WE_SUPAGANG")
+                              ? ("WE_SUPAGANG")
                               : item.sku === "INKSOFT-WEARABLES-10"
-                              ? (skuDisplay = "WE_SUPAGANG")
+                              ? ("WE_SUPAGANG")
                               : item.sku.slice(0, 11) === "BL_SUPAGANG" 
-                              ? (skuDisplay = "BL_SUPAGANG")
+                              ? ("BL_SUPAGANG")
                               : item.sku === "INKSOFT-SUB-BLOCKER-10"
-                              ? (skuDisplay = "BL_SUPAGANG")
+                              ? ("BL_SUPAGANG")
                               : item.sku.slice(0, 11) === "SB_SUPAGANG" 
-                              ? (skuDisplay = "SB_SUPAGANG")
+                              ? ("SB_SUPAGANG")
                               : item.sku === "INKSOFT-SOFT-SHELL-10"
-                              ? (skuDisplay = "SB_SUPAGANG")
-                              : (skuDisplay = "SB_SM")}
+                              ? ("SB_SUPAGANG")
+                              : ("SB_SM")}
                           </i>
                         </td>
                       </tr>
