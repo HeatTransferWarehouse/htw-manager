@@ -18,6 +18,45 @@ function OrderLookupPage () {
   const [ship_from, setShipFrom] = React.useState('');
   const [skuHolder, setSkuHolder] = React.useState('');
 
+  const getInfo = () => {
+    dispatch({
+        type: "ORDER_DETAILS",
+        payload: {
+          order_number: order_number,
+        },
+      });
+  
+      dispatch({
+        type: "ORDER_LOOKUP",
+        payload: {
+          order_number: order_number,
+        },
+      });
+  
+      dispatch({
+        type: "SHIPPING_LOOKUP",
+        payload: {
+          order_number: order_number,
+        },
+      });
+  
+      dispatch({
+        type: "PRODUCT_LOOKUP",
+        payload: {
+          order_number: order_number,
+        },
+      });
+
+        details.map((item, index) => {
+          for (const i of item) {
+          //console.log("I'm being run");
+          let newWeight = Number(i.weight);
+          let newNewWeight = weight += newWeight;
+          setWeight(newNewWeight);
+          }
+        });
+  }
+
     let itemid = orders.id;
     let status = orders.status;
     let items_total = orders.items_total;
@@ -273,48 +312,7 @@ function OrderLookupPage () {
                 type="submit"
                 color="primary"
                 className="button"
-                onClick = {
-                  (e) => {
-                  e.preventDefault();
-                  dispatch({
-                    type: "ORDER_DETAILS",
-                    payload: {
-                      order_number: order_number,
-                    },
-                  });
-              
-                  dispatch({
-                    type: "ORDER_LOOKUP",
-                    payload: {
-                      order_number: order_number,
-                    },
-                  });
-              
-                  dispatch({
-                    type: "SHIPPING_LOOKUP",
-                    payload: {
-                      order_number: order_number,
-                    },
-                  });
-              
-                  dispatch({
-                    type: "PRODUCT_LOOKUP",
-                    payload: {
-                      order_number: order_number,
-                    },
-                  });
-
-                    details.map((item, index) => {
-                      for (const i of item) {
-                      //console.log("I'm being run");
-                      let newWeight = Number(i.weight);
-                      let newNewWeight = weight += newWeight;
-                      setWeight(newNewWeight);
-                      }
-                    });
-
-                    }
-                }
+                onClick = {getInfo}
             ><QueueIcon/> CheckOrder</Button>
                 </center>
               <table
@@ -1034,7 +1032,7 @@ function OrderLookupPage () {
                         >
                           <b>Color/Type:</b>{" "}
                           <i>
-                            {item.product_options[0].display_value}
+                            {item.product_options[2].display_value}
                           </i>
                         </td>
                       </tr>

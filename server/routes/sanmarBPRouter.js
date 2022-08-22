@@ -20,17 +20,17 @@ const {
   getSO,
 } = require('./Capture/api');
 
-const now = new Date();
-let millisTill8 = new Date(now.getFullYear(), now.getMonth(), now.getDate(), 8, 0, 0, 0) - now;
-if (millisTill8 < 0) {
-     millisTill8 += 86400000; // it's after 8am, try 8am tomorrow.
-}
+// const now = new Date();
+// let millisTill8 = new Date(now.getFullYear(), now.getMonth(), now.getDate(), 8, 0, 0, 0) - now;
+// if (millisTill8 < 0) {
+//      millisTill8 += 86400000; // it's after 8am, try 8am tomorrow.
+// }
 
-setTimeout(function () {
-  const today = new Date();
-  const yesterday = new Date(today);
+// setTimeout(function () {
+//   const today = new Date();
+//   const yesterday = new Date(today);
 
-  yesterday.setDate(yesterday.getDate() - 1);
+//   yesterday.setDate(yesterday.getDate() - 1);
 
   // const host = 'ftp.sanmar.com';
   // const user = '175733';
@@ -78,7 +78,7 @@ setTimeout(function () {
   //   res.status(500).end();
   // }
 
-}, millisTill8 * millisTill8 * millisTill8);
+  // }, millisTill8);
 
 const createNote = async (e) => {
   console.log('--SANMAR-- Updating Note on BP...');
