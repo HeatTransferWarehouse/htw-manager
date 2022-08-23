@@ -239,9 +239,7 @@ router.get("/", rejectUnauthenticated, (req, res) => {
                                                 decoSku7 === "SISER-7" ||
                                                 decoSku7 === "SISER-8" ||
                                                 decoSku7 === "SISER-9" ||
-                                                decoSku5 === "SP-" ||
-                                                decoSku5 === "CP-"
-                                                
+                                                decoSku5 === "SP-" 
                                               ) {
                                                 //run the logic that places the skus in the stock queue
                                                 console.log(

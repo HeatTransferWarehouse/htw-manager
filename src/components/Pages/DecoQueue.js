@@ -59,6 +59,9 @@ class DecoQueue extends Component {
             type: "GET_CONFIRM_LIST_COUNT",
         });
         this.props.dispatch({
+            type: "GET_PROGRESS_LIST",
+        });
+        this.props.dispatch({
             type: "GET_RESPOND_LIST_COUNT",
         });
         this.props.dispatch({
@@ -713,15 +716,7 @@ class DecoQueue extends Component {
                                                 </div>
                                             );
                                         } else if (
-                                            decoSku5 === "SDC1" ||
-                                            decoSku5 === "SDC2" ||
-                                            decoSku5 === "SDC3" ||
-                                            decoSku5 === "SDC4" ||
-                                            decoSku5 === "SDC5" ||
-                                            decoSku5 === "SDC6" ||
-                                            decoSku5 === "SDC7" ||
-                                            decoSku5 === "SDC8" ||
-                                            decoSku5 === "SDC9"
+                                            decoSku5 === "SDC"
                                         ) {
                                             return (
                                                 <div
@@ -818,7 +813,7 @@ class DecoQueue extends Component {
                                 options: {
                                     filter: false,
                                     sort: false,
-                                    empty: true,
+                                    // empty: false,
                                     customBodyRenderLite: (dataIndex, rowIndex) => {
                                         return this.props.user.role === "csr" ? (
                                             <span></span>
@@ -916,28 +911,6 @@ class DecoQueue extends Component {
                             >
                                 <br />
                                 <br />{" "}
-                                <form onSubmit={this.assignTask}>
-                                    <Form.Control
-                                        style={{ width: "300px" }}
-                                        as="select"
-                                        onChange={(event) =>
-                                            this.setState({ assigned: event.target.value })
-                                        }
-                                    >
-                                        <option value="">Pick From Below </option>{" "}
-                                        <option value="Maggi">Maggi </option>{" "}
-                                        <option value="Zach">Zach </option>{" "}
-                                        <option value="Levi">Levi </option>{" "}
-                                        <option value="Heather">Heather </option>{" "}
-                                        <option value="Sasha">Sasha </option>{" "}
-                                        <option value="Emily">Emily </option>{" "}
-                                    </Form.Control>
-                                    <br />
-                                    {/* onClick tied to form element, runs submitInfo on click */}
-                                    <Button variant="success" type="submit">
-                                        Assign
-                                    </Button>
-                                </form>
                                 {/* toggles edit window back to not displaying */}
                                 <br />
                                 <br />
