@@ -1498,7 +1498,7 @@ router.post("/markcomplete", rejectUnauthenticated, (req, res, next) => {
   const priority = req.body.priority;
   const item_type = req.body.item_type;
   const query2Text =
-    'INSERT INTO "complete" (email, first_name, last_name, order_number, sku, product_length, product_options, qty, assigned, created_at, description, priority, item_type) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13) RETURNING id';
+    'INSERT INTO "complete" (email, first_name, last_name, order_number, sku, product_length, product_options, qty, created_at, description) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10) RETURNING id';
   pool
     .query(query2Text, [
       email,
@@ -1509,11 +1509,8 @@ router.post("/markcomplete", rejectUnauthenticated, (req, res, next) => {
       product_length,
       product_options,
       qty,
-      assigned,
       created_at,
-      description,
-      priority,
-      item_type,
+      description
     ])
     .then((result) => res.status(201).send(result.rows))
     .catch(function (error) {

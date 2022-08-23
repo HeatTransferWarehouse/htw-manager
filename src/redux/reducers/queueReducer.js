@@ -1,6 +1,6 @@
 import { combineReducers } from "redux";
 
-const itemlist = (state = [], action) => {
+const itemList = (state = [], action) => {
   switch (action.type) {
     case "SET_ITEM":
       return action.payload;
@@ -127,7 +127,7 @@ const approvelistcount = (state = [], action) => {
 
 const completelist = (state = [], action) => {
   switch (action.type) {
-    case "SET_COMPLETE":
+    case "SET_COMPLETE_QUEUE":
       return action.payload;
     default:
       return state;
@@ -210,7 +210,7 @@ const productlist = (state = [], action) => {
 
 
 export default combineReducers({
-  itemlist,
+  itemList,
   historylist,
   historylisttable,
   customitemlist,

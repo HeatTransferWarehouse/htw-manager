@@ -83,10 +83,10 @@ class QueueNav extends Component {
                   >
                     <EditIcon></EditIcon>New{" "}
                     {/*used to display the count of all items in the new queue*/}
-                    {/* {`(${
+                    {`(${
                       this.props.itemlistcount[0] &&
                       this.props.itemlistcount[0].count
-                    })`} */}
+                    })`}
                   </NavLink>
                   <NavLink
                     className={this.state.backgroundcolorclass}
@@ -95,10 +95,10 @@ class QueueNav extends Component {
                   >
                     <FormatListBulletedIcon></FormatListBulletedIcon>
                     In Progress{" "}
-                    {/* {`(${
+                    {`(${
                       this.props.progresslistcount[0] &&
                       this.props.progresslistcount[0].count
-                    })`} */}
+                    })`}
                   </NavLink>
                   <NavLink
                     className={this.state.backgroundcolorclass}
@@ -107,10 +107,10 @@ class QueueNav extends Component {
                   >
                     <PlaylistAddCheckIcon></PlaylistAddCheckIcon>
                     Complete{" "}
-                    {/* {`(${
+                    {`(${
                       this.props.completelistcount[0] &&
                       this.props.completelistcount[0].count
-                    })`} */}
+                    })`}
                   </NavLink>
                   {this.props.user.role === "csr" ? (
                     <>
@@ -518,17 +518,17 @@ class QueueNav extends Component {
 //grab the count of all of the queues
 const mapStateToProps = (state) => ({
   user: state.user,
-  itemlist: state.item.itemlist,
-  progresslist: state.item.progresslist,
-  confirmlist: state.item.confirmlist,
-  respondlist: state.item.respondlist,
-  completelist: state.item.completelist,
-  itemlistcount: state.item.itemlistcount,
-  progresslistcount: state.item.progresslistcount,
-  confirmlistcount: state.item.confirmlistcount,
-  respondlistcount: state.item.respondlistcount,
-  approvelistcount: state.item.approvelistcount,
-  completelistcount: state.item.completelistcount,
+  itemlist: state.queue.itemlist,
+  progresslist: state.queue.progresslist,
+  confirmlist: state.queue.confirmlist,
+  respondlist: state.queue.respondlist,
+  completelist: state.queue.completelist,
+  itemlistcount: state.queue.itemlistcount,
+  progresslistcount: state.queue.progresslistcount,
+  confirmlistcount: state.queue.confirmlistcount,
+  respondlistcount: state.queue.respondlistcount,
+  approvelistcount: state.queue.approvelistcount,
+  completelistcount: state.queue.completelistcount,
 });
 
 export default connect(mapStateToProps)(QueueNav);

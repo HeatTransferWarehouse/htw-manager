@@ -85,6 +85,8 @@ class DecoQueue extends Component {
         this.props.dispatch({
             type: "DELETE_HISTORY_RANGE",
         });
+        console.log("Item List Reducer:", this.props.itemlist)
+        console.log("ALL Reducer decoqueue", this.props)
     }
 
     handleChange = (event, fieldName) => {
@@ -284,6 +286,11 @@ class DecoQueue extends Component {
         });
     };
 
+    cleanDate = (date) => {
+        let cleanedDate = date.slice(5, 16);
+        return cleanedDate;
+    }
+
     render() {
         //defines the dataselector to know which items to preform actions on
         let dataSelector = this.state.dataSelector;
@@ -299,9 +306,7 @@ class DecoQueue extends Component {
             item.product_length,
             item.qty,
             item.need_to_run,
-            item.assigned,
-            item.created_at,
-            item.priority,
+            this.cleanDate(item.created_at),
         ]);
 
         return (
@@ -312,17 +317,12 @@ class DecoQueue extends Component {
                 <br />
                 <br />
                 <br />
-                <QueueNav/>
+                <QueueNav />
                 <div style={{ padding: "1.5%" }}>
                     {this.props.user.role === "csr" ? (
                         <span></span>
                     ) : (
                         <div className="multiButtons">
-                            {/* <div className="queueNav">
-                                <h5>New</h5>
-                                <h5>In Progress</h5>
-                                <h5>Completed</h5>
-                            </div> */}
                             <Button
                                 variant="success"
                                 onClick={(event) => {
@@ -366,7 +366,7 @@ class DecoQueue extends Component {
                                                 },
                                             });
                                             this.props.dispatch({
-                                                type: "DELETE_ITEM",
+                                                type: "DELETE_ITEM_QUEUE",
                                                 payload: element.id,
                                             });
                                         }
@@ -440,7 +440,7 @@ class DecoQueue extends Component {
                                                 },
                                             });
                                             this.props.dispatch({
-                                                type: "DELETE_ITEM",
+                                                type: "DELETE_ITEM_QUEUE",
                                                 payload: element.id,
                                             });
                                         }
@@ -509,7 +509,7 @@ class DecoQueue extends Component {
                                                 ) {
                                                     const element = dataSelector[index];
                                                     this.props.dispatch({
-                                                        type: "DELETE_ITEM",
+                                                        type: "DELETE_ITEM_QUEUE",
                                                         payload: element.id,
                                                     });
                                                 }
@@ -848,7 +848,7 @@ class DecoQueue extends Component {
                                                         },
                                                     });
                                                     this.props.dispatch({
-                                                        type: "DELETE_ITEM",
+                                                        type: "DELETE_ITEM_QUEUE",
                                                         payload: item.id,
                                                     });
                                                     this.props.dispatch({
@@ -959,81 +959,6 @@ class DecoQueue extends Component {
                             >
                                 <br />
                                 <br />{" "}
-                                <form
-                                    onSubmit={(event) => {
-                                        //prevents default action
-                                        event.preventDefault();
-                                        const { assigned } = this.state;
-                                        for (let index = 0; index < dataSelector.length; index++) {
-                                            const element = dataSelector[index];
-                                            this.props.dispatch({
-                                                type: "ASSIGN_TASK",
-                                                payload: {
-                                                    id: element.id,
-                                                    assigned: assigned,
-                                                },
-                                            });
-                                            this.setState({
-                                                toggle4: false,
-                                            });
-                                            this.props.dispatch({
-                                                type: "GET_QUEUE_ITEM_LIST",
-                                            });
-                                            this.props.dispatch({
-                                                type: "GET_ITEM_LIST_COUNT",
-                                            });
-                                            this.props.dispatch({
-                                                type: "GET_RESPOND_LIST_COUNT",
-                                            });
-                                            this.props.dispatch({
-                                                type: "GET_APPROVE_LIST_COUNT",
-                                            });
-                                            this.props.dispatch({
-                                                type: "GET_CUSTOM_ITEM_LIST_COUNT",
-                                            });
-                                            this.props.dispatch({
-                                                type: "GET_CONFIRM_LIST_COUNT",
-                                            });
-                                            this.props.dispatch({
-                                                type: "GET_PROGRESS_LIST_COUNT",
-                                            });
-                                            this.props.dispatch({
-                                                type: "GET_COMPLETE_LIST_COUNT",
-                                            });
-                                        }
-                                        let checkInput = document.getElementsByTagName("input");
-                                        for (let index = 0; index < checkInput.length; index++) {
-                                            const element = checkInput[index];
-                                            console.log(element.checked);
-                                            element.checked = false;
-                                        }
-                                        dataSelector = [];
-                                        this.setState({
-                                            dataSelector: [],
-                                        });
-                                    }}
-                                >
-                                    <Form.Control
-                                        style={{ width: "300px" }}
-                                        as="select"
-                                        onChange={(event) =>
-                                            this.setState({ assigned: event.target.value })
-                                        }
-                                    >
-                                        <option value="">Pick From Below </option>{" "}
-                                        <option value="Maggi">Maggi </option>{" "}
-                                        <option value="Zach">Zach </option>{" "}
-                                        <option value="Levi">Levi </option>{" "}
-                                        <option value="Heather">Heather </option>{" "}
-                                        <option value="Sasha">Sasha </option>{" "}
-                                        <option value="Emily">Emily </option>{" "}
-                                    </Form.Control>
-                                    <br />
-                                    {/* onClick tied to form element, runs submitInfo on click */}
-                                    <Button variant="success" type="submit">
-                                        Assign
-                                    </Button>
-                                </form>
                                 {/* toggles edit window back to not displaying */}
                                 <br />
                                 <br />
@@ -1249,6 +1174,6 @@ class DecoQueue extends Component {
 
 const mapStateToProps = (state) => ({
     user: state.user,
-    itemlist: state.item.itemlist,
+    itemlist: state.queue.itemList,
 });
 export default connect(mapStateToProps)(DecoQueue);
