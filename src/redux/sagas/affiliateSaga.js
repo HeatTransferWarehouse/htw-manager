@@ -73,20 +73,6 @@ function* checkEmail(action) {
   }
 }
 
-function* orderDetails(action) {
-  try {
-    const response = yield axios.post("/api/affiliate/orderdetails", action.payload);
-    yield put({
-      type: "SET_DETAILS",
-      payload: response.data,
-    })
-  
-    
-  } catch (error) {
-    yield put({ type: "REGISTRATION_FAILED" });
-  }
-}
-
 function* deleteItemRange(action) {
   try {
     console.log("we are about to delete everything from 1 year ago", action.payload);
@@ -132,7 +118,6 @@ function* itemSaga() {
     yield takeLatest('GET_TOP_FIVE', gettopfive);
     yield takeLatest('GET_EMAIL_LIST', getemaillist);
     yield takeLatest('CHECK_EMAIL', checkEmail);
-    yield takeLatest('ORDER_DETAILS', orderDetails);
     yield takeLatest('GET_TOTAL_LIST', gettotallist);
     yield takeLatest('DELETE_ITEM_RANGE', deleteItemRange);
     yield takeLatest('DELETE_SKU_RANGE', deleteSkuRange);

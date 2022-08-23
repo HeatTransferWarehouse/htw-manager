@@ -605,6 +605,33 @@ function* sendSupaColor(action) {
   }
 }
 
+function* getOrderLookup(action) {
+  try {
+    const response1 = yield axios.post("/api/item/queue/orderdetails", action.payload);
+    yield put({
+      type: "SET_DETAILS",
+      payload: response1.data,
+    });
+    const response2 = yield axios.post("/api/item/queue/orderlookup", action.payload);
+    yield put({
+      type: "SET_ORDER",
+      payload: response2.data,
+    });
+    const response3 = yield axios.post("/api/item/queue/shippinglookup", action.payload);
+    yield put({
+      type: "SET_SHIPPING",
+      payload: response3.data,
+    });
+    const response4 = yield axios.post("/api/item/queue/productlookup", action.payload);
+    yield put({
+      type: "SET_PRODUCT",
+      payload: response4.data,
+    });
+  } catch (error) {
+    yield put({ type: "STUDENT_REGISTRATION_FAILED" });
+  }
+}
+
 
 
 //this takes all of the Saga functions and dispatches them
@@ -666,6 +693,7 @@ function* QueueItemSaga() {
   yield takeLatest('SHIPPING_LOOKUP', shippingLookup);
   yield takeLatest('PRODUCT_LOOKUP', productLookup);
   yield takeLatest('SEND_SUPACOLOR', sendSupaColor);
+  yield takeLatest('GET_ORDERLOOKUP', getOrderLookup);
 }
 
 export default QueueItemSaga;
