@@ -53,6 +53,13 @@ class Progress extends Component {
         this.props.dispatch({
             type: "DELETE_HISTORY_RANGE",
         });
+        console.log("PROGRESS LIST Reducer", this.props.progresslist)
+        console.log("ALL Reducer progress", this.props)
+    }
+
+    cleanDate = (date) => {
+        let cleanedDate = date.slice(5, 16);
+        return cleanedDate;
     }
 
     render() {
@@ -62,6 +69,18 @@ class Progress extends Component {
         let decoSku7 = "";
         let decoSku6 = "";
         let descrip = "";
+        // const data = this.props.progresslist.map((progress) => [
+        //     progress.order_number,
+        //     progress.sku,
+        //     progress.description,
+        //     progress.product_length,
+        //     progress.qty,
+        //     progress.need_to_run,
+        //     progress.assigned,
+        //     progress.created_at,
+        //     progress.priority,
+        // ]);
+
         let data = [];
         if (this.props.progresslist) {
             data = this.props.progresslist.map((progress) => [
@@ -70,9 +89,7 @@ class Progress extends Component {
                 progress.description,
                 progress.product_length,
                 progress.qty,
-                progress.assigned,
-                progress.created_at,
-                progress.priority
+                this.cleanDate(progress.created_at)
             ]);
         } else {
             data = [];
@@ -86,81 +103,82 @@ class Progress extends Component {
                 <br />
                 <br />
                 <br />
-                <QueueNav/>
+                <QueueNav />
                 <div style={{ padding: "1.5%" }}>
                     {this.props.user.role === "csr" ? (
                         <span></span>
                     ) : (
                         <div className="multiButtons">
                             <Button
-                            // variant="success"
-                            // onClick={(event) => {
-                            //     if (dataSelector[0]) {
-                            //         event.preventDefault();
-                            //         for (let index = 0; index < dataSelector.length; index++) {
-                            //             const element = dataSelector[index];
-                            //             this.props.dispatch({
-                            //                 type: "MARK_COMPLETE",
-                            //                 payload: {
-                            //                     id: element.id,
-                            //                     email: element.email,
-                            //                     first_name: element.first_name,
-                            //                     last_name: element.last_name,
-                            //                     order_number: element.order_number,
-                            //                     sku: element.sku,
-                            //                     description: element.description,
-                            //                     product_length: element.product_length,
-                            //                     product_options: element.product_options,
-                            //                     qty: element.qty,
-                            //                     assigned: element.assigned,
-                            //                     created_at: element.created_at,
-                            //                     priority: element.priority,
-                            //                 },
-                            //             });
-                            //             this.props.dispatch({
-                            //                 type: "DELETE_PROGRESS",
-                            //                 payload: element.id,
-                            //             });
-                            //         }
-                            //         this.props.dispatch({
-                            //             type: "GET_PROGRESS_LIST",
-                            //         });
-                            //         this.props.dispatch({
-                            //             type: "GET_ITEM_LIST_COUNT",
-                            //         });
-                            //         this.props.dispatch({
-                            //             type: "GET_RESPOND_LIST_COUNT",
-                            //         });
-                            //         this.props.dispatch({
-                            //             type: "GET_APPROVE_LIST_COUNT",
-                            //         });
-                            //         this.props.dispatch({
-                            //             type: "GET_CONFIRM_LIST_COUNT",
-                            //         });
-                            //         this.props.dispatch({
-                            //             type: "GET_CUSTOM_ITEM_LIST_COUNT",
-                            //         });
-                            //         this.props.dispatch({
-                            //             type: "GET_PROGRESS_LIST_COUNT",
-                            //         });
-                            //         this.props.dispatch({
-                            //             type: "GET_COMPLETE_LIST_COUNT",
-                            //         });
-                            //         let checkInput = document.getElementsByTagName("input");
-                            //         for (let index = 0; index < checkInput.length; index++) {
-                            //             const element = checkInput[index];
-                            //             console.log(element.checked);
-                            //             element.checked = false;
-                            //         }
-                            //         dataSelector = [];
-                            //         this.setState({
-                            //             dataSelector: [],
-                            //             toggle3: false,
-                            //         });
-                            //     } else {
-                            //         swal('Select some orders first!');
-                            //     }
-                            // }}
+                                variant="success"
+                                onClick={(event) => {
+                                    if (dataSelector[0]) {
+                                        console.log(dataSelector)
+                                        event.preventDefault();
+                                        for (let index = 0; index < dataSelector.length; index++) {
+                                            const element = dataSelector[index];
+                                            this.props.dispatch({
+                                                type: "MARK_COMPLETE",
+                                                payload: {
+                                                    id: element.id,
+                                                    email: element.email,
+                                                    first_name: element.first_name,
+                                                    last_name: element.last_name,
+                                                    order_number: element.order_number,
+                                                    sku: element.sku,
+                                                    description: element.description,
+                                                    product_length: element.product_length,
+                                                    product_options: element.product_options,
+                                                    qty: element.qty,
+                                                    assigned: element.assigned,
+                                                    created_at: element.created_at,
+                                                    priority: element.priority,
+                                                },
+                                            });
+                                            this.props.dispatch({
+                                                type: "DELETE_PROGRESS",
+                                                payload: element.id,
+                                            });
+                                        }
+                                        this.props.dispatch({
+                                            type: "GET_PROGRESS_LIST",
+                                        });
+                                        this.props.dispatch({
+                                            type: "GET_ITEM_LIST_COUNT",
+                                        });
+                                        this.props.dispatch({
+                                            type: "GET_RESPOND_LIST_COUNT",
+                                        });
+                                        this.props.dispatch({
+                                            type: "GET_APPROVE_LIST_COUNT",
+                                        });
+                                        this.props.dispatch({
+                                            type: "GET_CONFIRM_LIST_COUNT",
+                                        });
+                                        this.props.dispatch({
+                                            type: "GET_CUSTOM_ITEM_LIST_COUNT",
+                                        });
+                                        this.props.dispatch({
+                                            type: "GET_PROGRESS_LIST_COUNT",
+                                        });
+                                        this.props.dispatch({
+                                            type: "GET_COMPLETE_LIST_COUNT",
+                                        });
+                                        let checkInput = document.getElementsByTagName("input");
+                                        for (let index = 0; index < checkInput.length; index++) {
+                                            const element = checkInput[index];
+                                            console.log(element.checked);
+                                            element.checked = false;
+                                        }
+                                        dataSelector = [];
+                                        this.setState({
+                                            dataSelector: [],
+                                            toggle3: false,
+                                        });
+                                    } else {
+                                        swal('Select some orders first!');
+                                    }
+                                }}
                             >
                                 <AssignmentTurnedInIcon /><p>Complete</p>
                             </Button>
@@ -194,33 +212,33 @@ class Progress extends Component {
                                                 payload: element.id,
                                             });
                                         }
-                                        // this.props.dispatch({
-                                        //     type: "GET_PROGRESS_LIST",
-                                        // });
-                                        // this.props.dispatch({
-                                        //     type: "GET_QUEUE_ITEM_LIST",
-                                        // });
-                                        // this.props.dispatch({
-                                        //     type: "GET_ITEM_LIST_COUNT",
-                                        // });
-                                        // this.props.dispatch({
-                                        //     type: "GET_RESPOND_LIST_COUNT",
-                                        // });
-                                        // this.props.dispatch({
-                                        //     type: "GET_APPROVE_LIST_COUNT",
-                                        // });
-                                        // this.props.dispatch({
-                                        //     type: "GET_CONFIRM_LIST_COUNT",
-                                        // });
-                                        // this.props.dispatch({
-                                        //     type: "GET_CUSTOM_ITEM_LIST_COUNT",
-                                        // });
-                                        // this.props.dispatch({
-                                        //     type: "GET_PROGRESS_LIST_COUNT",
-                                        // });
-                                        // this.props.dispatch({
-                                        //     type: "GET_COMPLETE_LIST_COUNT",
-                                        // });
+                                        this.props.dispatch({
+                                            type: "GET_PROGRESS_LIST",
+                                        });
+                                        this.props.dispatch({
+                                            type: "GET_QUEUE_ITEM_LIST",
+                                        });
+                                        this.props.dispatch({
+                                            type: "GET_ITEM_LIST_COUNT",
+                                        });
+                                        this.props.dispatch({
+                                            type: "GET_RESPOND_LIST_COUNT",
+                                        });
+                                        this.props.dispatch({
+                                            type: "GET_APPROVE_LIST_COUNT",
+                                        });
+                                        this.props.dispatch({
+                                            type: "GET_CONFIRM_LIST_COUNT",
+                                        });
+                                        this.props.dispatch({
+                                            type: "GET_CUSTOM_ITEM_LIST_COUNT",
+                                        });
+                                        this.props.dispatch({
+                                            type: "GET_PROGRESS_LIST_COUNT",
+                                        });
+                                        this.props.dispatch({
+                                            type: "GET_COMPLETE_LIST_COUNT",
+                                        });
                                         let checkInput = document.getElementsByTagName("input");
                                         for (let index = 0; index < checkInput.length; index++) {
                                             const element = checkInput[index];
@@ -268,30 +286,30 @@ class Progress extends Component {
                                                         payload: element.id,
                                                     });
                                                 }
-                                                // this.props.dispatch({
-                                                //     type: "GET_PROGRESS_LIST",
-                                                // });
-                                                // this.props.dispatch({
-                                                //     type: "GET_ITEM_LIST_COUNT",
-                                                // });
-                                                // this.props.dispatch({
-                                                //     type: "GET_RESPOND_LIST_COUNT",
-                                                // });
-                                                // this.props.dispatch({
-                                                //     type: "GET_APPROVE_LIST_COUNT",
-                                                // });
-                                                // this.props.dispatch({
-                                                //     type: "GET_CONFIRM_LIST_COUNT",
-                                                // });
-                                                // this.props.dispatch({
-                                                //     type: "GET_CUSTOM_ITEM_LIST_COUNT",
-                                                // });
-                                                // this.props.dispatch({
-                                                //     type: "GET_PROGRESS_LIST_COUNT",
-                                                // });
-                                                // this.props.dispatch({
-                                                //     type: "GET_COMPLETE_LIST_COUNT",
-                                                // });
+                                                this.props.dispatch({
+                                                    type: "GET_PROGRESS_LIST",
+                                                });
+                                                this.props.dispatch({
+                                                    type: "GET_ITEM_LIST_COUNT",
+                                                });
+                                                this.props.dispatch({
+                                                    type: "GET_RESPOND_LIST_COUNT",
+                                                });
+                                                this.props.dispatch({
+                                                    type: "GET_APPROVE_LIST_COUNT",
+                                                });
+                                                this.props.dispatch({
+                                                    type: "GET_CONFIRM_LIST_COUNT",
+                                                });
+                                                this.props.dispatch({
+                                                    type: "GET_CUSTOM_ITEM_LIST_COUNT",
+                                                });
+                                                this.props.dispatch({
+                                                    type: "GET_PROGRESS_LIST_COUNT",
+                                                });
+                                                this.props.dispatch({
+                                                    type: "GET_COMPLETE_LIST_COUNT",
+                                                });
                                                 let checkInput = document.getElementsByTagName("input");
                                                 for (let index = 0; index < checkInput.length; index++) {
                                                     const element = checkInput[index];
@@ -358,6 +376,7 @@ class Progress extends Component {
                                                             }
                                                         }
                                                     }
+                                                    console.log(dataSelector)
                                                 }}
                                             ></input>
                                         );
@@ -517,9 +536,8 @@ class Progress extends Component {
                             },
                             { name: "Length" },
                             { name: "QTY" },
-                            { name: "Assigned" },
+                            // { name: "Assigned" },
                             { name: "Created At" },
-                            { name: "Priority" },
                         ]}
                         title={"Items In Progress"} //give the table a name
                     />
@@ -534,6 +552,6 @@ class Progress extends Component {
 
 const mapStateToProps = (state) => ({
     user: state.user,
-    progresslist: state.item.progresslist,
+    progresslist: state.queue.progresslist,
 });
 export default connect(mapStateToProps)(Progress);

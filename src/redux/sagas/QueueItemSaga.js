@@ -489,7 +489,7 @@ function* getcompletelist(action) {
   try {
     const response = yield axios.get(`/api/item/queue/completelist`);
     yield put({
-      type: "SET_COMPLETE",
+      type: "SET_COMPLETE_QUEUE",
       payload: response.data,
     });
   } catch (error) {
@@ -676,7 +676,7 @@ function* QueueItemSaga() {
   yield takeLatest('GET_CUSTOM_COMPLETE_LIST', getcustomcompletelist);
   yield takeLatest('GET_CUSTOM_COMPLETE_LIST_COUNT', getcustomcompletelistcount);
   yield takeLatest('GET_REPLIES', getreplies);
-  yield takeLatest('DELETE_ITEM', deleteItem);
+  yield takeLatest('DELETE_ITEM_QUEUE', deleteItem);
   yield takeLatest('DELETE_CUSTOM_ITEM', deleteCustomItem);
   yield takeLatest('DELETE_SENT_CUSTOMER', deleteSentCustomer);
   yield takeLatest('DELETE_RESPOND', deleteRespond);

@@ -27,7 +27,7 @@ class MUITable extends Component {
       tableBodyMaxHeight: " ",
       rowsPerPage: 100,
       rowsPerPageOptions: [10, 50, 100],
-      selectableRows: true, //false means checkboxes are hidden, I created my own checkbox functionality so this is turned off
+      selectableRows: false, //false means checkboxes are hidden, I created my own checkbox functionality so this is turned off
     },
   };
 
