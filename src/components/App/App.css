@@ -145,9 +145,9 @@ tbody tr:nth-child(2n) {
   background-color: #e5e1f5e7;
 }
 
-tbody tr:nth-child(2n):hover {
+/* tbody tr:nth-child(2n):hover {
   background-color: #d5ccf3e7;
-}
+} */
 
 /* DECOQUEUE CSS */
 
@@ -209,4 +209,9 @@ input {
 
 .select-all {
   background-color: #fff;
+}
+
+.queue-container-return {
+  height: 100vh;
+  overflow: hidden;
 }
