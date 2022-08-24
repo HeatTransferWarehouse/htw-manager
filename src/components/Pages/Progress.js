@@ -58,8 +58,12 @@ class Progress extends Component {
     }
 
     cleanDate = (date) => {
-        let cleanedDate = date.slice(5, 16);
-        return cleanedDate;
+        if (date) {
+            let cleanedDate = date.slice(5, 16);
+            return cleanedDate;
+        } else {
+            return
+        }
     }
 
     render() {

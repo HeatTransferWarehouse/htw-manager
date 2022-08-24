@@ -68,7 +68,7 @@ function App () {
             {/* If none of the other routes matched, we will show a 404. */}
             <Route render={() => <><br/><br/><br/><br/><br/><br/><h1 className="fourfour">404</h1></>} />
           </Switch>
-          <Footer />
+          <Footer/>
         </div>
       </Router>
     );
