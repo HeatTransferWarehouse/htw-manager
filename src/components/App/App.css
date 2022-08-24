@@ -13,192 +13,200 @@ body {
 input {
   margin: 5px;
   margin-bottom: 10px;
- 
+
 }
 
-.log-in, .log-out, .register {
-background-color: #00003D;
-border-radius: 4px;
-color: white;
-min-height: 50px;
-min-width: 100px;
-outline:0;
-cursor: pointer;
+.log-in,
+.log-out,
+.register {
+  background-color: #00003D;
+  border-radius: 4px;
+  color: white;
+  min-height: 50px;
+  min-width: 100px;
+  outline: 0;
+  cursor: pointer;
 }
 
-.log-in:hover, .log-out:hover, .register:hover {
-background-color: #050592;
+.log-in:hover,
+.log-out:hover,
+.register:hover {
+  background-color: #050592;
 }
 
 /* This line makes the "Login" button look like links */
 .link-button {
-  background:none;
-  color:inherit;
-  border:none;
-  padding:0;
+  background: none;
+  color: inherit;
+  border: none;
+  padding: 0;
   font: inherit;
-  outline:0;
-  border-bottom:1px solid #444; 
+  outline: 0;
+  border-bottom: 1px solid #444;
   cursor: pointer;
 }
+
 /*styles the upload button to look like the other material UI buttons*/
 .picUploader {
-background-color:#4caf50;
-  color:white;
-  border:none;
+  background-color: #4caf50;
+  color: white;
+  border: none;
   border-radius: 5%;
-  padding:10px;
+  padding: 10px;
   font: inherit;
-  outline:0;
+  outline: 0;
   cursor: pointer;
 }
+
 /*swaps the buttons in sweetalerts2*/
 .confirm {
-margin: 0 !important;
-flex-direction: row-reverse;
+  margin: 0 !important;
+  flex-direction: row-reverse;
 }
+
 /*matches hover activity in Material UI*/
 .picUploader:hover {
-background-color:#388e3c;
-  color:white;
-  border:none;
+  background-color: #388e3c;
+  color: white;
+  border: none;
   border-radius: 5%;
-  padding:10px;
+  padding: 10px;
   font: inherit;
-  outline:0;
+  outline: 0;
   cursor: pointer;
 }
 
 /* Used for tooltips */
 #tooltip {
-/* position: relative;  */
-display: inline-block;
+  /* position: relative;  */
+  display: inline-block;
 
 }
 
 /* Tooltip text */
 #tooltip #tooltiptext {
-visibility: hidden;
-width: 65%;
-background-color: white;
-color: black;
-text-align: center;
-padding: 5px 0;
-border-radius: 6px;
-border: 1px solid black; 
+  visibility: hidden;
+  width: 65%;
+  background-color: white;
+  color: black;
+  text-align: center;
+  padding: 5px 0;
+  border-radius: 6px;
+  border: 1px solid black;
 
-/* Position the tooltip text*/
- position: absolute;
-z-index: 1;
+  /* Position the tooltip text*/
+  position: absolute;
+  z-index: 1;
 }
 
 /* Show the tooltip text when you mouse over the tooltip container */
 #tooltip:hover #tooltiptext {
-visibility: visible;
+  visibility: visible;
 }
 
 /*sticks the navigation bar at the top*/
 #Nav {
-position: fixed;
-width: 100%;
-top: 0;
-z-index: 100000;
+  position: fixed;
+  width: 100%;
+  top: 0;
+  z-index: 100000;
 }
 
 .borderBottom {
-border-bottom: solid black 1px;
+  border-bottom: solid black 1px;
 }
 
 .fourfour {
-text-align: center;
+  text-align: center;
 }
 
 .btn-primary {
-color: #fff;
-background-color: #8261ee;
-border-color: #a759d1;
+  color: #fff;
+  background-color: #8261ee;
+  border-color: #a759d1;
 }
 
 .btn-primary:hover {
-background-color: #a759d1;
-border-color: #8261ee;
+  background-color: #a759d1;
+  border-color: #8261ee;
 }
 
 .MuiButtonBase-root.MuiPickersDay-root.Mui-selected.MuiPickersDay-dayWithMargin.MuiPickersDay-today.css-wed0tz {
-background-color: #8261ee;
-border-color: #a759d1;
+  background-color: #8261ee;
+  border-color: #a759d1;
 }
 
 .MuiButtonBase-root.MuiPickersDay-root.Mui-selected.MuiPickersDay-dayWithMargin.MuiPickersDay-today.css-wed0tz:hover {
-background-color: #a759d1;
-border-color: #8261ee;
+  background-color: #a759d1;
+  border-color: #8261ee;
 }
 
 tbody tr:nth-child(2n) {
-background-color: #e5e1f5e7;
+  background-color: #e5e1f5e7;
 }
 
 tbody tr:nth-child(2n):hover {
-background-color: #d5ccf3e7;
+  background-color: #d5ccf3e7;
 }
 
 /* DECOQUEUE CSS */
 
-/*A number of these stylings were brought in from the projetc template*/ 
+/*A number of these stylings were brought in from the projetc template*/
 
 input {
-margin: 5px;
-margin-bottom: 10px;
+  margin: 5px;
+  margin-bottom: 10px;
 }
 
 /*swaps the buttons in sweetalerts2*/
 .confirm {
-margin: 0 !important;
-flex-direction: row-reverse;
+  margin: 0 !important;
+  flex-direction: row-reverse;
 }
 
 .multiButtons {
-margin: 50px 50px 50px 0;
-position: fixed;
-left: 2%;
-top: 11%;
-z-index: 100000;
-background-color: white;
-padding: .5em .5em .5em 0;
-border-radius: 15px;
+  margin: 50px 50px 50px 0;
+  position: fixed;
+  left: 2%;
+  top: 11%;
+  z-index: 100000;
+  background-color: white;
+  padding: .5em .5em .5em 0;
+  border-radius: 15px;
 }
 
 .multiButtons Button {
-margin: 5px;;
+  margin: 5px;
+  ;
 }
 
 .queue-container {
-background-image: linear-gradient(127deg, #a759d1 0%, #8261ee 71%);
-position: fixed;
-display: flex;
-justify-content: center;
-align-items: center;
-width: 100%;
-top: 0;
-z-index: 999999;
+  background-image: linear-gradient(127deg, #a759d1 0%, #8261ee 71%);
+  position: fixed;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  top: 0;
+  z-index: 999999;
 }
 
-.queue-nav-link {
-color: #e9cbff43;
-padding: .5em;
-transition: color .3s linear;
-margin: 0 6em 0 6em;
-opacity: 100% !important;
+.queue-nav-link, .queue-active-nav-link {
+  color: #e9cbff43 !important;
+  padding: .5em;
+  transition: color .3s linear;
+  margin: 0 6em 0 6em;
 }
 
 .queue-active-nav-link {
-color: white;
-background-color: transparent;
-transition: color .3s linear;
-margin: 0 6em 0 6em;
-opacity: 100% !important;
+  color: white !important;
 }
 
-.queue-nav-link:hover, .queue-active-nav-link:hover {
-color: #ddc4d5;
+.queue-nav-link:hover,
+.queue-active-nav-link:hover {
+  color: #ddc4d5;
+}
+
+.select-all {
+  background-color: #fff;
 }

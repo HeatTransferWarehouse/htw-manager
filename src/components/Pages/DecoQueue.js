@@ -484,7 +484,7 @@ class DecoQueue extends Component {
                                     }
                                 }}
                             >
-                                <AssignmentTurnedInIcon /><p>Finish</p>
+                                <AssignmentTurnedInIcon /><p>Complete</p>
                             </Button>
                             {/* deleted selected items */}
                             <Button
@@ -615,6 +615,55 @@ class DecoQueue extends Component {
                                     },
                                 },
                             },
+                            // Select All Checkbox
+                            // {
+                            //     name: "",
+                            //     options: {
+                            //         filter: false,
+                            //         sort: false,
+                            //         empty: true,
+                            //         confirmFilters: true,
+                            //         customHeadRender: (dataIndex, rowIndex) => {
+                            //             return (
+                            //                 <div className="select-all">
+                            //                     <input
+                            //                         type="checkbox"
+                            //                         id={dataIndex}
+                            //                         style={{ cursor: "pointer", width: 50, height: 50 }}
+                            //                         name=""
+                            //                         value=""
+                            //                         onClick={(event) => {
+                            //                             // if clicked, check the checkbox
+                            //                             let checkChecked = document.getElementById(dataIndex)
+                            //                                 .checked;
+                            //                             const itemArray = this.props.itemlist;
+                            //                             const item = itemArray[dataIndex];
+                            //                             if (checkChecked === true) {
+                            //                                 //...and push the index into the dataselector
+                            //                                 dataSelector.push(itemArray);
+                            //                             } else {
+                            //                                 //when deselected, remove the index from the dataselector
+                            //                                 for (
+                            //                                     let index = 0;
+                            //                                     index < dataSelector.length;
+                            //                                     index++
+                            //                                 ) {
+                            //                                     const element = dataSelector[index];
+                            //                                     if (item.id === element.id) {
+                            //                                         dataSelector.splice(index, 1);
+                            //                                     }
+                            //                                 }
+                            //                             }
+                            //                             console.log(dataIndex);
+                            //                             console.log(itemArray)
+                            //                             console.log("DATA SELECTOR", dataSelector)
+                            //                         }}
+                            //                     ></input>
+                            //                 </div>
+                            //             );
+                            //         },
+                            //     },
+                            // },
                             { name: "Order Number" },
                             {
                                 name: "SKU",
