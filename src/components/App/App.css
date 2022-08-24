@@ -188,6 +188,7 @@ color: #e9cbff43;
 padding: .5em;
 transition: color .3s linear;
 margin: 0 6em 0 6em;
+opacity: 100% !important;
 }
 
 .queue-active-nav-link {
@@ -195,6 +196,7 @@ color: white;
 background-color: transparent;
 transition: color .3s linear;
 margin: 0 6em 0 6em;
+opacity: 100% !important;
 }
 
 .queue-nav-link:hover, .queue-active-nav-link:hover {
