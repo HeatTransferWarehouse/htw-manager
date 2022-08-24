@@ -192,14 +192,14 @@ input {
 }
 
 .queue-nav-link, .queue-active-nav-link {
-  color: #e9cbff43;
+  color: #e9cbff43 !important;
   padding: .5em;
   transition: color .3s linear;
   margin: 0 6em 0 6em;
 }
 
 .queue-active-nav-link {
-  color: white;
+  color: white !important;
 }
 
 .queue-nav-link:hover,
