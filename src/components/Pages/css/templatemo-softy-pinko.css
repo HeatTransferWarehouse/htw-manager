@@ -1443,8 +1443,11 @@ footer
 --------------------------------------------- 
 */
 footer {
+  background-color: red;
   background-image: linear-gradient(127deg, #a759d1 0%, #8261ee 91%);
-  padding-top: 30px;
+  color: red;
+  padding-top: 10px;
+  height: 20em;
 }
 
 footer .social {

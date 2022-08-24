@@ -17,6 +17,7 @@ class MUITable extends Component {
     setTableBodyMaxHeight: " ",
     options: {
       filter: false,
+      rowHover: false,
       searchAlwaysOpen: true,
       print: false,
       download: false,

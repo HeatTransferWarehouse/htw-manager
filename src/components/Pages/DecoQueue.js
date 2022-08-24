@@ -266,8 +266,12 @@ class DecoQueue extends Component {
     };
 
     cleanDate = (date) => {
-        let cleanedDate = date.slice(5, 16);
-        return cleanedDate;
+        if (date) {
+            let cleanedDate = date.slice(5, 16);
+            return cleanedDate;
+        } else {
+            return
+        }
     }
 
     render() {
@@ -278,18 +282,23 @@ class DecoQueue extends Component {
         let decoSku7 = "";
         let decoSku6 = "";
         let descrip = "";
-        const data = this.props.itemlist.map((item) => [
-            item.order_number,
-            item.sku,
-            item.description,
-            item.product_length,
-            item.qty,
-            item.need_to_run,
-            this.cleanDate(item.created_at),
-        ]);
 
+        let data = [];
+        if (this.props.itemlist) {
+            data = this.props.progresslist.map((item) => [
+                item.order_number,
+                item.sku,
+                item.description,
+                item.product_length,
+                item.qty,
+                this.cleanDate(item.created_at)
+            ]);
+        } else {
+            data = [];
+        }
+        
         return (
-            <div>
+            <div className="queue-container-return">
                 <br />
                 <br />
                 <br />
