@@ -18,6 +18,15 @@ const itemlistcount = (state = [], action) => {
   }
 };
 
+const itemlist = (state = [], action) => {
+  switch (action.type) {
+    case "SET_ITEM_LIST":
+      return action.payload;
+    default:
+      return state;
+  }
+};
+
 const progresslist = (state = [], action) => {
   switch (action.type) {
     case "SET_PROGRESS":
@@ -131,6 +140,7 @@ const productlist = (state = [], action) => {
 
 export default combineReducers({
   historylisttable,
+  itemlist,
   itemlistcount,
   progresslist,
   progresslistcount,

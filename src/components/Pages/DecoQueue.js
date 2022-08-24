@@ -70,6 +70,9 @@ class DecoQueue extends Component {
             type: "GET_RESPOND_LIST_COUNT",
         });
         this.props.dispatch({
+            type: "GET_APPROVE_LIST_COUNT",
+        });
+        this.props.dispatch({
             type: "GET_PROGRESS_LIST_COUNT",
         });
         this.props.dispatch({
@@ -104,6 +107,9 @@ class DecoQueue extends Component {
             type: "GET_RESPOND_LIST_COUNT",
         });
         this.props.dispatch({
+            type: "GET_APPROVE_LIST_COUNT",
+        });
+        this.props.dispatch({
             type: "GET_CONFIRM_LIST_COUNT",
         });
         this.props.dispatch({
@@ -128,6 +134,9 @@ class DecoQueue extends Component {
         });
         this.props.dispatch({
             type: "GET_RESPOND_LIST_COUNT",
+        });
+        this.props.dispatch({
+            type: "GET_APPROVE_LIST_COUNT",
         });
         this.props.dispatch({
             type: "GET_CONFIRM_LIST_COUNT",
@@ -156,6 +165,9 @@ class DecoQueue extends Component {
             type: "GET_RESPOND_LIST_COUNT",
         });
         this.props.dispatch({
+            type: "GET_APPROVE_LIST_COUNT",
+        });
+        this.props.dispatch({
             type: "GET_CONFIRM_LIST_COUNT",
         });
         this.props.dispatch({
@@ -182,6 +194,9 @@ class DecoQueue extends Component {
             type: "GET_RESPOND_LIST_COUNT",
         });
         this.props.dispatch({
+            type: "GET_APPROVE_LIST_COUNT",
+        });
+        this.props.dispatch({
             type: "GET_CONFIRM_LIST_COUNT",
         });
         this.props.dispatch({
@@ -206,6 +221,9 @@ class DecoQueue extends Component {
         });
         this.props.dispatch({
             type: "GET_RESPOND_LIST_COUNT",
+        });
+        this.props.dispatch({
+            type: "GET_APPROVE_LIST_COUNT",
         });
         this.props.dispatch({
             type: "GET_CONFIRM_LIST_COUNT",
@@ -245,6 +263,9 @@ class DecoQueue extends Component {
             type: "GET_RESPOND_LIST_COUNT",
         });
         this.props.dispatch({
+            type: "GET_APPROVE_LIST_COUNT",
+        });
+        this.props.dispatch({
             type: "GET_CUSTOM_ITEM_LIST_COUNT",
         });
         this.props.dispatch({
@@ -282,21 +303,17 @@ class DecoQueue extends Component {
         let decoSku7 = "";
         let decoSku6 = "";
         let descrip = "";
+        // let data = [];
+        const data = this.props.itemlist.map((item) => [
+            item.order_number,
+            item.sku,
+            item.description,
+            item.product_length,
+            item.qty,
+            item.need_to_run,
+            this.cleanDate(item.created_at),
+        ]);
 
-        let data = [];
-        if (this.props.itemlist) {
-            data = this.props.progresslist.map((item) => [
-                item.order_number,
-                item.sku,
-                item.description,
-                item.product_length,
-                item.qty,
-                this.cleanDate(item.created_at)
-            ]);
-        } else {
-            data = [];
-        }
-        
         return (
             <div className="queue-container-return">
                 <br />
@@ -366,6 +383,9 @@ class DecoQueue extends Component {
                                         });
                                         this.props.dispatch({
                                             type: "GET_RESPOND_LIST_COUNT",
+                                        });
+                                        this.props.dispatch({
+                                            type: "GET_APPROVE_LIST_COUNT",
                                         });
                                         this.props.dispatch({
                                             type: "GET_CONFIRM_LIST_COUNT",
@@ -439,6 +459,9 @@ class DecoQueue extends Component {
                                             type: "GET_RESPOND_LIST_COUNT",
                                         });
                                         this.props.dispatch({
+                                            type: "GET_APPROVE_LIST_COUNT",
+                                        });
+                                        this.props.dispatch({
                                             type: "GET_CONFIRM_LIST_COUNT",
                                         });
                                         this.props.dispatch({
@@ -503,6 +526,9 @@ class DecoQueue extends Component {
                                                 });
                                                 this.props.dispatch({
                                                     type: "GET_RESPOND_LIST_COUNT",
+                                                });
+                                                this.props.dispatch({
+                                                    type: "GET_APPROVE_LIST_COUNT",
                                                 });
                                                 this.props.dispatch({
                                                     type: "GET_CONFIRM_LIST_COUNT",
@@ -889,6 +915,9 @@ class DecoQueue extends Component {
                                                         type: "GET_RESPOND_LIST_COUNT",
                                                     });
                                                     this.props.dispatch({
+                                                        type: "GET_APPROVE_LIST_COUNT",
+                                                    });
+                                                    this.props.dispatch({
                                                         type: "GET_CUSTOM_ITEM_LIST_COUNT",
                                                     });
                                                     this.props.dispatch({
@@ -1121,6 +1150,9 @@ class DecoQueue extends Component {
                                             });
                                             this.props.dispatch({
                                                 type: "GET_RESPOND_LIST_COUNT",
+                                            });
+                                            this.props.dispatch({
+                                                type: "GET_APPROVE_LIST_COUNT",
                                             });
                                             this.props.dispatch({
                                                 type: "GET_CUSTOM_ITEM_LIST_COUNT",

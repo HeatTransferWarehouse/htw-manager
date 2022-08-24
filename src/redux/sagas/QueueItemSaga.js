@@ -104,7 +104,7 @@ function* getitemlist(action) {
   try {
     const response = yield axios.get(`/api/item/queue/itemlist`);
     yield put({
-      type: "SET_ITEM",
+      type: "SET_ITEM_LIST",
       payload: response.data,
     });
   } catch (error) {
