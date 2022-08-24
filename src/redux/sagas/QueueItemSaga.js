@@ -82,16 +82,6 @@ function* markComplete(action) {
   }
 }
 
-function* backToNew(action) {
-  try {
-    yield axios.post("/api/user/queue/backtonew", action.payload);
-    yield put({ type: "GET_CUSTOM_ITEM_LIST" });
-    yield put({ type: "GET_CUSTOM_ITEM_LIST_COUNT" });
-  } catch (error) {
-    console.log("Error with adding a new item:", error);
-  }
-}
-
 function* goBackNew(action) {
   try {
     yield axios.post("/api/user/queue/gobacknew", action.payload);
@@ -134,36 +124,11 @@ function* checkHistory(action) {
   }
 }
 
-
-function* getcustomitemlist(action) {
-  try {
-    const response = yield axios.get(`/api/item/queue/customitemlist`);
-    yield put({
-      type: "SET_CUSTOM_ITEM",
-      payload: response.data,
-    });
-  } catch (error) {
-    console.log("Error with getting the list of items:", error);
-  }
-}
-
 function* getitemlistcount(action) {
   try {
     const response = yield axios.get(`/api/item/queue/itemlistcount`);
     yield put({
       type: "SET_ITEM_COUNT",
-      payload: response.data,
-    });
-  } catch (error) {
-    console.log("Error with getting the list of items:", error);
-  }
-}
-
-function* getcustomitemlistcount(action) {
-  try {
-    const response = yield axios.get(`/api/item/queue/customitemlistcount`);
-    yield put({
-      type: "SET_CUSTOM_ITEM_COUNT",
       payload: response.data,
     });
   } catch (error) {
@@ -350,13 +315,10 @@ function* QueueItemSaga() {
   yield takeLatest('CHECK_HISTORY', checkHistory);
   yield takeLatest('START_ITEM', startTask);
   yield takeLatest('MARK_COMPLETE', markComplete);
-  yield takeLatest('BACK_TO_NEW', backToNew);
   yield takeLatest('ADD_NEW', goBackNew);
   yield takeLatest('NEED_TO_RUN', needToRun);
   yield takeLatest('GET_QUEUE_ITEM_LIST', getitemlist);
-  yield takeLatest('GET_CUSTOM_ITEM_LIST', getcustomitemlist);
   yield takeLatest('GET_ITEM_LIST_COUNT', getitemlistcount);
-  yield takeLatest('GET_CUSTOM_ITEM_LIST_COUNT', getcustomitemlistcount);
   yield takeLatest('GET_PROGRESS_LIST', getprogresslist);
   yield takeLatest('GET_PROGRESS_LIST_COUNT', getprogresslistcount);
   yield takeLatest('GET_CONFIRM_LIST', getconfirmlist);

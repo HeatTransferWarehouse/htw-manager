@@ -116,37 +116,9 @@ router.post("/checkhistory", (req, res) => {
     });
 });
 
-router.get("/customitemlist", rejectUnauthenticated, (req, res) => {
-  //gets all of the custom items
-  const queryText = `SELECT * FROM "customitem" ORDER BY id DESC;`;
-  pool
-    .query(queryText)
-    .then((result) => {
-      res.send(result.rows);
-    })
-    .catch((error) => {
-      console.log(`Error on item query ${error}`);
-      res.sendStatus(500);
-    });
-});
-
 router.get("/itemlistcount", rejectUnauthenticated, (req, res) => {
 //gets a total number of new stock items
   const queryText = `SELECT count(*) FROM "item_queue"`;
-  pool
-    .query(queryText)
-    .then((result) => {
-      res.send(result.rows);
-    })
-    .catch((error) => {
-      console.log(`Error on item query ${error}`);
-      res.sendStatus(500);
-    });
-});
-
-router.get("/customitemlistcount", rejectUnauthenticated, (req, res) => {
-  //gets a total number of new custom items
-  const queryText = `SELECT count(*) FROM "customitem"`;
   pool
     .query(queryText)
     .then((result) => {

@@ -9,15 +9,6 @@ const historylisttable = (state = [], action) => {
   }
 };
 
-const customitemlist = (state = [], action) => {
-  switch (action.type) {
-    case "SET_CUSTOM_ITEM":
-      return action.payload;
-    default:
-      return state;
-  }
-};
-
 const itemlistcount = (state = [], action) => {
   switch (action.type) {
     case "SET_ITEM_COUNT":
@@ -27,14 +18,6 @@ const itemlistcount = (state = [], action) => {
   }
 };
 
-const customitemlistcount = (state = [], action) => {
-  switch (action.type) {
-    case "SET_CUSTOM_ITEM_COUNT":
-      return action.payload;
-    default:
-      return state;
-  }
-};
 const progresslist = (state = [], action) => {
   switch (action.type) {
     case "SET_PROGRESS":
@@ -166,9 +149,7 @@ const productlist = (state = [], action) => {
 
 export default combineReducers({
   historylisttable,
-  customitemlist,
   itemlistcount,
-  customitemlistcount,
   progresslist,
   progresslistcount,
   confirmlist,
