@@ -45,9 +45,6 @@ class Complete extends Component {
             type: "GET_RESPOND_LIST_COUNT",
         });
         this.props.dispatch({
-            type: "GET_APPROVE_LIST_COUNT",
-        });
-        this.props.dispatch({
             type: "GET_COMPLETE_LIST_COUNT",
         });
         //delete anything that meets the cut off dates defined on the backend
@@ -83,9 +80,6 @@ class Complete extends Component {
         });
         this.props.dispatch({
             type: "GET_RESPOND_LIST_COUNT",
-        });
-        this.props.dispatch({
-            type: "GET_APPROVE_LIST_COUNT",
         });
         this.props.dispatch({
             type: "GET_CONFIRM_LIST_COUNT",
@@ -233,9 +227,6 @@ class Complete extends Component {
                                             type: "GET_RESPOND_LIST_COUNT",
                                         });
                                         this.props.dispatch({
-                                            type: "GET_APPROVE_LIST_COUNT",
-                                        });
-                                        this.props.dispatch({
                                             type: "GET_CONFIRM_LIST_COUNT",
                                         });
                                         this.props.dispatch({
@@ -303,9 +294,6 @@ class Complete extends Component {
                                                 });
                                                 this.props.dispatch({
                                                     type: "GET_RESPOND_LIST_COUNT",
-                                                });
-                                                this.props.dispatch({
-                                                    type: "GET_APPROVE_LIST_COUNT",
                                                 });
                                                 this.props.dispatch({
                                                     type: "GET_CONFIRM_LIST_COUNT",

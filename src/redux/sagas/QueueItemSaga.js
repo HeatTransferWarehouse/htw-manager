@@ -210,30 +210,6 @@ function* getrespondlistcount(action) {
   }
 }
 
-function* getapprovelist(action) {
-  try {
-    const response = yield axios.get(`/api/item/queue/approvelist`);
-    yield put({
-      type: "SET_APPROVE",
-      payload: response.data,
-    });
-  } catch (error) {
-    console.log("Error with getting the list of items:", error);
-  }
-}
-
-function* getapprovelistcount(action) {
-  try {
-    const response = yield axios.get(`/api/item/queue/approvelistcount`);
-    yield put({
-      type: "SET_APPROVE_COUNT",
-      payload: response.data,
-    });
-  } catch (error) {
-    console.log("Error with getting the list of items:", error);
-  }
-}
-
 function* getcompletelist(action) {
   try {
     const response = yield axios.get(`/api/item/queue/completelist`);
@@ -325,8 +301,6 @@ function* QueueItemSaga() {
   yield takeLatest('GET_CONFIRM_LIST_COUNT', getconfirmlistcount);
   yield takeLatest('GET_RESPOND_LIST', getrespondlist);
   yield takeLatest('GET_RESPOND_LIST_COUNT', getrespondlistcount);
-  yield takeLatest('GET_APPROVE_LIST', getapprovelist);
-  yield takeLatest('GET_APPROVE_LIST_COUNT', getapprovelistcount);
   yield takeLatest('GET_COMPLETE_LIST', getcompletelist);
   yield takeLatest('GET_COMPLETE_LIST_COUNT', getcompletelistcount);
   yield takeLatest('DELETE_ITEM_QUEUE', deleteItem);

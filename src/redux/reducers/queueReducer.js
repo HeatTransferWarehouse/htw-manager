@@ -72,24 +72,6 @@ const respondlistcount = (state = [], action) => {
   }
 };
 
-const approvelist = (state = [], action) => {
-  switch (action.type) {
-    case "SET_APPROVE":
-      return action.payload;
-    default:
-      return state;
-  }
-};
-
-const approvelistcount = (state = [], action) => {
-  switch (action.type) {
-    case "SET_APPROVE_COUNT":
-      return action.payload;
-    default:
-      return state;
-  }
-};
-
 const completelist = (state = [], action) => {
   switch (action.type) {
     case "SET_COMPLETE_QUEUE":

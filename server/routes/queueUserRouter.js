@@ -53,12 +53,6 @@ router.delete("/deletehistoryrange", rejectUnauthenticated, (req, res) => {
     });
 });
 
-// Handles Ajax request for user information if user is authenticated
-router.get("/", rejectUnauthenticated, (req, res) => {
-  // Send back user object from the session (previously queried from the database)
-  res.send(req.user);
-});
-
   setInterval(() => {
     //defines the dates to be used for the timestamp
       let nowMonth = Number(moment().subtract(5, "hours").month()) + 1;
@@ -110,16 +104,6 @@ router.get("/", rejectUnauthenticated, (req, res) => {
                       const query5Text = `SELECT * from "complete" where order_number=$1;`;
                       pool
                         .query(query5Text, [orderID])
-                        .then((result5) => {
-                          let rows5 = JSON.stringify(result5.rows);
-                          const query6Text = `SELECT * from "customerconfirm" where order_number=$1;`;
-                          pool
-                            .query(query6Text, [orderID])
-                            .then((result6) => {
-                              let rows6 = JSON.stringify(result6.rows);
-                              const query7Text = `SELECT * from "customerrespond" where order_number=$1;`;
-                              pool
-                                .query(query7Text, [orderID])
                                 .then((result7) => {
                                   let rows7 = JSON.stringify(result7.rows);
 
@@ -361,14 +345,6 @@ router.get("/", rejectUnauthenticated, (req, res) => {
                                   console.log(`Error on item query ${error}`);
                                 });
                             })
-                            .catch((error) => {
-                              console.log(`Error on item query ${error}`);
-                            });
-                        })
-                        .catch((error) => {
-                          console.log(`Error on item query ${error}`);
-                        });
-                    })
                     .catch((error) => {
                       console.log(`Error on item query ${error}`);
                     });
@@ -508,63 +484,6 @@ router.post("/markcomplete", rejectUnauthenticated, (req, res, next) => {
       console.log("Sorry, there is an error", error);
       res.sendStatus(500);
     });
-});
-
-router.post("/addadmin", rejectUnauthenticated, (req, res, next) => {
-  // used to reset user logins. It's on a permenent restricted path, only accessesable by manaully changing the code. Extremely secure and protected
-  const first_name = req.body.first_name;
-  const last_name = req.body.last_name;
-  const email = req.body.email;
-  const password = encryptLib.encryptPassword(req.body.password);
-  const role = req.body.role;
-
-  //now lets add admin information to the user table
-  const query2Text =
-    'INSERT INTO "user" (first_name, last_name, email, password, role) VALUES ($1, $2, $3, $4, $5) RETURNING id';
-  pool
-    .query(query2Text, [first_name, last_name, email, password, role])
-    .then((result) => res.status(201).send(result.rows))
-    .catch(function (error) {
-      console.log("Sorry, there was an error with your query: ", error);
-      res.sendStatus(500); // HTTP SERVER ERROR
-    })
-
-    .catch(function (error) {
-      console.log("Sorry, there is an error", error);
-      res.sendStatus(500);
-    });
-});
-
-router.post("/login", userStrategy.authenticate("local"), (req, res) => {
-  console.log("logging body", req.body.username)
-  const email = req.body.username;
-  // setting query text to update the username
-  const queryText = `update "user" set "last_login" = NOW() WHERE "email"=$1`;
-
-  pool.query(queryText, [email]).then((result) => {//when someone logs in, want to capture the time they log in
-
-      res.sendStatus(201)
-  });
-});
-
-router.post("/logout", (req, res) => {
-  // Use passport's built-in method to log out the user
-  req.logout();
-  res.sendStatus(200);
-});
-
-router.post("/inksoft", async function (req, res) {
-  const orderID = req.body.orderId;
-  console.log('Fetching products for inksoft: ', orderID);
-
-  let inksoft = await axios
-    .get(
-      `https://api.bigcommerce.com/stores/${storeHash}/v2/orders/${orderID}/products`,
-      config
-    )
-
-  console.log(`SENDING BACK TO SITE: ${inksoft.data} WITH STATUS: ${inksoft.status}`);
-  res.send(inksoft.data).status(inksoft.status);
 });
 
 
