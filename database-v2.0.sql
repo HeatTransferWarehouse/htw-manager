@@ -101,7 +101,8 @@ CREATE TABLE "item_queue"
 	"assigned" VARCHAR(255),
 	"created_at" TEXT,
 	"description" TEXT,
-	"priority" VARCHAR(5) DEFAULT 'low'
+	"priority" VARCHAR(5) DEFAULT 'low',
+	"need_to_run" INT;
 );
 
 CREATE TABLE "customitem"

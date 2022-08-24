@@ -17,7 +17,7 @@ class QueueNav extends Component {
     toggle: false,
     //changes colors of navbar when toggled, used to identify which queue we are in
     backgroundcolorclass: "queue-nav-link",
-    activebackgroundcolorclass: "active-nav-link",
+    activebackgroundcolorclass: "queue-active-nav-link",
     order_number: "",
   };
 
@@ -397,8 +397,8 @@ class QueueNav extends Component {
                         this.setState({
                           toggle: !this.state.toggle,
                           backgroundcolor: "#000080",
-                          backgroundcolorclass: "nav-link",
-                          activebackgroundcolorclass: "active-nav-link",
+                          backgroundcolorclass: "queue-nav-link",
+                          activebackgroundcolorclass: "queue-active-nav-link",
                         });
                         this.props.dispatch({
                           type: "GET_QUEUE_ITEM_LIST",
@@ -426,14 +426,6 @@ class QueueNav extends Component {
                         });
                       }}
                     >
-                      <Link
-                        className={this.state.backgroundcolorclass}
-                        to="/home"
-                        activeClassName={this.state.activebackgroundcolorclass}
-                      >
-                        <LoopIcon></LoopIcon>
-                        Switch Queues{" "}
-                      </Link>
                     </div>
                   </Grid>
                   <Grid
