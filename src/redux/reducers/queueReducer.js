@@ -138,8 +138,6 @@ export default combineReducers({
   confirmlistcount,
   respondlist,
   respondlistcount,
-  approvelist,
-  approvelistcount,
   completelist,
   completelistcount,
   detailslist,
