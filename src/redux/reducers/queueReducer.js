@@ -1,23 +1,5 @@
 import { combineReducers } from "redux";
 
-const itemList = (state = [], action) => {
-  switch (action.type) {
-    case "SET_ITEM":
-      return action.payload;
-    default:
-      return state;
-  }
-};
-
-const historylist = (state = [], action) => {
-  switch (action.type) {
-    case "SET_HISTORY":
-      return action.payload;
-    default:
-      return state;
-  }
-};
-
 const historylisttable = (state = [], action) => {
   switch (action.type) {
     case "SET_HISTORY_TABLE":
@@ -134,36 +116,9 @@ const completelist = (state = [], action) => {
   }
 };
 
-const customcompletelist = (state = [], action) => {
-  switch (action.type) {
-    case "SET_CUSTOM_COMPLETE":
-      return action.payload;
-    default:
-      return state;
-  }
-};
-
 const completelistcount = (state = [], action) => {
   switch (action.type) {
     case "SET_COMPLETE_COUNT":
-      return action.payload;
-    default:
-      return state;
-  }
-};
-
-const customcompletelistcount = (state = [], action) => {
-  switch (action.type) {
-    case "SET_CUSTOM_COMPLETE_COUNT":
-      return action.payload;
-    default:
-      return state;
-  }
-};
-
-const replieslist = (state = [], action) => {
-  switch (action.type) {
-    case "SET_REPLIES":
       return action.payload;
     default:
       return state;
@@ -210,8 +165,6 @@ const productlist = (state = [], action) => {
 
 
 export default combineReducers({
-  itemList,
-  historylist,
   historylisttable,
   customitemlist,
   itemlistcount,
@@ -226,9 +179,6 @@ export default combineReducers({
   approvelistcount,
   completelist,
   completelistcount,
-  customcompletelist,
-  customcompletelistcount,
-  replieslist,
   detailslist,
   orderlist,
   shippinglist,

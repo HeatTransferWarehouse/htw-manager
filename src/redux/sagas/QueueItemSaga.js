@@ -11,40 +11,6 @@ function* deleteItem(action) {
   }
 }
 
-function* deleteCustomItem(action) {
-  try {
-    yield axios.delete(`/api/item/queue/deletecustomitem/${action.payload}`);
-    yield put({ type: "GET_CUSTOM_ITEM_LIST" });
-  } catch (error) {
-    console.log("Error with adding a new item:", error);
-  }
-}
-function* deleteSentCustomer(action) {
-  try {
-    yield axios.delete(`/api/item/queue/deletesentcustomer/${action.payload}`);
-    yield put({ type: "GET_CONFIRM_LIST" });
-  } catch (error) {
-    console.log("Error with adding a new item:", error);
-  }
-}
-function* deleteRespond(action) {
-  try {
-    yield axios.delete(`/api/item/queue/deleterespond/${action.payload}`);
-    yield put({ type: "GET_RESPOND_LIST" });
-  } catch (error) {
-    console.log("Error with adding a new item:", error);
-  }
-}
-
-function* deleteApprove(action) {
-  try {
-    yield axios.delete(`/api/item/queue/deleteapprove/${action.payload}`);
-    yield put({ type: "GET_APPROVE_LIST" });
-  } catch (error) {
-    console.log("Error with adding a new item:", error);
-  }
-}
-
 function* deleteProgress(action) {
   try {
     yield axios.delete(`/api/item/queue/deleteprogress/${action.payload}`);
@@ -66,22 +32,6 @@ function* deleteHistory(action) {
 function* deleteComplete(action) {
   try {
     yield axios.delete(`/api/item/queue/deletecomplete/${action.payload}`);
-    yield put({ type: "GET_COMPLETE_LIST" });
-  } catch (error) {
-    console.log("Error with adding a new item:", error);
-  }
-}
-function* deleteCustomComplete(action) {
-  try {
-    yield axios.delete(`/api/item/queue/deletecustomcomplete/${action.payload}`);
-    yield put({ type: "GET_CUSTOM_COMPLETE_LIST" });
-  } catch (error) {
-    console.log("Error with adding a new item:", error);
-  }
-}
-function* deleteCompleteAll(action) {
-  try {
-    yield axios.delete(`/api/item/queue/deletecompleteall`);
     yield put({ type: "GET_COMPLETE_LIST" });
   } catch (error) {
     console.log("Error with adding a new item:", error);
@@ -112,15 +62,6 @@ function* deleteHistoryRange(action) {
   }
 }
 
-function* addNewItem(action) {
-  try {
-    yield axios.post('/api/user/queue/addnewitem', action.payload);
-    yield put({ type: "GET_QUEUE_ITEM_LIST" });
-  } catch (error) {
-    console.log('Error with adding a new item:', error);
-  }
-}
-
 function* startTask(action) {
   try {
     yield axios.post("/api/user/queue/starttask", action.payload);
@@ -129,54 +70,6 @@ function* startTask(action) {
     console.log("Error with adding a new item:", error);
   }
 }
-
-
-function* customerResponse(action) {
-  try {
-    yield axios.post("/api/user/queue/customerresponse", action.payload);
-  } catch (error) {
-    console.log("Error with adding a new item:", error);
-  }
-}
-
-function* customerConfirm(action) {
-  try {
-    yield axios.post("/api/user/queue/customerconfirm", action.payload);
-    yield put({ type: "GET_CUSTOMER_LIST" });
-  } catch (error) {
-    console.log("Error with adding a new item:", error);
-  }
-}
-
-function* canned(action) {
-  try {
-    yield axios.post("/api/user/queue/canned", action.payload);
-    yield put({ type: "GET_REPLIES" });
-  } catch (error) {
-    console.log("Error with adding a new item:", error);
-  }
-}
-
-function* cannedEdit(action) {
-  try {
-    yield axios.put("/api/item/queue/cannededit", action.payload);
-    yield put({ type: "GET_REPLIES" });
-  } catch (error) {
-    console.log("Error with editing an item:", error);
-  }
-}
-
-function* cannedDelete(action) {
-  try {
-    yield axios.delete(`/api/item/queue/canneddelete/${action.payload}`);
-    yield put({ type: "GET_REPLIES" });
-  } catch (error) {
-    console.log("Error with adding a new item:", error);
-  }
-}
-
-
-
 
 
 function* markComplete(action) {
@@ -188,15 +81,7 @@ function* markComplete(action) {
     console.log("Error with adding a new item:", error);
   }
 }
-function* markCompleteCustom(action) {
-  try {
-    yield axios.post("/api/user/queue/markcompletecustom", action.payload);
-    yield put({ type: "GET_COMPLETE_CUSTOM_LIST" });
-    yield put({ type: "GET_COMPLETE_CUSTOM_LIST_COUNT" });
-  } catch (error) {
-    console.log("Error with adding a new item:", error);
-  }
-}
+
 function* backToNew(action) {
   try {
     yield axios.post("/api/user/queue/backtonew", action.payload);
@@ -225,112 +110,11 @@ function* needToRun(action) {
   }
 }
 
-function* markPriority(action) {
-  try {
-    yield axios.put("/api/item/queue/priority", action.payload);
-    yield put({ type: "GET_QUEUE_ITEM_LIST" });
-  } catch (error) {
-    console.log("Error with editing an item:", error);
-  }
-}
-function* markPriorityProgress(action) {
-  try {
-    yield axios.put("/api/item/queue/priorityprogress", action.payload);
-    yield put({ type: "GET_PROGRESS_LIST" });
-  } catch (error) {
-    console.log("Error with editing an item:", error);
-  }
-}
-
-function* markPriorityCustom(action) {
-  try {
-    yield axios.put("/api/item/queue/prioritycustom", action.payload);
-    yield put({ type: "GET_CUSTOM_ITEM_LIST" });
-  } catch (error) {
-    console.log("Error with editing an item:", error);
-  }
-}
-
-function* markPriorityRespond(action) {
-  try {
-    yield axios.put("/api/item/queue/priorityrespond", action.payload);
-    yield put({ type: "GET_RESPOND_LIST" });
-  } catch (error) {
-    console.log("Error with editing an item:", error);
-  }
-}
-function* markPriorityApprove(action) {
-  try {
-    yield axios.put("/api/item/queue/priorityapprove", action.payload);
-    yield put({ type: "GET_APPROVE_LIST" });
-  } catch (error) {
-    console.log("Error with editing an item:", error);
-  }
-}
-
-function* assignTask(action) {
-  try {
-    yield axios.put("/api/item/queue/assign", action.payload);
-    yield put({ type: "GET_QUEUE_ITEM_LIST" });
-  } catch (error) {
-    console.log("Error with editing an item:", error);
-  }
-}
-
-function* assignCustomTask(action) {
-  try {
-    yield axios.put("/api/item/queue/customassign", action.payload);
-    yield put({ type: "GET_CUSTOM_ITEM_LIST" });
-  } catch (error) {
-    console.log("Error with editing an item:", error);
-  }
-}
-
-function* assignSentCustomer(action) {
-  try {
-    yield axios.put("/api/item/queue/assignsentcustomer", action.payload);
-    yield put({ type: "GET_CUSTOM_ITEM_LIST" });
-  } catch (error) {
-    console.log("Error with editing an item:", error);
-  }
-}
-
-
-function* getUser(action) {
-  try {
-    //console.log('we are about to get Students', action.type);
-
-    const response = yield axios.get(`/api/item/queue/userlist`);
-
-    yield put({
-      type: 'SET_USER',
-      payload: response.data
-    });
-
-  } catch (error) {
-    console.log('Error with getting the list of users:', error);
-  }
-
-}
-
-
 function* getitemlist(action) {
   try {
     const response = yield axios.get(`/api/item/queue/itemlist`);
     yield put({
       type: "SET_ITEM",
-      payload: response.data,
-    });
-  } catch (error) {
-    console.log("Error with getting the list of items:", error);
-  }
-}
-
-function* gethistorylist(action) {
-  try {
-    const response = yield axios.get(`/api/item/queue/historylist`);
-    yield put({
-      type: "SET_HISTORY",
       payload: response.data,
     });
   } catch (error) {
@@ -497,47 +281,11 @@ function* getcompletelist(action) {
   }
 }
 
-function* getcustomcompletelist(action) {
-  try {
-    const response = yield axios.get(`/api/item/queue/customcompletelist`);
-    yield put({
-      type: "SET_CUSTOM_COMPLETE",
-      payload: response.data,
-    });
-  } catch (error) {
-    console.log("Error with getting the list of items:", error);
-  }
-}
-
 function* getcompletelistcount(action) {
   try {
     const response = yield axios.get(`/api/item/queue/completelistcount`);
     yield put({
       type: "SET_COMPLETE_COUNT",
-      payload: response.data,
-    });
-  } catch (error) {
-    console.log("Error with getting the list of items:", error);
-  }
-}
-
-function* getcustomcompletelistcount(action) {
-  try {
-    const response = yield axios.get(`/api/item/queue/customcompletelistcount`);
-    yield put({
-      type: "SET_CUSTOM_COMPLETE_COUNT",
-      payload: response.data,
-    });
-  } catch (error) {
-    console.log("Error with getting the list of items:", error);
-  }
-}
-
-function* getreplies(action) {
-  try {
-    const response = yield axios.get(`/api/item/queue/replies`);
-    yield put({
-      type: "SET_REPLIES",
       payload: response.data,
     });
   } catch (error) {
@@ -596,70 +344,16 @@ function* productLookup(action) {
   }
 }
 
-function* sendSupaColor(action) {
-  try {
-    yield axios.post("/api/auto/automatesupa", action.payload);
-    yield put({ type: "GET_RESPOND_LIST" });
-  } catch (error) {
-    console.log("Error with adding a new item:", error);
-  }
-}
-
-function* getOrderLookup(action) {
-  try {
-    const response1 = yield axios.post("/api/item/queue/orderdetails", action.payload);
-    yield put({
-      type: "SET_DETAILS",
-      payload: response1.data,
-    });
-    const response2 = yield axios.post("/api/item/queue/orderlookup", action.payload);
-    yield put({
-      type: "SET_ORDER",
-      payload: response2.data,
-    });
-    const response3 = yield axios.post("/api/item/queue/shippinglookup", action.payload);
-    yield put({
-      type: "SET_SHIPPING",
-      payload: response3.data,
-    });
-    const response4 = yield axios.post("/api/item/queue/productlookup", action.payload);
-    yield put({
-      type: "SET_PRODUCT",
-      payload: response4.data,
-    });
-  } catch (error) {
-    yield put({ type: "STUDENT_REGISTRATION_FAILED" });
-  }
-}
-
-
 
 //this takes all of the Saga functions and dispatches them
 function* QueueItemSaga() {
-  yield takeLatest('ADD_NEW_ITEM', addNewItem);
   yield takeLatest('CHECK_HISTORY', checkHistory);
   yield takeLatest('START_ITEM', startTask);
-  yield takeLatest('CUSTOMER_CONFIRM', customerConfirm);
-  yield takeLatest('CANNED', canned);
-  yield takeLatest('CANNED_EDIT', cannedEdit);
-  yield takeLatest('CANNED_DELETE', cannedDelete);
-  yield takeLatest('CUSTOMER_RESPONSE', customerResponse);
   yield takeLatest('MARK_COMPLETE', markComplete);
-  yield takeLatest('MARK_COMPLETE_CUSTOM', markCompleteCustom);
   yield takeLatest('BACK_TO_NEW', backToNew);
   yield takeLatest('ADD_NEW', goBackNew);
   yield takeLatest('NEED_TO_RUN', needToRun);
-  yield takeLatest('MARK_PRIORITY', markPriority);
-  yield takeLatest('MARK_PRIORITY_PROGRESS', markPriorityProgress);
-  yield takeLatest('MARK_PRIORITY_CUSTOM', markPriorityCustom);
-  yield takeLatest('MARK_PRIORITY_RESPOND', markPriorityRespond);
-  yield takeLatest('MARK_PRIORITY_APPROVE', markPriorityApprove);
-  yield takeLatest('ASSIGN_TASK', assignTask);
-  yield takeLatest('ASSIGN_CUSTOM_TASK', assignCustomTask);
-  yield takeLatest('ASSIGN_SENT_CUSTOMER', assignSentCustomer);
-  yield takeLatest('GET_USER', getUser);
   yield takeLatest('GET_QUEUE_ITEM_LIST', getitemlist);
-  yield takeLatest('GET_HISTORY_LIST', gethistorylist);
   yield takeLatest('GET_CUSTOM_ITEM_LIST', getcustomitemlist);
   yield takeLatest('GET_ITEM_LIST_COUNT', getitemlistcount);
   yield takeLatest('GET_CUSTOM_ITEM_LIST_COUNT', getcustomitemlistcount);
@@ -673,27 +367,16 @@ function* QueueItemSaga() {
   yield takeLatest('GET_APPROVE_LIST_COUNT', getapprovelistcount);
   yield takeLatest('GET_COMPLETE_LIST', getcompletelist);
   yield takeLatest('GET_COMPLETE_LIST_COUNT', getcompletelistcount);
-  yield takeLatest('GET_CUSTOM_COMPLETE_LIST', getcustomcompletelist);
-  yield takeLatest('GET_CUSTOM_COMPLETE_LIST_COUNT', getcustomcompletelistcount);
-  yield takeLatest('GET_REPLIES', getreplies);
   yield takeLatest('DELETE_ITEM_QUEUE', deleteItem);
-  yield takeLatest('DELETE_CUSTOM_ITEM', deleteCustomItem);
-  yield takeLatest('DELETE_SENT_CUSTOMER', deleteSentCustomer);
-  yield takeLatest('DELETE_RESPOND', deleteRespond);
-  yield takeLatest('DELETE_APPROVE', deleteApprove);
   yield takeLatest('DELETE_PROGRESS', deleteProgress);
   yield takeLatest('DELETE_HISTORY', deleteHistory);
   yield takeLatest('DELETE_COMPLETE', deleteComplete);
-  yield takeLatest('DELETE_CUSTOM_COMPLETE', deleteCustomComplete);
-  yield takeLatest('DELETE_COMPLETE_ALL', deleteCompleteAll);
   yield takeLatest('DELETE_COMPLETE_RANGE', deleteCompleteRange);
   yield takeLatest('DELETE_HISTORY_RANGE', deleteHistoryRange);
   yield takeLatest('ORDER_DETAILS', orderDetails);
   yield takeLatest('ORDER_LOOKUP', orderLookup);
   yield takeLatest('SHIPPING_LOOKUP', shippingLookup);
   yield takeLatest('PRODUCT_LOOKUP', productLookup);
-  yield takeLatest('SEND_SUPACOLOR', sendSupaColor);
-  yield takeLatest('GET_ORDERLOOKUP', getOrderLookup);
 }
 
 export default QueueItemSaga;
