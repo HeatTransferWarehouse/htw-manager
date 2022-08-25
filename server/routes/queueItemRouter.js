@@ -137,7 +137,6 @@ router.get("/progresslist", rejectUnauthenticated, (req, res) => {
     .query(queryText)
     .then((result) => {
       res.send(result.rows);
-      console.log("PROGRESS RESULTS")
     })
     .catch((error) => {
       console.log(`Error on item query ${error}`);

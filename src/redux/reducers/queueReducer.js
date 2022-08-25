@@ -20,7 +20,7 @@ const itemlistcount = (state = [], action) => {
 
 const itemlist = (state = [], action) => {
   switch (action.type) {
-    case "SET_ITEM_LIST":
+    case "SET_ITEM_QUEUE":
       return action.payload;
     default:
       return state;
@@ -142,6 +142,7 @@ export default combineReducers({
   historylisttable,
   itemlist,
   itemlistcount,
+  itemlist,
   progresslist,
   progresslistcount,
   confirmlist,

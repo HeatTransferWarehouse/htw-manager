@@ -8,12 +8,9 @@ import './css/font-awesome.css';
 import './css/flex-slider.css';
 import './css/templatemo-softy-pinko.css';
 import { Paper, TextField } from "@material-ui/core";
-import Form from "react-bootstrap/Form";
-import AssignmentIndIcon from "@material-ui/icons/AssignmentInd";
 import PlayArrowIcon from "@material-ui/icons/PlayArrow";
 import DeleteIcon from "@material-ui/icons/Delete";
 import AssignmentTurnedInIcon from "@material-ui/icons/AssignmentTurnedIn";
-import FlagIcon from "@material-ui/icons/Flag";
 import QueueIcon from "@material-ui/icons/Queue";
 import QueueNav from "./QueueNav";
 import swal from "sweetalert";
@@ -304,7 +301,7 @@ class DecoQueue extends Component {
         let decoSku6 = "";
         let descrip = "";
 
-        
+
         let data = [];
 
         if (this.props.itemlist) {
@@ -717,6 +714,9 @@ class DecoQueue extends Component {
                                                         height: "100%",
                                                         backgroundColor: "#F7B665",
                                                         color: "black",
+                                                        borderRadius: "50%",
+                                                        textAlign: "center",
+                                                        padding: "10px",
                                                     }}
                                                 >
                                                     {value}
@@ -740,6 +740,9 @@ class DecoQueue extends Component {
                                                         height: "100%",
                                                         backgroundColor: "#90CA6D",
                                                         color: "black",
+                                                        borderRadius: "50%",
+                                                        textAlign: "center",
+                                                        padding: "10px",
                                                     }}
                                                 >
                                                     {value}
@@ -763,6 +766,9 @@ class DecoQueue extends Component {
                                                         height: "100%",
                                                         backgroundColor: "#F8F18A",
                                                         color: "black",
+                                                        borderRadius: "50%",
+                                                        textAlign: "center",
+                                                        padding: "10px",
                                                     }}
                                                 >
                                                     {value}
@@ -786,6 +792,9 @@ class DecoQueue extends Component {
                                                         height: "100%",
                                                         backgroundColor: "#EEB7D2",
                                                         color: "black",
+                                                        borderRadius: "50%",
+                                                        textAlign: "center",
+                                                        padding: "10px",
                                                     }}
                                                 >
                                                     {value}
@@ -801,6 +810,9 @@ class DecoQueue extends Component {
                                                         height: "100%",
                                                         backgroundColor: "#F48267",
                                                         color: "black",
+                                                        borderRadius: "50%",
+                                                        textAlign: "center",
+                                                        padding: "10px",
                                                     }}
                                                 >
                                                     {value}
@@ -816,6 +828,9 @@ class DecoQueue extends Component {
                                                         height: "100%",
                                                         backgroundColor: "#7AD7F0",
                                                         color: "black",
+                                                        borderRadius: "50%",
+                                                        textAlign: "center",
+                                                        padding: "10px",
                                                     }}
                                                 >
                                                     {value}
@@ -845,6 +860,9 @@ class DecoQueue extends Component {
                                                         height: "100%",
                                                         backgroundColor: "#5D82C1",
                                                         color: "black",
+                                                        borderRadius: "50%",
+                                                        textAlign: "center",
+                                                        padding: "10px",
                                                     }}
                                                 >
                                                     {value}
@@ -875,7 +893,9 @@ class DecoQueue extends Component {
                                                     height: "100%",
                                                     backgroundColor: "#BE93D4",
                                                     color: "black",
+                                                    borderRadius: "50%",
                                                     textAlign: "center",
+                                                    padding: "10px",
                                                 }}
                                             >
                                                 {value}
@@ -884,7 +904,6 @@ class DecoQueue extends Component {
                                     },
                                 },
                             },
-                            
                             {
                                 name: "Start",
                                 options: {
