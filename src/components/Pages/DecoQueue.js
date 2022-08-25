@@ -311,7 +311,8 @@ class DecoQueue extends Component {
                 item.description,
                 item.product_length,
                 item.qty,
-                this.cleanDate(item.created_at)
+                this.cleanDate(item.created_at),
+                item.need_to_run,
             ]);
         } else {
             data = [];
@@ -877,6 +878,25 @@ class DecoQueue extends Component {
                                 options: {
                                     filter: true,
                                     sort: true,
+                                    customBodyRender: (value, tableMeta, updateValue) => {
+                                        if (value) {
+                                            return (
+                                                <div
+                                                    style={{
+                                                        width: "100%",
+                                                        height: "100%",
+                                                        backgroundColor: "rgb(190, 147, 212)",
+                                                        color: "black",
+                                                        textAlign: "center",
+                                                        padding: "10px",
+                                                    }}
+                                                >
+                                                    {value}
+                                                </div>
+                                            );
+                                        }
+                                    },
+
                                 },
                             },
                             {

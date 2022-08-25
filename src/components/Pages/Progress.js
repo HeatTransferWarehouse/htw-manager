@@ -447,6 +447,8 @@ class Progress extends Component {
                                                         height: "100%",
                                                         backgroundColor: "#F48267",
                                                         color: "black",
+                                                        textAlign: "center",
+                                                        padding: "10px",
                                                     }}
                                                 >
                                                     {value}
