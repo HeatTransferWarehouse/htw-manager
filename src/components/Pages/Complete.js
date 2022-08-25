@@ -411,7 +411,6 @@ class Complete extends Component {
                                             decoSku5 === "SD7" ||
                                             decoSku5 === "SD8" ||
                                             decoSku5 === "SD9" ||
-                                            decoSku5 === "SDC" ||
                                             decoSku6 === "SETUPFEE"
                                         ) {
                                             return (
@@ -429,6 +428,23 @@ class Complete extends Component {
                                                 </div>
                                             );
                                         } else if (
+                                            decoSku5 === "SDC"
+                                        ) {
+                                            return (
+                                                <div
+                                                    style={{
+                                                        width: "100%",
+                                                        height: "100%",
+                                                        backgroundColor: "#F48267",
+                                                        color: "black",
+                                                        textAlign: "center",
+                                                        padding: "10px",
+                                                    }}
+                                                >
+                                                    {value}
+                                                </div>
+                                            );
+                                        }else if (
                                             decoSku5 === "CS1" ||
                                             decoSku5 === "CS2" ||
                                             decoSku5 === "CS3" ||

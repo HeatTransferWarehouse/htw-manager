@@ -140,6 +140,7 @@ const productlist = (state = [], action) => {
 
 export default combineReducers({
   historylisttable,
+  itemlist,
   itemlistcount,
   itemlist,
   progresslist,

@@ -51,7 +51,6 @@ class Progress extends Component {
             type: "DELETE_HISTORY_RANGE",
         });
         console.log("PROGRESS LIST Reducer", this.props.progresslist)
-        console.log("ALL Reducer progress", this.props)
     }
 
     cleanDate = (date) => {
@@ -397,7 +396,6 @@ class Progress extends Component {
                                             decoSku5 === "SD7" ||
                                             decoSku5 === "SD8" ||
                                             decoSku5 === "SD9" ||
-                                            decoSku5 === "SDC" ||
                                             decoSku6 === "SETUPFEE"
                                         ) {
                                             return (
@@ -431,6 +429,23 @@ class Progress extends Component {
                                                         width: "100%",
                                                         height: "100%",
                                                         backgroundColor: "#90CA6D",
+                                                        color: "black",
+                                                        textAlign: "center",
+                                                        padding: "10px",
+                                                    }}
+                                                >
+                                                    {value}
+                                                </div>
+                                            );
+                                        } else if (
+                                            decoSku5 === "SDC"
+                                        ) {
+                                            return (
+                                                <div
+                                                    style={{
+                                                        width: "100%",
+                                                        height: "100%",
+                                                        backgroundColor: "#F48267",
                                                         color: "black",
                                                         textAlign: "center",
                                                         padding: "10px",
