@@ -67,6 +67,9 @@ class DecoQueue extends Component {
             type: "GET_RESPOND_LIST_COUNT",
         });
         this.props.dispatch({
+            type: "GET_APPROVE_LIST_COUNT",
+        });
+        this.props.dispatch({
             type: "GET_PROGRESS_LIST_COUNT",
         });
         this.props.dispatch({
@@ -101,6 +104,9 @@ class DecoQueue extends Component {
             type: "GET_RESPOND_LIST_COUNT",
         });
         this.props.dispatch({
+            type: "GET_APPROVE_LIST_COUNT",
+        });
+        this.props.dispatch({
             type: "GET_CONFIRM_LIST_COUNT",
         });
         this.props.dispatch({
@@ -125,6 +131,9 @@ class DecoQueue extends Component {
         });
         this.props.dispatch({
             type: "GET_RESPOND_LIST_COUNT",
+        });
+        this.props.dispatch({
+            type: "GET_APPROVE_LIST_COUNT",
         });
         this.props.dispatch({
             type: "GET_CONFIRM_LIST_COUNT",
@@ -153,6 +162,9 @@ class DecoQueue extends Component {
             type: "GET_RESPOND_LIST_COUNT",
         });
         this.props.dispatch({
+            type: "GET_APPROVE_LIST_COUNT",
+        });
+        this.props.dispatch({
             type: "GET_CONFIRM_LIST_COUNT",
         });
         this.props.dispatch({
@@ -179,6 +191,9 @@ class DecoQueue extends Component {
             type: "GET_RESPOND_LIST_COUNT",
         });
         this.props.dispatch({
+            type: "GET_APPROVE_LIST_COUNT",
+        });
+        this.props.dispatch({
             type: "GET_CONFIRM_LIST_COUNT",
         });
         this.props.dispatch({
@@ -203,6 +218,9 @@ class DecoQueue extends Component {
         });
         this.props.dispatch({
             type: "GET_RESPOND_LIST_COUNT",
+        });
+        this.props.dispatch({
+            type: "GET_APPROVE_LIST_COUNT",
         });
         this.props.dispatch({
             type: "GET_CONFIRM_LIST_COUNT",
@@ -240,6 +258,9 @@ class DecoQueue extends Component {
         });
         this.props.dispatch({
             type: "GET_RESPOND_LIST_COUNT",
+        });
+        this.props.dispatch({
+            type: "GET_APPROVE_LIST_COUNT",
         });
         this.props.dispatch({
             type: "GET_CUSTOM_ITEM_LIST_COUNT",
@@ -280,7 +301,9 @@ class DecoQueue extends Component {
         let decoSku6 = "";
         let descrip = "";
 
+
         let data = [];
+
         if (this.props.itemlist) {
             data = this.props.itemlist.map((item) => [
                 item.order_number,
@@ -288,12 +311,24 @@ class DecoQueue extends Component {
                 item.description,
                 item.product_length,
                 item.qty,
-                this.cleanDate(item.created_at)
+                this.cleanDate(item.created_at),
+                item.need_to_run,
             ]);
         } else {
             data = [];
         }
-        
+
+
+        // const data = this.props.itemlist.map((item) => [
+        //     item.order_number,
+        //     item.sku,
+        //     item.description,
+        //     item.product_length,
+        //     item.qty,
+        //     item.need_to_run,
+        //     this.cleanDate(item.created_at),
+        // ]);
+
         return (
             <div className="queue-container-return">
                 <br />
@@ -363,6 +398,9 @@ class DecoQueue extends Component {
                                         });
                                         this.props.dispatch({
                                             type: "GET_RESPOND_LIST_COUNT",
+                                        });
+                                        this.props.dispatch({
+                                            type: "GET_APPROVE_LIST_COUNT",
                                         });
                                         this.props.dispatch({
                                             type: "GET_CONFIRM_LIST_COUNT",
@@ -436,6 +474,9 @@ class DecoQueue extends Component {
                                             type: "GET_RESPOND_LIST_COUNT",
                                         });
                                         this.props.dispatch({
+                                            type: "GET_APPROVE_LIST_COUNT",
+                                        });
+                                        this.props.dispatch({
                                             type: "GET_CONFIRM_LIST_COUNT",
                                         });
                                         this.props.dispatch({
@@ -500,6 +541,9 @@ class DecoQueue extends Component {
                                                 });
                                                 this.props.dispatch({
                                                     type: "GET_RESPOND_LIST_COUNT",
+                                                });
+                                                this.props.dispatch({
+                                                    type: "GET_APPROVE_LIST_COUNT",
                                                 });
                                                 this.props.dispatch({
                                                     type: "GET_CONFIRM_LIST_COUNT",
@@ -829,10 +873,31 @@ class DecoQueue extends Component {
                             },
                             { name: "Length" },
                             { name: "QTY" },
-                            { name: "Created At",
+                            { name: "Created At" },
+                            {
+                                name: "Number to Run",
                                 options: {
                                     filter: true,
                                     sort: true,
+                                    customBodyRender: (value, tableMeta, updateValue) => {
+                                        if (value) {
+                                            return (
+                                                <div
+                                                    style={{
+                                                        width: "100%",
+                                                        height: "100%",
+                                                        backgroundColor: "rgb(190, 147, 212)",
+                                                        color: "black",
+                                                        textAlign: "center",
+                                                        padding: "10px",
+                                                    }}
+                                                >
+                                                    {value}
+                                                </div>
+                                            );
+                                        }
+                                    },
+
                                 },
                             },
                             {
@@ -881,6 +946,9 @@ class DecoQueue extends Component {
                                                     });
                                                     this.props.dispatch({
                                                         type: "GET_RESPOND_LIST_COUNT",
+                                                    });
+                                                    this.props.dispatch({
+                                                        type: "GET_APPROVE_LIST_COUNT",
                                                     });
                                                     this.props.dispatch({
                                                         type: "GET_CUSTOM_ITEM_LIST_COUNT",
@@ -1117,6 +1185,9 @@ class DecoQueue extends Component {
                                                 type: "GET_RESPOND_LIST_COUNT",
                                             });
                                             this.props.dispatch({
+                                                type: "GET_APPROVE_LIST_COUNT",
+                                            });
+                                            this.props.dispatch({
                                                 type: "GET_CUSTOM_ITEM_LIST_COUNT",
                                             });
                                             this.props.dispatch({
@@ -1190,6 +1261,6 @@ class DecoQueue extends Component {
 
 const mapStateToProps = (state) => ({
     user: state.user,
-    itemlist: state.queue.itemlist, 
+    itemlist: state.queue.itemlist,
 });
 export default connect(mapStateToProps)(DecoQueue);
