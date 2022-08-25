@@ -51,7 +51,7 @@ function App () {
 
             <ProtectedRoute exact path="/resources" component={Resources} />
 
-            <Route exact path="/decoqueue" component={DecoQueue} />
+            <ProtectedRoute exact path="/decoqueue" component={DecoQueue} />
 
             <ProtectedRoute exact path="/progress" component={Progress} />
 
