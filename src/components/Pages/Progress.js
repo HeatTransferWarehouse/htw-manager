@@ -51,7 +51,6 @@ class Progress extends Component {
             type: "DELETE_HISTORY_RANGE",
         });
         console.log("PROGRESS LIST Reducer", this.props.progresslist)
-        console.log("ALL Reducer progress", this.props)
     }
 
     cleanDate = (date) => {
@@ -428,6 +427,21 @@ class Progress extends Component {
                                                         width: "100%",
                                                         height: "100%",
                                                         backgroundColor: "#90CA6D",
+                                                        color: "black",
+                                                    }}
+                                                >
+                                                    {value}
+                                                </div>
+                                            );
+                                        } else if (
+                                            decoSku5 === "SDC"
+                                        ) {
+                                            return (
+                                                <div
+                                                    style={{
+                                                        width: "100%",
+                                                        height: "100%",
+                                                        backgroundColor: "#F48267",
                                                         color: "black",
                                                     }}
                                                 >

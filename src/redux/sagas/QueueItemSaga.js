@@ -103,6 +103,7 @@ function* needToRun(action) {
 function* getitemlist(action) {
   try {
     const response = yield axios.get(`/api/item/queue/itemlist`);
+    console.log("itemlist:", response.data)
     yield put({
       type: "SET_ITEM_LIST",
       payload: response.data,

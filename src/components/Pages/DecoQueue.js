@@ -303,16 +303,33 @@ class DecoQueue extends Component {
         let decoSku7 = "";
         let decoSku6 = "";
         let descrip = "";
-        // let data = [];
-        const data = this.props.itemlist.map((item) => [
-            item.order_number,
-            item.sku,
-            item.description,
-            item.product_length,
-            item.qty,
-            item.need_to_run,
-            this.cleanDate(item.created_at),
-        ]);
+
+        
+        let data = [];
+
+        if (this.props.itemlist) {
+            data = this.props.itemlist.map((item) => [
+                item.order_number,
+                item.sku,
+                item.description,
+                item.product_length,
+                item.qty,
+                this.cleanDate(item.created_at)
+            ]);
+        } else {
+            data = [];
+        }
+
+
+        // const data = this.props.itemlist.map((item) => [
+        //     item.order_number,
+        //     item.sku,
+        //     item.description,
+        //     item.product_length,
+        //     item.qty,
+        //     item.need_to_run,
+        //     this.cleanDate(item.created_at),
+        // ]);
 
         return (
             <div className="queue-container-return">
@@ -843,6 +860,7 @@ class DecoQueue extends Component {
                             },
                             { name: "Length" },
                             { name: "QTY" },
+                            { name: "Created At" },
                             {
                                 name: "Number to Run",
                                 options: {
@@ -866,7 +884,7 @@ class DecoQueue extends Component {
                                     },
                                 },
                             },
-                            { name: "Created At" },
+                            
                             {
                                 name: "Start",
                                 options: {
@@ -1228,6 +1246,6 @@ class DecoQueue extends Component {
 
 const mapStateToProps = (state) => ({
     user: state.user,
-    itemlist: state.queue.itemList,
+    itemlist: state.queue.itemlist,
 });
 export default connect(mapStateToProps)(DecoQueue);
