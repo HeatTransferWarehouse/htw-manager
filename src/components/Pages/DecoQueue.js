@@ -714,7 +714,6 @@ class DecoQueue extends Component {
                                                         height: "100%",
                                                         backgroundColor: "#F7B665",
                                                         color: "black",
-                                                        borderRadius: "50%",
                                                         textAlign: "center",
                                                         padding: "10px",
                                                     }}
@@ -740,7 +739,6 @@ class DecoQueue extends Component {
                                                         height: "100%",
                                                         backgroundColor: "#90CA6D",
                                                         color: "black",
-                                                        borderRadius: "50%",
                                                         textAlign: "center",
                                                         padding: "10px",
                                                     }}
@@ -766,7 +764,6 @@ class DecoQueue extends Component {
                                                         height: "100%",
                                                         backgroundColor: "#F8F18A",
                                                         color: "black",
-                                                        borderRadius: "50%",
                                                         textAlign: "center",
                                                         padding: "10px",
                                                     }}
@@ -792,7 +789,6 @@ class DecoQueue extends Component {
                                                         height: "100%",
                                                         backgroundColor: "#EEB7D2",
                                                         color: "black",
-                                                        borderRadius: "50%",
                                                         textAlign: "center",
                                                         padding: "10px",
                                                     }}
@@ -810,7 +806,6 @@ class DecoQueue extends Component {
                                                         height: "100%",
                                                         backgroundColor: "#F48267",
                                                         color: "black",
-                                                        borderRadius: "50%",
                                                         textAlign: "center",
                                                         padding: "10px",
                                                     }}
@@ -828,7 +823,6 @@ class DecoQueue extends Component {
                                                         height: "100%",
                                                         backgroundColor: "#7AD7F0",
                                                         color: "black",
-                                                        borderRadius: "50%",
                                                         textAlign: "center",
                                                         padding: "10px",
                                                     }}
@@ -860,7 +854,6 @@ class DecoQueue extends Component {
                                                         height: "100%",
                                                         backgroundColor: "#5D82C1",
                                                         color: "black",
-                                                        borderRadius: "50%",
                                                         textAlign: "center",
                                                         padding: "10px",
                                                     }}
@@ -884,24 +877,6 @@ class DecoQueue extends Component {
                                 options: {
                                     filter: true,
                                     sort: true,
-                                    // empty: true,
-                                    customBodyRender: (value, tableMeta, updateValue) => {
-                                        return (
-                                            <div
-                                                style={{
-                                                    width: "100%",
-                                                    height: "100%",
-                                                    backgroundColor: "#BE93D4",
-                                                    color: "black",
-                                                    borderRadius: "50%",
-                                                    textAlign: "center",
-                                                    padding: "10px",
-                                                }}
-                                            >
-                                                {value}
-                                            </div>
-                                        );
-                                    },
                                 },
                             },
                             {

@@ -405,6 +405,8 @@ class Progress extends Component {
                                                         height: "100%",
                                                         backgroundColor: "#F7B665",
                                                         color: "black",
+                                                        textAlign: "center",
+                                                        padding: "10px",
                                                     }}
                                                 >
                                                     {value}
@@ -428,6 +430,8 @@ class Progress extends Component {
                                                         height: "100%",
                                                         backgroundColor: "#90CA6D",
                                                         color: "black",
+                                                        textAlign: "center",
+                                                        padding: "10px",
                                                     }}
                                                 >
                                                     {value}
@@ -466,6 +470,8 @@ class Progress extends Component {
                                                         height: "100%",
                                                         backgroundColor: "#F8F18A",
                                                         color: "black",
+                                                        textAlign: "center",
+                                                        padding: "10px",
                                                     }}
                                                 >
                                                     {value}
@@ -489,6 +495,8 @@ class Progress extends Component {
                                                         height: "100%",
                                                         backgroundColor: "#EEB7D2",
                                                         color: "black",
+                                                        textAlign: "center",
+                                                        padding: "10px",
                                                     }}
                                                 >
                                                     {value}
@@ -502,6 +510,8 @@ class Progress extends Component {
                                                         height: "100%",
                                                         backgroundColor: "#7AD7F0",
                                                         color: "black",
+                                                        textAlign: "center",
+                                                        padding: "10px",
                                                     }}
                                                 >
                                                     {value}
@@ -529,6 +539,8 @@ class Progress extends Component {
                                                         height: "100%",
                                                         backgroundColor: "#5D82C1",
                                                         color: "black",
+                                                        textAlign: "center",
+                                                        padding: "10px",
                                                     }}
                                                 >
                                                     {value}
