@@ -160,56 +160,6 @@ function* getprogresslistcount(action) {
   }
 }
 
-function* getconfirmlist(action) {
-  try {
-    const response = yield axios.get(`/api/item/queue/confirmlist`);
-    yield put({
-      type: "SET_CONFIRM",
-      payload: response.data,
-    });
-  } catch (error) {
-    console.log("Error with getting the list of items:", error);
-  }
-}
-
-
-
-function* getconfirmlistcount(action) {
-  try {
-    const response = yield axios.get(`/api/item/queue/confirmlistcount`);
-    yield put({
-      type: "SET_CONFIRM_COUNT",
-      payload: response.data,
-    });
-  } catch (error) {
-    console.log("Error with getting the list of items:", error);
-  }
-}
-
-function* getrespondlist(action) {
-  try {
-    const response = yield axios.get(`/api/item/queue/respondlist`);
-    yield put({
-      type: "SET_RESPOND",
-      payload: response.data,
-    });
-  } catch (error) {
-    console.log("Error with getting the list of items:", error);
-  }
-}
-
-function* getrespondlistcount(action) {
-  try {
-    const response = yield axios.get(`/api/item/queue/respondlistcount`);
-    yield put({
-      type: "SET_RESPOND_COUNT",
-      payload: response.data,
-    });
-  } catch (error) {
-    console.log("Error with getting the list of items:", error);
-  }
-}
-
 function* getcompletelist(action) {
   try {
     const response = yield axios.get(`/api/item/queue/completelist`);
@@ -297,10 +247,6 @@ function* QueueItemSaga() {
   yield takeLatest('GET_ITEM_LIST_COUNT', getitemlistcount);
   yield takeLatest('GET_PROGRESS_LIST', getprogresslist);
   yield takeLatest('GET_PROGRESS_LIST_COUNT', getprogresslistcount);
-  yield takeLatest('GET_CONFIRM_LIST', getconfirmlist);
-  yield takeLatest('GET_CONFIRM_LIST_COUNT', getconfirmlistcount);
-  yield takeLatest('GET_RESPOND_LIST', getrespondlist);
-  yield takeLatest('GET_RESPOND_LIST_COUNT', getrespondlistcount);
   yield takeLatest('GET_COMPLETE_LIST', getcompletelist);
   yield takeLatest('GET_COMPLETE_LIST_COUNT', getcompletelistcount);
   yield takeLatest('DELETE_ITEM_QUEUE', deleteItem);

@@ -8,12 +8,9 @@ import './css/font-awesome.css';
 import './css/flex-slider.css';
 import './css/templatemo-softy-pinko.css';
 import { Paper, TextField } from "@material-ui/core";
-import Form from "react-bootstrap/Form";
-import AssignmentIndIcon from "@material-ui/icons/AssignmentInd";
 import PlayArrowIcon from "@material-ui/icons/PlayArrow";
 import DeleteIcon from "@material-ui/icons/Delete";
 import AssignmentTurnedInIcon from "@material-ui/icons/AssignmentTurnedIn";
-import FlagIcon from "@material-ui/icons/Flag";
 import QueueIcon from "@material-ui/icons/Queue";
 import QueueNav from "./QueueNav";
 import swal from "sweetalert";
@@ -285,7 +282,7 @@ class DecoQueue extends Component {
 
         let data = [];
         if (this.props.itemlist) {
-            data = this.props.progresslist.map((item) => [
+            data = this.props.itemlist.map((item) => [
                 item.order_number,
                 item.sku,
                 item.description,
