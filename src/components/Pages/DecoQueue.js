@@ -671,7 +671,7 @@ class DecoQueue extends Component {
                                                         height: "100%",
                                                         backgroundColor: "#F7B665",
                                                         color: "black",
-                                                        borderRadius: "5%",
+                                                        borderRadius: "50%",
                                                     }}
                                                 >
                                                     {value}
@@ -695,7 +695,7 @@ class DecoQueue extends Component {
                                                         height: "100%",
                                                         backgroundColor: "#90CA6D",
                                                         color: "black",
-                                                        borderRadius: "5%",
+                                                        borderRadius: "50%",
                                                     }}
                                                 >
                                                     {value}
@@ -719,7 +719,7 @@ class DecoQueue extends Component {
                                                         height: "100%",
                                                         backgroundColor: "#F8F18A",
                                                         color: "black",
-                                                        borderRadius: "5%",
+                                                        borderRadius: "50%",
                                                     }}
                                                 >
                                                     {value}
@@ -743,7 +743,7 @@ class DecoQueue extends Component {
                                                         height: "100%",
                                                         backgroundColor: "#EEB7D2",
                                                         color: "black",
-                                                        borderRadius: "5%",
+                                                        borderRadius: "50%",
                                                     }}
                                                 >
                                                     {value}
@@ -759,7 +759,7 @@ class DecoQueue extends Component {
                                                         height: "100%",
                                                         backgroundColor: "#F48267",
                                                         color: "black",
-                                                        borderRadius: "5%",
+                                                        borderRadius: "50%",
                                                     }}
                                                 >
                                                     {value}
@@ -775,7 +775,7 @@ class DecoQueue extends Component {
                                                         height: "100%",
                                                         backgroundColor: "#7AD7F0",
                                                         color: "black",
-                                                        borderRadius: "5%",
+                                                        borderRadius: "50%",
                                                     }}
                                                 >
                                                     {value}
@@ -805,6 +805,7 @@ class DecoQueue extends Component {
                                                         height: "100%",
                                                         backgroundColor: "#5D82C1",
                                                         color: "black",
+                                                        borderRadius: "50%",
                                                     }}
                                                 >
                                                     {value}
@@ -834,7 +835,7 @@ class DecoQueue extends Component {
                                                     backgroundColor: "#BE93D4",
                                                     color: "black",
                                                     textAlign: "center",
-                                                    borderRadius: "5%",
+                                                    borderRadius: "50%",
                                                 }}
                                             >
                                                 {value}
