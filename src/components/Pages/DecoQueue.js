@@ -1196,6 +1196,6 @@ class DecoQueue extends Component {
 
 const mapStateToProps = (state) => ({
     user: state.user,
-    itemlist: state.queue.itemList,
+    itemlist: state.queue.itemlist, 
 });
 export default connect(mapStateToProps)(DecoQueue);
