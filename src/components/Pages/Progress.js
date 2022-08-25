@@ -397,6 +397,7 @@ class Progress extends Component {
                                             decoSku5 === "SD7" ||
                                             decoSku5 === "SD8" ||
                                             decoSku5 === "SD9" ||
+                                            decoSku5 === "SDC" ||
                                             decoSku6 === "SETUPFEE"
                                         ) {
                                             return (
