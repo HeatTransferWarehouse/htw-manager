@@ -2,9 +2,6 @@ const express = require("express");
 const {
   rejectUnauthenticated,
 } = require("../modules/authentication-middleware");
-const encryptLib = require("../modules/encryption");
-const pool = require("../modules/pool");
-const userStrategy = require("../strategies/user.strategy");
 const router = express.Router();
 const axios = require("axios");
 const sgMail = require("@sendgrid/mail");
@@ -245,7 +242,9 @@ router.post("/orders", cors(), async function (req, res) {
 
   res.sendStatus(200);
 
-  const orderId = req.body.orderId;
+  const orderId = req.body.data.id;
+
+  console.log('New Order: ', orderId);
 
   let inksoft = await axios
   .get(
@@ -275,6 +274,92 @@ if (isInksoft) {
 }
 
 });
+
+router.post("/register", cors(), async function (req, res) {
+
+    res.sendStatus(200);
+  
+    const customerId = req.body.data.id;
+
+    console.log('New Customer: ', customerId);
+  
+    let customer = await axios
+    .get(
+      `https://api.bigcommerce.com/stores/${storeHash}/v2/customers/${customerId}`,
+      config
+    )
+  
+    customer = customer.data;
+       
+    const inksoftPassword = "t@91bW7He2!0Lo21";
+    let email = customer.email;
+    let first_name = customer.first_name;
+    let last_name = customer.last_name;
+    const apiKey = process.env.INKSOFT_API_KEY;
+    
+    let inksoftSess = '';
+    let inksoftRegister = '';
+    
+    
+    try {
+  
+    const inksoftData = `ApiKey=${apiKey}&Email=${email}&CreateNewCart=false&FirstName=${first_name}&LastName=${last_name}&Password=${inksoftPassword}&Format=JSON`;
+    
+    const newInksoftData = inksoftData.replace(/"/g, "");
+        
+    await $.ajax({
+    type: 'POST',
+    url: "https://stores.inksoft.com/DS350156262/Api2/GetOrCreateSessionWithApiKey",
+    headers: {
+      'Content-Type': 'application/x-www-form-urlencoded'
+    },
+    data: newInksoftData,
+    success: async function (resultData) {
+        
+      inksoftSess = resultData.Data.Token;
+  
+    }
+    
+    })
+    
+    } catch (err) {
+      if (err.response) {
+      console.log('Error on Get/Create Session: ', err.response);
+      }
+    }
+    
+  
+    try {
+        
+    const inksoftData = `ApiKey=${ApiKey}&Password=${inksoftPassword}&ConfirmPassword=${inksoftPassword}&Email=${email}&FirstName=${first_name}&LastName=${last_name}&SessionToken=${inksoftSess}&Format=JSON&RememberMe=true&SubscribeToNewsletter=false`;
+        
+    const newInksoftData = inksoftData.replace(/"/g, "");
+        
+    await $.ajax({
+    type: 'POST',
+    url: "https://stores.inksoft.com/DS350156262/Api2/Register",
+    headers: {
+      'Content-Type': 'application/x-www-form-urlencoded'
+    },
+    data: newInksoftData,
+    success: async function (resultData) {
+        
+      inksoftRegister = resultData.Data.Token;
+  
+    }
+    
+    })
+  
+    } catch (err) {
+      if (err.response) {
+      console.log('Error on Register User: ', err.response);
+      }
+    }
+    
+    console.log('Register: ', inksoftRegister);
+
+  
+  });
 
 
 
