@@ -24,7 +24,7 @@ import DecoQueue from "../Pages/DecoQueue";
 import Progress from "../Pages/Progress";
 import Complete from "../Pages/Complete";
 import OrderLookup from "../Pages/OrderLookup";
-import QueueNav from "../Pages/QueueNav";
+import OrderLookupOLD from "../Pages/OrderLookupOLD";
 import "./App.css";
 function App () {
 
@@ -38,6 +38,8 @@ function App () {
             <Route exact path="/login" component={Login} />
 
             <Route exact path="/orderlookup" component={OrderLookup} />
+
+            <Route exact path="/orderlookupold" component={OrderLookupOLD} />
 
             <ProtectedRoute exact path="/" component={Main} />
 
