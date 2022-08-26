@@ -1624,13 +1624,12 @@ router.post("/jwt", cors(), async function (req, res) {
 
   const cust = customer.data;
 
-  console.log('--INKSOFT-- Sending Back: ', cust.email);
+  //console.log('--INKSOFT-- Sending Back: ', cust.email);
 
   res.status(200).send(cust);
 });
 
 router.post("/bcRegister", cors(), async function (req, res) {
-  console.log("--INKSOFT-- We are about to register and signin to inksoft..");
 
   const cust = req.body.customer;
   const inksoftPassword = "t@91bW7He2!0Lo21";
@@ -1646,6 +1645,8 @@ router.post("/bcRegister", cors(), async function (req, res) {
     last_name: last_name,
     apiKey: apiKey
   }
+
+  console.log("--INKSOFT-- Sending back customer info for", email);
 
   res.status(200).send(info);
 
