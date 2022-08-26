@@ -317,16 +317,17 @@ router.post("/register", cors(), async function (req, res) {
     },
     data: newInksoftData,
     success: async function (resultData) {
-        
-      inksoftSess = resultData;
-  
+        inksoftSess = resultData.Data.Token;
+    },
+    error: function (jqXHR, textStatus, ex) {
+        console.log('Error on Get/Create Session: ', jqXHR, textStatus, ex);
     }
     
     })
     
     } catch (err) {
       if (err.response) {
-      console.log('Error on Get/Create Session: ', err.response);
+        console.log('Error on Get/Create Session: ', err.response);
       }
     }
 
@@ -346,16 +347,17 @@ router.post("/register", cors(), async function (req, res) {
     },
     data: newInksoftData,
     success: async function (resultData) {
-        
-      inksoftRegister = resultData;
-  
+        inksoftRegister = resultData.Data.Token;
+    },
+    error: function (jqXHR, textStatus, ex) {
+        console.log('Error on Register User: ', jqXHR, textStatus, ex);
     }
     
     })
   
     } catch (err) {
       if (err.response) {
-      console.log('Error on Register User: ', err.response);
+        console.log('Error on Register User: ', err.response);
       }
     }
     
