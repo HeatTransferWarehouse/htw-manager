@@ -244,7 +244,7 @@ router.post("/orders", cors(), async function (req, res) {
 
   const orderId = req.body.data.id;
 
-  console.log('New Order: ', orderId);
+  //console.log('New Order: ', orderId);
 
   let inksoft = await axios
   .get(
@@ -318,9 +318,10 @@ router.post("/register", cors(), async function (req, res) {
     data: newInksoftData,
     success: async function (resultData) {
         inksoftSess = resultData.Data.Token;
+        console.log('Get/Create Session Success');
     },
     error: function (jqXHR, textStatus, ex) {
-        console.log('Error on Get/Create Session: ', jqXHR, textStatus, ex);
+        console.log('Error on Get/Create Session: ', ex);
     }
     
     })
@@ -348,9 +349,10 @@ router.post("/register", cors(), async function (req, res) {
     data: newInksoftData,
     success: async function (resultData) {
         inksoftRegister = resultData.Data.Token;
+        console.log('Register User Success');
     },
     error: function (jqXHR, textStatus, ex) {
-        console.log('Error on Register User: ', jqXHR, textStatus, ex);
+        console.log('Error on Register User: ', ex);
     }
     
     })
