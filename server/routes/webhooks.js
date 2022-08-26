@@ -1,11 +1,6 @@
 const express = require("express");
-const {
-  rejectUnauthenticated,
-} = require("../modules/authentication-middleware");
 const router = express.Router();
 const axios = require("axios");
-const sgMail = require("@sendgrid/mail");
-sgMail.setApiKey(process.env.SENDGRID_API_KEY);
 require("dotenv").config();
 const app = express();
 const cors = require('cors');
@@ -18,6 +13,14 @@ const {
   updateNote,
   getSO,
 } = require('./Capture/api');
+
+let storeHash = process.env.STORE_HASH
+let config = {
+    headers: {
+      "X-Auth-Client": process.env.BG_AUTH_CLIENT,
+      "X-Auth-Token": process.env.BG_AUTH_TOKEN,
+    }
+  };
 
 const createNote = async (e, n) => {
   console.log('--INKSOFT-- Updating Note on BP...');
@@ -228,15 +231,6 @@ const inksoftSender = async (orderId, inksoft) => {
     }
 }
 
-let storeHash = process.env.STORE_HASH
-
-//BigCommerce API tokens and keys
-let config = {
-  headers: {
-    "X-Auth-Client": process.env.BG_AUTH_CLIENT,
-    "X-Auth-Token": process.env.BG_AUTH_TOKEN,
-  },
-};
 
 router.post("/orders", cors(), async function (req, res) {
 
@@ -304,62 +298,70 @@ router.post("/register", cors(), async function (req, res) {
     
     
     try {
+    console.log('Creating Session..');
   
     const inksoftData = `ApiKey=${apiKey}&Email=${email}&CreateNewCart=false&FirstName=${first_name}&LastName=${last_name}&Password=${inksoftPassword}&Format=JSON`;
     
     const newInksoftData = inksoftData.replace(/"/g, "");
-        
-    await $.ajax({
-    type: 'POST',
-    url: "https://stores.inksoft.com/DS350156262/Api2/GetOrCreateSessionWithApiKey",
-    headers: {
-      'Content-Type': 'application/x-www-form-urlencoded'
-    },
-    data: newInksoftData,
-    success: async function (resultData) {
-        inksoftSess = resultData.Data.Token;
-        console.log('Get/Create Session Success');
-    },
-    error: function (jqXHR, textStatus, ex) {
-        console.log('Error on Get/Create Session: ', ex);
-    }
-    
-    })
+
+    config = {
+      headers: {
+        "X-Auth-Client": process.env.BG_AUTH_CLIENT,
+        "X-Auth-Token": process.env.BG_AUTH_TOKEN,
+        "Content-Type": "application/x-www-form-urlencoded",
+        Accept: "application/x-www-form-urlencoded"
+      },
+    };
+
+    inksoftSess = await axios
+      .post(
+        `https://stores.inksoft.com/DS350156262/Api2/GetOrCreateSessionWithApiKey`,
+        newInksoftData,
+        config
+      )
+
+    inksoftSess = resultData.data.Data.Token;
     
     } catch (err) {
       if (err.response) {
         console.log('Error on Get/Create Session: ', err.response);
+      } else {
+        console.log('Error on Get/Create Session: ', err);
       }
     }
 
     console.log('Token: ', inksoftSess);
   
     try {
+    console.log('Registering user..');
         
     const inksoftData = `ApiKey=${ApiKey}&Password=${inksoftPassword}&ConfirmPassword=${inksoftPassword}&Email=${email}&FirstName=${first_name}&LastName=${last_name}&SessionToken=${inksoftSess}&Format=JSON&RememberMe=true&SubscribeToNewsletter=false`;
         
     const newInksoftData = inksoftData.replace(/"/g, "");
-        
-    await $.ajax({
-    type: 'POST',
-    url: "https://stores.inksoft.com/DS350156262/Api2/Register",
-    headers: {
-      'Content-Type': 'application/x-www-form-urlencoded'
-    },
-    data: newInksoftData,
-    success: async function (resultData) {
-        inksoftRegister = resultData.Data.Token;
-        console.log('Register User Success');
-    },
-    error: function (jqXHR, textStatus, ex) {
-        console.log('Error on Register User: ', ex);
-    }
-    
-    })
+
+    config = {
+        headers: {
+          "X-Auth-Client": process.env.BG_AUTH_CLIENT,
+          "X-Auth-Token": process.env.BG_AUTH_TOKEN,
+          "Content-Type": "application/x-www-form-urlencoded",
+          Accept: "application/x-www-form-urlencoded"
+        },
+      };
+
+    inksoftRegister = await axios
+    .post(
+      `https://stores.inksoft.com/DS350156262/Api2/Register`,
+      newInksoftData,
+      config
+    )
+
+    inksoftRegister = resultData.data.Data.Token;
   
     } catch (err) {
       if (err.response) {
         console.log('Error on Register User: ', err.response);
+      } else {
+        console.log('Error on Register User: ', err);
       }
     }
     
