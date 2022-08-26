@@ -291,7 +291,7 @@ router.post("/register", cors(), async function (req, res) {
   
     customer = customer.data;
 
-    console.log('Customer Info: ', customer);
+    //console.log('Customer Info: ', customer);
        
     const inksoftPassword = "t@91bW7He2!0Lo21";
     let email = customer.email;
@@ -318,7 +318,7 @@ router.post("/register", cors(), async function (req, res) {
     data: newInksoftData,
     success: async function (resultData) {
         
-      inksoftSess = resultData.Data.Token;
+      inksoftSess = resultData;
   
     }
     
@@ -347,7 +347,7 @@ router.post("/register", cors(), async function (req, res) {
     data: newInksoftData,
     success: async function (resultData) {
         
-      inksoftRegister = resultData.Data.Token;
+      inksoftRegister = resultData;
   
     }
     
