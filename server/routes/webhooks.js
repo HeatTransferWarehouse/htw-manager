@@ -25,7 +25,7 @@ const createNote = async (e, n) => {
   console.log('--INKSOFT-- Note Updated..');
 };
 
-const inksoftSender = async (orderId) => {
+const inksoftSender = async (orderId, inksoft) => {
 
   console.log('--INKSOFT-- Fetching order for inksoft: ', orderId);
 
@@ -270,7 +270,7 @@ router.post("/orders", cors(), async function (req, res) {
   }
 
 if (isInksoft) {
-    inksoftSender(orderId);
+    inksoftSender(orderId, inksoft);
 }
 
 });
