@@ -343,7 +343,7 @@ router.post("/register", cors(), async function (req, res) {
     try {
     console.log('Registering user..');
         
-    const inksoftData = `ApiKey=${ApiKey}&Password=${inksoftPassword}&ConfirmPassword=${inksoftPassword}&Email=${email}&FirstName=${first_name}&LastName=${last_name}&SessionToken=${inksoftSess}&Format=JSON&RememberMe=true&SubscribeToNewsletter=false`;
+    const inksoftData = `ApiKey=${apiKey}&Password=${inksoftPassword}&ConfirmPassword=${inksoftPassword}&Email=${email}&FirstName=${first_name}&LastName=${last_name}&SessionToken=${inksoftSess}&Format=JSON&RememberMe=true&SubscribeToNewsletter=false`;
         
     const newInksoftData = inksoftData.replace(/"/g, "");
 
