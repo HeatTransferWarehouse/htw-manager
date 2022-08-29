@@ -320,7 +320,7 @@ router.post("/register", cors(), async function (req, res) {
         config
       )
 
-    inksoftSess = resultData.data.Data.Token;
+    inksoftSess = inksoftSess.data.Data.Token;
     
     } catch (err) {
       if (err.response) {
@@ -355,7 +355,7 @@ router.post("/register", cors(), async function (req, res) {
       config
     )
 
-    inksoftRegister = resultData.data.Data.Token;
+    inksoftRegister = inksoftRegister.data.Data.Token;
   
     } catch (err) {
       if (err.response) {
@@ -368,7 +368,7 @@ router.post("/register", cors(), async function (req, res) {
     console.log('Register: ', inksoftRegister);
 
   
-  });
+});
 
 
 
