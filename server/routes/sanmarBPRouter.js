@@ -1592,7 +1592,7 @@ router.post("/updateCart", async function (req, res) {
   res.sendStatus(200);
 });
 
-router.post("/jwt", cors(), async function (req, res) {
+router.post("/register", cors(), async function (req, res) {
   console.log("--INKSOFT-- We are about to decode a JWT token");
 
   const token = req.body.token;
@@ -1626,12 +1626,6 @@ router.post("/jwt", cors(), async function (req, res) {
 
   //console.log('--INKSOFT-- Sending Back: ', cust.email);
 
-  res.status(200).send(cust);
-});
-
-router.post("/bcRegister", cors(), async function (req, res) {
-
-  const cust = req.body.customer;
   const inksoftPassword = "t@91bW7He2!0Lo21";
   let email = JSON.stringify(cust.email);
   let first_name = JSON.stringify(cust.first_name);
@@ -1646,10 +1640,7 @@ router.post("/bcRegister", cors(), async function (req, res) {
     apiKey: apiKey
   }
 
-  console.log("--INKSOFT-- Sending back customer info for", email);
-
   res.status(200).send(info);
-
 });
 
 module.exports = router;
