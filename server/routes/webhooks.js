@@ -333,7 +333,7 @@ router.post("/register", cors(), async function (req, res) {
     
     } catch (err) {
       if (err.response.data.Messages) {
-        console.log('Error on Get/Create Session: ', err.data.Messages);
+        console.log('Error on Get/Create Session: ', err.response.data.Messages);
       } else {
         console.log('Error on Get/Create Session: ', err);
       }
@@ -366,7 +366,7 @@ router.post("/register", cors(), async function (req, res) {
   
     } catch (err) {
       if (err.response.data.Messages) {
-        console.log('Error on Register User: ', err.data.Messages);
+        console.log('Error on Register User: ', err.response.data.Messages);
       } else {
         console.log('Error on Register User: ', err);
       }
