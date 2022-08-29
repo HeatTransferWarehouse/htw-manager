@@ -332,7 +332,11 @@ router.post("/register", cors(), async function (req, res) {
     inksoftSess = inksoftSess.data.Data.Token;
     
     } catch (err) {
+      if (err.response.data.Messages) {
+        console.log('Error on Get/Create Session: ', err.data.Messages);
+      } else {
         console.log('Error on Get/Create Session: ', err);
+      }
     }
 
     console.log('Token: ', inksoftSess);
@@ -361,7 +365,11 @@ router.post("/register", cors(), async function (req, res) {
     inksoftRegister = inksoftRegister.data.Data.Token;
   
     } catch (err) {
+      if (err.response.data.Messages) {
+        console.log('Error on Register User: ', err.data.Messages);
+      } else {
         console.log('Error on Register User: ', err);
+      }
     }
     
     console.log('Register: ', inksoftRegister);
