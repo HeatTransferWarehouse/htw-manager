@@ -215,3 +215,23 @@ input {
   height: 100vh;
   overflow: hidden;
 }
+
+.goBack {
+  position: absolute;
+  top: 1em;
+  right: 1em;
+}
+
+.setAmount {
+  height: 3.5em;
+}
+
+.editQuantityHeader {
+  margin-top: 1.5em;
+}
+
+.editQuantity {
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+}
