@@ -279,7 +279,7 @@ router.post("/register", cors(), async function (req, res) {
   
     const customerId = req.body.data.id;
 
-    console.log('New Customer: ', customerId);
+    //console.log('--INKSOFT-- New Customer: ', customerId);
 
     const config = {
         headers: {
@@ -306,7 +306,7 @@ router.post("/register", cors(), async function (req, res) {
     let inksoftSess = '';
     
     try {
-    console.log('Registering User..');
+    console.log('--INKSOFT-- Registering User..');
   
     const inksoftData = `ApiKey=${apiKey}&Email=${email}&CreateNewCart=false&FirstName=${first_name}&LastName=${last_name}&Password=${inksoftPassword}&Format=JSON`;
     
@@ -330,13 +330,13 @@ router.post("/register", cors(), async function (req, res) {
     
     } catch (err) {
       if (err.response.data.Messages) {
-        console.log('Error on Get/Create Session: ', err.response.data.Messages);
+        console.log('--INKSOFT-- Error on Get/Create Session: ', err.response.data.Messages);
       } else {
-        console.log('Error on Get/Create Session: ', err);
+        console.log('--INKSOFT-- Error on Get/Create Session: ', err);
       }
     }
 
-    console.log('Session: ', inksoftSess);
+    console.log('--INKSOFT-- Session: ', inksoftSess);
   
 });
 

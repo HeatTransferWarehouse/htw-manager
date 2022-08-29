@@ -1652,29 +1652,4 @@ router.post("/bcRegister", cors(), async function (req, res) {
 
 });
 
-router.post("/supacolor", cors(), async function (req, res) {
-  console.log("--INKSOFT-- We are about to get an order from inksoft..");
-
-  const order = req.body.order;
-
-  let inksoftOrder = [];
-
-  try {
-    inksoftOrder = await axios
-      .get(
-        `https://demo.inksoft.com/demo/Api2/GetOrder?Format=JSON&IncludeProductionCards=false&OrderId=${order}`,
-        config
-      )
-  } catch (err) {
-    console.log('--INKSOFT-- Error on Get Customer: ', err);
-  }
-
-  console.log('--INKSOFT-- Get Inksoft Order: ', inksoftOrder);
-
-
-  res.status(200).send(inksoftOrder.Data);
-
-});
-
-
 module.exports = router;
