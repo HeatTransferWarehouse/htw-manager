@@ -303,13 +303,10 @@ router.post("/register", cors(), async function (req, res) {
     let first_name = customer.first_name;
     let last_name = customer.last_name;
     const apiKey = process.env.INKSOFT_API_KEY;
-    
     let inksoftSess = '';
-    let inksoftRegister = '';
-    
     
     try {
-    console.log('Creating Session..');
+    console.log('Registering User..');
   
     const inksoftData = `ApiKey=${apiKey}&Email=${email}&CreateNewCart=false&FirstName=${first_name}&LastName=${last_name}&Password=${inksoftPassword}&Format=JSON`;
     
@@ -339,41 +336,7 @@ router.post("/register", cors(), async function (req, res) {
       }
     }
 
-    console.log('Token: ', inksoftSess);
-  
-    try {
-    console.log('Registering user..');
-        
-    const inksoftData = `ApiKey=${apiKey}&Password=${inksoftPassword}&ConfirmPassword=${inksoftPassword}&Email=${email}&FirstName=${first_name}&LastName=${last_name}&SessionToken=${inksoftSess}&Format=JSON&RememberMe=true&SubscribeToNewsletter=false`;
-        
-    const newInksoftData = inksoftData.replace(/"/g, "");
-
-    const config = {
-        headers: {
-          "Content-Type": "application/x-www-form-urlencoded",
-          Accept: "application/x-www-form-urlencoded"
-        },
-      };
-
-    inksoftRegister = await axios
-    .post(
-      `https://stores.inksoft.com/DS350156262/Api2/Register`,
-      newInksoftData,
-      config
-    )
-
-    inksoftRegister = inksoftRegister.data.Data.Token;
-  
-    } catch (err) {
-      if (err.response.data.Messages) {
-        console.log('Error on Register User: ', err.response.data.Messages);
-      } else {
-        console.log('Error on Register User: ', err);
-      }
-    }
-    
-    console.log('Register: ', inksoftRegister);
-
+    console.log('Session: ', inksoftSess);
   
 });
 
