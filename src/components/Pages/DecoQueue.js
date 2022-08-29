@@ -12,6 +12,7 @@ import PlayArrowIcon from "@material-ui/icons/PlayArrow";
 import DeleteIcon from "@material-ui/icons/Delete";
 import AssignmentTurnedInIcon from "@material-ui/icons/AssignmentTurnedIn";
 import QueueIcon from "@material-ui/icons/Queue";
+import CloseIcon from "@material-ui/icons/Close";
 import QueueNav from "./QueueNav";
 import swal from "sweetalert";
 
@@ -1069,7 +1070,8 @@ class DecoQueue extends Component {
                                 bottom: 0,
                                 position: "fixed",
                                 borderRadius: "10%",
-                                height: "600px",
+                                padding: "1em",
+                                height: "300px",
                                 width: "400px",
                                 zIndex: "1000000000",
                                 border: "50px",
@@ -1096,7 +1098,7 @@ class DecoQueue extends Component {
                                         variant="outlined"
                                         label="Enter amount to run"
                                         name="edit"
-                                        placeholder="...enter number"
+                                        placeholder="Enter amount to run"
                                         // value of local state as text value
                                         value={this.state.need_to_run}
                                         type="text"
@@ -1138,16 +1140,17 @@ class DecoQueue extends Component {
                                 bottom: 0,
                                 position: "fixed",
                                 borderRadius: "10%",
-                                height: "600px",
+                                height: "250px",
                                 width: "400px",
                                 zIndex: "1000000000",
                                 border: "50px",
-                                overflow: "scroll",
+                                overflow: "hidden",
+                                padding: "1em",
                                 fontSize: "15px",
                                 backgroundColor: "white",
                             }}
                             elevation="24"
-                            className="loginBox"
+                            className="editQuantity"
                         >
                             <td
                                 style={{
@@ -1157,6 +1160,8 @@ class DecoQueue extends Component {
                             >
                                 <br />
                                 <br />{" "}
+                                <h2 className="editQuantityHeader">Edit Quantity</h2>
+                                <hr/>
                                 <form
                                     onSubmit={(event) => {
                                         //prevents default action
@@ -1214,11 +1219,12 @@ class DecoQueue extends Component {
                                     <TextField
                                         style={{
                                             width: "150%",
+                                            marginRight: "1em"
                                         }}
                                         variant="outlined"
                                         label="Enter amount to run"
                                         name="edit"
-                                        placeholder="...enter number"
+                                        placeholder="Enter amount to run"
                                         // value of local state as text value
                                         value={this.state.need_to_run}
                                         type="text"
@@ -1233,8 +1239,8 @@ class DecoQueue extends Component {
                                     <br />
                                     <br />
                                     {/* onClick tied to form element, runs submitInfo on click */}
-                                    <Button variant="success" type="submit">
-                                        Set Amount
+                                    <Button variant="success" type="submit" className="setAmount">
+                                        Confirm
                                     </Button>
                                 </form>
                                 {/* toggles edit window back to not displaying */}
@@ -1243,8 +1249,8 @@ class DecoQueue extends Component {
                                 <br />
                                 <br />
                                 <br />
-                                <Button onClick={this.toggle6} variant="success" type="submit">
-                                    Go Back
+                                <Button onClick={this.toggle6} variant="secondary" type="submit" className="goBack">
+                                    <CloseIcon/>
                                 </Button>
                             </td>
                         </Paper>
