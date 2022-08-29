@@ -14,13 +14,7 @@ const {
   getSO,
 } = require('./Capture/api');
 
-let storeHash = process.env.STORE_HASH
-let config = {
-    headers: {
-      "X-Auth-Client": process.env.BG_AUTH_CLIENT,
-      "X-Auth-Token": process.env.BG_AUTH_TOKEN,
-    }
-  };
+const storeHash = process.env.STORE_HASH;
 
 const createNote = async (e, n) => {
   console.log('--INKSOFT-- Updating Note on BP...');
@@ -240,6 +234,13 @@ router.post("/orders", cors(), async function (req, res) {
 
   //console.log('New Order: ', orderId);
 
+  const config = {
+    headers: {
+      "X-Auth-Client": process.env.BG_AUTH_CLIENT,
+      "X-Auth-Token": process.env.BG_AUTH_TOKEN,
+    }
+  };
+
   let inksoft = await axios
   .get(
     `https://api.bigcommerce.com/stores/${storeHash}/v2/orders/${orderId}/products`,
@@ -276,6 +277,13 @@ router.post("/register", cors(), async function (req, res) {
     const customerId = req.body.data.id;
 
     console.log('New Customer: ', customerId);
+
+    const config = {
+        headers: {
+          "X-Auth-Client": process.env.BG_AUTH_CLIENT,
+          "X-Auth-Token": process.env.BG_AUTH_TOKEN,
+        }
+      };
   
     let customer = await axios
     .get(
@@ -304,7 +312,7 @@ router.post("/register", cors(), async function (req, res) {
     
     const newInksoftData = inksoftData.replace(/"/g, "");
 
-    config = {
+    const config = {
       headers: {
         "X-Auth-Client": process.env.BG_AUTH_CLIENT,
         "X-Auth-Token": process.env.BG_AUTH_TOKEN,
@@ -339,7 +347,7 @@ router.post("/register", cors(), async function (req, res) {
         
     const newInksoftData = inksoftData.replace(/"/g, "");
 
-    config = {
+    const config = {
         headers: {
           "X-Auth-Client": process.env.BG_AUTH_CLIENT,
           "X-Auth-Token": process.env.BG_AUTH_TOKEN,
