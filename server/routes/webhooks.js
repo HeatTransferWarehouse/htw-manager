@@ -26,6 +26,13 @@ const inksoftSender = async (orderId, inksoft) => {
 
   console.log('--INKSOFT-- Fetching order for inksoft: ', orderId);
 
+  let config = {
+    headers: {
+      "X-Auth-Client": process.env.BG_AUTH_CLIENT,
+      "X-Auth-Token": process.env.BG_AUTH_TOKEN,
+    }
+  };
+
   let newOrder = await axios
     .get(
       `https://api.bigcommerce.com/stores/${storeHash}/v2/orders/${orderId}`,
@@ -49,6 +56,15 @@ const inksoftSender = async (orderId, inksoft) => {
       const skuSlice = sku.slice(0, 7);
 
       if (skuSlice === 'INKSOFT') {
+
+        config = {
+            headers: {
+              "X-Auth-Client": process.env.BG_AUTH_CLIENT,
+              "X-Auth-Token": process.env.BG_AUTH_TOKEN,
+              "Content-Type": "application/x-www-form-urlencoded",
+              Accept: "application/x-www-form-urlencoded"
+            },
+          };
 
         mainToken = i.product_options[1].value;
         let inksoftName = i.product_options[2].value;
@@ -107,6 +123,15 @@ const inksoftSender = async (orderId, inksoft) => {
     if (designsToSend === []) {
     } else {
 
+        config = {
+            headers: {
+              "X-Auth-Client": process.env.BG_AUTH_CLIENT,
+              "X-Auth-Token": process.env.BG_AUTH_TOKEN,
+              "Content-Type": "application/x-www-form-urlencoded",
+              Accept: "application/x-www-form-urlencoded"
+            },
+          };
+
         //console.log('--INKSOFT-- New Designs: ', designsToSend);
 
         currentCart.Cart.Items = designsToSend;
@@ -149,15 +174,6 @@ const inksoftSender = async (orderId, inksoft) => {
 
           const data = `Cart=${newNewCart}&Format=JSON&SessionToken=${mainToken}&StoreId=296924`;
 
-          config = {
-            headers: {
-              "X-Auth-Client": process.env.BG_AUTH_CLIENT,
-              "X-Auth-Token": process.env.BG_AUTH_TOKEN,
-              "Content-Type": "application/x-www-form-urlencoded",
-              Accept: "application/x-www-form-urlencoded"
-            },
-          };
-
             await axios
             .post(
               `https://stores.inksoft.com/DS350156262/Api2/SetCart`,
@@ -184,15 +200,6 @@ const inksoftSender = async (orderId, inksoft) => {
           const fileData = 'file';
 
           const data = `ExternalOrderId=${orderId}&PurchaseOrderNumber=${orderId}&SessionToken=${mainToken}&Email=${email}&StoreId=296924&FileData=${fileData}&IgnoreTotalDueCheck=true`;
-
-          config = {
-            headers: {
-              "X-Auth-Client": process.env.BG_AUTH_CLIENT,
-              "X-Auth-Token": process.env.BG_AUTH_TOKEN,
-              "Content-Type": "application/x-www-form-urlencoded",
-              Accept: "application/x-www-form-urlencoded"
-            },
-          };
 
           newOrder = await axios
             .post(
@@ -331,8 +338,8 @@ router.post("/register", cors(), async function (req, res) {
     inksoftSess = inksoftSess.data.Data.Token;
     
     } catch (err) {
-      if (err.response) {
-        console.log('Error on Get/Create Session: ', err.response);
+      if (err.data.Messages) {
+        console.log('Error on Get/Create Session: ', err.data.Messages);
       } else {
         console.log('Error on Get/Create Session: ', err);
       }
@@ -366,8 +373,8 @@ router.post("/register", cors(), async function (req, res) {
     inksoftRegister = inksoftRegister.data.Data.Token;
   
     } catch (err) {
-      if (err.response) {
-        console.log('Error on Register User: ', err.response);
+      if (err.data.Messages) {
+        console.log('Error on Register User: ', err.data.Messages);
       } else {
         console.log('Error on Register User: ', err);
       }
