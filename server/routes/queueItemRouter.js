@@ -25,7 +25,7 @@ router.delete("/deleteitem/:id", rejectUnauthenticated, (req, res) => {
       res.sendStatus(204); //No Content
     })
     .catch((error) => {
-      console.log("Error DELETE ", error);
+      console.log("--DECOQUEUE-- Error DELETE ", error);
       res.sendStatus(500);
     });
 });
@@ -38,7 +38,7 @@ router.delete("/deletehistory/:id", rejectUnauthenticated, (req, res) => {
       res.sendStatus(204); //No Content
     })
     .catch((error) => {
-      console.log("Error DELETE ", error);
+      console.log("--DECOQUEUE-- Error DELETE ", error);
       res.sendStatus(500);
     });
 });
@@ -51,7 +51,7 @@ router.delete("/deleteprogress/:id", rejectUnauthenticated, (req, res) => {
       res.sendStatus(204); //No Content
     })
     .catch((error) => {
-      console.log("Error DELETE ", error);
+      console.log("--DECOQUEUE-- Error DELETE ", error);
       res.sendStatus(500);
     });
 });
@@ -64,7 +64,7 @@ router.delete("/deletecomplete/:id", rejectUnauthenticated, (req, res) => {
       res.sendStatus(204); //No Content
     })
     .catch((error) => {
-      console.log("Error DELETE ", error);
+      console.log("--DECOQUEUE-- Error DELETE ", error);
       res.sendStatus(500);
     });
 });
@@ -80,7 +80,7 @@ router.put("/run", rejectUnauthenticated, (req, res) => {
       res.sendStatus(204); //No Content
     })
     .catch((error) => {
-      console.log("Error UPDATE ", error);
+      console.log("--DECOQUEUE-- Error UPDATE ", error);
       res.sendStatus(500);
     });
 });
@@ -94,7 +94,7 @@ router.get("/itemlist", rejectUnauthenticated, (req, res) => {
       res.send(result.rows);
     })
     .catch((error) => {
-      console.log(`Error on item query ${error}`);
+      console.log(`--DECOQUEUE-- Error on item query ${error}`);
       res.sendStatus(500);
     });
 });
@@ -111,7 +111,7 @@ router.post("/checkhistory", (req, res) => {
       res.send(result.rows);
     })
     .catch((error) => {
-      console.log(`Error on item query ${error}`);
+      console.log(`--DECOQUEUE-- Error on item query ${error}`);
       res.sendStatus(500);
     });
 });
@@ -125,7 +125,7 @@ router.get("/itemlistcount", rejectUnauthenticated, (req, res) => {
       res.send(result.rows);
     })
     .catch((error) => {
-      console.log(`Error on item query ${error}`);
+      console.log(`--DECOQUEUE-- Error on item query ${error}`);
       res.sendStatus(500);
     });
 });
@@ -139,7 +139,7 @@ router.get("/progresslist", rejectUnauthenticated, (req, res) => {
       res.send(result.rows);
     })
     .catch((error) => {
-      console.log(`Error on item query ${error}`);
+      console.log(`--DECOQUEUE-- Error on item query ${error}`);
       res.sendStatus(500);
     });
 });
@@ -153,7 +153,7 @@ router.get("/progresslistcount", rejectUnauthenticated, (req, res) => {
       res.send(result.rows);
     })
     .catch((error) => {
-      console.log(`Error on item query ${error}`);
+      console.log(`--DECOQUEUE-- Error on item query ${error}`);
       res.sendStatus(500);
     });
 });
@@ -167,7 +167,7 @@ router.get("/completelist", rejectUnauthenticated, (req, res) => {
       res.send(result.rows);
     })
     .catch((error) => {
-      console.log(`Error on item query ${error}`);
+      console.log(`--DECOQUEUE-- Error on item query ${error}`);
       res.sendStatus(500);
     });
 });
@@ -181,7 +181,7 @@ router.get("/completelistcount", rejectUnauthenticated, (req, res) => {
       res.send(result.rows);
     })
     .catch((error) => {
-      console.log(`Error on item query ${error}`);
+      console.log(`--DECOQUEUE-- Error on item query ${error}`);
       res.sendStatus(500);
     });
 });
@@ -202,7 +202,7 @@ router.post("/orderdetails", (req, res) => {
     })
     .catch(function (error) {
       // handle error
-      console.log(error);
+      console.log('--DECOQUEUE-- Error on Order Details: ', error);
     });
 });
 
@@ -222,7 +222,7 @@ router.post("/orderlookup", (req, res) => {
     })
     .catch(function (error) {
       // handle error
-      console.log(error);
+      console.log('--DECOQUEUE-- Error on Order Lookup: ', error);
     });
 });
 
@@ -242,7 +242,7 @@ router.post("/shippinglookup", (req, res) => {
     })
     .catch(function (error) {
       // handle error
-      console.log(error);
+      console.log('--DECOQUEUE--  Error on Shipping Lookup: ', error);
     });
 });
 
@@ -262,7 +262,7 @@ router.post("/productlookup", (req, res) => {
     })
     .catch(function (error) {
       // handle error
-      console.log(error);
+      console.log('--DECOQUEUE--  Error on Product Lookup: ', error);
     });
 });
 

@@ -35,7 +35,7 @@ router.delete("/deletecompleterange", rejectUnauthenticated, (req, res) => {
      res.sendStatus(204); //No Content
    })
    .catch((error) => {
-     console.log("Error DELETE ", error);
+     console.log("--DECOQUEUE-- Error DELETE ", error);
      res.sendStatus(500);
    });
 })
@@ -48,7 +48,7 @@ router.delete("/deletehistoryrange", rejectUnauthenticated, (req, res) => {
       res.sendStatus(204); //No Content
     })
     .catch((error) => {
-      console.log("Error DELETE ", error);
+      console.log("--DECOQUEUE-- Error DELETE ", error);
       res.sendStatus(500);
     });
 });
@@ -214,6 +214,7 @@ setInterval(() => {
                                             ) {
                                               //run the logic that places the skus in the stock queue
                                               console.log(
+                                                '--DECOQUEUE--',
                                                 orderID,
                                                 "goes into stock queue"
                                               );
@@ -324,7 +325,7 @@ setInterval(() => {
                                         console.log(error);
                                       });
                                   } else {
-                                    console.log(`${orderID} not authorized`);
+                                    console.log(`--DECOQUEUE-- ${orderID} not authorized`);
                                   }
                                 } else {
                                   // console.log(
@@ -334,11 +335,11 @@ setInterval(() => {
                                 }
                               })
                               .catch((error) => {
-                                console.log(`Error on item query ${error}`);
+                                console.log(`--DECOQUEUE-- Error on item query ${error}`);
                               });
                           })
                   .catch((error) => {
-                    console.log(`Error on item query ${error}`);
+                    console.log(`--DECOQUEUE-- Error on item query ${error}`);
                   });
               })
           .catch((error) => {
@@ -387,12 +388,12 @@ router.post("/starttask", rejectUnauthenticated, (req, res, next) => {
     ])
     .then((result) => res.status(201).send(result.rows))
     .catch(function (error) {
-      console.log("Sorry, there was an error with your query: ", error);
+      console.log("--DECOQUEUE-- Sorry, there was an error with your query: ", error);
       res.sendStatus(500); // HTTP SERVER ERROR
     })
 
     .catch(function (error) {
-      console.log("Sorry, there is an error", error);
+      console.log("--DECOQUEUE-- Sorry, there is an error", error);
       res.sendStatus(500);
     });
 });
@@ -431,7 +432,7 @@ router.post("/gobacknew", rejectUnauthenticated, (req, res, next) => {
     ])
     .then((result) => res.status(201).send(result.rows))
     .catch(function (error) {
-      console.log("Sorry, there was an error with your query: ", error);
+      console.log("--DECOQUEUE-- Sorry, there was an error with your query: ", error);
       res.sendStatus(500); // HTTP SERVER ERROR
     })
 });
@@ -468,12 +469,12 @@ router.post("/markcomplete", rejectUnauthenticated, (req, res, next) => {
     ])
     .then((result) => res.status(201).send(result.rows))
     .catch(function (error) {
-      console.log("Sorry, there was an error with your query: ", error);
+      console.log("--DECOQUEUE-- Sorry, there was an error with your query: ", error);
       res.sendStatus(500); // HTTP SERVER ERROR
     })
 
     .catch(function (error) {
-      console.log("Sorry, there is an error", error);
+      console.log("--DECOQUEUE-- Sorry, there is an error", error);
       res.sendStatus(500);
     });
 });
