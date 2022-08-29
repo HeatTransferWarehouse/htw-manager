@@ -59,8 +59,6 @@ const inksoftSender = async (orderId, inksoft) => {
 
         config = {
             headers: {
-              "X-Auth-Client": process.env.BG_AUTH_CLIENT,
-              "X-Auth-Token": process.env.BG_AUTH_TOKEN,
               "Content-Type": "application/x-www-form-urlencoded",
               Accept: "application/x-www-form-urlencoded"
             },
@@ -125,8 +123,6 @@ const inksoftSender = async (orderId, inksoft) => {
 
         config = {
             headers: {
-              "X-Auth-Client": process.env.BG_AUTH_CLIENT,
-              "X-Auth-Token": process.env.BG_AUTH_TOKEN,
               "Content-Type": "application/x-www-form-urlencoded",
               Accept: "application/x-www-form-urlencoded"
             },
@@ -321,8 +317,6 @@ router.post("/register", cors(), async function (req, res) {
 
     const config = {
       headers: {
-        "X-Auth-Client": process.env.BG_AUTH_CLIENT,
-        "X-Auth-Token": process.env.BG_AUTH_TOKEN,
         "Content-Type": "application/x-www-form-urlencoded",
         Accept: "application/x-www-form-urlencoded"
       },
@@ -338,11 +332,7 @@ router.post("/register", cors(), async function (req, res) {
     inksoftSess = inksoftSess.data.Data.Token;
     
     } catch (err) {
-      if (err.data.Messages) {
-        console.log('Error on Get/Create Session: ', err.data.Messages);
-      } else {
         console.log('Error on Get/Create Session: ', err);
-      }
     }
 
     console.log('Token: ', inksoftSess);
@@ -356,8 +346,6 @@ router.post("/register", cors(), async function (req, res) {
 
     const config = {
         headers: {
-          "X-Auth-Client": process.env.BG_AUTH_CLIENT,
-          "X-Auth-Token": process.env.BG_AUTH_TOKEN,
           "Content-Type": "application/x-www-form-urlencoded",
           Accept: "application/x-www-form-urlencoded"
         },
@@ -373,11 +361,7 @@ router.post("/register", cors(), async function (req, res) {
     inksoftRegister = inksoftRegister.data.Data.Token;
   
     } catch (err) {
-      if (err.data.Messages) {
-        console.log('Error on Register User: ', err.data.Messages);
-      } else {
         console.log('Error on Register User: ', err);
-      }
     }
     
     console.log('Register: ', inksoftRegister);
