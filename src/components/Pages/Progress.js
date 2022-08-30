@@ -365,11 +365,12 @@ class Progress extends Component {
                                     filter: true,
                                     sort: true,
                                     // empty: true,
-                                    customBodyRender: (value, tableMeta, updateValue) => {
+                                    customBodyRender: (value, dataIndex) => {
                                         decoSku3 = value.slice(0, 6);
                                         decoSku5 = value.slice(0, 3);
                                         decoSku7 = value.slice(0, 7);
                                         decoSku6 = value.slice(0, 8);
+                                        let descrip = dataIndex.rowData[3];
                                         if (
                                             decoSku5 === "SD1" ||
                                             decoSku5 === "SD2" ||
@@ -380,7 +381,8 @@ class Progress extends Component {
                                             decoSku5 === "SD7" ||
                                             decoSku5 === "SD8" ||
                                             decoSku5 === "SD9" ||
-                                            decoSku6 === "SETUPFEE"
+                                            decoSku6 === "SETUPFEE" ||
+                                            descrip.includes("Bundle")
                                         ) {
                                             return (
                                                 <div
@@ -534,6 +536,21 @@ class Progress extends Component {
                                                     {value}
                                                 </div>
                                             );
+                                        } else if (value.includes("Bundle")) {
+                                            return (
+                                                <div
+                                                    style={{
+                                                        width: "100%",
+                                                        height: "100%",
+                                                        backgroundColor: "rgb(131 206 206)",
+                                                        color: "black",
+                                                        textAlign: "center",
+                                                        padding: "10px",
+                                                    }}
+                                                >
+                                                    {value}
+                                                </div>
+                                            ); 
                                         } else {
                                             return <div>{value}</div>;
                                         }
