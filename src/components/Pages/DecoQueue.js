@@ -353,7 +353,6 @@ class DecoQueue extends Component {
                                 onClick={(event) => {
                                     if (dataSelector[0]) {
                                         event.preventDefault();
-                                        console.log(dataSelector);
                                         for (let index = 0; index < dataSelector.length; index++) {
                                             //loop through the dataselector to know which indexes are checked, preform action on those indexes
                                             const element = dataSelector[index];
@@ -481,7 +480,6 @@ class DecoQueue extends Component {
                                         let checkInput = document.getElementsByTagName("input");
                                         for (let index = 0; index < checkInput.length; index++) {
                                             const element = checkInput[index];
-                                            console.log(element.checked);
                                             element.checked = false;
                                         }
                                         dataSelector = [];
@@ -559,7 +557,6 @@ class DecoQueue extends Component {
                                                     toggle3: false,
                                                 });
                                             } else {
-                                                console.log("delete canceled");
                                             }
                                         });
                                     } else {
@@ -632,11 +629,12 @@ class DecoQueue extends Component {
                                     filter: true,
                                     sort: true,
                                     // empty: true,
-                                    customBodyRender: (value, tableMeta, updateValue) => {
+                                    customBodyRender: (value, dataIndex) => {
                                         decoSku3 = value.slice(0, 6);
                                         decoSku5 = value.slice(0, 3);
                                         decoSku7 = value.slice(0, 7);
                                         decoSku6 = value.slice(0, 8);
+                                        let descrip = dataIndex.rowData[3];
                                         if (
                                             decoSku5 === "SD1" ||
                                             decoSku5 === "SD2" ||
@@ -647,7 +645,8 @@ class DecoQueue extends Component {
                                             decoSku5 === "SD7" ||
                                             decoSku5 === "SD8" ||
                                             decoSku5 === "SD9" ||
-                                            decoSku6 === "SETUPFEE"
+                                            decoSku6 === "SETUPFEE" ||
+                                            descrip.includes("Bundle")
                                         ) {
                                             return (
                                                 <div
@@ -805,6 +804,21 @@ class DecoQueue extends Component {
                                                     {value}
                                                 </div>
                                             );
+                                        } else if (value.includes("Bundle")) {
+                                            return (
+                                                <div
+                                                    style={{
+                                                        width: "100%",
+                                                        height: "100%",
+                                                        backgroundColor: "rgb(131 206 206)",
+                                                        color: "black",
+                                                        textAlign: "center",
+                                                        padding: "10px",
+                                                    }}
+                                                >
+                                                    {value}
+                                                </div>
+                                            ); 
                                         } else if (value) {
                                             return <div>{value}</div>;
                                         } else {
@@ -822,11 +836,11 @@ class DecoQueue extends Component {
                                         if (descrip.includes("Pack")) {
                                             let packIndex = descrip.indexOf("Pack");
                                             let packQuantity = packIndex - 2;
-                                            return descrip[packQuantity];
+                                            return descrip[packQuantity] * value;
                                         } else if (descrip.includes("PACK")) {
                                             let packIndex = descrip.indexOf("PACK");
                                             let packQuantity = packIndex - 2;
-                                            return descrip[packQuantity];
+                                            return descrip[packQuantity] * value;
                                         } else {
                                             return value
                                         }
