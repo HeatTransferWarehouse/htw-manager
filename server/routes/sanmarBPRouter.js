@@ -1624,8 +1624,6 @@ router.post("/register", cors(), async function (req, res) {
 
   const cust = customer.data;
 
-  //console.log('--INKSOFT-- Sending Back: ', cust.email);
-
   const inksoftPassword = "t@91bW7He2!0Lo21";
   let email = JSON.stringify(cust.email);
   let first_name = JSON.stringify(cust.first_name);
@@ -1639,6 +1637,8 @@ router.post("/register", cors(), async function (req, res) {
     last_name: last_name,
     apiKey: apiKey
   }
+
+  console.log('--INKSOFT-- Sending Back: ', cust.email);
 
   res.status(200).send(info);
 });
