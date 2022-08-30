@@ -69,17 +69,6 @@ class Progress extends Component {
         let decoSku7 = "";
         let decoSku6 = "";
         let descrip = "";
-        // const data = this.props.progresslist.map((progress) => [
-        //     progress.order_number,
-        //     progress.sku,
-        //     progress.description,
-        //     progress.product_length,
-        //     progress.qty,
-        //     progress.need_to_run,
-        //     progress.assigned,
-        //     progress.created_at,
-        //     progress.priority,
-        // ]);
 
         let data = [];
         if (this.props.progresslist) {
@@ -113,7 +102,6 @@ class Progress extends Component {
                                 variant="success"
                                 onClick={(event) => {
                                     if (dataSelector[0]) {
-                                        console.log(dataSelector)
                                         event.preventDefault();
                                         for (let index = 0; index < dataSelector.length; index++) {
                                             const element = dataSelector[index];
@@ -164,7 +152,6 @@ class Progress extends Component {
                                         let checkInput = document.getElementsByTagName("input");
                                         for (let index = 0; index < checkInput.length; index++) {
                                             const element = checkInput[index];
-                                            console.log(element.checked);
                                             element.checked = false;
                                         }
                                         dataSelector = [];
@@ -236,7 +223,6 @@ class Progress extends Component {
                                         let checkInput = document.getElementsByTagName("input");
                                         for (let index = 0; index < checkInput.length; index++) {
                                             const element = checkInput[index];
-                                            console.log(element.checked);
                                             element.checked = false;
                                         }
                                         this.setState({
@@ -259,7 +245,6 @@ class Progress extends Component {
                                 onClick={(event) => {
                                     if (dataSelector[0]) {
                                         event.preventDefault();
-                                        console.log(dataSelector);
                                         swal({
                                             title: "Are you sure?",
                                             text:
@@ -304,7 +289,6 @@ class Progress extends Component {
                                                 let checkInput = document.getElementsByTagName("input");
                                                 for (let index = 0; index < checkInput.length; index++) {
                                                     const element = checkInput[index];
-                                                    console.log(element.checked);
                                                     element.checked = false;
                                                 }
                                                 dataSelector = [];
@@ -535,7 +519,7 @@ class Progress extends Component {
                                     // empty: true,
                                     customBodyRender: (value, tableMeta, updateValue) => {
                                         descrip = value.slice(value.length - 4);
-                                        if (descrip === "Pack" || descrip === "pack") {
+                                        if (descrip === "Pack" || descrip === "pack" || descrip === "PACK") {
                                             return (
                                                 <div
                                                     style={{
@@ -557,7 +541,25 @@ class Progress extends Component {
                                 },
                             },
                             { name: "Length" },
-                            { name: "QTY" },
+                            {
+                                name: "QTY",
+                                options: {
+                                    customBodyRender: (value, dataIndex) => {
+                                        let descrip = dataIndex.rowData[3];
+                                        if (descrip.includes("Pack")) {
+                                            let packIndex = descrip.indexOf("Pack");
+                                            let packQuantity = packIndex - 2;
+                                            return descrip[packQuantity];
+                                        } else if (descrip.includes("PACK")) {
+                                            let packIndex = descrip.indexOf("PACK");
+                                            let packQuantity = packIndex - 2;
+                                            return descrip[packQuantity];
+                                        } else {
+                                            return value
+                                        }
+                                    }
+                                }
+                            },
                             // { name: "Assigned" },
                             { name: "Created At" },
                         ]}

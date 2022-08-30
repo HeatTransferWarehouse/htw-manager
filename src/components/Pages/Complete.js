@@ -54,7 +54,6 @@ class Complete extends Component {
         this.props.dispatch({
             type: "DELETE_HISTORY_RANGE",
         });
-        console.log("COMPLETED LIST Reducer: ", this.props.completelist)
     }
     checkHistory = (event) => {
         const { email } = this.state;
@@ -145,7 +144,6 @@ class Complete extends Component {
                                 onClick={(event) => {
                                     if (dataSelector[0]) {
                                         event.preventDefault();
-                                        console.log(dataSelector);
 
                                         for (let index = 0; index < dataSelector.length; index++) {
                                             const element = dataSelector[index];
@@ -246,7 +244,6 @@ class Complete extends Component {
                                         let checkInput = document.getElementsByTagName("input");
                                         for (let index = 0; index < checkInput.length; index++) {
                                             const element = checkInput[index];
-                                            console.log(element.checked);
                                             element.checked = false;
                                         }
                                         //empty data selector because nothing is checked
@@ -314,7 +311,6 @@ class Complete extends Component {
                                                 let checkInput = document.getElementsByTagName("input");
                                                 for (let index = 0; index < checkInput.length; index++) {
                                                     const element = checkInput[index];
-                                                    console.log(element.checked);
                                                     element.checked = false;
                                                 }
                                                 dataSelector = [];
@@ -552,7 +548,7 @@ class Complete extends Component {
                                     // empty: true,
                                     customBodyRender: (value, tableMeta, updateValue) => {
                                         descrip = value.slice(value.length - 4);
-                                        if (descrip === "Pack" || descrip === "pack") {
+                                        if (descrip === "Pack" || descrip === "pack" || descrip === "PACK") {
                                             return (
                                                 <div
                                                     style={{
@@ -574,7 +570,25 @@ class Complete extends Component {
                                 },
                             },
                             { name: "Length" },
-                            { name: "QTY" },
+                            {
+                                name: "QTY",
+                                options: {
+                                    customBodyRender: (value, dataIndex) => {
+                                        let descrip = dataIndex.rowData[3];
+                                        if (descrip.includes("Pack")) {
+                                            let packIndex = descrip.indexOf("Pack");
+                                            let packQuantity = packIndex - 2;
+                                            return descrip[packQuantity];
+                                        } else if (descrip.includes("PACK")) {
+                                            let packIndex = descrip.indexOf("PACK");
+                                            let packQuantity = packIndex - 2;
+                                            return descrip[packQuantity];
+                                        } else {
+                                            return value
+                                        }
+                                    }
+                                }
+                            },
                             { name: "Created At" },
                         ]}
                         title={"Completed items"} //give the table a name

@@ -35,7 +35,6 @@ class DecoQueue extends Component {
         assigned: "",
         created_at: "",
         dataSelector: [],
-        packQuantity: 0
     };
 
     componentDidMount() {
@@ -790,15 +789,6 @@ class DecoQueue extends Component {
                                     customBodyRender: (value, tableMeta, updateValue) => {
                                         if (value) {
                                             descrip = value.slice(value.length - 4);
-                                        }
-                                        if (value.includes("Pack")) {
-                                            let packIndex = value.indexOf("Pack");
-                                            this.state.packQuantity = packIndex - 2;
-                                            // console.log("found", value, value.indexOf("Pack"), "Value QTY: ", value[packQuantity])
-                                        } else if (value.includes("PACK")) {
-                                            let packIndex = value.indexOf("PACK");
-                                            this.state.packQuantity = packIndex - 2;
-                                            // console.log("found", value, value.indexOf("PACK"), "Value QTY: ", value[packQuantity])
                                         }
                                         if (descrip === "Pack" || descrip === "pack" || descrip === "PACK") {
                                             return (
