@@ -453,7 +453,8 @@ class Complete extends Component {
                                             decoSku5 === "CS6" ||
                                             decoSku5 === "CS7" ||
                                             decoSku5 === "CS8" ||
-                                            decoSku5 === "CS9"
+                                            decoSku5 === "CS9" ||
+                                            decoSku6 === "CUSTOM-S"
                                         ) {
                                             return (
                                                 <div
@@ -503,7 +504,8 @@ class Complete extends Component {
                                             decoSku5 === "CD6" ||
                                             decoSku5 === "CD7" ||
                                             decoSku5 === "CD8" ||
-                                            decoSku5 === "CD9"
+                                            decoSku5 === "CD9" ||
+                                            decoSku6 === "CUSTOM-H"
                                         ) {
                                             return (
                                                 <div

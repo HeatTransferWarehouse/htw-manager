@@ -35,6 +35,7 @@ class DecoQueue extends Component {
         assigned: "",
         created_at: "",
         dataSelector: [],
+        packQuantity: 0
     };
 
     componentDidMount() {
@@ -318,17 +319,6 @@ class DecoQueue extends Component {
         } else {
             data = [];
         }
-
-
-        // const data = this.props.itemlist.map((item) => [
-        //     item.order_number,
-        //     item.sku,
-        //     item.description,
-        //     item.product_length,
-        //     item.qty,
-        //     item.need_to_run,
-        //     this.cleanDate(item.created_at),
-        // ]);
 
         return (
             <div className="queue-container-return">
@@ -636,55 +626,6 @@ class DecoQueue extends Component {
                                     },
                                 },
                             },
-                            // Select All Checkbox
-                            // {
-                            //     name: "",
-                            //     options: {
-                            //         filter: false,
-                            //         sort: false,
-                            //         empty: true,
-                            //         confirmFilters: true,
-                            //         customHeadRender: (dataIndex, rowIndex) => {
-                            //             return (
-                            //                 <div className="select-all">
-                            //                     <input
-                            //                         type="checkbox"
-                            //                         id={dataIndex}
-                            //                         style={{ cursor: "pointer", width: 50, height: 50 }}
-                            //                         name=""
-                            //                         value=""
-                            //                         onClick={(event) => {
-                            //                             // if clicked, check the checkbox
-                            //                             let checkChecked = document.getElementById(dataIndex)
-                            //                                 .checked;
-                            //                             const itemArray = this.props.itemlist;
-                            //                             const item = itemArray[dataIndex];
-                            //                             if (checkChecked === true) {
-                            //                                 //...and push the index into the dataselector
-                            //                                 dataSelector.push(itemArray);
-                            //                             } else {
-                            //                                 //when deselected, remove the index from the dataselector
-                            //                                 for (
-                            //                                     let index = 0;
-                            //                                     index < dataSelector.length;
-                            //                                     index++
-                            //                                 ) {
-                            //                                     const element = dataSelector[index];
-                            //                                     if (item.id === element.id) {
-                            //                                         dataSelector.splice(index, 1);
-                            //                                     }
-                            //                                 }
-                            //                             }
-                            //                             console.log(dataIndex);
-                            //                             console.log(itemArray)
-                            //                             console.log("DATA SELECTOR", dataSelector)
-                            //                         }}
-                            //                     ></input>
-                            //                 </div>
-                            //             );
-                            //         },
-                            //     },
-                            // },
                             { name: "Order Number" },
                             {
                                 name: "SKU",
@@ -732,7 +673,8 @@ class DecoQueue extends Component {
                                             decoSku5 === "CS6" ||
                                             decoSku5 === "CS7" ||
                                             decoSku5 === "CS8" ||
-                                            decoSku5 === "CS9"
+                                            decoSku5 === "CS9" ||
+                                            decoSku6 === "CUSTOM-S"
                                         ) {
                                             return (
                                                 <div
@@ -782,7 +724,8 @@ class DecoQueue extends Component {
                                             decoSku5 === "CD6" ||
                                             decoSku5 === "CD7" ||
                                             decoSku5 === "CD8" ||
-                                            decoSku5 === "CD9"
+                                            decoSku5 === "CD9" ||
+                                            decoSku6 === "CUSTOM-H"
                                         ) {
                                             return (
                                                 <div
@@ -848,7 +791,16 @@ class DecoQueue extends Component {
                                         if (value) {
                                             descrip = value.slice(value.length - 4);
                                         }
-                                        if (descrip === "Pack" || descrip === "pack") {
+                                        if (value.includes("Pack")) {
+                                            let packIndex = value.indexOf("Pack");
+                                            this.state.packQuantity = packIndex - 2;
+                                            // console.log("found", value, value.indexOf("Pack"), "Value QTY: ", value[packQuantity])
+                                        } else if (value.includes("PACK")) {
+                                            let packIndex = value.indexOf("PACK");
+                                            this.state.packQuantity = packIndex - 2;
+                                            // console.log("found", value, value.indexOf("PACK"), "Value QTY: ", value[packQuantity])
+                                        }
+                                        if (descrip === "Pack" || descrip === "pack" || descrip === "PACK") {
                                             return (
                                                 <div
                                                     style={{
@@ -872,7 +824,25 @@ class DecoQueue extends Component {
                                 },
                             },
                             { name: "Length" },
-                            { name: "QTY" },
+                            {
+                                name: "QTY",
+                                options: {
+                                    customBodyRender: (value, dataIndex) => {
+                                        let descrip = dataIndex.rowData[3];
+                                        if (descrip.includes("Pack")) {
+                                            let packIndex = descrip.indexOf("Pack");
+                                            let packQuantity = packIndex - 2;
+                                            return descrip[packQuantity];
+                                        } else if (descrip.includes("PACK")) {
+                                            let packIndex = descrip.indexOf("PACK");
+                                            let packQuantity = packIndex - 2;
+                                            return descrip[packQuantity];
+                                        } else {
+                                            return value
+                                        }
+                                    }
+                                }
+                            },
                             { name: "Created At" },
                             {
                                 name: "Number to Run",
@@ -1161,7 +1131,7 @@ class DecoQueue extends Component {
                                 <br />
                                 <br />{" "}
                                 <h2 className="editQuantityHeader">Edit Quantity</h2>
-                                <hr/>
+                                <hr />
                                 <form
                                     onSubmit={(event) => {
                                         //prevents default action
@@ -1250,7 +1220,7 @@ class DecoQueue extends Component {
                                 <br />
                                 <br />
                                 <Button onClick={this.toggle6} variant="secondary" type="submit" className="goBack">
-                                    <CloseIcon/>
+                                    <CloseIcon />
                                 </Button>
                             </td>
                         </Paper>
