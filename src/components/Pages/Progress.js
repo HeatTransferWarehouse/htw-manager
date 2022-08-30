@@ -549,11 +549,12 @@ class Progress extends Component {
                                         if (descrip.includes("Pack")) {
                                             let packIndex = descrip.indexOf("Pack");
                                             let packQuantity = packIndex - 2;
-                                            return descrip[packQuantity];
+                                            return descrip[packQuantity] * value;
+                                            ;
                                         } else if (descrip.includes("PACK")) {
                                             let packIndex = descrip.indexOf("PACK");
                                             let packQuantity = packIndex - 2;
-                                            return descrip[packQuantity];
+                                            return descrip[packQuantity] * value;
                                         } else {
                                             return value
                                         }
