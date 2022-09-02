@@ -11,6 +11,10 @@ const app = express();
 const cors = require('cors');
 sgMail.setApiKey(process.env.SENDGRID_API_KEY);
 
+const { Logtail } = require("@logtail/node");
+
+const logtail = new Logtail("KQi4An7q1YZVwaTWzM72Ct5r");
+
 app.use(cors({
   origin: ['https://www.heattransferwarehouse.com']
 }));
@@ -38,7 +42,7 @@ const {
   // const c = new Client();
 
   // try {
-  //   console.log('--SANMAR-- Logging into FTP Client..');
+  //   logtail.info('--SANMAR-- Logging into FTP Client..');
 
   //   const ftpConfig = {
   //     host: `${host}`,
@@ -54,7 +58,7 @@ const {
   //   c.on('ready', function () {
   //     c.get(`/000175733Status/${file}`, function (err, stream) {
   //       if (err) {
-  //         console.log('--SANMAR-- Error on SanMar FTP Download: ', err);
+  //         logtail.info('--SANMAR-- Error on SanMar FTP Download: ', err);
   //         c.end();
   //       }
 
@@ -74,17 +78,17 @@ const {
   //     });
   //   });
   // } catch (err) {
-  //   console.log('--SANMAR-- Error on connect ftp: ', err);
+  //   logtail.info('--SANMAR-- Error on connect ftp: ', err);
   //   res.status(500).end();
   // }
 
   // }, millisTill8);
 
 const createNote = async (e) => {
-  console.log('--SANMAR-- Updating Note on BP...');
+  logtail.info('--SANMAR-- Updating Note on BP...');
   const note = "Email Sent via Admin app. https://admin.heattransferwarehouse.com";
   await updateNote(e, note);
-  console.log('--SANMAR-- Note Updated..');
+  logtail.info('--SANMAR-- Note Updated..');
 };
 
 let config = {
@@ -109,19 +113,19 @@ async function updatePrices(bc, sanmar, start) {
         const number = Number(start);
         for (const item of bc) {
           if (item.sku > number) {
-          console.log(`--SANMAR-- Updating Product with ID: ${item.sku}`);
+          logtail.info(`--SANMAR-- Updating Product with ID: ${item.sku}`);
           await eachPrice(item, sanmar);
           await timeoutPromise(1000);
           }
         }
-        console.log('--SANMAR-- DONE');
+        logtail.info('--SANMAR-- DONE');
         return;
       } else {
-        console.log('--SANMAR-- No items in BC Items! Canceling!');
+        logtail.info('--SANMAR-- No items in BC Items! Canceling!');
         return;
       }
     } catch (err) {
-      console.log('--SANMAR-- Error on Update Product: ', err);
+      logtail.info('--SANMAR-- Error on Update Product: ', err);
     }
 }
 
@@ -160,7 +164,7 @@ async function getSanmarId(product) {
         config
       )
   } catch (err) {
-    console.log('--SANMAR-- Error on Get Items1: ', err);
+    logtail.info('--SANMAR-- Error on Get Items1: ', err);
   }
 
   try {
@@ -170,7 +174,7 @@ async function getSanmarId(product) {
         config
       )
   } catch (err) {
-    console.log('--SANMAR-- Error on Get Items2: ', err);
+    logtail.info('--SANMAR-- Error on Get Items2: ', err);
   }
 
   try {
@@ -180,7 +184,7 @@ async function getSanmarId(product) {
         config
       )
   } catch (err) {
-    console.log('--SANMAR-- Error on Get Items3: ', err);
+    logtail.info('--SANMAR-- Error on Get Items3: ', err);
   }
 
   try {
@@ -190,7 +194,7 @@ async function getSanmarId(product) {
         config
       )
   } catch (err) {
-    console.log('--SANMAR-- Error on Get Items4: ', err);
+    logtail.info('--SANMAR-- Error on Get Items4: ', err);
   }
 
   try {
@@ -200,7 +204,7 @@ async function getSanmarId(product) {
         config
       )
   } catch (err) {
-    console.log('--SANMAR-- Error on Get Items5: ', err);
+    logtail.info('--SANMAR-- Error on Get Items5: ', err);
   }
 
   try {
@@ -210,46 +214,46 @@ async function getSanmarId(product) {
         config
       )
   } catch (err) {
-    console.log('--SANMAR-- Error on Get Items6: ', err);
+    logtail.info('--SANMAR-- Error on Get Items6: ', err);
   }
 
   if (items1.data.data[0]) {
-      //console.log('Page 1');
+      //logtail.info('Page 1');
   for (const item of items1.data.data) {
     items.push(item);
    }
   }
 
   if (items2.data.data[0]) {
-      //console.log('Page 2');
+      //logtail.info('Page 2');
   for (const item of items2.data.data) {
     items.push(item);
    }
   }
 
   if (items3.data.data[0]) {
-      //console.log('Page 3');
+      //logtail.info('Page 3');
   for (const item of items3.data.data) {
     items.push(item);
    }
   }
 
   if (items4.data.data[0]) {
-      //console.log('Page 4');
+      //logtail.info('Page 4');
   for (const item of items4.data.data) {
     items.push(item);
    }
   }
 
   if (items5.data.data[0]) {
-    //console.log('Page 5');
+    //logtail.info('Page 5');
   for (const item of items5.data.data) {
     items.push(item);
    }
   }
 
   if (items6.data.data[0]) {
-    //console.log('Page 6');
+    //logtail.info('Page 6');
   for (const item of items6.data.data) {
     items.push(item);
    }
@@ -273,7 +277,7 @@ async function eachSanmarItem(product, item, vars) {
 
     if (putId !== 0) {
     
-    //console.log(`${product.sku} at ${putVar} and $${newPrice}`);
+    //logtail.info(`${product.sku} at ${putVar} and $${newPrice}`);
 
     const http = require("https");
 
@@ -298,7 +302,7 @@ async function eachSanmarItem(product, item, vars) {
 
       res.on("end", function () {
         // const body = Buffer.concat(chunks);
-        // console.log(body.toString());
+        // logtail.info(body.toString());
       });
     });
 
@@ -310,7 +314,7 @@ async function eachSanmarItem(product, item, vars) {
     await timeoutPromise(100);
 
     } else {
-      //console.log('No Variant Found to sync ID!');
+      //logtail.info('No Variant Found to sync ID!');
     }
 }
 
@@ -332,14 +336,14 @@ async function getFile(date) {
     } else {
       file = `${m}-${d}-${y}status.txt`;
     }
-    console.log(file);
+    logtail.info(file);
     return file;
 }
 
 //Get All BC Items Function
 async function getBCItems() {
 
-  console.log('--SANMAR-- Getting Products..');
+  logtail.info('--SANMAR-- Getting Products..');
 
   let bcResponse1;
   let bcResponse2;
@@ -379,7 +383,7 @@ async function getBCItems() {
         config
       )
   } catch (err) {
-    console.log('Error on Get1: ', err);
+    logtail.info('Error on Get1: ', err);
   }
 
   await timeoutPromise(500);
@@ -391,7 +395,7 @@ async function getBCItems() {
         config
       )
   } catch (err) {
-    console.log('Error on Get2: ', err);
+    logtail.info('Error on Get2: ', err);
   }
 
   await timeoutPromise(500);
@@ -403,7 +407,7 @@ async function getBCItems() {
         config
       )
   } catch (err) {
-    console.log('Error on Get3: ', err);
+    logtail.info('Error on Get3: ', err);
   }
 
   await timeoutPromise(500);
@@ -415,7 +419,7 @@ async function getBCItems() {
         config
       )
   } catch (err) {
-    console.log('Error on Get4: ', err);
+    logtail.info('Error on Get4: ', err);
   }
 
   await timeoutPromise(500);
@@ -427,7 +431,7 @@ async function getBCItems() {
         config
       )
   } catch (err) {
-    console.log('Error on Get5: ', err);
+    logtail.info('Error on Get5: ', err);
   }
 
   await timeoutPromise(500);
@@ -439,7 +443,7 @@ async function getBCItems() {
         config
       )
   } catch (err) {
-    console.log('Error on Get6: ', err);
+    logtail.info('Error on Get6: ', err);
   }
 
   await timeoutPromise(500);
@@ -451,7 +455,7 @@ async function getBCItems() {
         config
       )
   } catch (err) {
-    console.log('Error on Get7: ', err);
+    logtail.info('Error on Get7: ', err);
   }
 
   await timeoutPromise(500);
@@ -463,7 +467,7 @@ async function getBCItems() {
         config
       )
   } catch (err) {
-    console.log('Error on Get8: ', err);
+    logtail.info('Error on Get8: ', err);
   }
 
   await timeoutPromise(500);
@@ -475,7 +479,7 @@ async function getBCItems() {
         config
       )
   } catch (err) {
-    console.log('Error on Get9: ', err);
+    logtail.info('Error on Get9: ', err);
   }
 
   await timeoutPromise(500);
@@ -487,7 +491,7 @@ async function getBCItems() {
         config
       )
   } catch (err) {
-    console.log('Error on Get10: ', err);
+    logtail.info('Error on Get10: ', err);
   }
 
   await timeoutPromise(500);
@@ -499,7 +503,7 @@ async function getBCItems() {
         config
       )
   } catch (err) {
-    console.log('Error on Get11: ', err);
+    logtail.info('Error on Get11: ', err);
   }
 
   await timeoutPromise(500);
@@ -511,7 +515,7 @@ async function getBCItems() {
         config
       )
   } catch (err) {
-    console.log('Error on Get12: ', err);
+    logtail.info('Error on Get12: ', err);
   }
 
   await timeoutPromise(500);
@@ -523,7 +527,7 @@ async function getBCItems() {
         config
       )
   } catch (err) {
-    console.log('Error on Get13: ', err);
+    logtail.info('Error on Get13: ', err);
   }
 
   await timeoutPromise(500);
@@ -535,7 +539,7 @@ async function getBCItems() {
         config
       )
   } catch (err) {
-    console.log('Error on Get14: ', err);
+    logtail.info('Error on Get14: ', err);
   }
 
   await timeoutPromise(500);
@@ -547,7 +551,7 @@ async function getBCItems() {
         config
       )
   } catch (err) {
-    console.log('Error on Get15: ', err);
+    logtail.info('Error on Get15: ', err);
   }
 
   await timeoutPromise(500);
@@ -559,7 +563,7 @@ async function getBCItems() {
         config
       )
   } catch (err) {
-    console.log('Error on Get16: ', err);
+    logtail.info('Error on Get16: ', err);
   }
 
   await timeoutPromise(500);
@@ -571,7 +575,7 @@ async function getBCItems() {
         config
       )
   } catch (err) {
-    console.log('Error on Get17: ', err);
+    logtail.info('Error on Get17: ', err);
   }
 
   await timeoutPromise(500);
@@ -583,7 +587,7 @@ async function getBCItems() {
         config
       )
   } catch (err) {
-    console.log('Error on Get18: ', err);
+    logtail.info('Error on Get18: ', err);
   }
 
   await timeoutPromise(500);
@@ -595,7 +599,7 @@ async function getBCItems() {
         config
       )
   } catch (err) {
-    console.log('Error on Get19: ', err);
+    logtail.info('Error on Get19: ', err);
   }
 
   await timeoutPromise(500);
@@ -607,7 +611,7 @@ async function getBCItems() {
         config
       )
   } catch (err) {
-    console.log('Error on Get20: ', err);
+    logtail.info('Error on Get20: ', err);
   }
 
   await timeoutPromise(500);
@@ -619,7 +623,7 @@ async function getBCItems() {
         config
       )
   } catch (err) {
-    console.log('Error on Get21: ', err);
+    logtail.info('Error on Get21: ', err);
   }
 
   await timeoutPromise(500);
@@ -631,7 +635,7 @@ async function getBCItems() {
         config
       )
   } catch (err) {
-    console.log('Error on Get22: ', err);
+    logtail.info('Error on Get22: ', err);
   }
 
   await timeoutPromise(500);
@@ -643,7 +647,7 @@ async function getBCItems() {
         config
       )
   } catch (err) {
-    console.log('Error on Get23: ', err);
+    logtail.info('Error on Get23: ', err);
   }
 
   await timeoutPromise(500);
@@ -655,7 +659,7 @@ async function getBCItems() {
         config
       )
   } catch (err) {
-    console.log('Error on Get24: ', err);
+    logtail.info('Error on Get24: ', err);
   }
 
   await timeoutPromise(500);
@@ -667,7 +671,7 @@ async function getBCItems() {
         config
       )
   } catch (err) {
-    console.log('Error on Get25: ', err);
+    logtail.info('Error on Get25: ', err);
   }
 
   await timeoutPromise(500);
@@ -679,7 +683,7 @@ async function getBCItems() {
         config
       )
   } catch (err) {
-    console.log('Error on Get26: ', err);
+    logtail.info('Error on Get26: ', err);
   }
 
   await timeoutPromise(500);
@@ -691,7 +695,7 @@ async function getBCItems() {
         config
       )
   } catch (err) {
-    console.log('Error on Get27: ', err);
+    logtail.info('Error on Get27: ', err);
   }
 
   await timeoutPromise(500);
@@ -703,7 +707,7 @@ async function getBCItems() {
         config
       )
   } catch (err) {
-    console.log('Error on Get28: ', err);
+    logtail.info('Error on Get28: ', err);
   }
 
   await timeoutPromise(500);
@@ -713,7 +717,7 @@ async function getBCItems() {
       bcResponse.push(item);
     }
   } catch (err) {
-    console.log('Error on bcCreate: ', err);
+    logtail.info('Error on bcCreate: ', err);
 
   }
 
@@ -724,7 +728,7 @@ async function getBCItems() {
       bcResponse.push(item);
     }
   } catch (err) {
-    console.log('Error on bcCreate: ', err);
+    logtail.info('Error on bcCreate: ', err);
 
   }
 
@@ -735,7 +739,7 @@ async function getBCItems() {
       bcResponse.push(item);
     }
   } catch (err) {
-    console.log('Error on bcCreate: ', err);
+    logtail.info('Error on bcCreate: ', err);
 
   }
 
@@ -746,7 +750,7 @@ async function getBCItems() {
       bcResponse.push(item);
     }
   } catch (err) {
-    console.log('Error on bcCreate: ', err);
+    logtail.info('Error on bcCreate: ', err);
 
   }
 
@@ -757,7 +761,7 @@ async function getBCItems() {
       bcResponse.push(item);
     }
   } catch (err) {
-    console.log('Error on bcCreate: ', err);
+    logtail.info('Error on bcCreate: ', err);
 
   }
 
@@ -768,7 +772,7 @@ async function getBCItems() {
       bcResponse.push(item);
     }
   } catch (err) {
-    console.log('Error on bcCreate: ', err);
+    logtail.info('Error on bcCreate: ', err);
 
   }
 
@@ -779,7 +783,7 @@ async function getBCItems() {
       bcResponse.push(item);
     }
   } catch (err) {
-    console.log('Error on bcCreate: ', err);
+    logtail.info('Error on bcCreate: ', err);
 
   }
 
@@ -790,7 +794,7 @@ async function getBCItems() {
       bcResponse.push(item);
     }
   } catch (err) {
-    console.log('Error on bcCreate: ', err);
+    logtail.info('Error on bcCreate: ', err);
 
   }
 
@@ -801,7 +805,7 @@ async function getBCItems() {
       bcResponse.push(item);
     }
   } catch (err) {
-    console.log('Error on bcCreate: ', err);
+    logtail.info('Error on bcCreate: ', err);
 
   }
 
@@ -812,7 +816,7 @@ async function getBCItems() {
       bcResponse.push(item);
     }
   } catch (err) {
-    console.log('Error on bcCreate: ', err);
+    logtail.info('Error on bcCreate: ', err);
 
   }
 
@@ -823,7 +827,7 @@ async function getBCItems() {
       bcResponse.push(item);
     }
   } catch (err) {
-    console.log('Error on bcCreate: ', err);
+    logtail.info('Error on bcCreate: ', err);
 
   }
 
@@ -834,7 +838,7 @@ async function getBCItems() {
       bcResponse.push(item);
     }
   } catch (err) {
-    console.log('Error on bcCreate: ', err);
+    logtail.info('Error on bcCreate: ', err);
 
   }
 
@@ -845,7 +849,7 @@ async function getBCItems() {
       bcResponse.push(item);
     }
   } catch (err) {
-    console.log('Error on bcCreate: ', err);
+    logtail.info('Error on bcCreate: ', err);
 
   }
 
@@ -856,7 +860,7 @@ async function getBCItems() {
       bcResponse.push(item);
     }
   } catch (err) {
-    console.log('Error on bcCreate: ', err);
+    logtail.info('Error on bcCreate: ', err);
 
   }
 
@@ -867,7 +871,7 @@ async function getBCItems() {
       bcResponse.push(item);
     }
   } catch (err) {
-    console.log('Error on bcCreate: ', err);
+    logtail.info('Error on bcCreate: ', err);
 
   }
 
@@ -878,7 +882,7 @@ async function getBCItems() {
       bcResponse.push(item);
     }
   } catch (err) {
-    console.log('Error on bcCreate: ', err);
+    logtail.info('Error on bcCreate: ', err);
 
   }
 
@@ -889,7 +893,7 @@ async function getBCItems() {
       bcResponse.push(item);
     }
   } catch (err) {
-    console.log('Error on bcCreate: ', err);
+    logtail.info('Error on bcCreate: ', err);
 
   }
 
@@ -900,7 +904,7 @@ async function getBCItems() {
       bcResponse.push(item);
     }
   } catch (err) {
-    console.log('Error on bcCreate: ', err);
+    logtail.info('Error on bcCreate: ', err);
 
   }
 
@@ -911,7 +915,7 @@ async function getBCItems() {
       bcResponse.push(item);
     }
   } catch (err) {
-    console.log('Error on bcCreate: ', err);
+    logtail.info('Error on bcCreate: ', err);
 
   }
 
@@ -922,7 +926,7 @@ async function getBCItems() {
       bcResponse.push(item);
     }
   } catch (err) {
-    console.log('Error on bcCreate: ', err);
+    logtail.info('Error on bcCreate: ', err);
 
   }
 
@@ -933,7 +937,7 @@ async function getBCItems() {
       bcResponse.push(item);
     }
   } catch (err) {
-    console.log('Error on bcCreate: ', err);
+    logtail.info('Error on bcCreate: ', err);
 
   }
 
@@ -944,7 +948,7 @@ async function getBCItems() {
       bcResponse.push(item);
     }
   } catch (err) {
-    console.log('Error on bcCreate: ', err);
+    logtail.info('Error on bcCreate: ', err);
 
   }
 
@@ -955,7 +959,7 @@ async function getBCItems() {
       bcResponse.push(item);
     }
   } catch (err) {
-    console.log('Error on bcCreate: ', err);
+    logtail.info('Error on bcCreate: ', err);
 
   }
 
@@ -966,7 +970,7 @@ async function getBCItems() {
       bcResponse.push(item);
     }
   } catch (err) {
-    console.log('Error on bcCreate: ', err);
+    logtail.info('Error on bcCreate: ', err);
 
   }
 
@@ -977,7 +981,7 @@ async function getBCItems() {
       bcResponse.push(item);
     }
   } catch (err) {
-    console.log('Error on bcCreate: ', err);
+    logtail.info('Error on bcCreate: ', err);
 
   }
 
@@ -988,7 +992,7 @@ async function getBCItems() {
       bcResponse.push(item);
     }
   } catch (err) {
-    console.log('Error on bcCreate: ', err);
+    logtail.info('Error on bcCreate: ', err);
 
   }
 
@@ -999,7 +1003,7 @@ async function getBCItems() {
       bcResponse.push(item);
     }
   } catch (err) {
-    console.log('Error on bcCreate: ', err);
+    logtail.info('Error on bcCreate: ', err);
 
   }
 
@@ -1010,7 +1014,7 @@ async function getBCItems() {
       bcResponse.push(item);
     }
   } catch (err) {
-    console.log('Error on bcCreate: ', err);
+    logtail.info('Error on bcCreate: ', err);
   }
 
   await timeoutPromise(200);
@@ -1040,7 +1044,7 @@ async function calculateSales(products) {
 }
 
 router.put("/updatePrices", async function (req, res) {
-  console.log("--SANMAR-- We are updating sanmar prices..");
+  logtail.info("--SANMAR-- We are updating sanmar prices..");
   const bc = req.body.bcItems;
   const sanmar = req.body.sanmar;
   const start = req.body.start;
@@ -1050,13 +1054,13 @@ router.put("/updatePrices", async function (req, res) {
   try {
     await updatePrices(bc, sanmar, start);
   } catch (err) {
-    console.log('Error on update Prices: ', err);
+    logtail.info('Error on update Prices: ', err);
   }
 
 });
 
 router.put("/ftp", async function (req, res) {
-  console.log("--SANMAR-- We are connecting to the ftp client..");
+  logtail.info("--SANMAR-- We are connecting to the ftp client..");
   const host = req.body.host;
   const password = req.body.password;
   const user = req.body.user;
@@ -1064,7 +1068,7 @@ router.put("/ftp", async function (req, res) {
   const c = new Client();
 
   try {
-    console.log('--SANMAR-- Logging into FTP Client..');
+    logtail.info('--SANMAR-- Logging into FTP Client..');
 
     const ftpConfig = {
       host: `${host}`,
@@ -1079,7 +1083,7 @@ router.put("/ftp", async function (req, res) {
     c.on('ready', function () {
       c.get(`/000175733Status/${file}`, function (err, stream) {
         if (err) {
-          console.log('--SANMAR-- Error on SanMar FTP Download: ', err);
+          logtail.info('--SANMAR-- Error on SanMar FTP Download: ', err);
           c.end();
         }
 
@@ -1099,14 +1103,14 @@ router.put("/ftp", async function (req, res) {
       });
     });
   } catch (err) {
-    console.log('--SANMAR-- Error on connect ftp: ', err);
+    logtail.info('--SANMAR-- Error on connect ftp: ', err);
     res.status(500).end();
   }
 
 });
 
 router.put("/ftpPrices", async function (req, res) {
-  console.log("--SANMAR-- We are connecting to the ftp client..");
+  logtail.info("--SANMAR-- We are connecting to the ftp client..");
   const host = req.body.host;
   const password = req.body.password;
   const user = req.body.user;
@@ -1114,7 +1118,7 @@ router.put("/ftpPrices", async function (req, res) {
 
 
   try {
-    console.log('--SANMAR-- Logging into FTP Client..');
+    logtail.info('--SANMAR-- Logging into FTP Client..');
 
     const ftpConfig = {
       host: `${host}`,
@@ -1126,7 +1130,7 @@ router.put("/ftpPrices", async function (req, res) {
     c.connect(ftpConfig);
 
     c.on('ready', function () {
-      console.log('--SANMAR-- Downloading Sanmar Prices..');
+      logtail.info('--SANMAR-- Downloading Sanmar Prices..');
       c.get(`/SanMarPDD/SanMar_SDL_DI.zip`, function (err, stream) {
         if (err) throw err;
         stream.once('close', function () {
@@ -1141,14 +1145,14 @@ router.put("/ftpPrices", async function (req, res) {
     });
     //res.send('YES').status(201);
   } catch (err) {
-    console.log('--SANMAR-- Error on connect ftp: ', err);
+    logtail.info('--SANMAR-- Error on connect ftp: ', err);
     res.status(500).send('NO');
   }
 
 });
 
 router.post("/sanmarDB", async function (req, res) {
-  console.log("--SANMAR-- We are about to update the sanmar list");
+  logtail.info("--SANMAR-- We are about to update the sanmar list");
 
   let response = req.body.products;
 
@@ -1158,7 +1162,7 @@ router.post("/sanmarDB", async function (req, res) {
     await pool
       .query(queryText)
   } catch (err) {
-    console.log('--SANMAR-- Error on delete sanmar prices: ', err);
+    logtail.info('--SANMAR-- Error on delete sanmar prices: ', err);
     return res.status(500);
   }
 
@@ -1174,7 +1178,7 @@ router.post("/sanmarDB", async function (req, res) {
       await pool
         .query(queryText2, [name, sku, color, size, price])
     } catch (err) {
-      console.log('--SANMAR-- Error on post single item: ', err);
+      logtail.info('--SANMAR-- Error on post single item: ', err);
       res.sendStatus(500);
     }
   }
@@ -1183,7 +1187,7 @@ router.post("/sanmarDB", async function (req, res) {
 });
 
 router.get("/getSanmarPrices", async function (req, res) {
-  console.log("--SANMAR-- We are about to get the sanmar price list");
+  logtail.info("--SANMAR-- We are about to get the sanmar price list");
 
   let response = [];
 
@@ -1192,7 +1196,7 @@ router.get("/getSanmarPrices", async function (req, res) {
     response = await pool
       .query(queryText)
   } catch (err) {
-    console.log('--SANMAR-- Error on delete sanmar prices: ', err);
+    logtail.info('--SANMAR-- Error on delete sanmar prices: ', err);
     return res.status(500);
   }
 
@@ -1200,7 +1204,7 @@ router.get("/getSanmarPrices", async function (req, res) {
 });
 
 router.put("/email", async function (req, res) {
-  console.log("--SANMAR-- We are sending an email..");
+  logtail.info("--SANMAR-- We are sending an email..");
   const order = req.body.order;
   const tracking = req.body.tracking;
   let response = [];
@@ -1212,7 +1216,7 @@ router.put("/email", async function (req, res) {
         config
       )
   } catch (err) {
-    console.log('--SANMAR-- Error on get order: ', err);
+    logtail.info('--SANMAR-- Error on get order: ', err);
     res.sendStatus(500);
   }
 
@@ -1220,7 +1224,7 @@ router.put("/email", async function (req, res) {
             const email = response.data.billing_address.email;
             //const email = 'tre@heattransferwarehouse.com';
             let first_name = response.data.billing_address.first_name;
-            console.log('--SANMAR-- ', email, first_name);
+            logtail.info('--SANMAR-- ', email, first_name);
             let titleString = `
             <div>
               <img
@@ -1289,29 +1293,29 @@ router.put("/email", async function (req, res) {
             await sgMail
               .send(msg)
               .then(() => {
-                console.log('--SANMAR-- Email sent')
+                logtail.info('--SANMAR-- Email sent')
               })
               .catch((error) => {
                 console.error(error)
               })
   
           } catch (err) {
-            console.log('--SANMAR-- Error on send email: ', err);
+            logtail.info('--SANMAR-- Error on send email: ', err);
             res.sendStatus(500);
           }
         
   try {
     const so = await getSO(order);
-    console.log('--SANMAR-- ', so.response.results[0][0]);
+    logtail.info('--SANMAR-- ', so.response.results[0][0]);
     await createNote(so.response.results[0][0]);
   } catch (err) {
-    console.log('--SANMAR-- Error on add note: ', err);
+    logtail.info('--SANMAR-- Error on add note: ', err);
     res.sendStatus(500);
   }
 });
 
 router.get("/getitems", (req, res) => {
-  console.log("--BRIGHTPEARL-- We are about to get the BP list");
+  logtail.info("--BRIGHTPEARL-- We are about to get the BP list");
 
   const queryText = `select * from "item" ORDER BY id DESC`;
   pool
@@ -1320,13 +1324,13 @@ router.get("/getitems", (req, res) => {
       res.status(201).send(selectResult.rows);
     })
     .catch((error) => {
-      console.log(`--BRIGHTPEARL-- Error on item query ${error}`);
+      logtail.info(`--BRIGHTPEARL-- Error on item query ${error}`);
       res.sendStatus(500);
     });
 });
 
 router.get("/getsanmar", (req, res) => {
-  console.log("--SANMAR-- We are about to get the sanmar list");
+  logtail.info("--SANMAR-- We are about to get the sanmar list");
 
   const queryText = `select * from "sanmar" ORDER BY id DESC`;
   pool
@@ -1335,13 +1339,13 @@ router.get("/getsanmar", (req, res) => {
       res.status(201).send(selectResult.rows);
     })
     .catch((error) => {
-      console.log(`--SANMAR-- Error on item query ${error}`);
+      logtail.info(`--SANMAR-- Error on item query ${error}`);
       res.sendStatus(500);
     });
 });
 
 router.get("/refreshBC", async function (req, res) {
-  console.log("--SANMAR-- We are about to update the bc list");
+  logtail.info("--SANMAR-- We are about to update the bc list");
 
   let response = [];
 
@@ -1351,7 +1355,7 @@ router.get("/refreshBC", async function (req, res) {
     await pool
       .query(queryText)
   } catch (err) {
-    console.log('--SANMAR-- Error on delete bc prices: ', err);
+    logtail.info('--SANMAR-- Error on delete bc prices: ', err);
     return res.status(500);
   }
 
@@ -1372,7 +1376,7 @@ router.get("/refreshBC", async function (req, res) {
       await pool
         .query(queryText2, [name, sku])
     } catch (err) {
-      console.log('--SANMAR-- Error on post single bc price: ', err);
+      logtail.info('--SANMAR-- Error on post single bc price: ', err);
       res.sendStatus(500);
     }
   }
@@ -1381,7 +1385,7 @@ router.get("/refreshBC", async function (req, res) {
 });
 
 router.get("/getBC", async function (req, res) {
-  console.log("--SANMAR-- We are about to get the bc price list");
+  logtail.info("--SANMAR-- We are about to get the bc price list");
 
   let response = [];
 
@@ -1390,7 +1394,7 @@ router.get("/getBC", async function (req, res) {
     response = await pool
       .query(queryText)
   } catch (err) {
-    console.log('--SANMAR-- Error on delete bc prices: ', err);
+    logtail.info('--SANMAR-- Error on delete bc prices: ', err);
     return res.status(500);
   }
 
@@ -1398,21 +1402,21 @@ router.get("/getBC", async function (req, res) {
 });
 
 router.post("/addOrder", async function (req, res) {
-  console.log("--SANMAR-- We are about to add an order to sanmar db");
+  logtail.info("--SANMAR-- We are about to add an order to sanmar db");
   const o = req.body.order;
   const tracking = req.body.tracking;
-  console.log(o, tracking);
+  logtail.info(o, tracking);
 
   try {
   const queryText = `INSERT INTO "sanmar" (ref, tracking) VALUES ($1, $2);`;
   await pool
     .query(queryText, [o, tracking])
   } catch (err) {
-  console.log('--SANMAR-- Error on add order: ', err);
+  logtail.info('--SANMAR-- Error on add order: ', err);
   return res.status(500);
   }
 
-  console.log("--SANMAR-- We are about to get the sanmar list");
+  logtail.info("--SANMAR-- We are about to get the sanmar list");
 
   const queryText = `select * from "sanmar" ORDER BY id DESC`;
   pool
@@ -1421,26 +1425,26 @@ router.post("/addOrder", async function (req, res) {
       res.status(201).send(selectResult.rows);
     })
     .catch((error) => {
-      console.log(`--SANMAR-- Error on item query ${error}`);
+      logtail.info(`--SANMAR-- Error on item query ${error}`);
       res.sendStatus(500);
     });
 
 });
 
 router.post("/items", async function (req, res) {
-  console.log("--BRIGHTPEARL-- We are about to add to the item list");
+  logtail.info("--BRIGHTPEARL-- We are about to add to the item list");
 
   try {
   await addItems();
   } catch (err) {
-  console.log('--BRIGHTPEARL-- Error on add items: ', err);
+  logtail.info('--BRIGHTPEARL-- Error on add items: ', err);
   return res.status(500);
   }
 
   try {
   res.sendStatus(200);
   } catch (err) {
-  console.log('--BRIGHTPEARL-- Error on send 200: ', err);
+  logtail.info('--BRIGHTPEARL-- Error on send 200: ', err);
   return res.status(500);
   }
 
@@ -1460,7 +1464,7 @@ router.post("/items", async function (req, res) {
           await pool
             .query(queryText2, [name, sku, bulk, width, type, color, sales])
         } catch (err) {
-          console.log('--BRIGHTPEARL-- Error on get single item: ', err);
+          logtail.info('--BRIGHTPEARL-- Error on get single item: ', err);
           return res.status(500);
         }
   }
@@ -1468,30 +1472,30 @@ router.post("/items", async function (req, res) {
 });
 
 router.delete("/all", async function (req, res) {
-  console.log("--BRIGHTPEARL-- We are about to delete the item list");
+  logtail.info("--BRIGHTPEARL-- We are about to delete the item list");
 
   try {
-    console.log('--BRIGHTPEARL-- deleting items');
+    logtail.info('--BRIGHTPEARL-- deleting items');
     const queryText = `DELETE from "item";`;
     await pool
       .query(queryText)
   } catch (err) {
-    console.log('--BRIGHTPEARL-- Error on delete items: ', err);
+    logtail.info('--BRIGHTPEARL-- Error on delete items: ', err);
     return res.status(500);
   }
 
   try {
     res.sendStatus(200);
   } catch (err) {
-    console.log('--BRIGHTPEARL-- Error on send 200: ', err);
+    logtail.info('--BRIGHTPEARL-- Error on send 200: ', err);
     return res.status(500);
   }
 });
 
 router.delete("/items:id", async function (req, res) {
-  console.log("--BRIGHTPEARL-- We are deleting items with id:", req.params.id);
+  logtail.info("--BRIGHTPEARL-- We are deleting items with id:", req.params.id);
   const id = req.params.id;
-  console.log(id);
+  logtail.info(id);
   
   try {
       const queryText = 'delete from "item" WHERE id = $1';
@@ -1499,14 +1503,14 @@ router.delete("/items:id", async function (req, res) {
         .query(queryText, [id])
       return res.status(200).send();
   } catch (err) {
-    console.log('--BRIGHTPEARL-- Error on delete: ', err);
+    logtail.info('--BRIGHTPEARL-- Error on delete: ', err);
     return res.status(500).send();
   }
     
 });
 
 router.put("/items/:id", async function (req, res) {
-  console.log("--BRIGHTPEARL-- We are updating items as dead with id:", req.params.id);
+  logtail.info("--BRIGHTPEARL-- We are updating items as dead with id:", req.params.id);
   const ids = req.params.id;
 
   let items = [];
@@ -1524,18 +1528,18 @@ router.put("/items/:id", async function (req, res) {
 
   try {
     for (item of items) {
-      console.log(item);
+      logtail.info(item);
     const queryText = `UPDATE "item" SET dead = true WHERE id = ${item}`;
     await pool
       .query(queryText)
     }
   } catch (err) {
-    console.log('--BRIGHTPEARL-- Error on update: ', err);
+    logtail.info('--BRIGHTPEARL-- Error on update: ', err);
     return res.status(500).send();
   }
   
   try {
-    console.log("--BRIGHTPEARL-- We are about to get the item list");
+    logtail.info("--BRIGHTPEARL-- We are about to get the item list");
 
     const queryText = `select * from "item" ORDER BY id DESC`;
     await pool
@@ -1544,26 +1548,26 @@ router.put("/items/:id", async function (req, res) {
         res.status(201).send(selectResult.rows);
       })
       .catch((error) => {
-        console.log(`--BRIGHTPEARL-- Error on item query ${error}`);
+        logtail.info(`--BRIGHTPEARL-- Error on item query ${error}`);
         res.sendStatus(500);
       });
   } catch (err) {
-    console.log('--BRIGHTPEARL-- Error on Get: ', err);
+    logtail.info('--BRIGHTPEARL-- Error on Get: ', err);
     return res.status(500).send();
   }
     
 });
 
 router.post("/updateCart", async function (req, res) {
-  console.log("--INKSOFT-- We are about to update a cart on BC");
+  logtail.info("--INKSOFT-- We are about to update a cart on BC");
 
   const customer = req.body.customer;
   const id = req.body.id;
   const token = req.body.token;
-  console.log(id, ' and ', token);
+  logtail.info(id, ' and ', token);
   let ir = [];
 
-  console.log(cr);
+  logtail.info(cr);
 
   try {
     ir = await axios
@@ -1572,11 +1576,11 @@ router.post("/updateCart", async function (req, res) {
         config
       )
   } catch (err) {
-    console.log('--INKSOFT-- Error on get inksoft: ', err);
+    logtail.info('--INKSOFT-- Error on get inksoft: ', err);
     return res.status(500);
   }
 
-  console.log(ir);
+  logtail.info(ir);
 
   try {
     await axios
@@ -1585,7 +1589,7 @@ router.post("/updateCart", async function (req, res) {
         config
       )
   } catch (err) {
-    console.log('--INKSOFT-- Error on update cart: ', err);
+    logtail.info('--INKSOFT-- Error on update cart: ', err);
     return res.status(500);
   }
 
@@ -1593,19 +1597,19 @@ router.post("/updateCart", async function (req, res) {
 });
 
 router.post("/register", cors(), async function (req, res) {
-  console.log("--INKSOFT-- We are about to decode a JWT token");
+  logtail.info("--INKSOFT-- We are about to decode a JWT token");
 
   const token = req.body.token;
-  //console.log('Token: ', token);
+  //logtail.info('Token: ', token);
   let decoded = '0';
 
   try {
     decoded = jwt.verify(token, '9461605d7e247c64d913b6ec2ec75f9c72f873b6edc81b6e944a54d8daef984a');
   } catch (err) {
-    console.log('Invalid: ', err);
+    logtail.info('Invalid: ', err);
   }
 
-  //console.log(decoded);
+  //logtail.info(decoded);
 
   let customer = [];
   const customer_id = decoded.customer.id;
@@ -1617,10 +1621,10 @@ router.post("/register", cors(), async function (req, res) {
         config
       )
   } catch (err) {
-    console.log('--INKSOFT-- Error on Get Customer: ', err);
+    logtail.info('--INKSOFT-- Error on Get Customer: ', err);
   }
 
-  //console.log('Response: ', customer);
+  //logtail.info('Response: ', customer);
 
   const cust = customer.data;
 
@@ -1638,7 +1642,7 @@ router.post("/register", cors(), async function (req, res) {
     apiKey: apiKey
   }
 
-  console.log('--INKSOFT-- Sending Back: ', cust.email);
+  logtail.info('--INKSOFT-- Sending Back: ', cust.email);
 
   res.status(200).send(info);
 });

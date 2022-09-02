@@ -4,6 +4,10 @@
 const cookieSession = require('cookie-session');
 const warnings = require('../constants/warnings');
 
+const { Logtail } = require("@logtail/node");
+
+const logtail = new Logtail("KQi4An7q1YZVwaTWzM72Ct5r");
+
 /*
   The cookie session makes it so a user can enters their username and password one time,
   and then we can keep them logged in. We do this by giving them a really long random string
@@ -19,7 +23,7 @@ const serverSessionSecret = () => {
       process.env.SERVER_SESSION_SECRET.length < 8 || //want secret to be a ceetain length (longer = more secure)
       process.env.SERVER_SESSION_SECRET === warnings.exampleBadSecret) {
     // Warning if user doesn't have a good secret
-    console.log(warnings.badSecret);
+    logtail.info(warnings.badSecret);
   }
 
   return process.env.SERVER_SESSION_SECRET;

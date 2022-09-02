@@ -5,6 +5,10 @@ require("dotenv").config();
 const app = express();
 const cors = require('cors');
 
+const { Logtail } = require("@logtail/node");
+
+const logtail = new Logtail("KQi4An7q1YZVwaTWzM72Ct5r");
+
 app.use(cors({
   origin: ['https://www.heattransferwarehouse.com']
 }));
@@ -17,14 +21,14 @@ const {
 const storeHash = process.env.STORE_HASH;
 
 const createNote = async (e, n) => {
-  console.log('--INKSOFT-- Updating Note on BP...');
+  logtail.info('--INKSOFT-- Updating Note on BP...');
   await updateNote(e, n);
-  console.log('--INKSOFT-- Note Updated..');
+  logtail.info('--INKSOFT-- Note Updated..');
 };
 
 const inksoftSender = async (orderId, inksoft) => {
 
-  console.log('--INKSOFT-- Fetching order for inksoft: ', orderId);
+  logtail.info('--INKSOFT-- Fetching order for inksoft: ', orderId);
 
   let config = {
     headers: {
@@ -41,7 +45,7 @@ const inksoftSender = async (orderId, inksoft) => {
 
   newOrder = newOrder.data;
 
-  //console.log('--INKSOFT-- New Order Data: ', inksoft);
+  //logtail.info('--INKSOFT-- New Order Data: ', inksoft);
 
   const email = newOrder.billing_address.email;
 
@@ -68,7 +72,7 @@ const inksoftSender = async (orderId, inksoft) => {
         let inksoftName = i.product_options[2].value;
         let quantity = i.quantity;
 
-        console.log('--INKSOFT-- Token and Name: ', mainToken, inksoftName);
+        logtail.info('--INKSOFT-- Token and Name: ', mainToken, inksoftName);
 
             inksoftCart = await axios
             .get(
@@ -77,7 +81,7 @@ const inksoftSender = async (orderId, inksoft) => {
             )
 
         currentCart = inksoftCart.data.Data;
-        //console.log('--INKSOFT-- Get Cart: ', currentCart);
+        //logtail.info('--INKSOFT-- Get Cart: ', currentCart);
 
         let inksoftItems = currentCart.Cart.Items;
         let inksoftDesigns = currentCart.DesignSummaries;
@@ -128,7 +132,7 @@ const inksoftSender = async (orderId, inksoft) => {
             },
           };
 
-        //console.log('--INKSOFT-- New Designs: ', designsToSend);
+        //logtail.info('--INKSOFT-- New Designs: ', designsToSend);
 
         currentCart.Cart.Items = designsToSend;
 
@@ -144,15 +148,15 @@ const inksoftSender = async (orderId, inksoft) => {
             )
 
             shippingMethods = shippingMethods.data.Data[0];
-            //console.log('--INKSOFT-- Get Ship Methods', shippingMethods);
+            //logtail.info('--INKSOFT-- Get Ship Methods', shippingMethods);
 
         // } catch (err) {
-        //     console.log('--INKSOFT-- Error on Get Shipping: ', err);
+        //     logtail.info('--INKSOFT-- Error on Get Shipping: ', err);
         //     if (err.response.data.Messages) {
-        //         console.log('--INKSOFT-- Get Shipping Error Messgae: ', err.response.data.Messages);
+        //         logtail.info('--INKSOFT-- Get Shipping Error Messgae: ', err.response.data.Messages);
         //     }
         //     if (err.responseText) {
-        //     console.log('--INKSOFT-- Get Shipping Error Messgae: ', err.responseText);
+        //     logtail.info('--INKSOFT-- Get Shipping Error Messgae: ', err.responseText);
         //     }
         // }
 
@@ -163,7 +167,7 @@ const inksoftSender = async (orderId, inksoft) => {
         let newCart = JSON.stringify(currentCart.Cart);
         let newNewCart = newCart.replace(/"/g, "'");
 
-        //console.log('--INKSOFT-- New Cart Before Send: ', newNewCart);
+        //logtail.info('--INKSOFT-- New Cart Before Send: ', newNewCart);
 
 
         //try {
@@ -177,15 +181,15 @@ const inksoftSender = async (orderId, inksoft) => {
               config
             )
 
-            console.log('--INKSOFT-- Cart Modified..');
+            logtail.info('--INKSOFT-- Cart Modified..');
 
         // } catch (err) {
-        //     console.log('--INKSOFT-- Error on Set Cart: ', err);
+        //     logtail.info('--INKSOFT-- Error on Set Cart: ', err);
         //     if (err.response.data.Messages) {
-        //         console.log('--INKSOFT-- Set Cart Error Messgae: ', err.response.data.Messages);
+        //         logtail.info('--INKSOFT-- Set Cart Error Messgae: ', err.response.data.Messages);
         //     }
         //     if (err.responseText) {
-        //     console.log('--INKSOFT-- Set Cart Error Messgae: ', err.responseText);
+        //     logtail.info('--INKSOFT-- Set Cart Error Messgae: ', err.responseText);
         //     }
         // }
 
@@ -204,26 +208,26 @@ const inksoftSender = async (orderId, inksoft) => {
               config
             )
 
-            console.log('--INKSOFT-- Order Sent!');
+            logtail.info('--INKSOFT-- Order Sent!');
 
         // } catch (err) {
-        //     console.log('--INKSOFT-- Error on Post Cart: ', err);
+        //     logtail.info('--INKSOFT-- Error on Post Cart: ', err);
         //     if (err.responseText) {
-        //     console.log('--INKSOFT-- Post Cart Error Messgae: ', err.responseText);
+        //     logtail.info('--INKSOFT-- Post Cart Error Messgae: ', err.responseText);
         //     }
         // }
 
         const newOrderId = newOrder.data.Data;
 
-        console.log('--INKSOFT-- New Order: ', newOrderId);
+        logtail.info('--INKSOFT-- New Order: ', newOrderId);
 
         //try {
           const so = await getSO(orderId);
-          console.log('--INKSOFT-- ', so.response.results[0][0]);
+          logtail.info('--INKSOFT-- ', so.response.results[0][0]);
           const note = `Inksoft Order Number: ${newOrderId} --- Note made via Admin app. https://admin.heattransferwarehouse.com`;
           await createNote(so.response.results[0][0], note);
         // } catch (err) {
-        //   console.log('--INKSOFT-- Error on add note: ', err);
+        //   logtail.info('--INKSOFT-- Error on add note: ', err);
         // }
     }
 }
@@ -235,11 +239,11 @@ router.post("/orders", cors(), async function (req, res) {
 
 //   const headers = req.getHeaders();
 
-//   console.log('Headers: ', headers);
+//   logtail.info('Headers: ', headers);
 
   const orderId = req.body.data.id;
 
-  //console.log('New Order: ', orderId);
+  //logtail.info('New Order: ', orderId);
 
   const config = {
     headers: {
@@ -256,7 +260,7 @@ router.post("/orders", cors(), async function (req, res) {
 
   inksoft = inksoft.data;
 
-  //console.log('--INKSOFT-- Get Products: ', inksoft);
+  //logtail.info('--INKSOFT-- Get Products: ', inksoft);
 
   let isInksoft = false;
 
@@ -275,7 +279,7 @@ if (isInksoft) {
     try {
         inksoftSender(orderId, inksoft);
     } catch (error) {
-        console.log('Error on Inksoft Sender: ', error);
+        logtail.info('Error on Inksoft Sender: ', error);
     }
 }
 
@@ -287,7 +291,7 @@ router.post("/register", cors(), async function (req, res) {
   
     const customerId = req.body.data.id;
 
-    //console.log('--INKSOFT-- New Customer: ', customerId);
+    //logtail.info('--INKSOFT-- New Customer: ', customerId);
 
     const config = {
         headers: {
@@ -304,7 +308,7 @@ router.post("/register", cors(), async function (req, res) {
   
     customer = customer.data;
 
-    //console.log('Customer Info: ', customer);
+    //logtail.info('Customer Info: ', customer);
        
     const inksoftPassword = "t@91bW7He2!0Lo21";
     let email = customer.email;
@@ -314,7 +318,7 @@ router.post("/register", cors(), async function (req, res) {
     let inksoftSess = '';
     
     try {
-    console.log('--INKSOFT-- Registering User..');
+    logtail.info('--INKSOFT-- Registering User..');
   
     const inksoftData = `ApiKey=${apiKey}&Email=${email}&CreateNewCart=false&FirstName=${first_name}&LastName=${last_name}&Password=${inksoftPassword}&Format=JSON`;
     
@@ -338,13 +342,13 @@ router.post("/register", cors(), async function (req, res) {
     
     } catch (err) {
       if (err.response.data.Messages) {
-        console.log('--INKSOFT-- Error on Get/Create Session: ', err.response.data.Messages);
+        logtail.info('--INKSOFT-- Error on Get/Create Session: ', err.response.data.Messages);
       } else {
-        console.log('--INKSOFT-- Error on Get/Create Session: ', err);
+        logtail.info('--INKSOFT-- Error on Get/Create Session: ', err);
       }
     }
 
-    console.log('--INKSOFT-- Session: ', inksoftSess);
+    logtail.info('--INKSOFT-- Session: ', inksoftSess);
   
 });
 

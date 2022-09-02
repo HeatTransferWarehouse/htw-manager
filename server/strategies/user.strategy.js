@@ -3,6 +3,10 @@ const LocalStrategy = require('passport-local').Strategy;
 const encryptLib = require('../modules/encryption');
 const pool = require('../modules/pool');
 
+const { Logtail } = require("@logtail/node");
+
+const logtail = new Logtail("KQi4An7q1YZVwaTWzM72Ct5r");
+
 passport.serializeUser((user, done) => {
   done(null, user.id);
 });
@@ -26,7 +30,7 @@ passport.deserializeUser((id, done) => {
       done(null, null);
     }
   }).catch((error) => {
-    console.log('Error with query during deserializing user ', error);
+    logtail.info('Error with query during deserializing user ', error);
     // done takes an error (we have one) and a user (null in this case)
     // this will result in the server returning a 500 status code
     done(error, null);
@@ -49,7 +53,7 @@ passport.use('local', new LocalStrategy((username, password, done) => {
           done(null, null);
         }
       }).catch((error) => {
-        console.log('Error with query for user ', error);
+        logtail.info('Error with query for user ', error);
         // done takes an error (we have one) and a user (null in this case)
         // this will result in the server returning a 500 status code
         done(error, null);

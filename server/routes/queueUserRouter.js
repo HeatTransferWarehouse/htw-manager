@@ -13,6 +13,10 @@ const sgMail = require("@sendgrid/mail");
 sgMail.setApiKey(process.env.SENDGRID_API_KEY);
 require("dotenv").config();
 
+const { Logtail } = require("@logtail/node");
+
+const logtail = new Logtail("KQi4An7q1YZVwaTWzM72Ct5r");
+
 let storeHash = process.env.STORE_HASH
 
 //defines dates to auto delete certain things from the database.
@@ -35,7 +39,7 @@ router.delete("/deletecompleterange", rejectUnauthenticated, (req, res) => {
      res.sendStatus(204); //No Content
    })
    .catch((error) => {
-     console.log("--DECOQUEUE-- Error DELETE ", error);
+     logtail.info("--DECOQUEUE-- Error DELETE ", error);
      res.sendStatus(500);
    });
 })
@@ -48,7 +52,7 @@ router.delete("/deletehistoryrange", rejectUnauthenticated, (req, res) => {
       res.sendStatus(204); //No Content
     })
     .catch((error) => {
-      console.log("--DECOQUEUE-- Error DELETE ", error);
+      logtail.info("--DECOQUEUE-- Error DELETE ", error);
       res.sendStatus(500);
     });
 });
@@ -111,7 +115,7 @@ setInterval(() => {
                                   rows2 === "[]" &&
                                   rows3 === "[]"
                                 ) {
-                                  //console.log(orderID, "checking order");
+                                  //logtail.info(orderID, "checking order");
                                   //converts to am/pm time
                                   if (
                                     element !== []
@@ -213,7 +217,7 @@ setInterval(() => {
                                               decoSku3 === "SP-" 
                                             ) {
                                               //run the logic that places the skus in the stock queue
-                                              console.log(
+                                              logtail.info(
                                                 '--DECOQUEUE--',
                                                 orderID,
                                                 "goes into stock queue"
@@ -276,7 +280,7 @@ setInterval(() => {
                                                   "Upload File"
                                                 ) {
                                                   //if diplay name is Upload File, just skip it
-                                                  console.log(
+                                                  logtail.info(
                                                     "skipping upload file"
                                                   );
                                                 } else {
@@ -310,7 +314,7 @@ setInterval(() => {
                                               orderComments = [];
                                             } else {
                                               //...ignore everything else
-                                              // console.log(
+                                              // logtail.info(
                                               //   "not a decovibe sku",
                                               //   decoSku,
                                               //   "for order",
@@ -322,34 +326,34 @@ setInterval(() => {
                                       })
                                       .catch(function (error) {
                                         // handle error
-                                        console.log(error);
+                                        logtail.info(error);
                                       });
                                   } else {
-                                    console.log(`--DECOQUEUE-- ${orderID} not authorized`);
+                                    logtail.info(`--DECOQUEUE-- ${orderID} not authorized`);
                                   }
                                 } else {
-                                  // console.log(
+                                  // logtail.info(
                                   //   orderID,
                                   //   "already in the database"
                                   // );
                                 }
                               })
                               .catch((error) => {
-                                console.log(`--DECOQUEUE-- Error on item query ${error}`);
+                                logtail.info(`--DECOQUEUE-- Error on item query ${error}`);
                               });
                           })
                   .catch((error) => {
-                    console.log(`--DECOQUEUE-- Error on item query ${error}`);
+                    logtail.info(`--DECOQUEUE-- Error on item query ${error}`);
                   });
               })
           .catch((error) => {
-            console.log(`Error on item query ${error}`);
+            logtail.info(`Error on item query ${error}`);
           });
       }
     })
     .catch(function (error) {
       // handle error
-      console.log(error);
+      logtail.info(error);
     });
     //...check for new orders every 2 min
 }, 1000 * 60 * 2);
@@ -388,12 +392,12 @@ router.post("/starttask", rejectUnauthenticated, (req, res, next) => {
     ])
     .then((result) => res.status(201).send(result.rows))
     .catch(function (error) {
-      console.log("--DECOQUEUE-- Sorry, there was an error with your query: ", error);
+      logtail.info("--DECOQUEUE-- Sorry, there was an error with your query: ", error);
       res.sendStatus(500); // HTTP SERVER ERROR
     })
 
     .catch(function (error) {
-      console.log("--DECOQUEUE-- Sorry, there is an error", error);
+      logtail.info("--DECOQUEUE-- Sorry, there is an error", error);
       res.sendStatus(500);
     });
 });
@@ -432,7 +436,7 @@ router.post("/gobacknew", rejectUnauthenticated, (req, res, next) => {
     ])
     .then((result) => res.status(201).send(result.rows))
     .catch(function (error) {
-      console.log("--DECOQUEUE-- Sorry, there was an error with your query: ", error);
+      logtail.info("--DECOQUEUE-- Sorry, there was an error with your query: ", error);
       res.sendStatus(500); // HTTP SERVER ERROR
     })
 });
@@ -469,12 +473,12 @@ router.post("/markcomplete", rejectUnauthenticated, (req, res, next) => {
     ])
     .then((result) => res.status(201).send(result.rows))
     .catch(function (error) {
-      console.log("--DECOQUEUE-- Sorry, there was an error with your query: ", error);
+      logtail.info("--DECOQUEUE-- Sorry, there was an error with your query: ", error);
       res.sendStatus(500); // HTTP SERVER ERROR
     })
 
     .catch(function (error) {
-      console.log("--DECOQUEUE-- Sorry, there is an error", error);
+      logtail.info("--DECOQUEUE-- Sorry, there is an error", error);
       res.sendStatus(500);
     });
 });

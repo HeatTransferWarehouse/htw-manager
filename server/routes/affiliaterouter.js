@@ -10,6 +10,10 @@ const sgMail = require("@sendgrid/mail");
 sgMail.setApiKey(process.env.SENDGRID_API_KEY);
 const moment = require("moment");
 
+const { Logtail } = require("@logtail/node");
+
+const logtail = new Logtail("KQi4An7q1YZVwaTWzM72Ct5r");
+
 const token = process.env.SLACK_TOKEN;
 const web = new WebClient(token);
 const conversationId = "C0139RJPUEM";
@@ -41,7 +45,7 @@ router.delete("/deleteitemrange", (req, res) => {
         res.sendStatus(204); //No Content
       })
       .catch((error) => {
-        console.log("--AFFILIATES-- Error DELETE ", error);
+        logtail.info("--AFFILIATES-- Error DELETE ", error);
         res.sendStatus(500);
       });
 });
@@ -53,7 +57,7 @@ router.delete("/deleteskurange", (req, res) => {
         res.sendStatus(204); //No Content
       })
       .catch((error) => {
-        console.log("--AFFILIATES-- Error DELETE ", error);
+        logtail.info("--AFFILIATES-- Error DELETE ", error);
         res.sendStatus(500);
       });
 });
@@ -61,7 +65,7 @@ router.delete("/deleteskurange", (req, res) => {
 router.post("/events", async (req, res) => {
       if (req.body.challenge) {
       res.status(200).send(req.body.challenge);
-      console.log("--AFFILIATES-- Verifying challenge..");
+      logtail.info("--AFFILIATES-- Verifying challenge..");
       } else {
            res.sendStatus(200);
            let text = req.body.event.text;
@@ -79,7 +83,7 @@ router.post("/events", async (req, res) => {
     
               // `res` contains information about the posted message
     
-              console.log("--AFFILIATES-- Message sent..");
+              logtail.info("--AFFILIATES-- Message sent..");
             })();
           } else if (type === "message") {
             if (text !== undefined && channel === "C0139RJPUEM" && text.includes("Referral ")) {
@@ -218,7 +222,7 @@ router.post("/events", async (req, res) => {
                        }
                        let joinedArray = newArray.join("");
                        let finalArray = titleString + joinedArray;
-                       //console.log(finalArray);
+                       //logtail.info(finalArray);
                        const queryText =
                          'INSERT INTO "affiliate" (email, order_number, order_total, qty, created_at) VALUES ($1, $2, $3, $4, $5) RETURNING id';
                        pool
@@ -231,7 +235,7 @@ router.post("/events", async (req, res) => {
                          ])
   
                          .catch(function (error) {
-                           console.log("--AFFILIATES-- Sorry, there is an error", error);
+                           logtail.info("--AFFILIATES-- Sorry, there is an error", error);
                            res.sendStatus(500);
                          });
                        const msg = {
@@ -276,13 +280,13 @@ router.post("/events", async (req, res) => {
   
                         // `res` contains information about the posted message
   
-                        console.log("--AFFILIATES-- Email Message sent to Affiliate");
+                        logtail.info("--AFFILIATES-- Email Message sent to Affiliate");
                       })();
                   
                    })
                    .catch(function (error) {
                      // handle error
-                     console.log(error);
+                     logtail.info(error);
                       (async () => {
                         // See: https://api.slack.com/methods/chat.postMessage
                         const res = await web.chat.postMessage({
@@ -293,18 +297,18 @@ router.post("/events", async (req, res) => {
   
                         // `res` contains information about the posted message
   
-                        console.log("--AFFILIATES-- Email Message sent to Affiliate");
+                        logtail.info("--AFFILIATES-- Email Message sent to Affiliate");
                       })();
                    });
                }
              })
              .catch(function (error) {
                // handle error
-               console.log('--AFFILIATES-- ERROR: ', error);
+               logtail.info('--AFFILIATES-- ERROR: ', error);
              });
         
       } else {
-        //console.log('No Events Matched!');
+        //logtail.info('No Events Matched!');
         return;
       }
      }
@@ -312,7 +316,7 @@ router.post("/events", async (req, res) => {
 });
   
 router.get("/itemlist", (req, res) => {
-    console.log("--AFFILIATES-- We are about to get the affiliate list");
+    logtail.info("--AFFILIATES-- We are about to get the affiliate list");
   
     const queryText = `select * from "affiliate" ORDER BY id DESC`;
     pool
@@ -321,30 +325,30 @@ router.get("/itemlist", (req, res) => {
         res.send(result.rows);
       })
       .catch((error) => {
-        console.log(`--AFFILIATES-- Error on affiliate query ${error}`);
+        logtail.info(`--AFFILIATES-- Error on affiliate query ${error}`);
         res.sendStatus(500);
       });
 });
   
 router.get("/topfive", (req, res) => {
-    //console.log("--AFFILIATES-- We are about to get the affiliate list");
+    //logtail.info("--AFFILIATES-- We are about to get the affiliate list");
   
     const queryText = `SELECT array_agg(DISTINCT email) as email, count(*)
   FROM sku where "created_at" <= '${dateNow}' AND "created_at" >= '${dateThen}' GROUP BY email ORDER BY count DESC LIMIT 5`;
     pool
       .query(queryText)
       .then((result) => {
-        //console.log("top five", result.rows)
+        //logtail.info("top five", result.rows)
         res.send(result.rows);
       })
       .catch((error) => {
-        console.log(`--AFFILIATES-- Error on affiliate query ${error}`);
+        logtail.info(`--AFFILIATES-- Error on affiliate query ${error}`);
         res.sendStatus(500);
       });
 });
   
 router.get("/total", (req, res) => {
-    //console.log("--AFFILIATES-- We are about to get the affiliate list");
+    //logtail.info("--AFFILIATES-- We are about to get the affiliate list");
   
     const queryText = `SELECT array_agg(DISTINCT email) as email, COUNT(*) FROM sku GROUP BY email;`;
     pool
@@ -353,7 +357,7 @@ router.get("/total", (req, res) => {
         res.send(result.rows);
       })
       .catch((error) => {
-        console.log(`--AFFILIATES-- Error on affiliate query ${error}`);
+        logtail.info(`--AFFILIATES-- Error on affiliate query ${error}`);
         res.sendStatus(500);
       });
 });
@@ -376,32 +380,32 @@ router.post("/checkemail", (req, res) => {
             res.send(result.rows);
           })
           .catch((error) => {
-            console.log(`--AFFILIATES-- Error on affiliate query ${error}`);
+            logtail.info(`--AFFILIATES-- Error on affiliate query ${error}`);
             res.sendStatus(500);
           });
 });
   
 router.post("/orderdetails", (req, res) => {
     let order_number = req.body.order_number;
-    //console.log("this is the payload before it reaches the get", order_number);
+    //logtail.info("this is the payload before it reaches the get", order_number);
     axios
       .get(
         `https://api.bigcommerce.com/stores/et4qthkygq/v2/orders/${order_number}/products`,
         config
       )
       .then(function (response) {
-        //console.log("this is the response", response.data)  
+        //logtail.info("this is the response", response.data)  
      
           res.send(response.data);
         })
       .catch(function (error) {
         // handle error
-        console.log(error);
+        logtail.info(error);
       })
 });
 
 router.get("/email", (req, res) => {
-    //console.log("--AFFILIATES-- We are about to get the affiliate list");
+    //logtail.info("--AFFILIATES-- We are about to get the affiliate list");
   
     const queryText = `select array_agg(DISTINCT email) as email from affiliate group by email`;
     pool
@@ -410,13 +414,13 @@ router.get("/email", (req, res) => {
         res.send(result.rows);
       })
       .catch((error) => {
-        console.log(`--AFFILIATES-- Error on affiliate query ${error}`);
+        logtail.info(`--AFFILIATES-- Error on affiliate query ${error}`);
         res.sendStatus(500);
       });
 });
 
 router.put("/wallyBMessages", (req, res) => {
-  console.log("--WALLY B-- We are about to send a slack message");
+  logtail.info("--WALLY B-- We are about to send a slack message");
 
   const payload = req.body;
 
@@ -433,7 +437,7 @@ router.put("/wallyBMessages", (req, res) => {
 
       // `res` contains information about the posted message
 
-      console.log("--WALLY B-- Message sent..");
+      logtail.info("--WALLY B-- Message sent..");
     })();
 
   res.sendStatus(200);

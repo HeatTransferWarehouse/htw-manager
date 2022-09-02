@@ -11,6 +11,10 @@ let config = {
   },
 };
 
+const { Logtail } = require("@logtail/node");
+
+const logtail = new Logtail("KQi4An7q1YZVwaTWzM72Ct5r");
+
 const {
   //login verification middleware
     rejectUnauthenticated,
@@ -25,7 +29,7 @@ router.delete("/deleteitem/:id", rejectUnauthenticated, (req, res) => {
       res.sendStatus(204); //No Content
     })
     .catch((error) => {
-      console.log("--DECOQUEUE-- Error DELETE ", error);
+      logtail.info("--DECOQUEUE-- Error DELETE ", error);
       res.sendStatus(500);
     });
 });
@@ -38,7 +42,7 @@ router.delete("/deletehistory/:id", rejectUnauthenticated, (req, res) => {
       res.sendStatus(204); //No Content
     })
     .catch((error) => {
-      console.log("--DECOQUEUE-- Error DELETE ", error);
+      logtail.info("--DECOQUEUE-- Error DELETE ", error);
       res.sendStatus(500);
     });
 });
@@ -51,7 +55,7 @@ router.delete("/deleteprogress/:id", rejectUnauthenticated, (req, res) => {
       res.sendStatus(204); //No Content
     })
     .catch((error) => {
-      console.log("--DECOQUEUE-- Error DELETE ", error);
+      logtail.info("--DECOQUEUE-- Error DELETE ", error);
       res.sendStatus(500);
     });
 });
@@ -64,7 +68,7 @@ router.delete("/deletecomplete/:id", rejectUnauthenticated, (req, res) => {
       res.sendStatus(204); //No Content
     })
     .catch((error) => {
-      console.log("--DECOQUEUE-- Error DELETE ", error);
+      logtail.info("--DECOQUEUE-- Error DELETE ", error);
       res.sendStatus(500);
     });
 });
@@ -80,7 +84,7 @@ router.put("/run", rejectUnauthenticated, (req, res) => {
       res.sendStatus(204); //No Content
     })
     .catch((error) => {
-      console.log("--DECOQUEUE-- Error UPDATE ", error);
+      logtail.info("--DECOQUEUE-- Error UPDATE ", error);
       res.sendStatus(500);
     });
 });
@@ -94,7 +98,7 @@ router.get("/itemlist", rejectUnauthenticated, (req, res) => {
       res.send(result.rows);
     })
     .catch((error) => {
-      console.log(`--DECOQUEUE-- Error on item query ${error}`);
+      logtail.info(`--DECOQUEUE-- Error on item query ${error}`);
       res.sendStatus(500);
     });
 });
@@ -102,7 +106,7 @@ router.get("/itemlist", rejectUnauthenticated, (req, res) => {
 router.post("/checkhistory", (req, res) => {
   //gets history of the customer that is selected
   let email = req.body.email;
-  console.log("this is the email", email);
+  logtail.info("this is the email", email);
   const queryText =
     `SELECT * from "history" where email=$1;`
   pool
@@ -111,7 +115,7 @@ router.post("/checkhistory", (req, res) => {
       res.send(result.rows);
     })
     .catch((error) => {
-      console.log(`--DECOQUEUE-- Error on item query ${error}`);
+      logtail.info(`--DECOQUEUE-- Error on item query ${error}`);
       res.sendStatus(500);
     });
 });
@@ -125,7 +129,7 @@ router.get("/itemlistcount", rejectUnauthenticated, (req, res) => {
       res.send(result.rows);
     })
     .catch((error) => {
-      console.log(`--DECOQUEUE-- Error on item query ${error}`);
+      logtail.info(`--DECOQUEUE-- Error on item query ${error}`);
       res.sendStatus(500);
     });
 });
@@ -139,7 +143,7 @@ router.get("/progresslist", rejectUnauthenticated, (req, res) => {
       res.send(result.rows);
     })
     .catch((error) => {
-      console.log(`--DECOQUEUE-- Error on item query ${error}`);
+      logtail.info(`--DECOQUEUE-- Error on item query ${error}`);
       res.sendStatus(500);
     });
 });
@@ -153,7 +157,7 @@ router.get("/progresslistcount", rejectUnauthenticated, (req, res) => {
       res.send(result.rows);
     })
     .catch((error) => {
-      console.log(`--DECOQUEUE-- Error on item query ${error}`);
+      logtail.info(`--DECOQUEUE-- Error on item query ${error}`);
       res.sendStatus(500);
     });
 });
@@ -167,7 +171,7 @@ router.get("/completelist", rejectUnauthenticated, (req, res) => {
       res.send(result.rows);
     })
     .catch((error) => {
-      console.log(`--DECOQUEUE-- Error on item query ${error}`);
+      logtail.info(`--DECOQUEUE-- Error on item query ${error}`);
       res.sendStatus(500);
     });
 });
@@ -181,7 +185,7 @@ router.get("/completelistcount", rejectUnauthenticated, (req, res) => {
       res.send(result.rows);
     })
     .catch((error) => {
-      console.log(`--DECOQUEUE-- Error on item query ${error}`);
+      logtail.info(`--DECOQUEUE-- Error on item query ${error}`);
       res.sendStatus(500);
     });
 });
@@ -189,80 +193,80 @@ router.get("/completelistcount", rejectUnauthenticated, (req, res) => {
 router.post("/orderdetails", (req, res) => {
   //grabs all of the details for a specific order with the BigCommerce API
   let order_number = req.body.order_number;
-  //console.log("this is the payload before it reaches the get", order_number);
+  //logtail.info("this is the payload before it reaches the get", order_number);
   axios
     .get(
       `https://api.bigcommerce.com/stores/et4qthkygq/v2/orders/${order_number}/products`,
       config
     )
     .then(function (response) {
-      //console.log("this is the response", response.data);
+      //logtail.info("this is the response", response.data);
 
       res.send(response.data);
     })
     .catch(function (error) {
       // handle error
-      console.log('--DECOQUEUE-- Error on Order Details: ', error);
+      logtail.info('--DECOQUEUE-- Error on Order Details: ', error);
     });
 });
 
 router.post("/orderlookup", (req, res) => {
   //grabs all of the details for a specific order with the BigCommerce API
   let order_number = req.body.order_number;
-  //console.log("this is the payload before it reaches the get", order_number);
+  //logtail.info("this is the payload before it reaches the get", order_number);
   axios
     .get(
       `https://api.bigcommerce.com/stores/et4qthkygq/v2/orders/${order_number}`,
       config
     )
     .then(function (response) {
-      //console.log("this is the response", response.data);
+      //logtail.info("this is the response", response.data);
 
       res.send(response.data);
     })
     .catch(function (error) {
       // handle error
-      console.log('--DECOQUEUE-- Error on Order Lookup: ', error);
+      logtail.info('--DECOQUEUE-- Error on Order Lookup: ', error);
     });
 });
 
 router.post("/shippinglookup", (req, res) => {
   //grabs all of the details for a specific order with the BigCommerce API
   let order_number = req.body.order_number;
-  //console.log("this is the payload before it reaches the get", order_number);
+  //logtail.info("this is the payload before it reaches the get", order_number);
   axios
     .get(
       `https://api.bigcommerce.com/stores/et4qthkygq/v2/orders/${order_number}/shipping_addresses`,
       config
     )
     .then(function (response) {
-      //console.log("this is the response", response.data);
+      //logtail.info("this is the response", response.data);
 
       res.send(response.data);
     })
     .catch(function (error) {
       // handle error
-      console.log('--DECOQUEUE--  Error on Shipping Lookup: ', error);
+      logtail.info('--DECOQUEUE--  Error on Shipping Lookup: ', error);
     });
 });
 
 router.post("/productlookup", (req, res) => {
   //grabs all of the details for a specific order with the BigCommerce API
   let order_number = req.body.order_number;
-  //console.log("this is the payload before it reaches the get", order_number);
+  //logtail.info("this is the payload before it reaches the get", order_number);
   axios
     .get(
       `https://api.bigcommerce.com/stores/et4qthkygq/v2/orders/${order_number}/products`,
       config
     )
     .then(function (response) {
-      //console.log("this is the response", response.data);
+      //logtail.info("this is the response", response.data);
 
       res.send(response.data);
     })
     .catch(function (error) {
       // handle error
-      console.log('--DECOQUEUE--  Error on Product Lookup: ', error);
+      logtail.info('--DECOQUEUE--  Error on Product Lookup: ', error);
     });
 });
 

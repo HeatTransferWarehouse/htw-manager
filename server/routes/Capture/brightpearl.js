@@ -4,6 +4,10 @@ const {
     getOrderCustomerPayment
 } = require('./api');
 
+const { Logtail } = require("@logtail/node");
+
+const logtail = new Logtail("KQi4An7q1YZVwaTWzM72Ct5r");
+
 const PAYMENT_TYPES = {
     auth: 'AUTH',
     capture: 'CAPTURE',
@@ -92,7 +96,7 @@ const parseBrightPearlResponseIntoObjects = json => {
 const captureBrightpearlOrderPayment = async customerPaymentResults => {
     const capturedPayment = getCapturedPayment(customerPaymentResults);
     if (capturedPayment) {
-        console.error('order already CAPTURED');
+        logtail.info('order already CAPTURED');
         return 0;
     }
 
@@ -100,7 +104,7 @@ const captureBrightpearlOrderPayment = async customerPaymentResults => {
     if (authPayment) {
         // create Customer Payment payload
         const customerPaymentRecord = createCustomerPaymentRecord(authPayment);
-        // console.log('customerPaymentRecord', customerPaymentRecord);
+        // logtail.info('customerPaymentRecord', customerPaymentRecord);
         // send payload to Brightpearl
         const customerPaymentPOSTResult = await sendCustomerPaymentToBrightPearl(customerPaymentRecord).then(r => r);
         if (customerPaymentPOSTResult) {
@@ -116,7 +120,7 @@ const getOtherOrders = order => order.orderPaymentStatusName === 'NOT_APPLICABLE
 
 const mapOrderPaymentStatusName = (order, orderPaymentStatusNamesMap) => {
     const orderPaymentStatusName = orderPaymentStatusNamesMap[order.orderPaymentStatusId.toString()];
-    console.log(order.orderId, order.orderPaymentStatusId, orderPaymentStatusName);
+    logtail.info(order.orderId, order.orderPaymentStatusId, orderPaymentStatusName);
     return {
         ...order,
         orderPaymentStatusName,
@@ -126,11 +130,11 @@ const mapOrderPaymentStatusName = (order, orderPaymentStatusNamesMap) => {
 const processUnpaidOrders = async unpaidOrders => {
     // Query Brightpearl and get the Customer Payment records for each order
     const orderCustomerPayments = Promise.all(unpaidOrders.map(o => {
-        console.log(o.orderId.toString());
+        logtail.info(o.orderId.toString());
         return getOrderCustomerPayment(o);
     }))
     .catch(err => {
-        console.error(err.message);
+        logtail.info(err.message);
         return err
     });
     // Capture the order payment by building a new Customer Payment record and POSTing it back to Brightpearl
@@ -140,14 +144,14 @@ const processUnpaidOrders = async unpaidOrders => {
         }));
     })
     .catch(err => {
-        console.error(err.message);
+        logtail.info(err.message);
         return err
     });
 };
 
 const processOtherOrders = async orders => {
     orders.forEach(o => {
-        console.log(o.orderId.toString());
+        logtail.info(o.orderId.toString());
         getOrderData(o.orderId).then(order => {
             const customerPaymentRecord = createCustomerPaymentRecordFromOrder(order);
             if (parseFloat(customerPaymentRecord.amountAuthorized) > 0) {
@@ -155,7 +159,7 @@ const processOtherOrders = async orders => {
             }
         })
         .catch(err => {
-            console.error(err.message);
+            logtail.info(err.message);
             return err
         });
     });

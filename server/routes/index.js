@@ -2,6 +2,10 @@ require('dotenv').config();
 const express = require('express');
 const router = express.Router();
 
+const { Logtail } = require("@logtail/node");
+
+const logtail = new Logtail("KQi4An7q1YZVwaTWzM72Ct5r");
+
 const {
     parseBrightPearlResponseIntoObjects,
     mapOrderPaymentStatusName,
@@ -16,9 +20,9 @@ const {
 } = require('./Capture/api');
 
 const captureUnpaidSalesOrders = async (e) => {
-    console.log('Getting sales orders...');
+    logtail.info('Getting sales orders...');
     const orderData = await getUnpaidBrightpearlOrders(e);
-    console.log(orderData.response.results.length, 'sales orders found');
+    logtail.info(orderData.response.results.length, 'sales orders found');
 
     // Bail if no orders
     if (orderData.response.results.length === 0) {
@@ -33,7 +37,7 @@ const captureUnpaidSalesOrders = async (e) => {
     const unpaidOrders = orders.filter(removePaidOrders);
     const otherOrders = orders.filter(getOtherOrders);
 
-    console.log(unpaidOrders.length + otherOrders.length, 'orders to capture');
+    logtail.info(unpaidOrders.length + otherOrders.length, 'orders to capture');
 
     if (unpaidOrders.length === 0 && otherOrders.length === 0) {
         return;
@@ -46,10 +50,10 @@ const captureUnpaidSalesOrders = async (e) => {
 
 router.post("/", (req, res) => {
 
-    console.log('=============');
-    console.log('...running...');
-    console.log(new Date().toISOString());
-    console.log('=============');
+    logtail.info('=============');
+    logtail.info('...running...');
+    logtail.info(new Date().toISOString());
+    logtail.info('=============');
     captureUnpaidSalesOrders(req.body.capture);
     // setInterval(captureUnpaidSalesOrders, 30000);
 

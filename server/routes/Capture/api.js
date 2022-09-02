@@ -1,6 +1,10 @@
 require('dotenv').config();
 const axios = require('axios');
 
+const { Logtail } = require("@logtail/node");
+
+const logtail = new Logtail("KQi4An7q1YZVwaTWzM72Ct5r");
+
 const axiosOptions = (method, resourcePath) => {
     const HEADERS = {
         'brightpearl-app-ref': process.env.BRIGHTPEARL_APP_REF,
@@ -16,7 +20,7 @@ const axiosOptions = (method, resourcePath) => {
 };
 
 const brightpearlAPI = (options) => {
-    console.log(`${options.method} ${options.url}`);
+    logtail.info(`${options.method} ${options.url}`);
     return axios({
         ...options
     });
@@ -66,7 +70,7 @@ const getOrderData = async orderId => {
     const orderData = brightpearlAPI(options)
     .then(r => r.data.response[0])
     .catch(err => {
-        console.log(err.message.toString());
+        logtail.info(err.message.toString());
         return null;
     });
     return orderData;
@@ -77,7 +81,7 @@ const getOrderCustomerPayment = async order => {
     const customerPaymentData = brightpearlAPI(options)
     .then(r => r.data)
     .catch(err => {
-        console.log(err.message);
+        logtail.info(err.message);
         return [];
     });
     return customerPaymentData
@@ -88,11 +92,11 @@ const sendCustomerPaymentToBrightPearl = async cp => {
     options.data = cp;
     const customerPaymentData = brightpearlAPI(options)
     .then(r => {
-        console.log('sendCustomerPaymentToBrightPearl POST result: ', r.data);
+        logtail.info('sendCustomerPaymentToBrightPearl POST result: ', r.data);
         return r.data
     })
     .catch(err => {
-        console.log(err.message.toString());
+        logtail.info(err.message.toString());
         return null;
     });
     return customerPaymentData;

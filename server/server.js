@@ -59,5 +59,5 @@ app.use(express.static('build'));
 
  const PORT = process.env.PORT || 8000;
  app.listen(PORT, () => {
-   console.log("server running on: ", PORT);
+  logtail.info("server running on: ", PORT);
  });

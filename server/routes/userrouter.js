@@ -6,37 +6,19 @@ const encryptLib = require("../modules/encryption");
 const pool = require("../modules/pool");
 const userStrategy = require("../strategies/user.strategy");
 const router = express.Router();
-const axios = require("axios");
 const sgMail = require("@sendgrid/mail");
 sgMail.setApiKey(process.env.SENDGRID_API_KEY);
 require("dotenv").config();
 const app = express();
 const cors = require('cors');
 
+const { Logtail } = require("@logtail/node");
+
+const logtail = new Logtail("KQi4An7q1YZVwaTWzM72Ct5r");
+
 app.use(cors({
   origin: ['https://www.heattransferwarehouse.com']
 }));
-
-const {
-  updateNote,
-  getSO,
-} = require('./Capture/api');
-
-const createNote = async (e, n) => {
-  console.log('--INKSOFT-- Updating Note on BP...');
-  await updateNote(e, n);
-  console.log('--INKSOFT-- Note Updated..');
-};
-
-let storeHash = process.env.STORE_HASH
-
-//BigCommerce API tokens and keys
-let config = {
-  headers: {
-    "X-Auth-Client": process.env.BG_AUTH_CLIENT,
-    "X-Auth-Token": process.env.BG_AUTH_TOKEN,
-  },
-};
 
 // Handles Ajax request for user information if user is authenticated
 router.get("/", rejectUnauthenticated, (req, res) => {
@@ -59,18 +41,18 @@ router.post("/addadmin", rejectUnauthenticated, (req, res) => {
     .query(query2Text, [first_name, last_name, email, password, role])
     .then((result) => res.status(201).send(result.rows))
     .catch(function (error) {
-      console.log("Sorry, there was an error with your query: ", error);
+      logtail.info("Sorry, there was an error with your query: ", error);
       res.sendStatus(500); // HTTP SERVER ERROR
     })
 
     .catch(function (error) {
-      console.log("Sorry, there is an error", error);
+      logtail.info("Sorry, there is an error", error);
       res.sendStatus(500);
     });
 });
 
 router.post("/login", userStrategy.authenticate("local"), (req, res) => {
-  console.log("logging body", req.body.username)
+  logtail.info("logging body", req.body.username)
   const email = req.body.username;
   // setting query text to update the username
   const queryText = `update "user" set "last_login" = NOW() WHERE "email"=$1`;
@@ -97,7 +79,7 @@ router.post('/register', (req, res) => {
     .query(queryText, [username, password])
     .then(() => res.sendStatus(201))
     .catch((err) => {
-      console.log('User registration failed: ', err);
+      logtail.info('User registration failed: ', err);
       res.sendStatus(500);
     });
 });
