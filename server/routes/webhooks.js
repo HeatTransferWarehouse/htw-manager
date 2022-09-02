@@ -233,6 +233,10 @@ router.post("/orders", cors(), async function (req, res) {
 
   res.sendStatus(200);
 
+  const headers = req.getHeaders();
+
+  console.log('Headers: ', headers);
+
   const orderId = req.body.data.id;
 
   //console.log('New Order: ', orderId);
