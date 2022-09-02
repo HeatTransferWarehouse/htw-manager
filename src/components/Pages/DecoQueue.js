@@ -83,8 +83,6 @@ class DecoQueue extends Component {
         this.props.dispatch({
             type: "DELETE_HISTORY_RANGE",
         });
-        console.log("Item List Reducer:", this.props.itemlist)
-        console.log("ALL Reducer decoqueue", this.props)
     }
 
     handleChange = (event, fieldName) => {
@@ -286,7 +284,7 @@ class DecoQueue extends Component {
 
     cleanDate = (date) => {
         if (date) {
-            let cleanedDate = date.slice(5, 16);
+            let cleanedDate = date.slice(5, 15);
             return cleanedDate;
         } else {
             return
@@ -818,7 +816,7 @@ class DecoQueue extends Component {
                                                 >
                                                     {value}
                                                 </div>
-                                            ); 
+                                            );
                                         } else if (value) {
                                             return <div>{value}</div>;
                                         } else {
