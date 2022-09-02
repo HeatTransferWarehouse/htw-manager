@@ -39,7 +39,7 @@ const web = new WebClient(token);
 const conversationId = "C02EV4JKSLA";
 
 // Handle errors (see `errorCodes` export)
-slackEvents.on('error', console.error);
+slackEvents.on('error', logtail.error);
 
 
 //Waiter Function
@@ -95,7 +95,7 @@ async function getBCItems () {
           config
         )
     } catch (err) {
-      logtail.info('Error on Get1: ', err);
+      logtail.error('Error on Get1: ', err);
     }
 
 await timeoutPromise(500);
@@ -107,7 +107,7 @@ await timeoutPromise(500);
           config
         )
     } catch (err) {
-      logtail.info('Error on Get2: ', err);
+      logtail.error('Error on Get2: ', err);
     }
 
 await timeoutPromise(500);
@@ -119,7 +119,7 @@ await timeoutPromise(500);
           config
         )
     } catch (err) {
-      logtail.info('Error on Get3: ', err);
+      logtail.error('Error on Get3: ', err);
     }
 
 await timeoutPromise(500);
@@ -131,7 +131,7 @@ await timeoutPromise(500);
           config
         )
     } catch (err) {
-      logtail.info('Error on Get4: ', err);
+      logtail.error('Error on Get4: ', err);
     }
 
 await timeoutPromise(500);
@@ -143,7 +143,7 @@ await timeoutPromise(500);
           config
         )
     } catch (err) {
-      logtail.info('Error on Get5: ', err);
+      logtail.error('Error on Get5: ', err);
     }
 
 await timeoutPromise(500);
@@ -155,7 +155,7 @@ await timeoutPromise(500);
           config
         )
     } catch (err) {
-      logtail.info('Error on Get6: ', err);
+      logtail.error('Error on Get6: ', err);
     }
 
 await timeoutPromise(500);
@@ -167,7 +167,7 @@ await timeoutPromise(500);
           config
         )
     } catch (err) {
-      logtail.info('Error on Get7: ', err);
+      logtail.error('Error on Get7: ', err);
     }
 
 await timeoutPromise(500);
@@ -179,7 +179,7 @@ await timeoutPromise(500);
           config
         )
     } catch (err) {
-      logtail.info('Error on Get8: ', err);
+      logtail.error('Error on Get8: ', err);
     }
 
 await timeoutPromise(500);
@@ -191,7 +191,7 @@ await timeoutPromise(500);
           config
         )
     } catch (err) {
-      logtail.info('Error on Get9: ', err);
+      logtail.error('Error on Get9: ', err);
     }
 
 await timeoutPromise(500);
@@ -203,7 +203,7 @@ await timeoutPromise(500);
           config
         )
     } catch (err) {
-      logtail.info('Error on Get10: ', err);
+      logtail.error('Error on Get10: ', err);
     }
 
 await timeoutPromise(500);
@@ -215,7 +215,7 @@ await timeoutPromise(500);
           config
         )
     } catch (err) {
-      logtail.info('Error on Get11: ', err);
+      logtail.error('Error on Get11: ', err);
     }
 
 await timeoutPromise(500);
@@ -227,7 +227,7 @@ await timeoutPromise(500);
           config
         )
     } catch (err) {
-      logtail.info('Error on Get12: ', err);
+      logtail.error('Error on Get12: ', err);
     }
 
 await timeoutPromise(500);
@@ -239,7 +239,7 @@ await timeoutPromise(500);
           config
         )
     } catch (err) {
-      logtail.info('Error on Get13: ', err);
+      logtail.error('Error on Get13: ', err);
     }
 
 await timeoutPromise(500);
@@ -251,7 +251,7 @@ await timeoutPromise(500);
           config
         )
     } catch (err) {
-      logtail.info('Error on Get14: ', err);
+      logtail.error('Error on Get14: ', err);
     }
 
 await timeoutPromise(500);
@@ -263,7 +263,7 @@ await timeoutPromise(500);
           config
         )
     } catch (err) {
-      logtail.info('Error on Get15: ', err);
+      logtail.error('Error on Get15: ', err);
     }
 
 await timeoutPromise(500);
@@ -275,7 +275,7 @@ await timeoutPromise(500);
           config
         )
     } catch (err) {
-      logtail.info('Error on Get16: ', err);
+      logtail.error('Error on Get16: ', err);
     }
 
 await timeoutPromise(500);
@@ -287,7 +287,7 @@ await timeoutPromise(500);
           config
         )
     } catch (err) {
-      logtail.info('Error on Get17: ', err);
+      logtail.error('Error on Get17: ', err);
     }
 
 await timeoutPromise(500);
@@ -299,7 +299,7 @@ await timeoutPromise(500);
           config
         )
     } catch (err) {
-      logtail.info('Error on Get18: ', err);
+      logtail.error('Error on Get18: ', err);
     }
 
 await timeoutPromise(500);
@@ -311,7 +311,7 @@ await timeoutPromise(500);
           config
         )
     } catch (err) {
-      logtail.info('Error on Get19: ', err);
+      logtail.error('Error on Get19: ', err);
     }
 
 await timeoutPromise(500);
@@ -323,7 +323,7 @@ await timeoutPromise(500);
           config
         )
     } catch (err) {
-      logtail.info('Error on Get20: ', err);
+      logtail.error('Error on Get20: ', err);
     }
 
 await timeoutPromise(500);
@@ -335,7 +335,7 @@ await timeoutPromise(500);
           config
         )
     } catch (err) {
-      logtail.info('Error on Get21: ', err);
+      logtail.error('Error on Get21: ', err);
     }
 
 await timeoutPromise(500);
@@ -347,7 +347,7 @@ await timeoutPromise(500);
           config
         )
     } catch (err) {
-      logtail.info('Error on Get22: ', err);
+      logtail.error('Error on Get22: ', err);
     }
 
 await timeoutPromise(500);
@@ -359,7 +359,7 @@ await timeoutPromise(500);
           config
         )
     } catch (err) {
-      logtail.info('Error on Get23: ', err);
+      logtail.error('Error on Get23: ', err);
     }
 
 await timeoutPromise(500);
@@ -371,7 +371,7 @@ await timeoutPromise(500);
           config
         )
     } catch (err) {
-      logtail.info('Error on Get24: ', err);
+      logtail.error('Error on Get24: ', err);
     }
 
 await timeoutPromise(500);
@@ -383,7 +383,7 @@ await timeoutPromise(500);
           config
         )
     } catch (err) {
-      logtail.info('Error on Get25: ', err);
+      logtail.error('Error on Get25: ', err);
     }
 
 await timeoutPromise(500);
@@ -395,7 +395,7 @@ await timeoutPromise(500);
           config
         )
     } catch (err) {
-      logtail.info('Error on Get26: ', err);
+      logtail.error('Error on Get26: ', err);
     }
 
 await timeoutPromise(500);
@@ -407,7 +407,7 @@ await timeoutPromise(500);
           config
         )
     } catch (err) {
-      logtail.info('Error on Get27: ', err);
+      logtail.error('Error on Get27: ', err);
     }
 
 await timeoutPromise(500);
@@ -419,7 +419,7 @@ await timeoutPromise(500);
           config
         )
     } catch (err) {
-      logtail.info('Error on Get28: ', err);
+      logtail.error('Error on Get28: ', err);
     }
 
 await timeoutPromise(500);
@@ -429,7 +429,7 @@ await timeoutPromise(500);
         bcResponse.push(item);
        }
       } catch (err) {
-        logtail.info('Error on bcCreate: ', err);
+        logtail.error('Error on bcCreate: ', err);
 
       }
 
@@ -440,7 +440,7 @@ await timeoutPromise(500);
         bcResponse.push(item);
        }
       } catch (err) {
-        logtail.info('Error on bcCreate: ', err);
+        logtail.error('Error on bcCreate: ', err);
 
       }
 
@@ -451,7 +451,7 @@ await timeoutPromise(500);
         bcResponse.push(item);
        }
       } catch (err) {
-        logtail.info('Error on bcCreate: ', err);
+        logtail.error('Error on bcCreate: ', err);
 
       }
 
@@ -462,7 +462,7 @@ await timeoutPromise(500);
         bcResponse.push(item);
        }
       } catch (err) {
-        logtail.info('Error on bcCreate: ', err);
+        logtail.error('Error on bcCreate: ', err);
 
       }
 
@@ -473,7 +473,7 @@ await timeoutPromise(500);
         bcResponse.push(item);
        }
       } catch (err) {
-        logtail.info('Error on bcCreate: ', err);
+        logtail.error('Error on bcCreate: ', err);
 
       }
 
@@ -484,7 +484,7 @@ await timeoutPromise(500);
         bcResponse.push(item);
        }
       } catch (err) {
-        logtail.info('Error on bcCreate: ', err);
+        logtail.error('Error on bcCreate: ', err);
 
       }
 
@@ -495,7 +495,7 @@ await timeoutPromise(500);
         bcResponse.push(item);
        }
       } catch (err) {
-        logtail.info('Error on bcCreate: ', err);
+        logtail.error('Error on bcCreate: ', err);
 
       }
 
@@ -506,7 +506,7 @@ await timeoutPromise(500);
         bcResponse.push(item);
        }
       } catch (err) {
-        logtail.info('Error on bcCreate: ', err);
+        logtail.error('Error on bcCreate: ', err);
 
       }
 
@@ -517,7 +517,7 @@ await timeoutPromise(500);
         bcResponse.push(item);
        }
       } catch (err) {
-        logtail.info('Error on bcCreate: ', err);
+        logtail.error('Error on bcCreate: ', err);
 
       }
 
@@ -528,7 +528,7 @@ await timeoutPromise(500);
         bcResponse.push(item);
        }
       } catch (err) {
-        logtail.info('Error on bcCreate: ', err);
+        logtail.error('Error on bcCreate: ', err);
 
       }
 
@@ -539,7 +539,7 @@ await timeoutPromise(500);
         bcResponse.push(item);
        }
       } catch (err) {
-        logtail.info('Error on bcCreate: ', err);
+        logtail.error('Error on bcCreate: ', err);
 
       }
 
@@ -550,7 +550,7 @@ await timeoutPromise(500);
         bcResponse.push(item);
        }
       } catch (err) {
-        logtail.info('Error on bcCreate: ', err);
+        logtail.error('Error on bcCreate: ', err);
 
       }
 
@@ -561,7 +561,7 @@ await timeoutPromise(500);
         bcResponse.push(item);
        }
       } catch (err) {
-        logtail.info('Error on bcCreate: ', err);
+        logtail.error('Error on bcCreate: ', err);
 
       }
 
@@ -572,7 +572,7 @@ await timeoutPromise(500);
         bcResponse.push(item);
        }
       } catch (err) {
-        logtail.info('Error on bcCreate: ', err);
+        logtail.error('Error on bcCreate: ', err);
 
       }
 
@@ -583,7 +583,7 @@ await timeoutPromise(500);
         bcResponse.push(item);
        }
       } catch (err) {
-        logtail.info('Error on bcCreate: ', err);
+        logtail.error('Error on bcCreate: ', err);
 
       }
 
@@ -594,7 +594,7 @@ await timeoutPromise(500);
         bcResponse.push(item);
        }
       } catch (err) {
-        logtail.info('Error on bcCreate: ', err);
+        logtail.error('Error on bcCreate: ', err);
 
       }
 
@@ -605,7 +605,7 @@ await timeoutPromise(500);
         bcResponse.push(item);
        }
       } catch (err) {
-        logtail.info('Error on bcCreate: ', err);
+        logtail.error('Error on bcCreate: ', err);
 
       }
 
@@ -616,7 +616,7 @@ await timeoutPromise(500);
         bcResponse.push(item);
        }
       } catch (err) {
-        logtail.info('Error on bcCreate: ', err);
+        logtail.error('Error on bcCreate: ', err);
 
       }
 
@@ -627,7 +627,7 @@ await timeoutPromise(500);
         bcResponse.push(item);
        }
       } catch (err) {
-        logtail.info('Error on bcCreate: ', err);
+        logtail.error('Error on bcCreate: ', err);
 
       }
 
@@ -638,7 +638,7 @@ await timeoutPromise(500);
         bcResponse.push(item);
        }
       } catch (err) {
-        logtail.info('Error on bcCreate: ', err);
+        logtail.error('Error on bcCreate: ', err);
 
       }
 
@@ -649,7 +649,7 @@ await timeoutPromise(500);
         bcResponse.push(item);
        }
       } catch (err) {
-        logtail.info('Error on bcCreate: ', err);
+        logtail.error('Error on bcCreate: ', err);
 
       }
 
@@ -660,7 +660,7 @@ await timeoutPromise(500);
         bcResponse.push(item);
        }
       } catch (err) {
-        logtail.info('Error on bcCreate: ', err);
+        logtail.error('Error on bcCreate: ', err);
 
       }
 
@@ -671,7 +671,7 @@ await timeoutPromise(500);
         bcResponse.push(item);
        }
       } catch (err) {
-        logtail.info('Error on bcCreate: ', err);
+        logtail.error('Error on bcCreate: ', err);
 
       }
 
@@ -682,7 +682,7 @@ await timeoutPromise(500);
         bcResponse.push(item);
        }
       } catch (err) {
-        logtail.info('Error on bcCreate: ', err);
+        logtail.error('Error on bcCreate: ', err);
 
       }
 
@@ -693,7 +693,7 @@ await timeoutPromise(500);
         bcResponse.push(item);
        }
       } catch (err) {
-        logtail.info('Error on bcCreate: ', err);
+        logtail.error('Error on bcCreate: ', err);
 
       }
 
@@ -704,7 +704,7 @@ await timeoutPromise(500);
         bcResponse.push(item);
        }
       } catch (err) {
-        logtail.info('Error on bcCreate: ', err);
+        logtail.error('Error on bcCreate: ', err);
 
       }
 
@@ -715,7 +715,7 @@ await timeoutPromise(500);
         bcResponse.push(item);
        }
       } catch (err) {
-        logtail.info('Error on bcCreate: ', err);
+        logtail.error('Error on bcCreate: ', err);
 
       }
 
@@ -726,7 +726,7 @@ await timeoutPromise(500);
         bcResponse.push(item);
       }
     } catch (err) {
-      logtail.info('Error on bcCreate: ', err);
+      logtail.error('Error on bcCreate: ', err);
     }
 
 await timeoutPromise(200);
@@ -748,7 +748,7 @@ async function GetAllBrands () {
         config
       )
   } catch (err) {
-    logtail.info('--NSN-- Error on Get Brands: ', err);
+    logtail.error('--NSN-- Error on Get Brands: ', err);
   }
 
   return brands.data.data;
@@ -769,7 +769,7 @@ let bcResponse = [];
         config
       )
   } catch (err) {
-    logtail.info('--NSN-- Error on Get: ', err);
+    logtail.error('--NSN-- Error on Get: ', err);
   }
 
   await timeoutPromise(1000);
@@ -779,7 +779,7 @@ let bcResponse = [];
           bcResponse.push(item);
         }
       } catch (err) {
-        logtail.info('--NSN-- Error on bcCreate: ', err);
+        logtail.error('--NSN-- Error on bcCreate: ', err);
       }
 
   return bcResponse;
@@ -804,7 +804,7 @@ async function addItems(bcResponse, notify) {
         getItems = getResult.rows;
       })
   } catch (err) {
-    logtail.info('--NSN-- Error on getItems: ', err);
+    logtail.error('--NSN-- Error on getItems: ' + err);
   }
 
   await timeoutPromise(500);
@@ -953,7 +953,7 @@ async function addItems(bcResponse, notify) {
     }
 
   } catch (err) {
-    logtail.info('--NSN-- Error on productMsg: ', err);
+    logtail.error('--NSN-- Error on productMsg: ', err);
   }
 
   await timeoutPromise(500);
@@ -961,7 +961,7 @@ async function addItems(bcResponse, notify) {
   try {
     varItems = await getVars(bcResponse);
   } catch (err) {
-    logtail.info('--NSN-- Error on getVars: ', err);
+    logtail.error('--NSN-- Error on getVars: ', err);
   }
 
   //logtail.info('Variants TEST: ', varItems);
@@ -999,7 +999,7 @@ async function addItems(bcResponse, notify) {
           };
           newItems.push(variant);
         } else {
-          //logtail.info('Variant not at 0 stock!');
+          //logtail.error('Variant not at 0 stock!');
         }
       }
     } else {
@@ -1039,12 +1039,12 @@ async function addItems(bcResponse, notify) {
           };
           newItems.push(variant);
         } else {
-          //logtail.info('Variant not at 0 stock!');
+          //logtail.error('Variant not at 0 stock!');
         }
       }
     }
   } catch (err) {
-    logtail.info('--NSN-- Error on varMsg: ', err);
+    logtail.error('--NSN-- Error on varMsg: ', err);
   }
 
   await timeoutPromise(500);
@@ -1058,7 +1058,7 @@ if (newItems[0]) {
       await pool
         .query(queryText, [item.name, item.sku, item.inventory_level, item.id, item.level, item.brand])
   } catch (err) {
-    logtail.info('SKU: ', item.sku + 'ID: ', item.id + ' Error on insert: ', err);
+    logtail.error('SKU: ', item.sku + 'ID: ', item.id + ' Error on insert: ', err);
   }
  }
 } else {
@@ -1074,7 +1074,7 @@ if (newItems[0]) {
     await pool
       .query(queryText)
   } catch (err) {
-    logtail.info('--NSN-- Error on getItems: ', err);
+    logtail.error('--NSN-- Error on getItems: ', err);
   }
 
 if (notify) {
@@ -1110,7 +1110,7 @@ if (notify) {
       })();
     }
   } catch (err) {
-    logtail.info('--NSN-- Error on slack message: ', err);
+    logtail.error('--NSN-- Error on slack message: ', err);
   }
 
 } else {
@@ -1127,7 +1127,7 @@ async function getItems(notify) {
     try {
       bcResponse = await getBCItems();
     } catch (err) {
-      logtail.info('--NSN-- Error on getBCItems: ', err);
+      logtail.error('--NSN-- Error on getBCItems: ', err);
     }
 
     await timeoutPromise(1000);
@@ -1144,7 +1144,7 @@ async function getItemsSinglePage(pageToUse) {
   try {
     bcResponse = await getSingleBCPage(pageToUse);
   } catch (err) {
-    logtail.info('--NSN-- Error on getBCItems: ', err);
+    logtail.error('--NSN-- Error on getBCItems: ', err);
   }
 
   await timeoutPromise(1000);
@@ -1217,7 +1217,7 @@ async function getVars(bcResponse) {
        }
       }
     } catch (err) {
-      logtail.info('--NSN-- Error on makeVarArray: ', err);
+      logtail.error('--NSN-- Error on makeVarArray: ', err);
     }
 
     return varItems;
@@ -1268,7 +1268,7 @@ async function eachVar(bc) {
 
     }
   } catch (err) {
-    logtail.info('--NSN-- Error on getVar: ', err);
+    logtail.error('--NSN-- Error on getVar: ', err);
   }
 }
 
@@ -1341,7 +1341,7 @@ setInterval(() => {
   try {
     bcResponse = await getBCItems();
   } catch (err) {
-    logtail.info('--NSN-- Error on getBCItems: ', err);
+    logtail.error('--NSN-- Error on getBCItems: ', err);
   }
 
 await timeoutPromise(500);
@@ -1354,7 +1354,7 @@ await timeoutPromise(500);
         getItems = getResult.rows;
       })
   } catch (err) {
-    logtail.info('--NSN-- Error on getItems: ', err);
+    logtail.error('--NSN-- Error on getItems: ', err);
   }
 
 await timeoutPromise(500);
@@ -1380,7 +1380,7 @@ logtail.info('--NSN-- Checking Product Level..');
           }
         }
       } catch (err) {
-        logtail.info('--NSN-- Error on getStocked: ', err);
+        logtail.error('--NSN-- Error on getStocked: ', err);
       }
 
   await timeoutPromise(500);
@@ -1388,7 +1388,7 @@ logtail.info('--NSN-- Checking Product Level..');
   try {
   varItems = await getVars(bcResponse);
   } catch (err) {
-    logtail.info('--NSN-- Error on getVars: ', err);
+    logtail.error('--NSN-- Error on getVars: ', err);
   }
 
 logtail.info('--NSN-- Checking Variant Level..');
@@ -1412,7 +1412,7 @@ logtail.info('--NSN-- Checking Variant Level..');
           }
         }
       } catch (err) {
-        logtail.info('--NSN-- Error on get Var Stocked: ', err);
+        logtail.error('--NSN-- Error on get Var Stocked: ', err);
       }
 
   await timeoutPromise(500);
@@ -1430,7 +1430,7 @@ logtail.info('--NSN-- Checking Variant Level..');
                 logtail.info('--NSN-- Error on delete: ', err);
               }
       } else {
-        logtail.info('--NSN-- No Items to Delete..');
+        logtail.error('--NSN-- No Items to Delete..');
       }
     }
   }
@@ -1805,7 +1805,7 @@ router.get("/getitems", (req, res) => {
       res.send(selectResult.rows);
     })
     .catch((error) => {
-      logtail.info(`--NSN-- Error on item query ${error}`);
+      logtail.error(`--NSN-- Error on item query ${error}`);
       res.sendStatus(500);
     });
 });
@@ -1835,7 +1835,7 @@ router.delete("/items/:id", async function (req, res) {
         .query(queryText)
     }
   } catch (err) {
-    logtail.info('--NSN-- Error on delete: ', err);
+    logtail.error('--NSN-- Error on delete: ', err);
     return res.status(500).send();
   }
 
@@ -1852,7 +1852,7 @@ router.delete("/items/:id", async function (req, res) {
         res.sendStatus(500);
       });
   } catch (err) {
-    logtail.info('--NSN-- Error on Get: ', err);
+    logtail.error('--NSN-- Error on Get: ', err);
     return res.status(500).send();
   }
  

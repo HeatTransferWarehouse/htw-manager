@@ -45,7 +45,7 @@ router.delete("/deleteitemrange", (req, res) => {
         res.sendStatus(204); //No Content
       })
       .catch((error) => {
-        logtail.info("--AFFILIATES-- Error DELETE ", error);
+        logtail.error("--AFFILIATES-- Error DELETE ", error);
         res.sendStatus(500);
       });
 });
@@ -57,7 +57,7 @@ router.delete("/deleteskurange", (req, res) => {
         res.sendStatus(204); //No Content
       })
       .catch((error) => {
-        logtail.info("--AFFILIATES-- Error DELETE ", error);
+        logtail.error("--AFFILIATES-- Error DELETE ", error);
         res.sendStatus(500);
       });
 });
@@ -304,7 +304,7 @@ router.post("/events", async (req, res) => {
              })
              .catch(function (error) {
                // handle error
-               logtail.info('--AFFILIATES-- ERROR: ', error);
+               logtail.error('--AFFILIATES-- ERROR: ', error);
              });
         
       } else {
@@ -325,7 +325,7 @@ router.get("/itemlist", (req, res) => {
         res.send(result.rows);
       })
       .catch((error) => {
-        logtail.info(`--AFFILIATES-- Error on affiliate query ${error}`);
+        logtail.error(`--AFFILIATES-- Error on affiliate query ${error}`);
         res.sendStatus(500);
       });
 });
@@ -342,7 +342,7 @@ router.get("/topfive", (req, res) => {
         res.send(result.rows);
       })
       .catch((error) => {
-        logtail.info(`--AFFILIATES-- Error on affiliate query ${error}`);
+        logtail.error(`--AFFILIATES-- Error on affiliate query ${error}`);
         res.sendStatus(500);
       });
 });
@@ -357,7 +357,7 @@ router.get("/total", (req, res) => {
         res.send(result.rows);
       })
       .catch((error) => {
-        logtail.info(`--AFFILIATES-- Error on affiliate query ${error}`);
+        logtail.error(`--AFFILIATES-- Error on affiliate query ${error}`);
         res.sendStatus(500);
       });
 });
@@ -380,7 +380,7 @@ router.post("/checkemail", (req, res) => {
             res.send(result.rows);
           })
           .catch((error) => {
-            logtail.info(`--AFFILIATES-- Error on affiliate query ${error}`);
+            logtail.error(`--AFFILIATES-- Error on affiliate query ${error}`);
             res.sendStatus(500);
           });
 });
@@ -400,7 +400,7 @@ router.post("/orderdetails", (req, res) => {
         })
       .catch(function (error) {
         // handle error
-        logtail.info(error);
+        logtail.error(error);
       })
 });
 
@@ -414,7 +414,7 @@ router.get("/email", (req, res) => {
         res.send(result.rows);
       })
       .catch((error) => {
-        logtail.info(`--AFFILIATES-- Error on affiliate query ${error}`);
+        logtail.error(`--AFFILIATES-- Error on affiliate query ${error}`);
         res.sendStatus(500);
       });
 });
@@ -437,7 +437,7 @@ router.put("/wallyBMessages", (req, res) => {
 
       // `res` contains information about the posted message
 
-      logtail.info("--WALLY B-- Message sent..");
+      logtail.error("--WALLY B-- Message sent..");
     })();
 
   res.sendStatus(200);
