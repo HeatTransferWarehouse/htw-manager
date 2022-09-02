@@ -135,7 +135,7 @@ const inksoftSender = async (orderId, inksoft) => {
         let shippingMethods = [];
 
 
-        try {
+        //try {
 
             shippingMethods = await axios
             .get(
@@ -146,15 +146,15 @@ const inksoftSender = async (orderId, inksoft) => {
             shippingMethods = shippingMethods.data.Data[0];
             //console.log('--INKSOFT-- Get Ship Methods', shippingMethods);
 
-        } catch (err) {
-            console.log('--INKSOFT-- Error on Get Shipping: ', err);
-            if (err.response.data.Messages) {
-                console.log('--INKSOFT-- Get Shipping Error Messgae: ', err.response.data.Messages);
-            }
-            if (err.responseText) {
-            console.log('--INKSOFT-- Get Shipping Error Messgae: ', err.responseText);
-            }
-        }
+        // } catch (err) {
+        //     console.log('--INKSOFT-- Error on Get Shipping: ', err);
+        //     if (err.response.data.Messages) {
+        //         console.log('--INKSOFT-- Get Shipping Error Messgae: ', err.response.data.Messages);
+        //     }
+        //     if (err.responseText) {
+        //     console.log('--INKSOFT-- Get Shipping Error Messgae: ', err.responseText);
+        //     }
+        // }
 
 
         currentCart.Cart.ShippingMethod = shippingMethods;
@@ -166,65 +166,65 @@ const inksoftSender = async (orderId, inksoft) => {
         //console.log('--INKSOFT-- New Cart Before Send: ', newNewCart);
 
 
-        try {
+        //try {
 
-          const data = `Cart=${newNewCart}&Format=JSON&SessionToken=${mainToken}&StoreId=296924`;
+          const data1 = `Cart=${newNewCart}&Format=JSON&SessionToken=${mainToken}&StoreId=296924`;
 
             await axios
             .post(
               `https://stores.inksoft.com/DS350156262/Api2/SetCart`,
-              data,
+              data1,
               config
             )
 
             console.log('--INKSOFT-- Cart Modified..');
 
-        } catch (err) {
-            console.log('--INKSOFT-- Error on Set Cart: ', err);
-            if (err.response.data.Messages) {
-                console.log('--INKSOFT-- Set Cart Error Messgae: ', err.response.data.Messages);
-            }
-            if (err.responseText) {
-            console.log('--INKSOFT-- Set Cart Error Messgae: ', err.responseText);
-            }
-        }
+        // } catch (err) {
+        //     console.log('--INKSOFT-- Error on Set Cart: ', err);
+        //     if (err.response.data.Messages) {
+        //         console.log('--INKSOFT-- Set Cart Error Messgae: ', err.response.data.Messages);
+        //     }
+        //     if (err.responseText) {
+        //     console.log('--INKSOFT-- Set Cart Error Messgae: ', err.responseText);
+        //     }
+        // }
 
         let newOrder = [];
 
-        try {
+        //try {
 
           const fileData = 'file';
 
-          const data = `ExternalOrderId=${orderId}&PurchaseOrderNumber=${orderId}&SessionToken=${mainToken}&Email=${email}&StoreId=296924&FileData=${fileData}&IgnoreTotalDueCheck=true`;
+          const data2 = `ExternalOrderId=${orderId}&PurchaseOrderNumber=${orderId}&SessionToken=${mainToken}&Email=${email}&StoreId=296924&FileData=${fileData}&IgnoreTotalDueCheck=true`;
 
           newOrder = await axios
             .post(
               `https://stores.inksoft.com/DS350156262/Api2/SaveCartOrder`,
-              data,
+              data2,
               config
             )
 
             console.log('--INKSOFT-- Order Sent!');
 
-        } catch (err) {
-            console.log('--INKSOFT-- Error on Post Cart: ', err);
-            if (err.responseText) {
-            console.log('--INKSOFT-- Post Cart Error Messgae: ', err.responseText);
-            }
-        }
+        // } catch (err) {
+        //     console.log('--INKSOFT-- Error on Post Cart: ', err);
+        //     if (err.responseText) {
+        //     console.log('--INKSOFT-- Post Cart Error Messgae: ', err.responseText);
+        //     }
+        // }
 
         const newOrderId = newOrder.data.Data;
 
         console.log('--INKSOFT-- New Order: ', newOrderId);
 
-        try {
+        //try {
           const so = await getSO(orderId);
           console.log('--INKSOFT-- ', so.response.results[0][0]);
           const note = `Inksoft Order Number: ${newOrderId} --- Note made via Admin app. https://admin.heattransferwarehouse.com`;
           await createNote(so.response.results[0][0], note);
-        } catch (err) {
-          console.log('--INKSOFT-- Error on add note: ', err);
-        }
+        // } catch (err) {
+        //   console.log('--INKSOFT-- Error on add note: ', err);
+        // }
     }
 }
 
@@ -268,7 +268,11 @@ router.post("/orders", cors(), async function (req, res) {
   }
 
 if (isInksoft) {
-    inksoftSender(orderId, inksoft);
+    try {
+        inksoftSender(orderId, inksoft);
+    } catch (error) {
+        console.log('Error on Inksoft Sender: ', error);
+    }
 }
 
 });
