@@ -1789,9 +1789,9 @@ setInterval(() => {
 
 router.get("/items", function (req, res) {
 
+  res.sendStatus(200);
   logtail.info('--NSN-- running MANUAL Slack Notify..');
   getItems(true);
-  res.status(200).send();
 
 });
 
