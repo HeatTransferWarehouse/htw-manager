@@ -143,6 +143,19 @@ function Resources () {
                         <div class="team-content">
                             <i></i>
                             <div class="team-info">
+                                <a href="https://docs.google.com/spreadsheets/d/1Ebf_nSvXy3PFdRMtbBuyksvZwnET6vtX0sCEZV6kG2M/" target="_blank" class="main-button">Open</a>
+                            </div>
+                            <br />
+                            <p><strong>Web/Dev Logins and API</strong> <br />Information and Login Credentials for the Webs and Devs.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-lg-4 col-md-6 col-sm-12">
+                    <div class="team-item">
+                        <div class="team-content">
+                            <i></i>
+                            <div class="team-info">
                                 <a href="https://www.heattransferwarehouse.com/csr-vinyl-calculator/" target="_blank" class="main-button">Open</a>
                             </div>
                             <br />
