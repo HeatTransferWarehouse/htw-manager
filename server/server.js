@@ -10,6 +10,12 @@ app.use(bodyParser.json({limit: "200mb"}));
 app.use(bodyParser.urlencoded({limit: "200mb", extended: true, parameterLimit:50000}));
 app.use(express.static("build"));
 
+const { Logtail } = require("@logtail/node");
+
+const logtail = new Logtail("KQi4An7q1YZVwaTWzM72Ct5r");
+
+logtail.info("Logtail ready!");
+
 // Route includes
 const userRouter = require('./routes/userrouter');
 const sanmarBP = require('./routes/sanmarBPRouter');
