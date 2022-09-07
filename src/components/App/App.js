@@ -41,6 +41,8 @@ function App () {
 
             <Route exact path="/orderlookupold" component={OrderLookupOLD} />
 
+            <Route exact path="/accountlookup" component={OrderLookup} />
+
             <ProtectedRoute exact path="/" component={Main} />
 
             <ProtectedRoute exact path="/sanmar" component={Sanmar} />
