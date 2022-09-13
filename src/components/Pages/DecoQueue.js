@@ -275,7 +275,7 @@ class DecoQueue extends Component {
         });
     };
 
-    //This function handles storing input values into state on change
+    //This function handles storing input values into state on change*
     handleInputChangeFor = (propertyName) => (event) => {
         this.setState({
             [propertyName]: event.target.value,
