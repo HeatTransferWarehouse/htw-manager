@@ -54,7 +54,7 @@ class DecoQueue extends Component {
         this.props.dispatch({
             type: "GET_COMPLETE_LIST",
         });
-        //get count of everything
+        //get count of everything**
         this.props.dispatch({
             type: "GET_ITEM_LIST_COUNT",
         });
