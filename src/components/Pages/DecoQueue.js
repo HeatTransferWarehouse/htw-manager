@@ -15,6 +15,8 @@ import QueueIcon from "@material-ui/icons/Queue";
 import CloseIcon from "@material-ui/icons/Close";
 import QueueNav from "./QueueNav";
 import swal from "sweetalert";
+import InfoIcon from "@material-ui/icons/Info";
+
 
 class DecoQueue extends Component {
     state = {
@@ -563,6 +565,17 @@ class DecoQueue extends Component {
                                 }}
                             >
                                 <DeleteIcon /><p>Delete</p>
+                            </Button>
+                            <Button
+                                className="infoButton"
+                                variant="none"
+                                onClick={() => {
+                                    window.open(
+                                        'https://docs.google.com/document/d/1X65HGw9epFUAN94-oadMzj3Y_Mu0k5pEzXjVLmTpnkg/edit?usp=sharing',
+                                        '_blank' // <- This is what makes it open in a new window.
+                                    );
+                                }}
+                            ><InfoIcon className="infoIcon" />
                             </Button>
                         </div>
                     )}

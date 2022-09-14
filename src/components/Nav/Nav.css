@@ -40,7 +40,8 @@
 }
 
 .active-nav-link {
-  float: left;
+  color: red;
+  /* float: left;
   background-color: #00008B;
   text-align: center;
   padding: 24px 10px;
@@ -48,7 +49,7 @@
   font-size: 15px;
   border:none;
   cursor: pointer;
-  outline:0;
+  outline:0; */
 }
 
 .active-nav-link2 {

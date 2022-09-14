@@ -9,7 +9,7 @@ footer {
     background-color: black;
     text-align:center;
     margin-top: 10% !important;
-    z-index: 20;
+    z-index: 90;
 }
 
 .login {

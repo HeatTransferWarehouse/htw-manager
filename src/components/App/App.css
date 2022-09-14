@@ -165,6 +165,8 @@ input {
 }
 
 .multiButtons {
+  display: flex;
+  align-items: flex-start;
   margin: 50px 50px 50px 0;
   position: fixed;
   left: 2%;
@@ -177,7 +179,6 @@ input {
 
 .multiButtons Button {
   margin: 5px;
-  ;
 }
 
 .queue-container {
@@ -234,4 +235,25 @@ input {
   display: flex;
   justify-content: flex-start;
   align-items: center;
+}
+
+.infoButton {
+  background-color: transparent;
+  border: none;
+  height: auto;
+  width: auto;
+}
+
+.infoIcon {
+  filter: invert(60%);
+  transition: filter 1s;
+}
+
+.infoIcon:hover {
+  filter: invert(40%);
+}
+
+.infoButton:hover, .infoButton:active {
+  background-color: transparent;
+  border: none;
 }
