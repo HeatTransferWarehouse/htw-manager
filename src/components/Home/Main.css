@@ -161,8 +161,7 @@ form {
 }
 
 .main-menu h4 {
-    color: #303030;
-    opacity: 50% !important;
+    color: #30303080;
     z-index: 50;
 }
 
@@ -181,14 +180,13 @@ form {
 
 .circle {
     height: 70em;
-    width: 70em;
+    width: 60em;
     border-radius: 50% 0 0 50%;
     position: fixed;
     top: 0;
     right: 0;
     z-index: 1;
-    opacity: 20% !important;
-    background-image: linear-gradient(0deg, #ffffff 20%, #965fb9 71%);
+    background-image: linear-gradient(0deg, #ffffff39 20%, #965fb93d 71%);
 }
 
 .animate-charcter {
