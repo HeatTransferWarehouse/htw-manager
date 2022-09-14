@@ -1761,7 +1761,7 @@ try {
 // Auto No Stock Notify ALL PAGES
 setInterval(() => {
   // set this to true to activate
-  slackNotify = false;
+  slackNotify = true;
 
   if (slackNotify) {
     logtail.info('--NSN-- running Slack Notify..');
@@ -1787,11 +1787,11 @@ setInterval(() => {
   }
 }, 1000 * 60 * 480);
 
-router.get("/items", function (req, res) {
+router.get("/items", async function (req, res) {
 
   res.sendStatus(200);
   logtail.info('--NSN-- running MANUAL Slack Notify..');
-  getItems(true);
+  getItems(false);
 
 });
 
