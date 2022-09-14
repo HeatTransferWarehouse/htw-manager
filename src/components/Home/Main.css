@@ -181,12 +181,15 @@ form {
 .circle {
     height: 70em;
     width: 60em;
-    border-radius: 50% 0 0 50%;
+    /* border-radius: 50% 0 0 50%; */
     position: fixed;
-    top: 0;
+    top: -5em;
     right: 0;
     z-index: 1;
-    background-image: linear-gradient(0deg, #ffffff39 20%, #965fb93d 71%);
+    background-image: linear-gradient(0deg, #ffffff39 20%, #8447ff4e 71%);
+    clip-path: polygon(83% 0, 100% 0%, 100% 100%, 18% 100%);
+
+
 }
 
 .animate-charcter {
@@ -195,7 +198,8 @@ form {
             #a759d1 0%,
             #8261ee 29%,
             #ff1362 67%,
-            #fc4242 100%);
+            #fc4242 80%,
+            #a759d1 100%);
     background-size: auto auto;
     background-clip: border-box;
     background-size: 200% auto;
@@ -203,13 +207,14 @@ form {
     background-clip: text;
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
-    animation: textclip 40s alternate infinite;
+    animation: textclip 10s ease-out infinite;
     display: inline-block;
     font-size: 8em;
     font-weight: bolder;
     margin-bottom: .5em;
     width: 100%;
     text-align: left;
+    line-height: 1.1em;
     z-index: 50;
 }
 
