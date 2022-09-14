@@ -42,7 +42,7 @@ class LoginPage extends Component {
   }; //end handleInputChangeFor
   render() {
     return (
-      <>
+      <div className="login">
         <br/>
         <br/>
         <br/>
@@ -124,7 +124,7 @@ class LoginPage extends Component {
           {/* logo on login page */}
         </Grid>
       </Grid>
-    </>
+    </div>
     ); //end return
   } //end render
 } //end LoginPage

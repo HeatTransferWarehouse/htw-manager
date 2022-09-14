@@ -1,6 +1,7 @@
 footer {
     /* stylings for the footer*/
     bottom:0;
+    position: absolute;
     background-color: #40e6d8;
     padding:1%;
     width:100% !important;
@@ -9,4 +10,8 @@ footer {
     text-align:center;
     margin-top: 10% !important;
     z-index: 20;
+}
+
+.login {
+    height: 50vh;
 }
