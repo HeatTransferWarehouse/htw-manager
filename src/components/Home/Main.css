@@ -188,6 +188,7 @@ form {
     z-index: 1;
     background-image: linear-gradient(0deg, #ffffff39 20%, #8447ff4e 71%);
     clip-path: polygon(83% 0, 100% 0%, 100% 100%, 18% 100%);
+
 }
 
 .animate-charcter {
@@ -205,7 +206,7 @@ form {
     background-clip: text;
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
-    animation: textclip 10s ease-out infinite;
+    animation: textclip 5s linear infinite;
     display: inline-block;
     font-size: 8em;
     font-weight: bolder;
@@ -227,9 +228,11 @@ form {
         font-size: 3em;
         width: 50%;
     }
+
     .info {
         margin-left: 0;
     }
+
     .main-menu {
         height: 60vh;
     }
