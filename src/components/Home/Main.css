@@ -162,7 +162,7 @@ form {
 
 .main-menu h4 {
     color: #303030;
-    opacity: 50%;
+    opacity: 50% !important;
     z-index: 50;
 }
 
@@ -187,7 +187,7 @@ form {
     top: 0;
     right: 0;
     z-index: 1;
-    opacity: 20%;
+    opacity: 20% !important;
     background-image: linear-gradient(0deg, #ffffff 20%, #965fb9 71%);
 }
 
