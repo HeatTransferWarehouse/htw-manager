@@ -176,6 +176,7 @@ form {
     padding-left: 5em;
     margin-left: 15em;
     z-index: 50;
+    position: fixed;
 }
 
 .circle {
@@ -215,6 +216,7 @@ form {
     text-align: left;
     line-height: 1.1em;
     z-index: 50;
+    /* position: fixed; */
 }
 
 @keyframes textclip {
@@ -223,7 +225,22 @@ form {
     }
 }
 
-@media only screen and (max-width: 1200px) {
+@media only screen and (max-width: 1390px) {
+    .animate-charcter {
+        font-size: 6em;
+        width: 50%;
+    }
+
+    .info {
+        margin-left: 0;
+    }
+
+    .main-menu {
+        height: 80vh;
+    }
+}
+
+@media only screen and (max-width: 900px) {
     .animate-charcter {
         font-size: 3em;
         width: 50%;

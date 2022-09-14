@@ -1,10 +1,10 @@
 import React, { Component } from "react";
-import { HashRouter as Router, Link } from "react-router-dom";
+import { HashRouter as Router, Link, NavLink } from "react-router-dom";
 import Logout from "../LogOutButton/LogOutButton";
 import './Nav.css';
 
 class Nav extends Component {
-
+    
     render() {
         return (
             <header class="header-area header-sticky">
@@ -19,14 +19,14 @@ class Nav extends Component {
                                     <Router>
                                         {/*HTW logo at top*/}
                                         <div>
-                                            <Link to="/" className="nav-link">Home</Link>
-                                            <Link to="/resources" className="nav-link">Resources</Link>
-                                            <Link to="/sanmar" className="nav-link">SanMar</Link>
-                                            <Link to="/brightpearl" className="nav-link">Brightpearl</Link>
-                                            <Link to="/nostock" className="nav-link">No Stock</Link>
-                                            <Link to="/affiliates" className="nav-link">Affiliates</Link>
-                                            <Link to="/decoqueue" className="nav-link">DecoQueue</Link>
-                                            <Link to="/admin" className="nav-link">Admin</Link>
+                                            <NavLink to="/" className="nav-link">Home</NavLink>
+                                            <NavLink to="/resources" className="nav-link">Resources</NavLink>
+                                            <NavLink to="/sanmar" className="nav-link">SanMar</NavLink>
+                                            <NavLink to="/brightpearl" className="nav-link">Brightpearl</NavLink>
+                                            <NavLink to="/nostock" className="nav-link">No Stock</NavLink>
+                                            <NavLink to="/affiliates" className="nav-link">Affiliates</NavLink>
+                                            <NavLink to="/decoqueue" className="nav-link">DecoQueue</NavLink>
+                                            <NavLink to="/admin" className="nav-link">Admin</NavLink>
                                         </div>
                                     </Router>
                                 </div>
