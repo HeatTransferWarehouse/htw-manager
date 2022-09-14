@@ -2,13 +2,17 @@ body {
     background-color: #c0c0c0;
 }
 
+.main-menu {
+    height: 90vh;
+}
+
 table {
     width: 100%;
 }
 
 td {
     padding: 2%;
-    
+
 }
 
 thead {
@@ -129,7 +133,9 @@ form {
     }
 }
 
-.ol-map, #map, .map {
+.ol-map,
+#map,
+.map {
     min-width: 600px;
     min-height: 500px;
     margin-right: 100px;
@@ -151,5 +157,66 @@ form {
 }
 
 .section {
-        background-color: rgb(255, 255, 255);
+    background-color: rgb(255, 255, 255);
+}
+
+.main-menu h4 {
+    color: #303030;
+    opacity: 50%;
+    z-index: 50;
+}
+
+.info {
+    display: flex;
+    justify-content: flex-start;
+    align-items: flex-start;
+    flex-direction: column;
+    width: 95em;
+    /* margin-left: -30em; */
+    /* border-left: 1px solid #303030; */
+    padding-left: 5em;
+    margin-left: 15em;
+    z-index: 50;
+}
+
+.circle {
+    height: 70em;
+    width: 70em;
+    border-radius: 50% 0 0 50%;
+    position: fixed;
+    top: 0;
+    right: 0;
+    z-index: 1;
+    opacity: 20%;
+    background-image: linear-gradient(0deg, #ffffff 20%, #965fb9 71%);
+}
+
+.animate-charcter {
+    text-transform: uppercase;
+    background-image: linear-gradient(-295deg,
+            #a759d1 0%,
+            #8261ee 29%,
+            #ff1362 67%,
+            #fc4242 100%);
+    background-size: auto auto;
+    background-clip: border-box;
+    background-size: 200% auto;
+    color: #fff;
+    background-clip: text;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    animation: textclip 40s alternate infinite;
+    display: inline-block;
+    font-size: 8em;
+    font-weight: bolder;
+    margin-bottom: .5em;
+    width: 100%;
+    text-align: left;
+    z-index: 50;
+}
+
+@keyframes textclip {
+    to {
+        background-position: 200% center;
+    }
 }
