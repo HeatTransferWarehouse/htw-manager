@@ -14,19 +14,6 @@
   margin: 10px;
 }
 
-.nav-link {
-  font-family: Verdana;
-  float: left;
-  color: #303030;
-  text-align: center;
-  padding: 24px 10px;
-  text-decoration: none;
-  font-size: 15px;
-  border:none;
-  cursor: pointer;
-  outline:0;
-}
-
 .nav-link2 {
   float: left;
   background-color: #8B008B;
@@ -39,17 +26,32 @@
   outline:0;
 }
 
-.active-nav-link {
-  color: red;
-  /* float: left;
-  background-color: #00008B;
+.nav-link {
+  font-family: Verdana;
+  float: left;
+  color: #30303097;
   text-align: center;
   padding: 24px 10px;
   text-decoration: none;
   font-size: 15px;
   border:none;
   cursor: pointer;
-  outline:0; */
+  outline:0;
+}
+
+.active-nav-link {
+  font-family: Verdana;
+  float: left;
+  color: #303030;
+  text-align: center;
+  padding: 24px 10px;
+  text-decoration: none;
+  font-size: 15px;
+  border:none;
+  cursor: pointer;
+  outline:0;
+  display: block;
+  padding: .5rem 1rem;
 }
 
 .active-nav-link2 {
