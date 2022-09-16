@@ -5,14 +5,14 @@ import './Nav.css';
 
 function Nav() {
 
-    const [home, setHome] = useState(home);
-    const [resources, setResources] = useState(home);
-    const [sanMar, setSanMar] = useState(home);
-    const [brightPearl, setBrightPearl] = useState(home);
-    const [noStock, setNoStock] = useState(home);
-    const [affiliates, setAffiliates] = useState(home);
-    const [decoQueue, setDecoQueue] = useState(home);
-    const [admin, setAdmin] = useState(home);
+    const [home, setHome] = useState(true);
+    const [resources, setResources] = useState(false);
+    const [sanMar, setSanMar] = useState(false);
+    const [brightPearl, setBrightPearl] = useState(false);
+    const [noStock, setNoStock] = useState(false);
+    const [affiliates, setAffiliates] = useState(false);
+    const [decoQueue, setDecoQueue] = useState(false);
+    const [admin, setAdmin] = useState(false);
 
     const disableAll = () => {
         setHome(false);

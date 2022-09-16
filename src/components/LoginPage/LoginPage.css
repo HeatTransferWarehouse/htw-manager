@@ -19,7 +19,7 @@ max-height:100%;
 
 .loginError {
   /* styling for the toast that pops up when there's an error */
-      position: fixed;
+      position: fixed;;
       /* runs animation that fades the toast error in when error fails */
       animation-name: loginError;
       animation-duration: 0.5s;

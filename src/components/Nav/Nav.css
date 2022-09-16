@@ -37,6 +37,7 @@
   border:none;
   cursor: pointer;
   outline:0;
+  transition: color .2s ease-in;
 }
 
 .active-nav-link {
@@ -52,6 +53,7 @@
   outline:0;
   display: block;
   padding: .5rem 1rem;
+  transition: color .2s ease-in;
 }
 
 .active-nav-link2 {

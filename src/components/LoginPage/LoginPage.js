@@ -43,21 +43,7 @@ class LoginPage extends Component {
   render() {
     return (
       <div className="login">
-        <br/>
-        <br/>
-        <br/>
-        <br/>
-        <br/>
-        <br/>
-        <br/>
-        <br/>
       <Grid container style={{}}>
-        <br/>
-        <br/>
-        <br/>
-        <br/>
-        <br/>
-        <br/>
         <Grid item xs={12} sm={12} md={8} style={{ display: "block" }}>
           <center>
             {/* if error in state is true, render this alert, shows up as a toast
