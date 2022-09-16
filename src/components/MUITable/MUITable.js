@@ -18,10 +18,8 @@ class MUITable extends Component {
     options: {
       filter: false,
       rowHover: false,
-      searchAlwaysOpen: true,
       print: false,
       download: false,
-      viewColumns: false,
       filterType: "dropdown",
       responsive: "vertical",
       tableBodyHeight: "550px",
@@ -29,6 +27,8 @@ class MUITable extends Component {
       rowsPerPage: 100,
       rowsPerPageOptions: [10, 50, 100],
       searchPlaceholder: "Search",
+      viewColumns: false,
+      searchAlwaysOpen: true,
       draggableColumns: { enabled: true },
       selectableRows: false, //false means checkboxes are hidden, I created my own checkbox functionality so this is turned off
     },
