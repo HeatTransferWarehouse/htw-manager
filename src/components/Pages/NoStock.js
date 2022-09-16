@@ -382,6 +382,9 @@ function Main() {
               ?
               <MUITable
                 data={ni} //brings in data as an array, in this case, list of items
+                options = {{
+                  selectableRows: false
+                }}
                 columns={[
                   //names the columns found on MUI table
                   {
@@ -390,7 +393,6 @@ function Main() {
                       filter: false,
                       sort: false,
                       empty: true,
-                      selectableRows: false,
                       selectableRowsHideCheckboxes: true,
                       customBodyRenderLite: (dataIndex, rowIndex) => {
                         return (
@@ -446,6 +448,9 @@ function Main() {
               <>
                 <MUITable
                   data={di} //brings in data as an array, in this case, list of items
+                  options = {{
+                    selectableRows: false
+                  }}
                   columns={[
                     //names the columns found on MUI table
                     {
