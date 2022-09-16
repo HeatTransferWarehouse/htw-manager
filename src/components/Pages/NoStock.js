@@ -1,4 +1,4 @@
-import React, {useEffect} from "react";
+import React, { useEffect } from "react";
 import { useSelector, useDispatch } from 'react-redux';
 import "./css/Main.css";
 import './css/bootstrap.min.css';
@@ -27,7 +27,7 @@ import TextField from '@material-ui/core/TextField';
 import moment from 'moment';
 
 
-function Main () {
+function Main() {
 
   const items = useSelector(store => store.nostock.itemlist);
   const display = useSelector(store => store.nostock.displayState);
@@ -80,13 +80,13 @@ function Main () {
       payload: checkChecked,
     });
     dispatch({
-        type: "ADD_TO_CHECKED",
-        payload: { item: newItems[dataIndex].id, checked: checkChecked}
-      });
+      type: "ADD_TO_CHECKED",
+      payload: { item: newItems[dataIndex].id, checked: checkChecked }
+    });
     dispatch({
-        type: "ADD_TO_TRACKED",
-        payload: { data: dataIndex, checked: checkChecked}
-      });
+      type: "ADD_TO_TRACKED",
+      payload: { data: dataIndex, checked: checkChecked }
+    });
   };
   const updateCheckboxDead = (dataIndex, checkChecked) => {
     dispatch({
@@ -94,13 +94,13 @@ function Main () {
       payload: checkChecked,
     });
     dispatch({
-        type: "ADD_TO_CHECKED",
-        payload: { item: deadItems[dataIndex].id, checked: checkChecked}
-      });
+      type: "ADD_TO_CHECKED",
+      payload: { item: deadItems[dataIndex].id, checked: checkChecked }
+    });
     dispatch({
-        type: "ADD_TO_TRACKED",
-        payload: { data: dataIndex, checked: checkChecked}
-      });
+      type: "ADD_TO_TRACKED",
+      payload: { data: dataIndex, checked: checkChecked }
+    });
   };
 
   //Handler switching inventories
@@ -143,411 +143,421 @@ function Main () {
     moment(item.date).format("MMM Do YY"),
   ]);
 
-    return (
-      <>
-      <br/>
-      <br/>
-      <br/>
-      <br/>
-      <br/>
-      <br/>
+  return (
+    <>
+      <br />
+      <br />
+      <br />
+      <br />
+      <br />
+      <br />
       {display
-      ?
-      <>
-      <br></br>
-      <br></br>
-      <br></br>
-    <section className="nav">
-    <a target="_blank" href="https://docs.google.com/document/d/1oWjzp5W3-0VVA5PM2tFqQSZGPzOcHhaHETqZXKgAIEE/edit"><strong>How to Use</strong></a>
-    <div style={{display: "none"}}>
-    <FormControl component="fieldset">
-      <FormLabel component="legend"></FormLabel>
-      <TextField value={test} onChange={(e) => {setTest(e.target.value)}}/>
-    </FormControl>
-    <Button 
-      variant = "contained"
-      color = "primary"
-      onClick = {
-        (event) => {
-          event.preventDefault();
-          dispatch({
-            type: "TEST_NSN",
-            payload: {
-              test: test,
-            },
-          });
-      swal(`Running Test for ${test}, check console..`);
-        }
-      }
-    ><FlagIcon/> Test</Button>
-    <Button 
-      variant = "contained"
-      color = "primary"
-      onClick = {
-        (event) => {
-          event.preventDefault();
-          dispatch({
-            type: "TEST_NSN_MESSAGE",
-          });
-      swal(`Running Test Slack Message, check console and slack..`);
-        }
-      }
-    ><FlagIcon/> Test Slack Message</Button>
-    </div>
-    <Button 
-      variant = "contained"
-      color = "primary"
-      onClick = {
-        (event) => {
-          event.preventDefault();
-          dispatch({
-            type: "UPDATE_ITEMS",
-          });
-      swal("Refreshing Zero Stock..");
-        }
-      }
-    ><FlagIcon/> Manual Check</Button>
-    <Button 
-      variant = "contained"
-      color = "primary"
-      onClick = {
-        (event) => {
-          event.preventDefault();
-          if (!checkedList[0]) {
-            swal("You need to select at least 1 Item!");
-          } else {
-          dispatch({
-            type: "MARK_STOCKED",
-            payload: {
-              items: checkedList,
-            },
-          });
-          for (let trackItem of trackChecked) {
-            document.getElementById(trackItem).checked = false;
-          }
-      swal("Marking Items as Stocked!");
-      dispatch({
-        type: "CLEAR_TRACKING",
-          });
-        }
-      }
-    }
-    ><AssignmentTurnedInIcon/> Mark as Stocked</Button>
-    <Button 
-      variant = "contained"
-      color = "primary"
-      onClick = {
-        (event) => {
-          event.preventDefault();
-          if (!checkedList[0]) {
-            swal("You need to select at least 1 Item!");
-          } else {
-          dispatch({
-            type: "MARK_STOCKED",
-            payload: {
-              items: checkedList,
-            },
-          });
-          for (let trackItem of trackChecked) {
-            document.getElementById(trackItem).checked = false;
-          }
-      swal("Deleting Items!");
-      dispatch({
-        type: "CLEAR_TRACKING",
-          });
-        }
-      }
-    }
-    ><DeleteIcon/> Mark as Deleted</Button>
-    {isChecked
-    ?
-    <>
-    <Box sx={{ minWidth: 120 }}>
-        <FormControl fullWidth>
-          <InputLabel id="demo-simple-select-label">Reason</InputLabel>
-          <Select
-          className="dead-inventory"
-          value={reason}
-          label="Dead Inventory"
-          onChange={(e) => {addDeadInventory(e)}}
-          >
-            <MenuItem value={'new'}>New</MenuItem>
-            <MenuItem value={'temp'}>Temp</MenuItem>
-            <MenuItem value={'dead'}>Dead</MenuItem>
-            <MenuItem value={'backorder'}>Backorder</MenuItem>
-            <MenuItem value={'clothing'}>Clothing</MenuItem>
-          </Select>
-        </FormControl>
-    </Box>
-    <Button 
-      variant = "contained"
-      color = "primary"
-      onClick = {
-        (e) => {
-          e.preventDefault();
-          if (!checkedList[0]) {
-            swal("You need to select at least 1 Item!");
-          } else {
-            dispatch({
-              type: "MARK_DEAD",
-              payload: {
-                items: checkedList,
-                reason: reason,
-              },
-            });
-            for (let trackItem of trackChecked) {
-              document.getElementById(trackItem).checked = false;
+        ?
+        <>
+          <br></br>
+          <br></br>
+          <br></br>
+          <section className="nav">
+            <a target="_blank" href="https://docs.google.com/document/d/1oWjzp5W3-0VVA5PM2tFqQSZGPzOcHhaHETqZXKgAIEE/edit"><strong>How to Use</strong></a>
+            <div style={{ display: "none" }}>
+              <FormControl component="fieldset">
+                <FormLabel component="legend"></FormLabel>
+                <TextField value={test} onChange={(e) => { setTest(e.target.value) }} />
+              </FormControl>
+              <Button
+                variant="contained"
+                color="primary"
+                onClick={
+                  (event) => {
+                    event.preventDefault();
+                    dispatch({
+                      type: "TEST_NSN",
+                      payload: {
+                        test: test,
+                      },
+                    });
+                    swal(`Running Test for ${test}, check console..`);
+                  }
+                }
+              ><FlagIcon /> Test</Button>
+              <Button
+                variant="contained"
+                color="primary"
+                onClick={
+                  (event) => {
+                    event.preventDefault();
+                    dispatch({
+                      type: "TEST_NSN_MESSAGE",
+                    });
+                    swal(`Running Test Slack Message, check console and slack..`);
+                  }
+                }
+              ><FlagIcon /> Test Slack Message</Button>
+            </div>
+            <Button
+              variant="contained"
+              color="primary"
+              onClick={
+                (event) => {
+                  event.preventDefault();
+                  dispatch({
+                    type: "UPDATE_ITEMS",
+                  });
+                  swal("Refreshing Zero Stock..");
+                }
+              }
+            ><FlagIcon /> Manual Check</Button>
+            <Button
+              variant="contained"
+              color="primary"
+              onClick={
+                (event) => {
+                  event.preventDefault();
+                  if (!checkedList[0]) {
+                    swal("You need to select at least 1 Item!");
+                  } else {
+                    dispatch({
+                      type: "MARK_STOCKED",
+                      payload: {
+                        items: checkedList,
+                      },
+                    });
+                    for (let trackItem of trackChecked) {
+                      document.getElementById(trackItem).checked = false;
+                    }
+                    swal("Marking Items as Stocked!");
+                    dispatch({
+                      type: "CLEAR_TRACKING",
+                    });
+                  }
+                }
+              }
+            ><AssignmentTurnedInIcon /> Mark as Stocked</Button>
+            <Button
+              variant="contained"
+              color="primary"
+              onClick={
+                (event) => {
+                  event.preventDefault();
+                  if (!checkedList[0]) {
+                    swal("You need to select at least 1 Item!");
+                  } else {
+                    dispatch({
+                      type: "MARK_STOCKED",
+                      payload: {
+                        items: checkedList,
+                      },
+                    });
+                    for (let trackItem of trackChecked) {
+                      document.getElementById(trackItem).checked = false;
+                    }
+                    swal("Deleting Items!");
+                    dispatch({
+                      type: "CLEAR_TRACKING",
+                    });
+                  }
+                }
+              }
+            ><DeleteIcon /> Mark as Deleted</Button>
+            {isChecked
+              ?
+              <>
+                <Box sx={{ minWidth: 120 }}>
+                  <FormControl fullWidth>
+                    <InputLabel id="demo-simple-select-label">Reason</InputLabel>
+                    <Select
+                      className="dead-inventory"
+                      value={reason}
+                      label="Dead Inventory"
+                      onChange={(e) => { addDeadInventory(e) }}
+                    >
+                      <MenuItem value={'new'}>New</MenuItem>
+                      <MenuItem value={'temp'}>Temp</MenuItem>
+                      <MenuItem value={'dead'}>Dead</MenuItem>
+                      <MenuItem value={'backorder'}>Backorder</MenuItem>
+                      <MenuItem value={'clothing'}>Clothing</MenuItem>
+                    </Select>
+                  </FormControl>
+                </Box>
+                <Button
+                  variant="contained"
+                  color="primary"
+                  onClick={
+                    (e) => {
+                      e.preventDefault();
+                      if (!checkedList[0]) {
+                        swal("You need to select at least 1 Item!");
+                      } else {
+                        dispatch({
+                          type: "MARK_DEAD",
+                          payload: {
+                            items: checkedList,
+                            reason: reason,
+                          },
+                        });
+                        for (let trackItem of trackChecked) {
+                          document.getElementById(trackItem).checked = false;
+                        }
+                        swal("Marking Items as Dead Inventory!");
+                        dispatch({
+                          type: "CLEAR_TRACKING",
+                        });
+                      }
+                    }
+                  }
+                ><QueueIcon /> Transfer</Button>
+              </>
+              :
+              <>
+                <Button
+                  variant="contained"
+                  color="primary"
+                  onClick={(event) => {
+                    event.preventDefault();
+                    if (!checkedList[0]) {
+                      swal("You need to select at least 1 Item!");
+                    } else {
+                      dispatch({
+                        type: "UNMARK_DEAD",
+                        payload: {
+                          items: checkedList,
+                        },
+                      });
+                      swal("Okay! These are now unmarked as dead inventory!");
+                      for (let trackItem of trackChecked) {
+                        document.getElementById(trackItem).checked = false;
+                      }
+                    }
+                  }
+                  }
+                >
+                  <QueueIcon /> Transfer
+                </Button>
+              </>
             }
-            swal("Marking Items as Dead Inventory!");
-            dispatch({
-              type: "CLEAR_TRACKING",
-            });
-        }
-      }
-    }
-    ><QueueIcon/> Transfer</Button>
-    </>
-    :
-    <>
-    <Button
-      variant="contained"
-      color="primary"
-      onClick={(event) => {
-        event.preventDefault();
-        if (!checkedList[0]) {
-          swal("You need to select at least 1 Item!");
-        } else {
-        dispatch({
-        type: "UNMARK_DEAD",
-        payload: {
-         items: checkedList,
-        },
-        });
-        swal("Okay! These are now unmarked as dead inventory!");
-        for (let trackItem of trackChecked) {
-            document.getElementById(trackItem).checked = false;
-          }
-        }
-       }
-      }
-      >
-     <QueueIcon /> Transfer
-     </Button>
-    </>
-    }
-    <FormControl component="fieldset">
-      <FormLabel component="legend"></FormLabel>
-      <TextField value={note} onChange={(e) => {setNote(e.target.value)}}/>
-    </FormControl>
-    <Button
-      variant="contained"
-      color="primary"
-      onClick={(event) => {
-        event.preventDefault();
-        if (checkedList[0]) {
-        dispatch({
-         type: "UPDATE_NOTES",
-         payload: {
-           items: checkedList,
-           note: note,
-         },
-        });
-          swal("Notes Updated!");
-          setNote('');
-          for (let trackItem of trackChecked) {
-            document.getElementById(trackItem).checked = false;
-          }
-        } else {
-          swal('Select at least 1 item!');
-        }
-        }}
-    >
-     <QueueIcon /> Add Note
-    </Button>
-    <FormControl component="fieldset">
-      <FormGroup aria-label="position" row>
-        <FormControlLabel
-          value="start"
-          checked={isChecked}
-          control={<Switch color="primary" onChange={(e)=>handleChange(e)} />}
-          inputProps={{ 'aria-label': 'secondary checkbox' }}
-          label="Switch Inventories"
-          labelPlacement="start"
-        />
-      </FormGroup>
-    </FormControl>
-    </section>
-      <>
-      {isChecked
-      ?
-      <MUITable
-              data={ni} //brings in data as an array, in this case, list of items
-              columns={[
-                //names the columns found on MUI table
-                {
-                  name: "",
-                  options: {
-                    filter: false,
-                    sort: false,
-                    empty: true,
-                    selectableRowsHideCheckboxes: true,
-                    customBodyRenderLite: (dataIndex, rowIndex) => {
-                      return (
-                        <input
-                          type="checkbox"
-                          id={dataIndex}
-                          style={{ cursor: "pointer", width: 50, height: 50 }}
-                          name=""
-                          value=""
-                          onClick = {(event) => {
-                            let checkChecked = document.getElementById(dataIndex)
-                              .checked;
-                            updateCheckbox(dataIndex, checkChecked);
-                          }
-                        }
-                        >
-                        </input>
-                      );
+            <FormControl component="fieldset">
+              <FormLabel component="legend"></FormLabel>
+              <TextField value={note} onChange={(e) => { setNote(e.target.value) }} />
+            </FormControl>
+            <Button
+              variant="contained"
+              color="primary"
+              onClick={(event) => {
+                event.preventDefault();
+                if (checkedList[0]) {
+                  dispatch({
+                    type: "UPDATE_NOTES",
+                    payload: {
+                      items: checkedList,
+                      note: note,
+                    },
+                  });
+                  swal("Notes Updated!");
+                  setNote('');
+                  for (let trackItem of trackChecked) {
+                    document.getElementById(trackItem).checked = false;
+                  }
+                } else {
+                  swal('Select at least 1 item!');
+                }
+              }}
+            >
+              <QueueIcon /> Add Note
+            </Button>
+            <FormControl component="fieldset">
+              <FormGroup aria-label="position" row>
+                <FormControlLabel
+                  value="start"
+                  checked={isChecked}
+                  control={<Switch color="primary" onChange={(e) => handleChange(e)} />}
+                  inputProps={{ 'aria-label': 'secondary checkbox' }}
+                  label="Switch Inventories"
+                  labelPlacement="start"
+                />
+              </FormGroup>
+            </FormControl>
+          </section>
+          <>
+            {isChecked
+              ?
+              <MUITable
+                data={ni} //brings in data as an array, in this case, list of items
+                columns={[
+                  //names the columns found on MUI table
+                  {
+                    name: "",
+                    options: {
+                      filter: false,
+                      sort: false,
+                      empty: true,
+                      selectableRows: false,
+                      selectableRowsHideCheckboxes: true,
+                      customBodyRenderLite: (dataIndex, rowIndex) => {
+                        return (
+                          <input
+                            type="checkbox"
+                            id={dataIndex}
+                            style={{ cursor: "pointer", width: 50, height: 50 }}
+                            name=""
+                            value=""
+                            onClick={(event) => {
+                              let checkChecked = document.getElementById(dataIndex)
+                                .checked;
+                              updateCheckbox(dataIndex, checkChecked);
+                            }
+                            }
+                          >
+                          </input>
+                        );
+                      },
                     },
                   },
-                },
-                { name: "Name",
-                  options: {
-                    filter: false,
-                  }
-                },
-                { name: "Notes",
-                  options: {
-                    filter: false,
-                  }
-                },
-                { name: "SKU", 
-                  options: {
-                    filter: false,
-                  }
-                },
-                { name: "Brand" },
-                { name: "ID",
-                  options: {
-                    filter: false,
-                  }
-                },
-                { name: "Level" },
-                { name: "Date" },
-              ]}
-              title={""} //give the table a name
+                  {
+                    name: "Name",
+                    options: {
+                      filter: false,
+                    }
+                  },
+                  {
+                    name: "Notes",
+                    options: {
+                      filter: false,
+                    }
+                  },
+                  {
+                    name: "SKU",
+                    options: {
+                      filter: false,
+                    }
+                  },
+                  { name: "Brand" },
+                  {
+                    name: "ID",
+                    options: {
+                      filter: false,
+                    }
+                  },
+                  { name: "Level" },
+                  { name: "Date" },
+                ]}
+                title={""} //give the table a name
               />
-      :
-      <>
-      <MUITable
-              data={di} //brings in data as an array, in this case, list of items
-              columns={[
-                //names the columns found on MUI table
-                {
-                  name: "",
-                  options: {
-                    filter: false,
-                    sort: false,
-                    empty: true,
-                    selectableRowsHideCheckboxes: true,
-                    customBodyRenderLite: (dataIndex, rowIndex) => {
-                      return (
-                        <input
-                          type="checkbox"
-                          id={dataIndex}
-                          style={{ cursor: "pointer", width: 50, height: 50 }}
-                          name=""
-                          value=""
-                          onClick = {(event) => {
-                            let checkChecked = document.getElementById(dataIndex)
-                              .checked;
-                            updateCheckboxDead(dataIndex, checkChecked);
-                          }
-                        }
-                        >
-                        </input>
-                      );
+              :
+              <>
+                <MUITable
+                  data={di} //brings in data as an array, in this case, list of items
+                  columns={[
+                    //names the columns found on MUI table
+                    {
+                      name: "",
+                      options: {
+                        filter: false,
+                        sort: false,
+                        empty: true,
+                        selectableRowsHideCheckboxes: true,
+                        customBodyRenderLite: (dataIndex, rowIndex) => {
+                          return (
+                            <input
+                              type="checkbox"
+                              id={dataIndex}
+                              style={{ cursor: "pointer", width: 50, height: 50 }}
+                              name=""
+                              value=""
+                              onClick={(event) => {
+                                let checkChecked = document.getElementById(dataIndex)
+                                  .checked;
+                                updateCheckboxDead(dataIndex, checkChecked);
+                              }
+                              }
+                            >
+                            </input>
+                          );
+                        },
+                      },
                     },
-                  },
-                },
-                { name: "Name",
-                  options: {
-                    filter: false,
-                  }
-                },
-                { name: "Notes",
-                  options: {
-                    filter: false,
-                  }
-                },
-                { name: "SKU",
-                  options: {
-                    filter: false,
-                  }
-                },
-                { name: "Brand" },
-                { name: "ID",
-                  options: {
-                    filter: false,
-                  }
-                },
-                { name: "Level" },
-                { name: "Reason", 
-                  options: {
-                    display: false,
-                  },
-                },
-                { name: "Date" },
-                {
-                  name: "Reason",
-                  options: {
-                    filter: false,
-                    sort: false,
-                    empty: true,
-                    customBodyRenderLite: (dataIndex, rowIndex) => {
-                      return (
-                        <FormControl component="fieldset">
-                            <FormLabel component="legend"></FormLabel>
-                        <RadioGroup
-                          variant="contained"
-                          aria-label="Reason"
-                          value={deadItems[dataIndex].reason}
-                          name="controlled-radio-buttons-group"
-                          color="secondary"
-                          onClick={(event) => {
-                            event.preventDefault();
-                            let click = event.target.value;
-                            changeReason(dataIndex, click);
-                          }}
-                        >
-                          <FormControlLabel value="new" control={<Radio />} label="New" />
-                          <FormControlLabel value="backorder" control={<Radio />} label="Backorder" />
-                          <FormControlLabel value="clothing" control={<Radio />} label="Clothing" />
-                          <FormControlLabel value="temp" control={<Radio />} label="Temp" />
-                          <FormControlLabel value="dead" control={<Radio />} label="Dead" />
-                        </RadioGroup>
-                        </FormControl>
-                      );
+                    {
+                      name: "Name",
+                      options: {
+                        filter: false,
+                      }
                     },
-                  },
-                },
-              ]}
-              title={""} //give the table a name
-              />
-      </>
+                    {
+                      name: "Notes",
+                      options: {
+                        filter: false,
+                      }
+                    },
+                    {
+                      name: "SKU",
+                      options: {
+                        filter: false,
+                      }
+                    },
+                    { name: "Brand" },
+                    {
+                      name: "ID",
+                      options: {
+                        filter: false,
+                      }
+                    },
+                    { name: "Level" },
+                    {
+                      name: "Reason",
+                      options: {
+                        display: false,
+                      },
+                    },
+                    { name: "Date" },
+                    {
+                      name: "Reason",
+                      options: {
+                        filter: false,
+                        sort: false,
+                        empty: true,
+                        customBodyRenderLite: (dataIndex, rowIndex) => {
+                          return (
+                            <FormControl component="fieldset">
+                              <FormLabel component="legend"></FormLabel>
+                              <RadioGroup
+                                variant="contained"
+                                aria-label="Reason"
+                                value={deadItems[dataIndex].reason}
+                                name="controlled-radio-buttons-group"
+                                color="secondary"
+                                onClick={(event) => {
+                                  event.preventDefault();
+                                  let click = event.target.value;
+                                  changeReason(dataIndex, click);
+                                }}
+                              >
+                                <FormControlLabel value="new" control={<Radio />} label="New" />
+                                <FormControlLabel value="backorder" control={<Radio />} label="Backorder" />
+                                <FormControlLabel value="clothing" control={<Radio />} label="Clothing" />
+                                <FormControlLabel value="temp" control={<Radio />} label="Temp" />
+                                <FormControlLabel value="dead" control={<Radio />} label="Dead" />
+                              </RadioGroup>
+                            </FormControl>
+                          );
+                        },
+                      },
+                    },
+                  ]}
+                  title={""} //give the table a name
+                />
+              </>
+            }
+          </>
+        </>
+        :
+        <>
+          <br></br>
+          <br></br>
+          <br></br>
+          <div className="loader"></div>
+        </>
       }
-      </>
-      </>
-      :
-      <>
-      <br></br>
-      <br></br>
-      <br></br>
-      <div className="loader"></div>
-      </>
-      }
-      </>
-    )
-  }
+    </>
+  )
+}
 
 export default Main;
