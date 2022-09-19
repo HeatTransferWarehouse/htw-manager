@@ -25,6 +25,7 @@ import MenuItem from '@material-ui/core/MenuItem';
 import Select from '@material-ui/core/Select';
 import TextField from '@material-ui/core/TextField';
 import moment from 'moment';
+import InfoIcon from "@material-ui/icons/Info";
 
 
 function Main() {
@@ -158,7 +159,17 @@ function Main() {
           <br></br>
           <br></br>
           <section className="nav">
-            <a target="_blank" href="https://docs.google.com/document/d/1oWjzp5W3-0VVA5PM2tFqQSZGPzOcHhaHETqZXKgAIEE/edit"><strong>How to Use</strong></a>
+            <Button
+              className="infoButton"
+              variant="none"
+              onClick={() => {
+                window.open(
+                  "https://docs.google.com/document/d/1oWjzp5W3-0VVA5PM2tFqQSZGPzOcHhaHETqZXKgAIEE/edit",
+                  '_blank' // <- This is what makes it open in a new window.
+                );
+              }}
+            ><InfoIcon className="infoIcon" />
+            </Button>
             <div style={{ display: "none" }}>
               <FormControl component="fieldset">
                 <FormLabel component="legend"></FormLabel>
@@ -382,7 +393,7 @@ function Main() {
               ?
               <MUITable
                 data={ni} //brings in data as an array, in this case, list of items
-                options = {{
+                options={{
                   selectableRows: false
                 }}
                 columns={[
@@ -448,7 +459,7 @@ function Main() {
               <>
                 <MUITable
                   data={di} //brings in data as an array, in this case, list of items
-                  options = {{
+                  options={{
                     selectableRows: false
                   }}
                   columns={[
