@@ -1,4 +1,4 @@
-import React, {useState, useEffect} from "react";
+import React, { useState, useEffect } from "react";
 import { useSelector, useDispatch } from 'react-redux';
 import "./css/Main.css";
 import './css/bootstrap.min.css';
@@ -16,9 +16,11 @@ import { LocalizationProvider } from '@mui/x-date-pickers';
 import AdapterDateFns from '@mui/lab/AdapterDateFns';
 import TextField from "@material-ui/core/TextField";
 import Grid from '@material-ui/core/Grid';
+import InfoIcon from "@material-ui/icons/Info";
 
-function Sanmar () {
-  
+
+function Sanmar() {
+
   const SanmarOptions = {
     tableBodyHeight: "600px",
     filter: true,
@@ -46,7 +48,7 @@ function Sanmar () {
   let sanmarDisplay = <h4></h4>
 
 
-async function connectFtp(d) {
+  async function connectFtp(d) {
     swal('Downloading Info!');
     if (host !== 'ftp.sanmar.com' || user !== '175733' || password !== 'Sanmar33') {
       swal('Incorrect Login Info!');
@@ -61,71 +63,71 @@ async function connectFtp(d) {
         }
       });
     }
-}
-
-async function sendEmail(o) {
-  updateList();
-  let found = false;
-  const tracking = [];
-  for (const item of sanmarTracking) {
-    if (item.order === order) {
-      found = true;
-      tracking.push(item.tracking);
-    }
   }
-  if (found === true) {
-    swal('Sending Email!');
-    dispatch({
-      type: "SEND_EMAIL",
-      payload: {
-        order: o,
-        tracking: tracking,
+
+  async function sendEmail(o) {
+    updateList();
+    let found = false;
+    const tracking = [];
+    for (const item of sanmarTracking) {
+      if (item.order === order) {
+        found = true;
+        tracking.push(item.tracking);
       }
-    });
-  } else {
-    swal('Could not find Order! Make sure to download Orders first!');
-  }
-}
-
-async function download() {
-  const arr = CSV.parse(SanmarNotify);
-  let trackingPush = [];
-  for (const item of arr) {
-    if (item[0] === 'CUSTOMER PO') {
+    }
+    if (found === true) {
+      swal('Sending Email!');
+      dispatch({
+        type: "SEND_EMAIL",
+        payload: {
+          order: o,
+          tracking: tracking,
+        }
+      });
     } else {
-      let pusher = {
-        order: item[0],
-        tracking: item[15],
-        method: item[17],
-      };
-      let canPush = true;
-      let alreadySent = false;
-      for (const p of trackingPush) {
-        if (pusher.tracking === p.tracking) {
-          canPush = false;
-        }
-      }
-      for (const s of sanmarList) {
-        if (pusher.order === s.ref) {
-          alreadySent = true;
-        }
-      }
-      if (canPush === true && alreadySent === false) {
-      trackingPush.push(pusher);
-      }
+      swal('Could not find Order! Make sure to download Orders first!');
     }
   }
-  dispatch({
-    type: "RESET_SANMAR",
-  });
-  dispatch({
-    type: "UPDATE_TRACKING",
-    payload: trackingPush,
-  });
-  swal('Info Downloaded!');
-}
 
-const updatePrices = () => {
+  async function download() {
+    const arr = CSV.parse(SanmarNotify);
+    let trackingPush = [];
+    for (const item of arr) {
+      if (item[0] === 'CUSTOMER PO') {
+      } else {
+        let pusher = {
+          order: item[0],
+          tracking: item[15],
+          method: item[17],
+        };
+        let canPush = true;
+        let alreadySent = false;
+        for (const p of trackingPush) {
+          if (pusher.tracking === p.tracking) {
+            canPush = false;
+          }
+        }
+        for (const s of sanmarList) {
+          if (pusher.order === s.ref) {
+            alreadySent = true;
+          }
+        }
+        if (canPush === true && alreadySent === false) {
+          trackingPush.push(pusher);
+        }
+      }
+    }
+    dispatch({
+      type: "RESET_SANMAR",
+    });
+    dispatch({
+      type: "UPDATE_TRACKING",
+      payload: trackingPush,
+    });
+    swal('Info Downloaded!');
+  }
+
+  const updatePrices = () => {
     if (BcItems[0]) {
       swal('Updating Prices!');
       dispatch({
@@ -136,84 +138,84 @@ const updatePrices = () => {
           start: start,
         }
       });
-  } else {
-    swal('Import some prices first!');
-  }
-}
-
-const updateList = (o) => {
-  const pusher = [];
-  for (const t of sanmarTracking) {
-    if (o) {
-      if (t.order === order || t.order === o) {
     } else {
-      const push = {
-        order: t.order,
-        tracking: t.tracking,
-        method: t.method,
-      }
-      pusher.push(push);
+      swal('Import some prices first!');
     }
-   } else {
-    if (t.order === order) {
+  }
+
+  const updateList = (o) => {
+    const pusher = [];
+    for (const t of sanmarTracking) {
+      if (o) {
+        if (t.order === order || t.order === o) {
+        } else {
+          const push = {
+            order: t.order,
+            tracking: t.tracking,
+            method: t.method,
+          }
+          pusher.push(push);
+        }
+      } else {
+        if (t.order === order) {
+        } else {
+          const push = {
+            order: t.order,
+            tracking: t.tracking,
+            method: t.method,
+          }
+          pusher.push(push);
+        }
+      }
+    }
+    console.log(pusher);
+    dispatch({
+      type: "UPDATE_TRACKING",
+      payload: pusher,
+    });
+  }
+
+  const addSent = (o) => {
+    console.log(o);
+    let found = false;
+    const tracking = [];
+    for (const item of sanmarTracking) {
+      if (item.order === o) {
+        found = true;
+        tracking.push(item.tracking);
+      }
+    }
+    if (found === true) {
+      swal('Manually marking this order as sent!');
+      dispatch({
+        type: "ADD_SENT",
+        payload: {
+          order: o,
+          tracking: tracking,
+        }
+      });
+      updateList(o);
     } else {
-      const push = {
-        order: t.order,
-        tracking: t.tracking,
-        method: t.method,
-      }
-      pusher.push(push);
-    }
-   }
-  }
-  console.log(pusher);
-  dispatch({
-    type: "UPDATE_TRACKING",
-    payload: pusher,
-  });
-}
-
-const addSent = (o) => {
-  console.log(o);
-  let found = false;
-  const tracking = [];
-  for (const item of sanmarTracking) {
-    if (item.order === o) {
-      found = true;
-      tracking.push(item.tracking);
+      swal('Something went wrong! Try again')
     }
   }
-  if (found === true) {
-    swal('Manually marking this order as sent!');
-  dispatch({
-    type: "ADD_SENT",
-    payload: {
-      order: o,
-      tracking: tracking,
-    }
-  });
-  updateList(o);
-  } else {
-    swal('Something went wrong! Try again')
+
+  async function refreshBC() {
+    swal('Getting BC Data!');
+    dispatch({
+      type: "RESET_BC_CLOTHING",
+    });
+    dispatch({
+      type: "REFRESH_BC",
+    });
   }
-}
 
-async function refreshBC() {
-  swal('Getting BC Data!');
-  dispatch({
-    type: "RESET_BC_CLOTHING",
-  });
-  dispatch({
-    type: "REFRESH_BC",
-  });
-}
-
-async function getSanmar() {
-  swal('Getting Sanmar Data!');
-  dispatch({
-    type: "GET_SANMAR_PRICES",
-  });
-}
+  async function getSanmar() {
+    swal('Getting Sanmar Data!');
+    dispatch({
+      type: "GET_SANMAR_PRICES",
+    });
+  }
 
   const tracking = sanmarTracking.map((item) => [
     item.order,
@@ -222,8 +224,8 @@ async function getSanmar() {
   ]);
 
   const emails = sanmarList.map((item) => [
-      item.ref,
-      item.tracking,
+    item.ref,
+    item.tracking,
   ]);
 
   const sanmarPrices = SanmarItems.map((item) => [
@@ -253,9 +255,9 @@ async function getSanmar() {
       download();
   }
 
-    //defines the dataselector to know which items to preform actions on
-    return (
-      <>
+  //defines the dataselector to know which items to preform actions on
+  return (
+    <>
       <br></br>
       <br></br>
       <br></br>
@@ -272,98 +274,110 @@ async function getSanmar() {
             <LocalizationProvider dateAdapter={AdapterDateFns}>
               <Grid container justify="space-around">
                 <DesktopDatePicker
-                label="Date"
-                value={date}
-                minDate={new Date('2019-01-01')}
-                onChange={(newValue) => {
-                setDate(newValue);
-                }}
-                renderInput={(params) => <TextField {...params} />}
+                  label="Date"
+                  value={date}
+                  minDate={new Date('2019-01-01')}
+                  onChange={(newValue) => {
+                    setDate(newValue);
+                  }}
+                  renderInput={(params) => <TextField {...params} />}
                 />
-                </Grid>
+              </Grid>
             </LocalizationProvider>
             <br />
-            <Button onClick={() => {connectFtp(date)}}>Download Recent Sanmar Orders</Button>
+            <Button onClick={() => { connectFtp(date) }}>Download Recent Sanmar Orders</Button>
           </div>
           <br />
           <div>
-          {sanmarDisplay}
+            {sanmarDisplay}
           </div>
         </div>
-        <br/>
+        <br />
         <div className="row">
-          <br/>
-          <h4>Order #: </h4><input value={order} placeholder="3201122" onChange={(e) => {setOrder(e.target.value)}}></input>
-         <div>
-          <Button onClick={() => {sendEmail(order)}}>Send Email</Button>
-         </div>
+          <br />
+          <h4>Order #: </h4><input value={order} placeholder="3201122" onChange={(e) => { setOrder(e.target.value) }}></input>
+          <div>
+            <Button onClick={() => { sendEmail(order) }}>Send Email</Button>
+          </div>
         </div>
-        <div className="row">
-          <a target="_blank" href="https://docs.google.com/document/d/1pNqWk_UBeeMdLhqeGsU7Ghy1K052SWxpz05x2VEpARk/edit"><strong>How to Use</strong></a>
-        </div>
+        <Button
+          className="infoButton"
+          variant="none"
+          onClick={() => {
+            window.open(
+              'https://docs.google.com/document/d/1pNqWk_UBeeMdLhqeGsU7Ghy1K052SWxpz05x2VEpARk/edit',
+              '_blank' // <- This is what makes it open in a new window.
+            );
+          }}
+        ><InfoIcon className="infoIcon" />
+        </Button>
       </section>
       <div className="tracking-data">
-            <MUITable
-              title={"Sanmar Tracking"}
-              data={tracking}
-              columns={[
-                //names the columns found on MUI table
-                { name: "Order #",
-                  options: { 
-                    filter: false,
-                  }
+        <MUITable
+          title={"Sanmar Tracking"}
+          data={tracking}
+          columns={[
+            //names the columns found on MUI table
+            {
+              name: "Order #",
+              options: {
+                filter: false,
+              }
+            },
+            {
+              name: "Tracking #",
+              options: {
+                filter: false,
+              }
+            },
+            { name: "Shipping Method" },
+            {
+              name: "",
+              options: {
+                filter: false,
+                sort: false,
+                empty: true,
+                customBodyRenderLite: (dataIndex, rowIndex) => {
+                  return (
+                    <Button
+                      variant="contained"
+                      onClick={() => {
+                        const o = tracking[dataIndex][0];
+                        addSent(o);
+                      }
+                      }
+                    >
+                      Mark Sent
+                    </Button>
+                  );
                 },
-                { name: "Tracking #",
-                  options: {
-                    filter: false,
-                  }
-                },
-                { name: "Shipping Method" },
-                {
-                  name: "",
-                  options: {
-                    filter: false,
-                    sort: false,
-                    empty: true,
-                    customBodyRenderLite: (dataIndex, rowIndex) => {
-                      return (
-                        <Button
-                          variant="contained"
-                          onClick = {() => {
-                            const o = tracking[dataIndex][0];
-                            addSent(o);
-                          }
-                        }
-                        >
-                        Mark Sent
-                        </Button>
-                      );
-                    },
-                  },
-                },
-              ]}
-              options={SanmarOptions}
-              />
+              },
+            },
+          ]}
+          options={SanmarOptions}
+        />
       </div>
       <div className="tracking-data">
-            <MUITable
-              title={"Sent Emails"}
-              data={emails}
-              columns={[
-                //names the columns found on MUI table
-                { name: "Order #",
-                  options: { 
-                    filter: false,
-                  }
-                },
-                { name: "Tracking #",
-                  options: {
-                    filter: false,
-                  }
-                },
-              ]}
-              options={SanmarOptions}
-              />
+        <MUITable
+          title={"Sent Emails"}
+          data={emails}
+          columns={[
+            //names the columns found on MUI table
+            {
+              name: "Order #",
+              options: {
+                filter: false,
+              }
+            },
+            {
+              name: "Tracking #",
+              options: {
+                filter: false,
+              }
+            },
+          ]}
+          options={SanmarOptions}
+        />
       </div>
       <br></br>
       <br></br>
@@ -371,79 +385,83 @@ async function getSanmar() {
         <h1>Sync Clothing Prices on BigCommerce</h1>
       </section>
       <section className="sanmar-form">
-      <div className="container">
-       <div className="sanmar-row">
-        <div className="clothing-data">
-          <SanmarImporter />
-          {/* <Button onClick={(e) => {refreshSanmar()}}>Refresh SanMar Prices</Button> */}
-        </div>
-        <div className="total-form">
-          <Button onClick={(e) => {refreshBC()}} className='sales-input'>Get BC Prices</Button>
-        </div>
-        <div className="total-form">
-          <Button onClick={(e) => {getSanmar()}} className='sales-input'>Get SanMar Prices</Button>
-        </div>
-        <div className="total-form">
-          <h4>ID Start: </h4><input value={start} placeholder="0" onChange={(e) => {setStart(e.target.value)}}></input>
-        </div>
-        <div className="total-form">
-          <Button onClick={(e) => {updatePrices()}} className='sales-input'><QueueIcon/> Update Prices</Button>
-        </div>
-        <div className="total-form">
-          <a target="_blank" href="https://docs.google.com/document/d/1DUhwG-jtleKPVWdxK5kMGYlkdnE0BPGDA-PWtmvz8SA/edit"><strong>How to Use</strong></a>
-        </div>
-       </div>
-       <br></br>
-       <br></br>
-       <div className="sanmar-row">
-        <div className="clothing-data">
-            <MUITable
-              title={"SanMar Prices"}
-              data={sanmarPrices}
-              columns={[
-                //names the columns found on MUI table
-                { name: "Name",
-                  options: { 
-                    filter: false,
-                  }
-                },
-                { name: "SKU",
-                  options: {
-                    filter: false,
-                  }
-                },
-                { name: "Color" },
-                { name: "Size" },
-                { name: "Price" }
-              ]}
-              options={SanmarOptions}
+        <div className="container">
+          <div className="sanmar-row">
+            <div className="clothing-data">
+              <SanmarImporter />
+              {/* <Button onClick={(e) => {refreshSanmar()}}>Refresh SanMar Prices</Button> */}
+            </div>
+            <div className="total-form">
+              <Button onClick={(e) => { refreshBC() }} className='sales-input'>Get BC Prices</Button>
+            </div>
+            <div className="total-form">
+              <Button onClick={(e) => { getSanmar() }} className='sales-input'>Get SanMar Prices</Button>
+            </div>
+            <div className="total-form">
+              <h4>ID Start: </h4><input value={start} placeholder="0" onChange={(e) => { setStart(e.target.value) }}></input>
+            </div>
+            <div className="total-form">
+              <Button onClick={(e) => { updatePrices() }} className='sales-input'><QueueIcon /> Update Prices</Button>
+            </div>
+            <div className="total-form">
+              <a target="_blank" href="https://docs.google.com/document/d/1DUhwG-jtleKPVWdxK5kMGYlkdnE0BPGDA-PWtmvz8SA/edit"><strong>How to Use</strong></a>
+            </div>
+          </div>
+          <br></br>
+          <br></br>
+          <div className="sanmar-row">
+            <div className="clothing-data">
+              <MUITable
+                title={"SanMar Prices"}
+                data={sanmarPrices}
+                columns={[
+                  //names the columns found on MUI table
+                  {
+                    name: "Name",
+                    options: {
+                      filter: false,
+                    }
+                  },
+                  {
+                    name: "SKU",
+                    options: {
+                      filter: false,
+                    }
+                  },
+                  { name: "Color" },
+                  { name: "Size" },
+                  { name: "Price" }
+                ]}
+                options={SanmarOptions}
               />
-         </div>
-         <div className="clothing-data">
-            <MUITable
-              title={"BC Prices"}
-              data={bcPrices}
-              columns={[
-                //names the columns found on MUI table
-                { name: "Name",
-                  options: { 
-                    filter: false,
+            </div>
+            <div className="clothing-data">
+              <MUITable
+                title={"BC Prices"}
+                data={bcPrices}
+                columns={[
+                  //names the columns found on MUI table
+                  {
+                    name: "Name",
+                    options: {
+                      filter: false,
+                    }
+                  },
+                  {
+                    name: "ID",
+                    options: {
+                      filter: false,
+                    }
                   }
-                },
-                { name: "ID",
-                  options: {
-                    filter: false,
-                  }
-                }
-              ]}
-              options={SanmarOptions}
+                ]}
+                options={SanmarOptions}
               />
-         </div>
-       </div>
-      </div>
+            </div>
+          </div>
+        </div>
       </section>
-      </>
-    )
-  }
+    </>
+  )
+}
 
 export default Sanmar;
