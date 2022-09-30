@@ -45,6 +45,8 @@ function Main() {
     dispatch({
       type: "GET_NO_STOCK_LIST",
     });
+    console.log("new items: ", newItems);
+    console.log("dead items: ", deadItems);
   }, [])
 
   //Seperate new items and dead inventory for data tables
