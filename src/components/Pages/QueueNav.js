@@ -30,16 +30,7 @@ class QueueNav extends Component {
       type: "GET_CUSTOM_ITEM_LIST_COUNT",
     });
     this.props.dispatch({
-      type: "GET_CONFIRM_LIST_COUNT",
-    });
-    this.props.dispatch({
-      type: "GET_RESPOND_LIST_COUNT",
-    });
-    this.props.dispatch({
       type: "GET_PROGRESS_LIST_COUNT",
-    });
-    this.props.dispatch({
-      type: "GET_CONFIRM_LIST_COUNT",
     });
     this.props.dispatch({
       type: "GET_COMPLETE_LIST_COUNT",
@@ -71,7 +62,7 @@ class QueueNav extends Component {
                   xs={12}
                   sm={12}
                   md={12}
-                  className = "queue-container"
+                  className="queue-container"
                 >
                   <NavLink
                     className={this.state.backgroundcolorclass}
@@ -80,10 +71,9 @@ class QueueNav extends Component {
                   >
                     <EditIcon></EditIcon>New{" "}
                     {/*used to display the count of all items in the new queue*/}
-                    {`(${
-                      this.props.itemlistcount[0] &&
+                    {`(${this.props.itemlistcount[0] &&
                       this.props.itemlistcount[0].count
-                    })`}
+                      })`}
                   </NavLink>
                   <NavLink
                     className={this.state.backgroundcolorclass}
@@ -92,10 +82,9 @@ class QueueNav extends Component {
                   >
                     <FormatListBulletedIcon></FormatListBulletedIcon>
                     In Progress{" "}
-                    {`(${
-                      this.props.progresslistcount[0] &&
+                    {`(${this.props.progresslistcount[0] &&
                       this.props.progresslistcount[0].count
-                    })`}
+                      })`}
                   </NavLink>
                   <NavLink
                     className={this.state.backgroundcolorclass}
@@ -104,10 +93,9 @@ class QueueNav extends Component {
                   >
                     <PlaylistAddCheckIcon></PlaylistAddCheckIcon>
                     Complete{" "}
-                    {`(${
-                      this.props.completelistcount[0] &&
+                    {`(${this.props.completelistcount[0] &&
                       this.props.completelistcount[0].count
-                    })`}
+                      })`}
                   </NavLink>
                   {this.props.user.role === "csr" ? (
                     <>
@@ -272,73 +260,6 @@ class QueueNav extends Component {
                     borderRadius: "30px",
                   }}
                 >
-                  <NavLink
-                    className={this.state.backgroundcolorclass}
-                    to="/newcustom"
-                    activeClassName={this.state.activebackgroundcolorclass}
-                  >
-                    <EditIcon></EditIcon>New{" "}
-                    {`(${
-                      this.props.customitemlistcount[0] &&
-                      this.props.customitemlistcount[0].count
-                    })`}
-                  </NavLink>
-                  <NavLink
-                    className={this.state.backgroundcolorclass}
-                    to="/SentCustomer"
-                    activeClassName={this.state.activebackgroundcolorclass}
-                  >
-                    <EmailIcon></EmailIcon>
-                    Sent to Customer{" "}
-                    {`(${
-                      this.props.confirmlistcount[0] &&
-                      this.props.confirmlistcount[0].count
-                    })`}
-                  </NavLink>
-                  <NavLink
-                    className={this.state.backgroundcolorclass}
-                    to="/Response"
-                    activeClassName={this.state.activebackgroundcolorclass}
-                  >
-                    <ReplyIcon></ReplyIcon>
-                    Customer response{" "}
-                    {`(${
-                      this.props.respondlistcount[0] &&
-                      this.props.respondlistcount[0].count
-                    })`}
-                  </NavLink>
-                  <NavLink
-                    className={this.state.backgroundcolorclass}
-                    to="/Approved"
-                    activeClassName={this.state.activebackgroundcolorclass}
-                  >
-                    <ThumbUpIcon></ThumbUpIcon>
-                    Approved{" "}
-                    {`(${
-                      this.props.approvelistcount[0] &&
-                      this.props.approvelistcount[0].count
-                    })`}
-                  </NavLink>
-                  <NavLink
-                    className={this.state.backgroundcolorclass}
-                    to="/Customcomplete"
-                    activeClassName={this.state.activebackgroundcolorclass}
-                  >
-                    <PlaylistAddCheckIcon></PlaylistAddCheckIcon>
-                    Complete{" "}
-                    {`(${
-                      this.props.customcompletelistcount[0] &&
-                      this.props.customcompletelistcount[0].count
-                    })`}
-                  </NavLink>
-                  <NavLink
-                    className={this.state.backgroundcolorclass}
-                    to="/History"
-                    activeClassName={this.state.activebackgroundcolorclass}
-                  >
-                    <HistoryIcon></HistoryIcon>
-                    History{" "}
-                  </NavLink>
                   {this.props.user.role === "csr" ? (
                     <>
                       <TextField
@@ -497,14 +418,10 @@ const mapStateToProps = (state) => ({
   user: state.user,
   itemlist: state.queue.itemlist,
   progresslist: state.queue.progresslist,
-  confirmlist: state.queue.confirmlist,
-  respondlist: state.queue.respondlist,
   completelist: state.queue.completelist,
+  // Count
   itemlistcount: state.queue.itemlistcount,
   progresslistcount: state.queue.progresslistcount,
-  confirmlistcount: state.queue.confirmlistcount,
-  respondlistcount: state.queue.respondlistcount,
-  approvelistcount: state.queue.approvelistcount,
   completelistcount: state.queue.completelistcount,
 });
 

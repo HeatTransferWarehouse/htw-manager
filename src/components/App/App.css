@@ -109,7 +109,7 @@ input {
   position: fixed;
   width: 100%;
   top: 0;
-  z-index: 100000;
+  z-index: 99998;
 }
 
 .borderBottom {
@@ -256,4 +256,26 @@ input {
 .infoButton:hover, .infoButton:active {
   background-color: transparent;
   border: none;
+}
+
+/* VIDEO CSS (Located in Test.js) */
+
+.julietVideo {
+  width: 100%;
+  margin-bottom: 60em;
+  z-index: 99999;
+}
+
+.containerVid {
+  height: 100vh;
+  width: 100vw;
+  overflow: hidden;
+}
+
+.julietText {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  margin: 5em;
 }

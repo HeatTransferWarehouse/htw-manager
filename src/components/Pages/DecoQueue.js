@@ -22,7 +22,6 @@ class DecoQueue extends Component {
     state = {
         toggle: false,
         toggle3: false,
-        toggle4: false,
         toggle5: false,
         toggle6: false,
         need_to_run: "",
@@ -37,10 +36,11 @@ class DecoQueue extends Component {
         assigned: "",
         created_at: "",
         dataSelector: [],
+        secC: 0,
     };
 
     componentDidMount() {
-        //get all new stock items**
+        //get all new stock items and puts them in the item list reducer
         this.props.dispatch({
             type: "GET_QUEUE_ITEM_LIST",
         });
@@ -102,76 +102,6 @@ class DecoQueue extends Component {
             type: "GET_ITEM_LIST_COUNT",
         });
         this.props.dispatch({
-            type: "GET_RESPOND_LIST_COUNT",
-        });
-        this.props.dispatch({
-            type: "GET_APPROVE_LIST_COUNT",
-        });
-        this.props.dispatch({
-            type: "GET_CONFIRM_LIST_COUNT",
-        });
-        this.props.dispatch({
-            type: "GET_CUSTOM_ITEM_LIST_COUNT",
-        });
-        this.props.dispatch({
-            type: "GET_PROGRESS_LIST_COUNT",
-        });
-        this.props.dispatch({
-            type: "GET_COMPLETE_LIST_COUNT",
-        });
-    };
-    toggle2 = () => {
-        this.setState({
-            toggle2: !this.state.toggle2,
-        });
-        this.props.dispatch({
-            type: "GET_QUEUE_ITEM_LIST",
-        });
-        this.props.dispatch({
-            type: "GET_ITEM_LIST_COUNT",
-        });
-        this.props.dispatch({
-            type: "GET_RESPOND_LIST_COUNT",
-        });
-        this.props.dispatch({
-            type: "GET_APPROVE_LIST_COUNT",
-        });
-        this.props.dispatch({
-            type: "GET_CONFIRM_LIST_COUNT",
-        });
-        this.props.dispatch({
-            type: "GET_CUSTOM_ITEM_LIST_COUNT",
-        });
-        this.props.dispatch({
-            type: "GET_PROGRESS_LIST_COUNT",
-        });
-        this.props.dispatch({
-            type: "GET_COMPLETE_LIST_COUNT",
-        });
-    };
-    toggle4 = () => {
-        this.setState({
-            toggle4: !this.state.toggle4,
-        });
-        this.props.dispatch({
-            type: "GET_QUEUE_ITEM_LIST",
-        });
-        this.props.dispatch({
-            type: "GET_ITEM_LIST_COUNT",
-        });
-        this.props.dispatch({
-            type: "GET_RESPOND_LIST_COUNT",
-        });
-        this.props.dispatch({
-            type: "GET_APPROVE_LIST_COUNT",
-        });
-        this.props.dispatch({
-            type: "GET_CONFIRM_LIST_COUNT",
-        });
-        this.props.dispatch({
-            type: "GET_CUSTOM_ITEM_LIST_COUNT",
-        });
-        this.props.dispatch({
             type: "GET_PROGRESS_LIST_COUNT",
         });
         this.props.dispatch({
@@ -187,18 +117,6 @@ class DecoQueue extends Component {
         });
         this.props.dispatch({
             type: "GET_ITEM_LIST_COUNT",
-        });
-        this.props.dispatch({
-            type: "GET_RESPOND_LIST_COUNT",
-        });
-        this.props.dispatch({
-            type: "GET_APPROVE_LIST_COUNT",
-        });
-        this.props.dispatch({
-            type: "GET_CONFIRM_LIST_COUNT",
-        });
-        this.props.dispatch({
-            type: "GET_CUSTOM_ITEM_LIST_COUNT",
         });
         this.props.dispatch({
             type: "GET_PROGRESS_LIST_COUNT",
@@ -218,18 +136,6 @@ class DecoQueue extends Component {
             type: "GET_ITEM_LIST_COUNT",
         });
         this.props.dispatch({
-            type: "GET_RESPOND_LIST_COUNT",
-        });
-        this.props.dispatch({
-            type: "GET_APPROVE_LIST_COUNT",
-        });
-        this.props.dispatch({
-            type: "GET_CONFIRM_LIST_COUNT",
-        });
-        this.props.dispatch({
-            type: "GET_CUSTOM_ITEM_LIST_COUNT",
-        });
-        this.props.dispatch({
             type: "GET_PROGRESS_LIST_COUNT",
         });
         this.props.dispatch({
@@ -238,7 +144,7 @@ class DecoQueue extends Component {
     };
 
     needToRun = (event) => {
-        //assigns the task to a decovibe worker
+        // Used to change the quantity (visually; under the Number to Run category)
         event.preventDefault();
         const { id, need_to_run } = this.state;
         this.props.dispatch({
@@ -258,18 +164,6 @@ class DecoQueue extends Component {
             type: "GET_ITEM_LIST_COUNT",
         });
         this.props.dispatch({
-            type: "GET_RESPOND_LIST_COUNT",
-        });
-        this.props.dispatch({
-            type: "GET_APPROVE_LIST_COUNT",
-        });
-        this.props.dispatch({
-            type: "GET_CUSTOM_ITEM_LIST_COUNT",
-        });
-        this.props.dispatch({
-            type: "GET_CONFIRM_LIST_COUNT",
-        });
-        this.props.dispatch({
             type: "GET_PROGRESS_LIST_COUNT",
         });
         this.props.dispatch({
@@ -284,6 +178,7 @@ class DecoQueue extends Component {
         });
     };
 
+    // This trims the dates that are pulled in and makes them cleaner.
     cleanDate = (date) => {
         if (date) {
             let cleanedDate = date.slice(5, 15);
@@ -305,6 +200,8 @@ class DecoQueue extends Component {
 
         let data = [];
 
+        // Once itemlist is truthy, map it to a variable named data. This is what eventually
+        // gets listed and put in the queue.
         if (this.props.itemlist) {
             data = this.props.itemlist.map((item) => [
                 item.order_number,
@@ -327,6 +224,7 @@ class DecoQueue extends Component {
                 <br />
                 <br />
                 <br />
+                {/* QueueNav is fixed at the top of the page and is used to change between New, In Progress and Complete */}
                 <QueueNav />
                 <div style={{ padding: "1.5%" }}>
                     {this.props.user.role === "csr" ? (
@@ -640,6 +538,7 @@ class DecoQueue extends Component {
                                     filter: true,
                                     sort: true,
                                     // empty: true,
+                                    // This customBodyRender changes the color of the items depending on their sku
                                     customBodyRender: (value, dataIndex) => {
                                         decoSku3 = value.slice(0, 6);
                                         decoSku5 = value.slice(0, 3);
@@ -1001,49 +900,6 @@ class DecoQueue extends Component {
                         </Paper>
                     )}
 
-                    {this.state.toggle4 === false ? (
-                        //if toggle is false, render nothing. This is the default
-                        <span></span>
-                    ) : (
-                        //another assign window for the selected checkboxes. Needed it's own window because the functionality needed to be altered a bit for this feature
-                        <Paper
-                            style={{
-                                right: 0,
-                                bottom: 0,
-                                position: "fixed",
-                                borderRadius: "10%",
-                                height: "600px",
-                                width: "400px",
-                                zIndex: "1000000000",
-                                border: "50px",
-                                overflow: "scroll",
-                                fontSize: "15px",
-                                backgroundColor: "white",
-                            }}
-                            elevation="24"
-                            className="loginBox"
-                        >
-                            <td
-                                style={{
-                                    backgroundColor: "white",
-                                    padding: "5%",
-                                }}
-                            >
-                                <br />
-                                <br />{" "}
-                                {/* toggles edit window back to not displaying */}
-                                <br />
-                                <br />
-                                <br />
-                                <br />
-                                <br />
-                                <Button onClick={this.toggle4} variant="success" type="submit">
-                                    Go Back
-                                </Button>
-                            </td>
-                        </Paper>
-                    )}
-
                     {this.state.toggle5 === false ? (
                         //if toggle is false, render nothing. This is the default
                         <span></span>
@@ -1248,7 +1104,7 @@ class DecoQueue extends Component {
         );
     }
 }
-
+// Item list is ALL of the items in the queue. It eventually gets mapped to a variable called data.
 const mapStateToProps = (state) => ({
     user: state.user,
     itemlist: state.queue.itemlist,

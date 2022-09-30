@@ -5,6 +5,8 @@ import './Nav.css';
 
 function Nav() {
 
+    // State for the nav links. When true, they will be black. When false they will be light gray.
+    // Home is true by default. 
     const [home, setHome] = useState(true);
     const [resources, setResources] = useState(false);
     const [sanMar, setSanMar] = useState(false);
@@ -14,6 +16,7 @@ function Nav() {
     const [decoQueue, setDecoQueue] = useState(false);
     const [admin, setAdmin] = useState(false);
 
+    // This unactivates all nav destinations
     const disableAll = () => {
         setHome(false);
         setResources(false);
