@@ -80,9 +80,9 @@ function App () {
 
 
 
-const mapStateToProps = (state) => ({
-  user: state.user,
-});
+// const mapStateToProps = (state) => ({
+//   user: state.user,
+// });
 
 // this allows us to use <App /> in index.js **
 

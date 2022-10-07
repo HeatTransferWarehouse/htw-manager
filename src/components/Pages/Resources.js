@@ -64,7 +64,7 @@ function Resources () {
                             </ul>
                         </div>
                         <div class="pricing-footer">
-                            <a href="https://heattransferwarehouse.com" target="_blank" class="main-button">Go to Site</a>
+                            <a href="https://heattransferwarehouse.com" target="_blank" class="main-button" rel="noopener noreferrer">Go to Site</a>
                         </div>
                     </div>
                 </div>
@@ -90,7 +90,7 @@ function Resources () {
                             </ul>
                         </div>
                         <div class="pricing-footer">
-                            <a href="https://turbohtv.com" target="_blank" class="main-button">Go to Site</a>
+                            <a href="https://turbohtv.com" target="_blank" class="main-button" rel="noopener noreferrer">Go to Site</a>
                         </div>
                     </div>
                 </div>
@@ -116,7 +116,7 @@ function Resources () {
                             </ul>
                         </div>
                         <div class="pricing-footer">
-                            <a href="https://heat-transfer-warehouse-sandbox.mybigcommerce.com/" target="_blank" class="main-button">Go to Site</a>
+                            <a href="https://heat-transfer-warehouse-sandbox.mybigcommerce.com/" target="_blank" class="main-button" rel="noopener noreferrer">Go to Site</a>
                         </div>
                     </div>
                 </div>
@@ -143,7 +143,7 @@ function Resources () {
                         <div class="team-content">
                             <i></i>
                             <div class="team-info">
-                                <a href="https://docs.google.com/spreadsheets/d/1Ebf_nSvXy3PFdRMtbBuyksvZwnET6vtX0sCEZV6kG2M/" target="_blank" class="main-button">Open</a>
+                                <a href="https://docs.google.com/spreadsheets/d/1Ebf_nSvXy3PFdRMtbBuyksvZwnET6vtX0sCEZV6kG2M/" target="_blank" class="main-button" rel="noopener noreferrer">Open</a>
                             </div>
                             <br />
                             <p><strong>Web/Dev Logins and API</strong> <br />Information and Login Credentials for the Webs and Devs.</p>
@@ -156,7 +156,7 @@ function Resources () {
                         <div class="team-content">
                             <i></i>
                             <div class="team-info">
-                                <a href="https://www.heattransferwarehouse.com/csr-vinyl-calculator/" target="_blank" class="main-button">Open</a>
+                                <a href="https://www.heattransferwarehouse.com/csr-vinyl-calculator/" target="_blank" class="main-button" rel="noopener noreferrer">Open</a>
                             </div>
                             <br />
                             <p><strong>CSR Vinyl Calculator</strong> <br />Calculate Vinyl Estimates and recommended lengths for customers based on the product.</p>
@@ -169,7 +169,7 @@ function Resources () {
                         <div class="team-content">
                             <i></i>
                             <div class="team-info">
-                                <a href="https://www.heattransferwarehouse.com/supacolor-calculator/" target="_blank" class="main-button">Open</a>
+                                <a href="https://www.heattransferwarehouse.com/supacolor-calculator/" target="_blank" class="main-button" rel="noopener noreferrer">Open</a>
                             </div>
                             <br />
                             <p><strong>Supacolor Calculator</strong> <br />Estimates the size of Supacolor that the customer should order based on the type and proportions wanted.</p>
@@ -182,7 +182,7 @@ function Resources () {
                         <div class="team-content">
                             <i></i>
                             <div class="team-info">
-                                <a href="https://www.heattransferwarehouse.com/htv-calculator/" target="_blank" class="main-button">Open</a>
+                                <a href="https://www.heattransferwarehouse.com/htv-calculator/" target="_blank" class="main-button" rel="noopener noreferrer">Open</a>
                             </div>
                             <br />
                             <p><strong>HTV Calculator</strong> <br />Estimates the ammount of yardage needed for a project based off the size of the HTV being purchased.</p>
@@ -195,7 +195,7 @@ function Resources () {
                         <div class="team-content">
                             <i></i>
                             <div class="team-info">
-                                <a href="https://docs.google.com/document/d/1YoZOUH5K1CC3kAakhIAjxUxKXfMATjcjF3ozZn_JAgA/" target="_blank" class="main-button">Open</a>
+                                <a href="https://docs.google.com/document/d/1YoZOUH5K1CC3kAakhIAjxUxKXfMATjcjF3ozZn_JAgA/" target="_blank" class="main-button" rel="noopener noreferrer">Open</a>
                             </div>
                             <br />
                             <p><strong>Processes Document</strong> <br />List of all in house processes and procedures. All are categorized by department</p>
@@ -227,12 +227,12 @@ function Resources () {
                     <div class="blog-post-thumb">
                         <div class="blog-content">
                             <h3>
-                                <a href="https://cloud.digitalocean.com/login" target="_blank">Digital Ocean</a>
+                                <a href="https://cloud.digitalocean.com/login" target="_blank" rel="noopener noreferrer">Digital Ocean</a>
                             </h3>
                             <div class="text">
                                Houses all of our custom servers, apps, and databases. Deploy, redeploy, and manage our servers and data.
                             </div>
-                            <a href="https://docs.digitalocean.com/support/" target="_blank" class="main-button">Support Docs</a>
+                            <a href="https://docs.digitalocean.com/support/" target="_blank" class="main-button" rel="noopener noreferrer">Support Docs</a>
                         </div>
                     </div>
                 </div>
@@ -240,12 +240,12 @@ function Resources () {
                     <div class="blog-post-thumb">
                         <div class="blog-content">
                             <h3>
-                                <a href="https://app.sendgrid.com/login" target="_blank">SendGrid</a>
+                                <a href="https://app.sendgrid.com/login" target="_blank" rel="noopener noreferrer">SendGrid</a>
                             </h3>
                             <div class="text">
                                Used to send custom emails to customers. Used for emails with SanMar, OSIAffiliate, etc.
                             </div>
-                            <a href="https://support.sendgrid.com/hc/en-us" target="_blank" class="main-button">Support Docs</a>
+                            <a href="https://support.sendgrid.com/hc/en-us" target="_blank" class="main-button" rel="noopener noreferrer">Support Docs</a>
                         </div>
                     </div>
                 </div>
@@ -253,12 +253,12 @@ function Resources () {
                     <div class="blog-post-thumb">
                         <div class="blog-content">
                             <h3>
-                                <a href="https://tariehktest.ositracker.com/admin/" target="_blank">OSIAffiliate</a>
+                                <a href="https://tariehktest.ositracker.com/admin/" target="_blank" rel="noopener noreferrer">OSIAffiliate</a>
                             </h3>
                             <div class="text">
                                Used for our affiliates to generate custom links to our site and refer our products.
                             </div>
-                            <a href="https://support.osiaffiliate.com/support/home" target="_blank" class="main-button">Support Docs</a>
+                            <a href="https://support.osiaffiliate.com/support/home" target="_blank" class="main-button" rel="noopener noreferrer">Support Docs</a>
                         </div>
                     </div>
                 </div>
@@ -266,12 +266,12 @@ function Resources () {
                     <div class="blog-post-thumb">
                         <div class="blog-content">
                             <h3>
-                                <a href="https://www.zendesk.com/login/" target="_blank">Zendesk</a>
+                                <a href="https://www.zendesk.com/login/" target="_blank" rel="noopener noreferrer">Zendesk</a>
                             </h3>
                             <div class="text">
                                Chat service on our websites to chat live with customers and offer support.
                             </div>
-                            <a href="https://support.zendesk.com/hc/en-us/categories/4405298745370-Support" target="_blank" class="main-button">Support Docs</a>
+                            <a href="https://support.zendesk.com/hc/en-us/categories/4405298745370-Support" target="_blank" class="main-button" rel="noopener noreferrer">Support Docs</a>
                         </div>
                     </div>
                 </div>
@@ -279,12 +279,12 @@ function Resources () {
                     <div class="blog-post-thumb">
                         <div class="blog-content">
                             <h3>
-                                <a href="https://portal.afterpay.com/us/merchant/login" target="_blank">Afterpay</a>
+                                <a href="https://portal.afterpay.com/us/merchant/login" target="_blank" rel="noopener noreferrer">Afterpay</a>
                             </h3>
                             <div class="text">
                                One of our Afterpayment methods. Customers can pay off their bill over 4 weeks.
                             </div>
-                            <a href="https://help.afterpay.com/hc/en-us/categories/900000234146-I-M-A-MERCHANT" target="_blank" class="main-button">Support Docs</a>
+                            <a href="https://help.afterpay.com/hc/en-us/categories/900000234146-I-M-A-MERCHANT" target="_blank" class="main-button" rel="noopener noreferrer">Support Docs</a>
                         </div>
                     </div>
                 </div>
@@ -292,12 +292,12 @@ function Resources () {
                     <div class="blog-post-thumb">
                         <div class="blog-content">
                             <h3>
-                                <a href="https://us.portal.klarna.com/" target="_blank">Klarna</a>
+                                <a href="https://us.portal.klarna.com/" target="_blank" rel="noopener noreferrer">Klarna</a>
                             </h3>
                             <div class="text">
                                One of our Afterpayment methods. Customers can pay off over 4 weeks or via Financing.
                             </div>
-                            <a href="https://www.klarna.com/us/customer-service/" target="_blank" class="main-button">Support Docs</a>
+                            <a href="https://www.klarna.com/us/customer-service/" target="_blank" class="main-button" rel="noopener noreferrer">Support Docs</a>
                         </div>
                     </div>
                 </div>
@@ -305,12 +305,12 @@ function Resources () {
                     <div class="blog-post-thumb">
                         <div class="blog-content">
                             <h3>
-                                <a href="https://merchant.bolt.com/" target="_blank">Bolt</a>
+                                <a href="https://merchant.bolt.com/" target="_blank" rel="noopener noreferrer">Bolt</a>
                             </h3>
                             <div class="text">
                                Used for processing payments and in the customer checkout/login.
                             </div>
-                            <a href="https://support.bolt.com/hc/en-us" target="_blank" class="main-button">Support Docs</a>
+                            <a href="https://support.bolt.com/hc/en-us" target="_blank" class="main-button" rel="noopener noreferrer">Support Docs</a>
                         </div>
                     </div>
                 </div>
@@ -318,12 +318,12 @@ function Resources () {
                     <div class="blog-post-thumb">
                         <div class="blog-content">
                             <h3>
-                                <a href="https://www.klaviyo.com/dashboard" target="_blank">Klaviyo</a>
+                                <a href="https://www.klaviyo.com/dashboard" target="_blank" rel="noopener noreferrer">Klaviyo</a>
                             </h3>
                             <div class="text">
                                Our main means of marketing, emails, text, and mass marketing campaigns.
                             </div>
-                            <a href="https://help.klaviyo.com/hc/en-us" target="_blank" class="main-button">Support Docs</a>
+                            <a href="https://help.klaviyo.com/hc/en-us" target="_blank" class="main-button" rel="noopener noreferrer">Support Docs</a>
                         </div>
                     </div>
                 </div>
@@ -331,12 +331,12 @@ function Resources () {
                     <div class="blog-post-thumb">
                         <div class="blog-content">
                             <h3>
-                                <a href="https://login.bigcommerce.com/login" target="_blank">BigCommerce</a>
+                                <a href="https://login.bigcommerce.com/login" target="_blank" rel="noopener noreferrer">BigCommerce</a>
                             </h3>
                             <div class="text">
                                Hosts our main websites and tracks new orders, customers, and sales.
                             </div>
-                            <a href="https://support.bigcommerce.com/s/?language=en_US" target="_blank" class="main-button">Support Docs</a>
+                            <a href="https://support.bigcommerce.com/s/?language=en_US" target="_blank" class="main-button" rel="noopener noreferrer">Support Docs</a>
                         </div>
                     </div>
                 </div>
@@ -344,12 +344,12 @@ function Resources () {
                     <div class="blog-post-thumb">
                         <div class="blog-content">
                             <h3>
-                                <a href="https://use1.brightpearlapp.com/admin_login.php?clients_id=heattransfer" target="_blank">Brightpearl</a>
+                                <a href="https://use1.brightpearlapp.com/admin_login.php?clients_id=heattransfer" target="_blank" rel="noopener noreferrer">Brightpearl</a>
                             </h3>
                             <div class="text">
                                Links all orders, sales, customers, products, inventory, and more in one place.
                             </div>
-                            <a href="https://www.brightpearl.com/contact-support" target="_blank" class="main-button">Support Docs</a>
+                            <a href="https://www.brightpearl.com/contact-support" target="_blank" class="main-button" rel="noopener noreferrer">Support Docs</a>
                         </div>
                     </div>
                 </div>
@@ -357,12 +357,12 @@ function Resources () {
                     <div class="blog-post-thumb">
                         <div class="blog-content">
                             <h3>
-                                <a href="https://ss.shipstation.com/" target="_blank">Shipstation</a>
+                                <a href="https://ss.shipstation.com/" target="_blank" rel="noopener noreferrer">Shipstation</a>
                             </h3>
                             <div class="text">
                                Process Goods out Notes, send info to FedEx and UPS, and manage Shipping.
                             </div>
-                            <a href="https://help.shipstation.com/hc/en-us" target="_blank" class="main-button">Support Docs</a>
+                            <a href="https://help.shipstation.com/hc/en-us" target="_blank" class="main-button" rel="noopener noreferrer">Support Docs</a>
                         </div>
                     </div>
                 </div>
@@ -370,12 +370,12 @@ function Resources () {
                     <div class="blog-post-thumb">
                         <div class="blog-content">
                             <h3>
-                                <a href="https://shipperhq.com" target="_blank">ShipperHQ</a>
+                                <a href="https://shipperhq.com" target="_blank" rel="noopener noreferrer">ShipperHQ</a>
                             </h3>
                             <div class="text">
                                 Manage Shipping Quotes and Methods to show at checkout.
                             </div>
-                            <a href="hhttps://docs.shipperhq.com" target="_blank" class="main-button">Support
+                            <a href="hhttps://docs.shipperhq.com" target="_blank" class="main-button" rel="noopener noreferrer">Support
                                 Docs</a>
                         </div>
                     </div>
@@ -384,12 +384,12 @@ function Resources () {
                     <div class="blog-post-thumb">
                         <div class="blog-content">
                             <h3>
-                                <a href="https://dcc.godaddy.com/domains" target="_blank">Go Daddy</a>
+                                <a href="https://dcc.godaddy.com/domains" target="_blank" rel="noopener noreferrer">Go Daddy</a>
                             </h3>
                             <div class="text">
                                Setup and Manage our Domains, manage DNS Settings, and more.
                             </div>
-                            <a href="https://www.godaddy.com/contact-us" target="_blank" class="main-button">Support Docs</a>
+                            <a href="https://www.godaddy.com/contact-us" target="_blank" class="main-button" rel="noopener noreferrer">Support Docs</a>
                         </div>
                     </div>
                 </div>
@@ -397,12 +397,12 @@ function Resources () {
                     <div class="blog-post-thumb">
                         <div class="blog-content">
                             <h3>
-                                <a href="https://stores.inksoft.com/heat_transfer_warehouse_Designer/Config/FulfillmentLanding" target="_blank">Inksoft</a>
+                                <a href="https://stores.inksoft.com/heat_transfer_warehouse_Designer/Config/FulfillmentLanding" target="_blank" rel="noopener noreferrer">Inksoft</a>
                             </h3>
                             <div class="text">
                                 Used for Custom Designs and managing orders for the Art Department.
                             </div>
-                            <a href="https://help.inksoft.com/en/knowledge" target="_blank" class="main-button">Support
+                            <a href="https://help.inksoft.com/en/knowledge" target="_blank" class="main-button" rel="noopener noreferrer">Support
                                 Docs</a>
                         </div>
                     </div>

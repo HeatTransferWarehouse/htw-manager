@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from "react";
+import React, {useEffect} from "react";
 import { useSelector, useDispatch } from 'react-redux';
 import "./css/Main.css";
 import './css/bootstrap.min.css';
@@ -6,27 +6,21 @@ import './css/font-awesome.css';
 import './css/flex-slider.css';
 import './css/templatemo-softy-pinko.css';
 import MUITable from "mui-datatables";
-import Grid from '@material-ui/core/Grid';
-import TextField from "@material-ui/core/TextField";
-import { MuiPickersUtilsProvider, DatePicker } from '@material-ui/pickers';
-import LuxonUtils from '@date-io/luxon';
-import Form from "react-bootstrap/Form";
 import moment from "moment";
-import { Button } from "@material-ui/core";
 
 function Affilates () {
 
   const dispatch = useDispatch();
 
   const topfive = useSelector(store => store.affiliate.topfive);
-  const skunumlist = useSelector(store => store.affiliate.skunumlist);
+  // const skunumlist = useSelector(store => store.affiliate.skunumlist);
   const itemlist = useSelector(store => store.affiliate.itemlist);
-  const emaillist = useSelector(store => store.affiliate.emaillist);
+  // const emaillist = useSelector(store => store.affiliate.emaillist);
   const totallist = useSelector(store => store.affiliate.totallist);
 
-  const [email, setEmail] = useState('--SELECT EMAIL FIRST!--');
-  const [startDate, setStartDate] = useState({startDate: {year: '2022', month: '01', day: '01'}});
-  const [endDate, setEndDate] = useState({endDate: {year: '2022', month: '01', day: '01'}});
+  // const [email] = useState('--SELECT EMAIL FIRST!--');
+  // const [startDate] = useState({startDate: {year: '2022', month: '01', day: '01'}});
+  // const [endDate] = useState({endDate: {year: '2022', month: '01', day: '01'}});
 
 useEffect(() => {
     dispatch({
@@ -47,20 +41,20 @@ useEffect(() => {
     dispatch({
       type: "DELETE_SKU_RANGE",
     });
-}, [])
+}, [dispatch])
 
-const checkEmail = (event) => {
-    //prevents default action
-    event.preventDefault();
-    dispatch({
-      type: "CHECK_EMAIL",
-      payload: {
-        email: email,
-        startDate: startDate,
-        endDate: endDate,
-      },
-    });
-};
+// const checkEmail = (event) => {
+//     //prevents default action
+//     event.preventDefault();
+//     dispatch({
+//       type: "CHECK_EMAIL",
+//       payload: {
+//         email: email,
+//         startDate: startDate,
+//         endDate: endDate,
+//       },
+//     });
+// };
 
 const data = itemlist.map((item) => [
       item.email,
@@ -80,11 +74,11 @@ const totaldata = totallist.map((total) => [
   total.count,
 ]);
 
-const skunumdata = skunumlist.map((skunum) => [
-  skunum.sku, 
-  skunum.description, 
-  skunum.count
-]);
+// const skunumdata = skunumlist.map((skunum) => [
+//   skunum.sku, 
+//   skunum.description, 
+//   skunum.count
+// ]);
 
 
 return (

@@ -142,7 +142,6 @@ export default combineReducers({
   historylisttable,
   itemlist,
   itemlistcount,
-  itemlist,
   progresslist,
   progresslistcount,
   confirmlist,
