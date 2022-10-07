@@ -27,11 +27,13 @@ function Sanmar() {
     filterType: 'multiselect',
   }
 
+  const dispatch = useDispatch();
+
   useEffect(() => {
     dispatch({
       type: "GET_SANMAR_LIST",
     });
-  }, [])
+  }, [dispatch])
 
   const SanmarItems = useSelector(store => store.item.clothinglist);
   const BcItems = useSelector(store => store.item.bcClothinglist);
@@ -44,9 +46,8 @@ function Sanmar() {
   const host = 'ftp.sanmar.com';
   const user = '175733';
   const password = 'Sanmar33';
-  const dispatch = useDispatch();
-  let sanmarDisplay = <h4></h4>
-
+  let sanmarDisplay = <h4>...</h4>
+  
 
   async function connectFtp(d) {
     swal('Downloading Info!');
@@ -243,10 +244,10 @@ function Sanmar() {
 
   switch (SanmarNotify) {
     case '':
-      sanmarDisplay = <h4></h4>
+      sanmarDisplay = <h4>...</h4>
       break;
     case 'WAIT':
-      sanmarDisplay = <h4></h4>
+      sanmarDisplay = <h4>...</h4>
       break;
     case 'NO':
       sanmarDisplay = <h4>Download Failed! File may not be available yet</h4>
@@ -404,7 +405,7 @@ function Sanmar() {
               <Button onClick={(e) => { updatePrices() }} className='sales-input'><QueueIcon /> Update Prices</Button>
             </div>
             <div className="total-form">
-              <a target="_blank" href="https://docs.google.com/document/d/1DUhwG-jtleKPVWdxK5kMGYlkdnE0BPGDA-PWtmvz8SA/edit"><strong>How to Use</strong></a>
+              <a target="_blank" href="https://docs.google.com/document/d/1DUhwG-jtleKPVWdxK5kMGYlkdnE0BPGDA-PWtmvz8SA/edit" rel="noopener noreferrer"><strong>How to Use</strong></a>
             </div>
           </div>
           <br></br>

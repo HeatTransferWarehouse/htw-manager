@@ -26,15 +26,16 @@ function BrightPearl() {
       setRows(allRowsSelected);
     }
   }
-
+  
+  const dispatch = useDispatch();
+  
   useEffect(() => {
     dispatch({
       type: "GET_ITEM_LIST",
     });
-  }, [])
+  }, [dispatch])
 
   const BPItems = useSelector(store => store.item.itemlist);
-  const dispatch = useDispatch();
   const [changeCapture, setChangeCapture] = useState(3);
   const [total, setTotal] = useState(0);
   const [rows, setRows] = useState([]);

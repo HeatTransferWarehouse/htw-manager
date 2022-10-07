@@ -1,6 +1,5 @@
-import React, { Component, useState } from "react";
-import { HashRouter as Router, Link, NavLink } from "react-router-dom";
-import Logout from "../LogOutButton/LogOutButton";
+import React, { useState } from "react";
+import { HashRouter as Router, NavLink } from "react-router-dom";
 import './Nav.css';
 
 function Nav() {
@@ -34,7 +33,7 @@ function Nav() {
                 <div class="row">
                     <div class="col-12">
                         <nav class="main-nav">
-                            <a class="logo">
+                            <a class="logo" href="https://www.heattransferwarehouse.com/">
                                 <img src="https://cdn11.bigcommerce.com/s-et4qthkygq/images/stencil/177x60/htwlogo_web_1573140308__59565.original.png" alt="Heat Transfer Warehouse" />
                             </a>
                             <div className="nav">
@@ -52,7 +51,7 @@ function Nav() {
                                     </div>
                                 </Router>
                             </div>
-                            <a class='menu-trigger'>
+                            <a class='menu-trigger' href="https://www.heattransferwarehouse.com/">
                                 <span>Menu</span>
                             </a>
                         </nav>

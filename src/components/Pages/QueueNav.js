@@ -1,16 +1,10 @@
 import React, { Component } from "react";
-import swal from "sweetalert";
-import { Link, NavLink } from 'react-router-dom';
+import { NavLink } from 'react-router-dom';
 import { connect } from 'react-redux';
-import { Grid, TextField, Button } from "@material-ui/core";
+import { Grid, TextField } from "@material-ui/core";
 import FormatListBulletedIcon from '@material-ui/icons/FormatListBulleted';
 import PlaylistAddCheckIcon from '@material-ui/icons/PlaylistAddCheck';
-import LoopIcon from "@material-ui/icons/Loop";
-import EmailIcon from "@material-ui/icons/Email";
-import ReplyIcon from "@material-ui/icons/Reply";
-import HistoryIcon from "@material-ui/icons/History";
 import EditIcon from "@material-ui/icons/Edit";
-import ThumbUpIcon from "@material-ui/icons/ThumbUp";
 
 class QueueNav extends Component {
   state = {

@@ -7,8 +7,6 @@ import AssignmentTurnedInIcon from "@material-ui/icons/AssignmentTurnedIn";
 import DeleteIcon from "@material-ui/icons/Delete";
 import RestoreIcon from "@material-ui/icons/Restore";
 import QueueNav from "./QueueNav";
-import FlagIcon from "@material-ui/icons/Flag";
-
 
 class Progress extends Component {
     state = {
