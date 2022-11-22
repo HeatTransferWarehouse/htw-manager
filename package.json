@@ -5,7 +5,7 @@
   "homepage": "https://admin.heattransferwarehouse.com/",
   "repository": {
     "type": "git",
-    "url": "git://github.com/Traizel/htw-manager.git"
+    "url": "git://github.com/HeatTransferWarehouse/htw-manager"
   },
   "proxy": "http://localhost:8000",
   "dependencies": {
@@ -100,7 +100,7 @@
   "heroku-run-build-script": true,
   "description": "HTW App with misc tools, sales data tools, and more",
   "bugs": {
-    "url": "https://github.com/Traizel/htw-manager/issues"
+    "url": "https://github.com/HeatTransferWarehouse/htw-manager/issues"
   },
   "main": "index.js",
   "author": "",
