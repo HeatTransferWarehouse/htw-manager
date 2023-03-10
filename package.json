@@ -79,7 +79,7 @@
   },
   "scripts": {
     "start": "node server/server.js",
-    "client": "react-scripts --openssl-legacy-provider start",
+    "client": "react-scripts start",
     "server": "nodemon --watch server server/server.js",
     "build": "react-scripts build",
     "test": "jest",
