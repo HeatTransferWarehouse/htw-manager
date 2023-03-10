@@ -394,20 +394,14 @@ header
 }
 
 .header-area .main-nav .logo {
-  float: left;
   margin-top: 37px;
-  -webkit-transition: all 0.3s ease 0s;
-  -moz-transition: all 0.3s ease 0s;
-  -o-transition: all 0.3s ease 0s;
   transition: all 0.3s ease 0s;
   margin-left: 30px;
 }
 
 .header-area .main-nav .logo img {
-  -webkit-transition: all 0.3s ease 0s;
-  -moz-transition: all 0.3s ease 0s;
-  -o-transition: all 0.3s ease 0s;
   transition: all 0.3s ease 0s;
+  height: 75px;
 }
 
 .header-area .main-nav .nav {
@@ -415,9 +409,6 @@ header
   margin-top: 27px;
   margin-left: 0px;
   margin-right: 30px;
-  -webkit-transition: all 0.3s ease 0s;
-  -moz-transition: all 0.3s ease 0s;
-  -o-transition: all 0.3s ease 0s;
   transition: all 0.3s ease 0s;
   position: relative;
   z-index: 999;

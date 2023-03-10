@@ -34,7 +34,7 @@ function Nav() {
                     <div class="col-12">
                         <nav class="main-nav">
                             <a class="logo" href="https://www.heattransferwarehouse.com/">
-                                <img src="https://cdn11.bigcommerce.com/s-et4qthkygq/images/stencil/177x60/htwlogo_web_1573140308__59565.original.png" alt="Heat Transfer Warehouse" />
+                                <img src="https://cdn11.bigcommerce.com/s-et4qthkygq/images/stencil/original/image-manager/htw-2022logo-tm.png?t=1675694884&_gl=1*tqn07u*_ga*MTk4MTk0MDU2My4xNjc1Mzc0MDgz*_ga_WS2VZYPC6G*MTY3NTY5MjY2Mi4xMC4xLjE2NzU2OTQ4NzIuNDAuMC4w" alt="Heat Transfer Warehouse" />
                             </a>
                             <div className="nav">
                                 <Router>
