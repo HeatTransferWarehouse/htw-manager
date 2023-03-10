@@ -183,7 +183,7 @@ function* supacolorSubmit(action) {
       payload: response.data,
     });
   } catch (error) {
-    console.log("Error with getting inksoft order:", error);
+    console.log("Error with getting supacolor order:", error);
   }
 }
 

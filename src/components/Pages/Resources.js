@@ -406,20 +406,6 @@ function Resources() {
                                     </div>
                                 </div>
                             </div>
-                            <div class="col-lg-4 col-md-6 col-sm-12">
-                                <div class="blog-post-thumb">
-                                    <div class="blog-content">
-                                        <h3>
-                                            <a href="https://stores.inksoft.com/heat_transfer_warehouse_Designer/Config/FulfillmentLanding" target="_blank" rel="noopener noreferrer">Inksoft</a>
-                                        </h3>
-                                        <div class="text">
-                                            Used for Custom Designs and managing orders for the Art Department.
-                                        </div>
-                                        <a href="https://help.inksoft.com/en/knowledge" target="_blank" class="main-button" rel="noopener noreferrer">Support
-                                            Docs</a>
-                                    </div>
-                                </div>
-                            </div>
                         </div>
                     </div>
                 </section>

@@ -24,7 +24,6 @@ const captureRouter = require('./routes/index');
 const affiliateRouter = require('./routes/affiliaterouter');
 const queueItemRouter = require('./routes/queueItemRouter');
 const queueUserRouter = require('./routes/queueUserRouter');
-const webhooksRouter = require('./routes/webhooks');
 
 app.use(sessionMiddleware);
 app.use(passport.initialize());
@@ -43,7 +42,6 @@ app.use('/api/item', sanmarBP);
 app.use('/api/capture', captureRouter);
 app.use('/api/nostock', nostockRouter);
 app.use('/api/affiliate', affiliateRouter);
-app.use('/api/webhooks', webhooksRouter);
 
 // Queue Routers
 
