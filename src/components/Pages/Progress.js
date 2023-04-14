@@ -380,7 +380,7 @@ class Progress extends Component {
                                             decoSku5 === "SD8" ||
                                             decoSku5 === "SD9" ||
                                             decoSku6 === "SETUPFEE" ||
-                                            descrip.includes("Bundle")
+                                            descrip.includes("Rhinestone Bundle")
                                         ) {
                                             return (
                                                 <div
@@ -474,7 +474,8 @@ class Progress extends Component {
                                             decoSku5 === "CD7" ||
                                             decoSku5 === "CD8" ||
                                             decoSku5 === "CD9" ||
-                                            decoSku6 === "CUSTOM-H"
+                                            decoSku6 === "CUSTOM-H" ||
+                                            descrip.includes("Pattern Vinyl Sheet and Mask Bundle")
                                         ) {
                                             return (
                                                 <div

@@ -556,7 +556,7 @@ class DecoQueue extends Component {
                                             decoSku5 === "SD8" ||
                                             decoSku5 === "SD9" ||
                                             decoSku6 === "SETUPFEE" ||
-                                            descrip.includes("Bundle")
+                                            descrip.includes("Rhinestone Bundle")
                                         ) {
                                             return (
                                                 <div
@@ -582,7 +582,8 @@ class DecoQueue extends Component {
                                             decoSku5 === "CS7" ||
                                             decoSku5 === "CS8" ||
                                             decoSku5 === "CS9" ||
-                                            decoSku6 === "CUSTOM-S"
+                                            decoSku6 === "CUSTOM-S" ||
+                                            descrip.includes("Pattern Vinyl Sheet and Mask Bundle")
                                         ) {
                                             return (
                                                 <div
