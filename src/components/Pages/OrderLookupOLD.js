@@ -271,6 +271,7 @@ function OrderLookupPage() {
             marginLeft: "5%",
             marginRight: "5%",
             marginBottom: "5%",
+            overflowX: "hidden"
           }}
         >
           <center>
@@ -851,8 +852,23 @@ function OrderLookupPage() {
                   item.sku.slice(0, 5) === "WE_SU" ||
                   item.sku.slice(0, 5) === "BL_SU" ||
                   item.sku.slice(0, 5) === "SB_SU" ||
-                  item.sku.slice(0, 14) === "SIMWOVEN_AP-LC" ||
-                  item.sku.slice(0, 5) === "WE_XS" ? (
+                  item.sku.slice(0, 5) === "WE_XS" ||
+                  item.sku.slice(0, 8) === "SUEDE_HW" ||
+                  item.sku.slice(0, 8) === "SUEDE_PR" ||
+                  item.sku.slice(0, 8) === "SUEDE_NA" ||
+                  item.sku.slice(0, 8) === "SUEDE_AP" ||
+                  item.sku.slice(0, 14) === "LEATHERETTE_HW" ||
+                  item.sku.slice(0, 14) === "LEATHERETTE_PR" ||
+                  item.sku.slice(0, 14) === "LEATHERETTE_NA" ||
+                  item.sku.slice(0, 14) === "LEATHERETTE_AP" ||
+                  item.sku.slice(0, 8) === "TWILL_HW" ||
+                  item.sku.slice(0, 8) === "TWILL_PR" ||
+                  item.sku.slice(0, 8) === "TWILL_NA" ||
+                  item.sku.slice(0, 8) === "TWILL_AP" ||
+                  item.sku.slice(0, 11) === "SIMWOVEN_HW" ||
+                  item.sku.slice(0, 11) === "SIMWOVEN_PR" ||
+                  item.sku.slice(0, 11) === "SIMWOVEN_NA" ||
+                  item.sku.slice(0, 11) === "SIMWOVEN_AP" ? (
                   <>
                     <tr>
                       <td
@@ -868,157 +884,157 @@ function OrderLookupPage() {
                           {" "}
                           {item.sku.slice(0, 5) === "BL_A3"
                             ? ("BL_A3")
-                              : item.sku === "SUB-BLOCKER-8"
-                                ? ("BL_A3")
-                                : item.sku.slice(0, 7) === "BL_A4-1"
-                                  ? ('BL_A4:SubBlock-A4 16.5" 5.85"')
-                                  : item.sku === "SUB-BLOCKER-6"
-                                    ? ('BL_A4 16.5')
-                                    : item.sku.slice(0, 7) === "BL_A4-8"
-                                      ? ('BL_A4:SubBlock-A4 8.3" 11.7"')
-                                      : item.sku === "SUB-BLOCKER-5"
-                                        ? ('BL_A4 8.3')
-                                        : item.sku.slice(0, 7) === "BL_A5-1"
-                                          ? ('BL_A5:SubBlock-A5 11.7" 4.25"')
-                                          : item.sku === "SUB-BLOCKER-4"
-                                            ? ('BL_A5 11.7')
-                                            : item.sku.slice(0, 7) === "BL_A5-5"
-                                              ? ('BL_A5:SubBlock-A5 5.8" 8.3"')
-                                              : item.sku === "SUB-BLOCKER-3"
-                                                ? ('BL_A5 5.8')
-                                                : item.sku.slice(0, 5) === "BL_LC"
+                            : item.sku === "SUB-BLOCKER-8"
+                              ? ("BL_A3")
+                              : item.sku.slice(0, 7) === "BL_A4-1"
+                                ? ('BL_A4:SubBlock-A4 16.5" 5.85"')
+                                : item.sku === "SUB-BLOCKER-6"
+                                  ? ('BL_A4 16.5')
+                                  : item.sku.slice(0, 7) === "BL_A4-8"
+                                    ? ('BL_A4:SubBlock-A4 8.3" 11.7"')
+                                    : item.sku === "SUB-BLOCKER-5"
+                                      ? ('BL_A4 8.3')
+                                      : item.sku.slice(0, 7) === "BL_A5-1"
+                                        ? ('BL_A5:SubBlock-A5 11.7" 4.25"')
+                                        : item.sku === "SUB-BLOCKER-4"
+                                          ? ('BL_A5 11.7')
+                                          : item.sku.slice(0, 7) === "BL_A5-5"
+                                            ? ('BL_A5:SubBlock-A5 5.8" 8.3"')
+                                            : item.sku === "SUB-BLOCKER-3"
+                                              ? ('BL_A5 5.8')
+                                              : item.sku.slice(0, 5) === "BL_LC"
+                                                ? ("BL_LC")
+                                                : item.sku === "SUB-BLOCKER-2"
                                                   ? ("BL_LC")
-                                                  : item.sku === "SUB-BLOCKER-2"
-                                                    ? ("BL_LC")
-                                                    : item.sku === "SUB-BLOCKER-9"
-                                                      ? ("BL_XS")
-                                                      : item.sku.slice(0, 5) === "BL_SM"
-                                                        ? ("BL_SM")
-                                                        : item.sku === "SUB-BLOCKER-7"
-                                                          ? ("BL_SQ")
-                                                          : item.sku === "SUB-BLOCKER-1"
-                                                            ? ("BL_SM")
-                                                            : item.sku.slice(0, 8) === "HW_CAP_L"
+                                                  : item.sku === "SUB-BLOCKER-9"
+                                                    ? ("BL_XS")
+                                                    : item.sku.slice(0, 5) === "BL_SM"
+                                                      ? ("BL_SM")
+                                                      : item.sku === "SUB-BLOCKER-7"
+                                                        ? ("BL_SQ")
+                                                        : item.sku === "SUB-BLOCKER-1"
+                                                          ? ("BL_SM")
+                                                          : item.sku.slice(0, 8) === "HW_CAP_L"
+                                                            ? ("HW_CAP_L")
+                                                            : item.sku === "HEAD-2"
                                                               ? ("HW_CAP_L")
-                                                              : item.sku === "HEAD-2"
-                                                                ? ("HW_CAP_L")
-                                                                : item.sku.slice(0, 8) === "HW_CAP_S"
+                                                              : item.sku.slice(0, 8) === "HW_CAP_S"
+                                                                ? ("HW_CAP_S")
+                                                                : item.sku === "HEAD-1"
                                                                   ? ("HW_CAP_S")
-                                                                  : item.sku === "HEAD-1"
-                                                                    ? ("HW_CAP_S")
-                                                                    : item.sku.slice(0, 11) === "PR_BAG_A4-1"
+                                                                  : item.sku.slice(0, 11) === "PR_BAG_A4-1"
+                                                                    ? ("PR_BAG_A4:BAG-A4 16.5")
+                                                                    : item.sku === "PROMO-5"
                                                                       ? ("PR_BAG_A4:BAG-A4 16.5")
-                                                                      : item.sku === "PROMO-5"
-                                                                        ? ("PR_BAG_A4:BAG-A4 16.5")
-                                                                        : item.sku.slice(0, 11) === "PR_BAG_A4-8"
+                                                                      : item.sku.slice(0, 11) === "PR_BAG_A4-8"
+                                                                        ? ("PR_BAG_A4:BAG-A4 8.3")
+                                                                        : item.sku === "PROMO-4"
                                                                           ? ("PR_BAG_A4:BAG-A4 8.3")
-                                                                          : item.sku === "PROMO-4"
-                                                                            ? ("PR_BAG_A4:BAG-A4 8.3")
-                                                                            : item.sku === "PROMO-6"
-                                                                              ? ("PR_BAG_A3:Bag-A3 11.7")
-                                                                              : item.sku.slice(0, 11) === "PR_BAG_A5-1"
+                                                                          : item.sku === "PROMO-6"
+                                                                            ? ("PR_BAG_A3:Bag-A3 11.7")
+                                                                            : item.sku.slice(0, 11) === "PR_BAG_A5-1"
+                                                                              ? ("PR_BAG_A5:Bag-A5 11.7")
+                                                                              : item.sku === "PROMO-3"
                                                                                 ? ("PR_BAG_A5:Bag-A5 11.7")
-                                                                                : item.sku === "PROMO-3"
-                                                                                  ? ("PR_BAG_A5:Bag-A5 11.7")
-                                                                                  : item.sku.slice(0, 11) === "PR_BAG_A5-5"
+                                                                                : item.sku.slice(0, 11) === "PR_BAG_A5-5"
+                                                                                  ? ("PR_BAG_A5:Bag-A5 5.8")
+                                                                                  : item.sku === "PROMO-2"
                                                                                     ? ("PR_BAG_A5:Bag-A5 5.8")
-                                                                                    : item.sku === "PROMO-2"
-                                                                                      ? ("PR_BAG_A5:Bag-A5 5.8")
-                                                                                      : item.sku.slice(0, 11) === "PR_BAG_A6-4"
+                                                                                    : item.sku.slice(0, 11) === "PR_BAG_A6-4"
+                                                                                      ? ("PR_BAG_A6:Bag-A6 4.1")
+                                                                                      : item.sku === "PROMO-1"
                                                                                         ? ("PR_BAG_A6:Bag-A6 4.1")
-                                                                                        : item.sku === "PROMO-1"
-                                                                                          ? ("PR_BAG_A6:Bag-A6 4.1")
-                                                                                          : item.sku.slice(0, 8) === "PR_UM_A3"
-                                                                                            ? ("PR_UM_A3")
-                                                                                            : item.sku.slice(0, 11) === "PR_UM_A4-11"
-                                                                                              ? ("PR_UM_A4 11.7")
-                                                                                              : item.sku.slice(0, 11) === "PR_UM_A4-16"
-                                                                                                ? ("PR_UM_A4 16.5")
-                                                                                                : item.sku.slice(0, 11) === "PR_UM_A5-11"
-                                                                                                  ? ("PR_UM_A5 11.7")
-                                                                                                  : item.sku.slice(0, 10) === "PR_UM_A5-5"
-                                                                                                    ? ("PR_UM_A5 5.8")
-                                                                                                    : item.sku.slice(0, 5) === "SB_A3"
+                                                                                        : item.sku.slice(0, 8) === "PR_UM_A3"
+                                                                                          ? ("PR_UM_A3")
+                                                                                          : item.sku.slice(0, 11) === "PR_UM_A4-11"
+                                                                                            ? ("PR_UM_A4 11.7")
+                                                                                            : item.sku.slice(0, 11) === "PR_UM_A4-16"
+                                                                                              ? ("PR_UM_A4 16.5")
+                                                                                              : item.sku.slice(0, 11) === "PR_UM_A5-11"
+                                                                                                ? ("PR_UM_A5 11.7")
+                                                                                                : item.sku.slice(0, 10) === "PR_UM_A5-5"
+                                                                                                  ? ("PR_UM_A5 5.8")
+                                                                                                  : item.sku.slice(0, 5) === "SB_A3"
+                                                                                                    ? ("SB_A3")
+                                                                                                    : item.sku === "SOFT-SHELL-8"
                                                                                                       ? ("SB_A3")
-                                                                                                      : item.sku === "SOFT-SHELL-8"
-                                                                                                        ? ("SB_A3")
-                                                                                                        : item.sku.slice(0, 7) === "SB_A4-1"
+                                                                                                      : item.sku.slice(0, 7) === "SB_A4-1"
+                                                                                                        ? ("SB_A4 16.5")
+                                                                                                        : item.sku === "SOFT-SHELL-6"
                                                                                                           ? ("SB_A4 16.5")
-                                                                                                          : item.sku === "SOFT-SHELL-6"
-                                                                                                            ? ("SB_A4 16.5")
-                                                                                                            : item.sku.slice(0, 7) === "SB_A4-8"
+                                                                                                          : item.sku.slice(0, 7) === "SB_A4-8"
+                                                                                                            ? ("SB_A4 8.3")
+                                                                                                            : item.sku === "SOFT-SHELL-5"
                                                                                                               ? ("SB_A4 8.3")
-                                                                                                              : item.sku === "SOFT-SHELL-5"
-                                                                                                                ? ("SB_A4 8.3")
-                                                                                                                : item.sku.slice(0, 8) === "SB_A5-11"
+                                                                                                              : item.sku.slice(0, 8) === "SB_A5-11"
+                                                                                                                ? ("SB_A5 11.7")
+                                                                                                                : item.sku === "SOFT-SHELL-4"
                                                                                                                   ? ("SB_A5 11.7")
-                                                                                                                  : item.sku === "SOFT-SHELL-4"
-                                                                                                                    ? ("SB_A5 11.7")
-                                                                                                                    : item.sku.slice(0, 7) === "SB_A5-5"
+                                                                                                                  : item.sku.slice(0, 7) === "SB_A5-5"
+                                                                                                                    ? ("SB_A5 5.8")
+                                                                                                                    : item.sku === "SOFT-SHELL-3"
                                                                                                                       ? ("SB_A5 5.8")
-                                                                                                                      : item.sku === "SOFT-SHELL-3"
-                                                                                                                        ? ("SB_A5 5.8")
-                                                                                                                        : item.sku.slice(0, 5) === "SB_LC"
+                                                                                                                      : item.sku.slice(0, 5) === "SB_LC"
+                                                                                                                        ? ("SB_LC")
+                                                                                                                        : item.sku === "SOFT-SHELL-2"
                                                                                                                           ? ("SB_LC")
-                                                                                                                          : item.sku === "SOFT-SHELL-2"
-                                                                                                                            ? ("SB_LC")
-                                                                                                                            : item.sku.slice(0, 5) === "SB_SM"
+                                                                                                                          : item.sku.slice(0, 5) === "SB_SM"
+                                                                                                                            ? ("SB_SM")
+                                                                                                                            : item.sku === "SOFT-SHELL-1"
                                                                                                                               ? ("SB_SM")
-                                                                                                                              : item.sku === "SOFT-SHELL-1"
-                                                                                                                                ? ("SB_SM")
-                                                                                                                                : item.sku === "SOFT-SHELL-9"
-                                                                                                                                  ? ("SB_XS")
-                                                                                                                                  : item.sku === "SOFT-SHELL-7"
-                                                                                                                                    ? ("SB_SQ")
-                                                                                                                                    : item.sku.slice(0, 5) === "WE_A3"
+                                                                                                                              : item.sku === "SOFT-SHELL-9"
+                                                                                                                                ? ("SB_XS")
+                                                                                                                                : item.sku === "SOFT-SHELL-7"
+                                                                                                                                  ? ("SB_SQ")
+                                                                                                                                  : item.sku.slice(0, 5) === "WE_A3"
+                                                                                                                                    ? ("WE_A3")
+                                                                                                                                    : item.sku === "WEARABLES-9"
                                                                                                                                       ? ("WE_A3")
-                                                                                                                                      : item.sku === "WEARABLES-9"
-                                                                                                                                        ? ("WE_A3")
-                                                                                                                                        : item.sku.slice(0, 8) === "WE_A4-16"
+                                                                                                                                      : item.sku.slice(0, 8) === "WE_A4-16"
+                                                                                                                                        ? ("WE_A4 16.5")
+                                                                                                                                        : item.sku === "WEARABLES-7"
                                                                                                                                           ? ("WE_A4 16.5")
-                                                                                                                                          : item.sku === "WEARABLES-7"
-                                                                                                                                            ? ("WE_A4 16.5")
-                                                                                                                                            : item.sku.slice(0, 7) === "WE_A4-8"
+                                                                                                                                          : item.sku.slice(0, 7) === "WE_A4-8"
+                                                                                                                                            ? ("WE_A4 8.3")
+                                                                                                                                            : item.sku === "WEARABLES-6"
                                                                                                                                               ? ("WE_A4 8.3")
-                                                                                                                                              : item.sku === "WEARABLES-6"
-                                                                                                                                                ? ("WE_A4 8.3")
-                                                                                                                                                : item.sku.slice(0, 8) === "WE_A5-11"
+                                                                                                                                              : item.sku.slice(0, 8) === "WE_A5-11"
+                                                                                                                                                ? ("WE_A5 11.7")
+                                                                                                                                                : item.sku === "WEARABLES-5"
                                                                                                                                                   ? ("WE_A5 11.7")
-                                                                                                                                                  : item.sku === "WEARABLES-5"
-                                                                                                                                                    ? ("WE_A5 11.7")
-                                                                                                                                                    : item.sku.slice(0, 7) === "WE_A5-5"
+                                                                                                                                                  : item.sku.slice(0, 7) === "WE_A5-5"
+                                                                                                                                                    ? ("WE_A5 5.8")
+                                                                                                                                                    : item.sku === "WEARABLES-4"
                                                                                                                                                       ? ("WE_A5 5.8")
-                                                                                                                                                      : item.sku === "WEARABLES-4"
-                                                                                                                                                        ? ("WE_A5 5.8")
-                                                                                                                                                        : item.sku.slice(0, 5) === "WE_LC"
+                                                                                                                                                      : item.sku.slice(0, 5) === "WE_LC"
+                                                                                                                                                        ? ("WE_LC")
+                                                                                                                                                        : item.sku === "WEARABLES-3"
                                                                                                                                                           ? ("WE_LC")
-                                                                                                                                                          : item.sku === "WEARABLES-3"
-                                                                                                                                                            ? ("WE_LC")
-                                                                                                                                                            : item.sku.slice(0, 5) === "WE_SM"
+                                                                                                                                                          : item.sku.slice(0, 5) === "WE_SM"
+                                                                                                                                                            ? ("WE_SM")
+                                                                                                                                                            : item.sku === "WEARABLES-2"
                                                                                                                                                               ? ("WE_SM")
-                                                                                                                                                              : item.sku === "WEARABLES-2"
-                                                                                                                                                                ? ("WE_SM")
-                                                                                                                                                                : item.sku.slice(0, 5) === "WE_SQ"
+                                                                                                                                                              : item.sku.slice(0, 5) === "WE_SQ"
+                                                                                                                                                                ? ("WE_SQ")
+                                                                                                                                                                : item.sku === "WEARABLES-8"
                                                                                                                                                                   ? ("WE_SQ")
-                                                                                                                                                                  : item.sku === "WEARABLES-8"
-                                                                                                                                                                    ? ("WE_SQ")
-                                                                                                                                                                    : item.sku.slice(0, 5) === "WE_XS"
+                                                                                                                                                                  : item.sku.slice(0, 5) === "WE_XS"
+                                                                                                                                                                    ? ("WE_XS")
+                                                                                                                                                                    : item.sku === "WEARABLES-1"
                                                                                                                                                                       ? ("WE_XS")
-                                                                                                                                                                      : item.sku === "WEARABLES-1"
-                                                                                                                                                                        ? ("WE_XS")
-                                                                                                                                                                        : item.sku.slice(0, 11) === "WE_SUPAGANG"
+                                                                                                                                                                      : item.sku.slice(0, 11) === "WE_SUPAGANG"
+                                                                                                                                                                        ? ("WE_SUPAGANG")
+                                                                                                                                                                        : item.sku === "WEARABLES-10"
                                                                                                                                                                           ? ("WE_SUPAGANG")
-                                                                                                                                                                          : item.sku === "WEARABLES-10"
-                                                                                                                                                                            ? ("WE_SUPAGANG")
-                                                                                                                                                                            : item.sku.slice(0, 11) === "BL_SUPAGANG"
+                                                                                                                                                                          : item.sku.slice(0, 11) === "BL_SUPAGANG"
+                                                                                                                                                                            ? ("BL_SUPAGANG")
+                                                                                                                                                                            : item.sku === "SUB-BLOCKER-10"
                                                                                                                                                                               ? ("BL_SUPAGANG")
-                                                                                                                                                                              : item.sku === "SUB-BLOCKER-10"
-                                                                                                                                                                                ? ("BL_SUPAGANG")
-                                                                                                                                                                                : item.sku.slice(0, 11) === "SB_SUPAGANG"
+                                                                                                                                                                              : item.sku.slice(0, 11) === "SB_SUPAGANG"
+                                                                                                                                                                                ? ("SB_SUPAGANG")
+                                                                                                                                                                                : item.sku === "SOFT-SHELL-10"
                                                                                                                                                                                   ? ("SB_SUPAGANG")
-                                                                                                                                                                                  : item.sku === "SOFT-SHELL-10"
-                                                                                                                                                                                    ? ("SB_SUPAGANG")
-                                                                                                                                                                                    : (item.sku)
+                                                                                                                                                                                  : (item.sku)
                           }
                         </i>
                       </td>
@@ -1044,13 +1060,46 @@ function OrderLookupPage() {
                         }}
                         className={"qty" + index}
                       >
-                        <b>Color/Type:</b>{" "}
+                        <b>Transfer Type:</b>{" "}
                         <i>
-                          {item.product_options[4]?.display_value}{" - "}
+                          {console.log('item', item)}
+                          {console.log('item-lower-case', item.sku.toLowerCase())}
+                          {item.name.includes("Wearables") ? "Wearable Transfers" : item.sku.includes("BL_") ? "Blocker Transfers" : item.sku.includes("SB_") ? "Soft Shell Blocker" : item.name.includes("Headwear") ? "Headwear Transfers" : item.name.includes("Promotional") ? "Promo Transfers" : "N/a"}
+                        </i>
+                        <br /><b>Sheet Type:</b>{" "}
+                        <i>
+                          {item.sku.includes("SUPAGANG") ? "Supagang" : "Single Image"}
+                        </i>
+                        <br /><b>Transfer Size:</b>{" "}
+                        <i>
+                          {item.sku.toLowerCase().includes("1.5x1.5") ? `1.5" x 1.5"` : item.sku.toLowerCase().includes("2.5x2.5") ? `2.5" x 2.5"` : item.sku.toLowerCase().includes("4x4") ? `4" x 4"` :
+                            item.sku.toLowerCase().includes("5.8x8.3") ? `A5 5.8" x 8.3"` : item.sku.toLowerCase().includes("8.3x11.7") ? `A4 8.3" x 11.7"` : item.sku.toLowerCase().includes("11.7x16.5") ? `A3 11.7" x 16.5"` :
+                              item.sku.toLowerCase().includes("11.7x16.5") ? `A3 11.7" x 16.5"` : item.sku.toLowerCase().includes("11.7x4.25") ? `A5 11.7" x 4.25"` : item.sku.toLowerCase().includes("16.5x5.85") ? `A5 16.5" x 5.85"` :
+                                item.sku.toLowerCase().includes("11.7x11.7") ? `11.7" x 11/7"` : "N/a"}
+                        </i>
+                        <br /><b>Design Size:</b>{" "}
+                        <i>
+                          {item.product_options[4]?.display_value}
+                        </i>
+                        <br /><b>Material:</b>{" "}
+                        <i>
                           {item.product_options[5]?.display_value}
+                        </i>
+                        <br /><b>Adhesive:</b>
+                        <i>
+                          {item.sku.includes("_HW") ? "Headwear Patches" : item.sku.includes("_PR") ? "Promo Patches" : item.sku.includes("_AP") ? "Apparel Patches" : item.sku.includes("_NA") ? "No Adhesive" : "N/a"}
+                        </i>
+                        <br /><b>Branding Type:</b>
+                        <i>
+                          {item.sku.includes("SUEDE") ? "DecoSuede" : item.sku.includes("LEATHERETTE") ? "DecoLeather" : item.sku.includes("TWILL") ? "DecoTwill" : item.sku.includes("SIMWOVEN") ? "SimWoven" : "N/a"}
+                        </i>
+                        <br /><b>DecoPress Size:</b>
+                        <i>
+                          {item.sku.includes("SUEDE") ? "DecoSuede" : item.sku.includes("LEATHERETTE") ? "DecoLeather" : item.sku.includes("TWILL") ? "DecoTwill" : item.sku.includes("SIMWOVEN") ? "SimWoven" : "N/a"}
                         </i>
                       </td>
                     </tr>
+                    <hr style = {{ borderColor: "black"}} />
                   </>
                 ) : (
                   <span></span>
