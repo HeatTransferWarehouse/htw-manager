@@ -93,6 +93,8 @@ class Complete extends Component {
         let decoSku7 = "";
         let decoSku6 = "";
         let descrip = "";
+        let entireSku = "";
+
         let data = [];
         if (this.props.completelist) {
             data = this.props.completelist.map((complete) => [
@@ -135,6 +137,7 @@ class Complete extends Component {
                                             let decoSku3 = decoSku.slice(0, 6);
                                             let decoSku5 = decoSku.slice(0, 3);
                                             let decoSku6 = decoSku.slice(0, 8);
+
                                             if (
                                                 //if the sliced skus meet the below conditions
                                                 decoSku5 === "CD1" ||
@@ -380,6 +383,8 @@ class Complete extends Component {
                                         decoSku5 = value.slice(0, 3);
                                         decoSku7 = value.slice(0, 7);
                                         decoSku6 = value.slice(0, 8);
+                                        entireSku = value;
+                                        
                                         let descrip = dataIndex.rowData[3];
                                         if (
                                             decoSku5 === "SD1" ||
@@ -409,6 +414,23 @@ class Complete extends Component {
                                                 </div>
                                             );
                                         } else if (
+                                            entireSku.startsWith("STOCK-")
+                                        ) {
+                                            return (
+                                                <div
+                                                    style={{
+                                                        width: "100%",
+                                                        height: "100%",
+                                                        backgroundColor: "rgb(200 142 213)",
+                                                        color: "black",
+                                                        textAlign: "center",
+                                                        padding: "10px",
+                                                    }}
+                                                >
+                                                    {value}
+                                                </div>
+                                            );
+                                        } else if (
                                             decoSku5 === "SDC"
                                         ) {
                                             return (
@@ -425,7 +447,7 @@ class Complete extends Component {
                                                     {value}
                                                 </div>
                                             );
-                                        }else if (
+                                        } else if (
                                             decoSku5 === "CS1" ||
                                             decoSku5 === "CS2" ||
                                             decoSku5 === "CS3" ||
@@ -487,7 +509,8 @@ class Complete extends Component {
                                             decoSku5 === "CD8" ||
                                             decoSku5 === "CD9" ||
                                             decoSku6 === "CUSTOM-H" ||
-                                            descrip.includes("Pattern Vinyl Sheet and Mask Bundle")
+                                            descrip.includes("Pattern Vinyl Sheet and Mask Bundle") ||
+                                            entireSku.startsWith("PHTVSTOCK-")
                                         ) {
                                             return (
                                                 <div
@@ -504,7 +527,8 @@ class Complete extends Component {
                                                 </div>
                                             );
                                         } else if (
-                                            decoSku3 === "SUBPAT"
+                                            decoSku3 === "SUBPAT" ||
+                                            entireSku.startsWith("SUBSTOCK-")
                                         ) {
                                             return (
                                                 <div
@@ -563,7 +587,7 @@ class Complete extends Component {
                                                 >
                                                     {value}
                                                 </div>
-                                            ); 
+                                            );
                                         } else {
                                             return <div>{value}</div>;
                                         }
