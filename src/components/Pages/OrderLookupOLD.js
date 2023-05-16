@@ -17,19 +17,6 @@ function OrderLookupPage() {
   const [weight, setWeight] = React.useState(0);
   const [ship_from, setShipFrom] = React.useState('');
 
-  const isValidColor = (color) => {
-    let validColors = ["Chestnut", "Denim Blue", "Gray", "Coffee", "Black", "Gray", "Saddle"];
-    let result = validColors.find((element) => element === color);
-    if (result === "Denim Blue") {
-      result = "Denim"
-    }
-    if (result) {
-      return result.toUpperCase();
-    } else if (result === undefined) {
-      return ""
-    }
-  }
-
   useEffect(() => {
     dispatch({
       type: "CLEAR_PRODUCT",
@@ -1108,12 +1095,11 @@ function OrderLookupPage() {
                         </i>
                         <br /><b>DecoPress Size:</b>
                         <i>
-                          {console.log(item)}
-                          {item.sku.toLowerCase().includes("1.5x1.5") ? `1.5 x 1.5 ${isValidColor(item.product_options[3]?.display_value)}` : item.sku.toLowerCase().includes("2.5x2.5") ? `2.5 x 2.5 ${isValidColor(item.product_options[3]?.display_value)}` : "N/a"}
+                          {item.sku.includes("SUEDE") ? "DecoSuede" : item.sku.includes("LEATHERETTE") ? "DecoLeather" : item.sku.includes("TWILL") ? "DecoTwill" : item.sku.includes("SIMWOVEN") ? "SimWoven" : "N/a"}
                         </i>
                       </td>
                     </tr>
-                    <hr style={{ borderColor: "black" }} />
+                    <hr style = {{ borderColor: "black"}} />
                   </>
                 ) : (
                   <span></span>
