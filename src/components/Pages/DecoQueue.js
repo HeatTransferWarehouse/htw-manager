@@ -195,6 +195,7 @@ class DecoQueue extends Component {
         let decoSku5 = "";
         let decoSku7 = "";
         let decoSku6 = "";
+        let entireSku = "";
         let descrip = "";
 
 
@@ -544,6 +545,7 @@ class DecoQueue extends Component {
                                         decoSku5 = value.slice(0, 3);
                                         decoSku7 = value.slice(0, 7);
                                         decoSku6 = value.slice(0, 8);
+                                        entireSku = value;
                                         let descrip = dataIndex.rowData[3];
                                         if (
                                             decoSku5 === "SD1" ||
@@ -564,6 +566,23 @@ class DecoQueue extends Component {
                                                         width: "100%",
                                                         height: "100%",
                                                         backgroundColor: "#F7B665",
+                                                        color: "black",
+                                                        textAlign: "center",
+                                                        padding: "10px",
+                                                    }}
+                                                >
+                                                    {value}
+                                                </div>
+                                            );
+                                        } else if (
+                                            entireSku.startsWith("STOCK-")
+                                        ) {
+                                            return (
+                                                <div
+                                                    style={{
+                                                        width: "100%",
+                                                        height: "100%",
+                                                        backgroundColor: "rgb(200 142 213)",
                                                         color: "black",
                                                         textAlign: "center",
                                                         padding: "10px",
@@ -634,7 +653,8 @@ class DecoQueue extends Component {
                                             decoSku5 === "CD7" ||
                                             decoSku5 === "CD8" ||
                                             decoSku5 === "CD9" ||
-                                            decoSku6 === "CUSTOM-H"
+                                            decoSku6 === "CUSTOM-H" ||
+                                            entireSku.startsWith("PHTVSTOCK-")
                                         ) {
                                             return (
                                                 <div
@@ -668,7 +688,8 @@ class DecoQueue extends Component {
                                                 </div>
                                             );
                                         } else if (
-                                            decoSku3 === "SUBPAT"
+                                            decoSku3 === "SUBPAT" ||
+                                            entireSku.startsWith("SUBSTOCK-")
                                         ) {
                                             return (
                                                 <div

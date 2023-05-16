@@ -67,6 +67,7 @@ class Progress extends Component {
         let decoSku7 = "";
         let decoSku6 = "";
         let descrip = "";
+        let entireSku = "";
 
         let data = [];
         if (this.props.progresslist) {
@@ -368,6 +369,8 @@ class Progress extends Component {
                                         decoSku5 = value.slice(0, 3);
                                         decoSku7 = value.slice(0, 7);
                                         decoSku6 = value.slice(0, 8);
+                                        entireSku = value;
+                                        
                                         let descrip = dataIndex.rowData[3];
                                         if (
                                             decoSku5 === "SD1" ||
@@ -388,6 +391,23 @@ class Progress extends Component {
                                                         width: "100%",
                                                         height: "100%",
                                                         backgroundColor: "#F7B665",
+                                                        color: "black",
+                                                        textAlign: "center",
+                                                        padding: "10px",
+                                                    }}
+                                                >
+                                                    {value}
+                                                </div>
+                                            );
+                                        } else if (
+                                            entireSku.startsWith("STOCK-")
+                                        ) {
+                                            return (
+                                                <div
+                                                    style={{
+                                                        width: "100%",
+                                                        height: "100%",
+                                                        backgroundColor: "rgb(200 142 213)",
                                                         color: "black",
                                                         textAlign: "center",
                                                         padding: "10px",
@@ -475,7 +495,8 @@ class Progress extends Component {
                                             decoSku5 === "CD8" ||
                                             decoSku5 === "CD9" ||
                                             decoSku6 === "CUSTOM-H" ||
-                                            descrip.includes("Pattern Vinyl Sheet and Mask Bundle")
+                                            descrip.includes("Pattern Vinyl Sheet and Mask Bundle") ||
+                                            entireSku.startsWith("PHTVSTOCK-")
                                         ) {
                                             return (
                                                 <div
@@ -491,7 +512,10 @@ class Progress extends Component {
                                                     {value}
                                                 </div>
                                             );
-                                        } else if (decoSku3 === "SUBPAT") {
+                                        } else if (
+                                            decoSku3 === "SUBPAT" ||
+                                            entireSku.startsWith("SUBSTOCK-")
+                                        ) {
                                             return (
                                                 <div
                                                     style={{
@@ -549,7 +573,7 @@ class Progress extends Component {
                                                 >
                                                     {value}
                                                 </div>
-                                            ); 
+                                            );
                                         } else {
                                             return <div>{value}</div>;
                                         }
