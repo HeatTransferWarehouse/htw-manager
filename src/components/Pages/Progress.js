@@ -400,7 +400,7 @@ class Progress extends Component {
                                                 </div>
                                             );
                                         } else if (
-                                            entireSku.startsWith("STOCK-")
+                                            entireSku.startsWith("SUBSTOCK-")
                                         ) {
                                             return (
                                                 <div
@@ -514,7 +514,7 @@ class Progress extends Component {
                                             );
                                         } else if (
                                             decoSku3 === "SUBPAT" ||
-                                            entireSku.startsWith("SUBSTOCK-")
+                                            entireSku.startsWith("STOCK-")
                                         ) {
                                             return (
                                                 <div
