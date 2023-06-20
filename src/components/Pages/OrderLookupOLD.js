@@ -1095,11 +1095,15 @@ function OrderLookupPage() {
                         </i>
                         <br /><b>DecoPress Size:</b>
                         <i>
-                          {item.sku.includes("SUEDE") ? "DecoSuede" : item.sku.includes("LEATHERETTE") ? "DecoLeather" : item.sku.includes("TWILL") ? "DecoTwill" : item.sku.includes("SIMWOVEN") ? "SimWoven" : "N/a"}
+                          {item.sku.toLowerCase().includes("1.5x1.5") ? `1.5 x 1.5` : item.sku.toLowerCase().includes("2.5x2.5") ? `2.5 x 2.5` : item.sku.toLowerCase().includes("3x3") ? `3 x 3` :
+                            item.sku.toLowerCase().includes("4x2.5") ? `4 x 2.5` : item.sku.toLowerCase().includes("4x4") ? `4 x 4` : item.sku.toLowerCase().includes("5.8x8.3") ? `A5 5.8 x 8.3` : item.sku.toLowerCase().includes("8.3x11.7") ? `A4 8.3 x 11.7` :
+                              item.sku.toLowerCase().includes("11.7x16.5") ? `A3 11.7 x 16.5` : item.sku.toLowerCase().includes("11.7x4.25") ? `A5 11.7 x 4.25` : item.sku.toLowerCase().includes("16.5x5.85") ? `A4 16.5 x 5.85` :
+                                item.sku.toLowerCase().includes("11.7x11.7") ? `SQ 11.7 x 11.7` : "N/a"}
+                          {item.sku.includes("SUEDE") ? " " + item.product_options[3].display_value.toUpperCase() : item.sku.includes("LEATHERETTE") ? " " + item.product_options[3].display_value.toUpperCase() : ""}
                         </i>
                       </td>
                     </tr>
-                    <hr style = {{ borderColor: "black"}} />
+                    <hr style={{ borderColor: "black" }} />
                   </>
                 ) : (
                   <span></span>
