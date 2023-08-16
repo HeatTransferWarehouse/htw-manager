@@ -19,7 +19,7 @@ const {
     getUnpaidBrightpearlOrders,
 } = require('./Capture/api');
 
-let isMiddlewareDisabled = false;
+let isMiddlewareDisabled = true;
 
 const captureUnpaidSalesOrders = async (e) => {
 
