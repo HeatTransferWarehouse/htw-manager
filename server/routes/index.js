@@ -19,7 +19,14 @@ const {
     getUnpaidBrightpearlOrders,
 } = require('./Capture/api');
 
+let isMiddlewareDisabled = false;
+
 const captureUnpaidSalesOrders = async (e) => {
+
+    if (isMiddlewareDisabled) {
+        return
+    }
+
     logtail.info('Getting sales orders...');
     const orderData = await getUnpaidBrightpearlOrders(e);
     logtail.info(orderData.response.results.length, 'sales orders found');
