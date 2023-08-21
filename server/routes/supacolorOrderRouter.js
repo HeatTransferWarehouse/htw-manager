@@ -10,9 +10,9 @@ const logtail = new Logtail("KQi4An7q1YZVwaTWzM72Ct5r");
 
 router.post('/', function (req, res) {
  
-    logtail.info('Supacolor endpoint hit via webhook :)');
+    logtail.info(`Supacolor API hit via webhook: ${req.body}`);
     // respond with 200 OK
-    res.send('YAY IT WORKS :)');
+    res.send("it werked");
 });
 
 module.exports = router;
