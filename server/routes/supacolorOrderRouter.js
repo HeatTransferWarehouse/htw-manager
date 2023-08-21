@@ -12,6 +12,9 @@ router.post('/', function (req, res) {
  
     logtail.info(`Supacolor API hit via webhook: ${req.body}`);
     // respond with 200 OK
+
+    console.log(req.body);
+
     res.send("it werked");
 });
 
