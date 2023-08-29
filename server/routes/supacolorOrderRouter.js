@@ -285,7 +285,7 @@ function findCorrectPriceCodeFromResults(results, sku) {
     return correctPriceCodes[0];
 }
 
-getPriceCodeWithSku("WE_SUPAGANG_MM_11.7x16.5-1");
+// getPriceCodeWithSku("WE_SUPAGANG_MM_11.7x16.5-1");
 
 // findProductsOnOrderInBigCommerce(3463970);
 
