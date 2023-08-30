@@ -20,33 +20,32 @@ const logtail = new Logtail("KQi4An7q1YZVwaTWzM72Ct5r");
 // 7. Upload artwork and order has successfully been entered in to Supacolor's system.
 
 // Test endpoint listening for when a product is edited
-// router.post('/', function (req, res) {
+router.post('/', function (req, res) {
 
-//     // Logging
-//     logtail.info(`Supacolor API hit via webhook: ${req.body}`);
-//     console.log('Product edited: ', req.body);
-//     res.send("it werked");
-// });
+    // Logging
+    logtail.info(`Supacolor API hit via webhook: ${req.body}`);
+    console.log('Product edited: ', req.body);
+    res.send("it werked");
+});
 
 
 // This endpoint is listening for every time an order is placed
-// router.post('/create-order', function (req, res) {
+router.post('/create-order', function (req, res) {
+    if (req.body.data && req.body.data.id) {
+        const orderId = req.body.data.id;
+        // findProductsOnOrderInBigCommerce(orderId);
 
-//     if (req.body.data && req.body.data.id) {
-//         const orderId = req.body.data.id;
-//         findProductsOnOrderInBigCommerce(orderId);
+        // Logging
+        logtail.info(`Supacolor create order API hit via webhook: Order ID - ${orderId}`);
+        console.log('Order placed: Order ID - ', orderId);
+        res.send("create order worked");
 
-//         // Logging
-//         logtail.info(`Supacolor create order API hit via webhook: Order ID - ${orderId}`);
-//         console.log('Order placed: Order ID - ', orderId);
-//         res.send("create order worked");
-
-//     } else {
-//         // Handle error - ID was not found in request
-//         logtail.error('Order ID was not found in request');
-//         res.status(400).send("Order ID was not found");
-//     }
-// });
+    } else {
+        // Handle error - ID was not found in request
+        logtail.error('Order ID was not found in request');
+        res.status(400).send("Order ID was not found");
+    }
+});
 
 
 async function findProductsOnOrderInBigCommerce(orderId) {
@@ -265,7 +264,7 @@ function findCorrectPriceCodeFromResults(results, sku) {
     // We are checking the response data for these values
     const substringsToCheck = [categoryCode, height, width];
     const skuIncludesSUPAGANG = sku.includes('SUPAGANG');
-    
+
     // We really ever should just get one value if everything works right.
     let correctPriceCodes = [];
 
