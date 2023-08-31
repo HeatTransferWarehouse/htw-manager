@@ -10,18 +10,12 @@ const logtail = new Logtail("KQi4An7q1YZVwaTWzM72Ct5r");
 
 // This router handles Supacolor products that are ordered on the Heat Transfer Store and places them in to Supacolor's system.
 
-// 1. Create-order endpoint is hit via BigCommerce webhook. This gives us an order ID.
-// 2. Then we make an API call to BigCommerce to find the products on that order.
-// 3. Now we search those products for Supacolor products. If we find any then we move on to the next step.
-// 3.5. Need to get the price codes. This requires another API call.
-// 4. Next we get the order details of that order (i.e. address, name, company).
-// 5. Then we use all the information we've gathered to create a payload to send to Supacolor
-// 6. Now we send the order to Supacolor without artwork.
-// 7. Upload artwork and order has successfully been entered in to Supacolor's system.
+// Documentation can be found below ↓↓↓
+// https://docs.google.com/document/d/1SkgKDUAfp26vsusmatYqTeSvUK28Zw4KQ9-7MAM_4ks/edit
 
 // Test endpoint listening for when a product is edited
+// Delete this endpoint later
 router.post('/', function (req, res) {
-
     // Logging
     logtail.info(`Supacolor API hit via webhook: ${req.body}`);
     console.log('Product edited: ', req.body);
@@ -33,20 +27,14 @@ router.post('/', function (req, res) {
 router.post('/create-order', function (req, res) {
     if (req.body.data && req.body.data.id) {
         const orderId = req.body.data.id;
-        // findProductsOnOrderInBigCommerce(orderId);
-
-        // Logging
+        // findProductsOnOrderInBigCommerce(orderId); <--- Only turn on when you are ready to launch
         logtail.info(`Supacolor create order API hit via webhook: Order ID - ${orderId}`);
-        console.log('Order placed: Order ID - ', orderId);
-        res.send("create order worked");
-
     } else {
         // Handle error - ID was not found in request
         logtail.error('Order ID was not found in request');
         res.status(400).send("Order ID was not found");
     }
 });
-
 
 async function findProductsOnOrderInBigCommerce(orderId) {
     try {
@@ -93,9 +81,6 @@ function findSupacolorProductsOnOrder(productArray) {
         // can begin to send to Supacolor. Need to pass along found products.
         getOrderDetails(foundSupacolorProducts, foundSupacolorProducts[0].order_id);
     }
-
-    // console.log('Found supacolor products: ', foundSupacolorProducts[0].product_options);
-    // console.log('Found supacolor products: ', foundSupacolorProducts);
 }
 
 // Retrieving order details (i.e. address, name). We only run this if we find Supacolor product(s) on the order.
@@ -113,8 +98,11 @@ async function getOrderDetails(supacolorProducts, orderId) {
         if (response.status === 200) {
             // Successfully retrieved the order details
             let orderDetails = response.data;
-            createSupacolorPayload(supacolorProducts, orderId, orderDetails);
-            // console.log(response.data)
+
+            // Wait for getPriceCodesFromMultipleSkus to complete
+            const priceCodes = await getPriceCodesFromMultipleSkus(supacolorProducts);
+
+            createSupacolorPayload(supacolorProducts, priceCodes, orderId, orderDetails);
             return response.data;
         } else {
             // Handle the error if the status is not 200
@@ -128,7 +116,7 @@ async function getOrderDetails(supacolorProducts, orderId) {
     }
 }
 
-function createSupacolorPayload(supacolorProducts, orderId, orderDetails) {
+function createSupacolorPayload(supacolorProducts, priceCodes, orderId, orderDetails) {
 
     let personalInfo = orderDetails.billing_address;
 
@@ -152,7 +140,7 @@ function createSupacolorPayload(supacolorProducts, orderId, orderDetails) {
         },
         items: supacolorProducts.map((item, index) => ({
             itemType: "PriceCode",
-            code: getPriceCodeWithSku(item.sku),
+            code: priceCodes[index],
             quantity: item.quantity,
             attributes: {
                 description: "",
@@ -166,8 +154,7 @@ function createSupacolorPayload(supacolorProducts, orderId, orderDetails) {
     };
 
     // console.log('Supacolor Payload: ', supacolorPayload);
-
-    sendOrderToSupacolor(supacolorPayload);
+    // sendOrderToSupacolor(supacolorPayload);
 }
 
 async function sendOrderToSupacolor(supacolorPayload) {
@@ -203,44 +190,68 @@ async function sendOrderToSupacolor(supacolorPayload) {
     }
 }
 
+async function getPriceCodesFromMultipleSkus(supacolorProducts) {
+
+    let skus = [];
+
+    // Getting just the SKUs from Supacolor products
+    for (product of supacolorProducts) {
+        skus.push(product.sku);
+    }
+
+    let priceCodes = [];
+
+    // Getting price code from SKU
+    for (const sku of skus) {
+        let priceCode = await getPriceCodeWithSku(sku);
+        priceCodes.push(priceCode);
+    }
+
+    return priceCodes;
+}
+
+
 // Because we need a priceCode to start the order for Supacolor and all of our SKUs are different than Supacolor's priceCodes
 // it will be easiest to just make another API call to Supacolor to find the priceCode that is a closest match to our SKU.
 // This is much easier and should be more future-proof than doing some sort of massive translation function. 
 
-function getPriceCodeWithSku(sku) {
+async function getPriceCodeWithSku(sku) {
+    return new Promise((resolve, reject) => {
+        let filteredUrl = "";
 
-    let filteredUrl = "";
+        const cleanedSku = sku.replace('SUPAGANG-', '');
+        const skuParts = cleanedSku.split('-');
 
-    const cleanedSku = sku.replace('SUPAGANG-', '');
-    const skuParts = cleanedSku.split('-');
+        let categoryCode = skuParts[0];
 
-    let categoryCode = skuParts[0];
-
-    if (categoryCode.includes("11.7x16.5")) {
-        categoryCode = categoryCode.replace("11.7x16.5", "A3")
-    }
-
-    console.log(categoryCode)
-
-    filteredUrl = `PriceCodes/price-codes?filter=${categoryCode}`;
-
-    const accessToken = process.env.SUPACOLOR_ACCESS_TOKEN;
-
-    axios({
-        method: 'get',
-        url: `https://scapi-usa.bluerocket.co.nz/${filteredUrl}`,
-        headers: {
-            'Authorization': `Bearer ${accessToken}`,
-            'Content-Type': 'application/json'
+        // Annoying check we have to do because the ganged 11.7x16.5 SKUs don't contain the item code.
+        if (categoryCode.includes("11.7x16.5")) {
+            categoryCode = categoryCode.replace("11.7x16.5", "A3")
         }
-    })
-        .then(response => {
-            return findCorrectPriceCodeFromResults(response.data, sku);
+
+        filteredUrl = `PriceCodes/price-codes?filter=${categoryCode}`;
+
+        const accessToken = process.env.SUPACOLOR_ACCESS_TOKEN;
+
+        axios({
+            method: 'get',
+            url: `https://scapi-usa.bluerocket.co.nz/${filteredUrl}`,
+            headers: {
+                'Authorization': `Bearer ${accessToken}`,
+                'Content-Type': 'application/json'
+            }
         })
-        .catch(error => {
-            console.error(error);
-        });
+            .then(response => {
+                let priceCodeResults = findCorrectPriceCodeFromResults(response.data, sku);
+                resolve(priceCodeResults); // Resolve the promise with the price code
+            })
+            .catch(error => {
+                console.error('cant get price codes');
+                reject(error); // Reject the promise in case of an error
+            });
+    });
 }
+
 
 function findCorrectPriceCodeFromResults(results, sku) {
 
@@ -284,8 +295,13 @@ function findCorrectPriceCodeFromResults(results, sku) {
     return correctPriceCodes[0];
 }
 
-// getPriceCodeWithSku("WE_SUPAGANG_MM_11.7x16.5-1");
 
-// findProductsOnOrderInBigCommerce(3463970);
+
+// Testing stuff below --- delete later
+
+// getPriceCodeWithSku("WE_SUPAGANG-11.7x16.5-2");
+// findProductsOnOrderInBigCommerce(3465561);
+// let multipleSkus = ["WE_SUPAGANG-11.7x16.5-2", "WE_SQ-11.7x11.7-7", "WE_A5-5.8X8.3-3"];
+// getPriceCodesFromMultipleSkus(multipleSkus);
 
 module.exports = router;
