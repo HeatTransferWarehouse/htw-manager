@@ -56,7 +56,7 @@ function App() {
 
           <ProtectedRoute exact path="/complete" component={Complete} />
 
-          <Route exact path="/supacolor" component={Supacolor} />
+          <AdminRoute exact path="/supacolor" component={Supacolor} />
 
           <AdminRoute exact path="/wallyb" component={WallyB} />
 
