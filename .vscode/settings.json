@@ -1,5 +1,6 @@
 {
-    "python.analysis.extraPaths": [
-        "./server/SanMar/Get-New-Products"
-    ]
+  "python.analysis.extraPaths": ["./server/SanMar/Get-New-Products"],
+  "emmet.includeLanguages": {
+    "javascript": "javascriptreact"
+  }
 }

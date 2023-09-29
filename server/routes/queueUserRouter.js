@@ -8,7 +8,7 @@ const userStrategy = require("../strategies/user.strategy");
 let crypto = require("crypto");
 const router = express.Router();
 const axios = require("axios");
-const moment = require('moment');
+const moment = require("moment");
 const sgMail = require("@sendgrid/mail");
 sgMail.setApiKey(process.env.SENDGRID_API_KEY);
 require("dotenv").config();
@@ -17,7 +17,7 @@ const { Logtail } = require("@logtail/node");
 
 const logtail = new Logtail("KQi4An7q1YZVwaTWzM72Ct5r");
 
-let storeHash = process.env.STORE_HASH
+let storeHash = process.env.STORE_HASH;
 
 //defines dates to auto delete certain things from the database.
 let daterange = moment().subtract(5, "hours").subtract(30, "days");
@@ -42,7 +42,7 @@ router.delete("/deletecompleterange", rejectUnauthenticated, (req, res) => {
       logtail.info("--DECOQUEUE-- Error DELETE ", error);
       res.sendStatus(500);
     });
-})
+});
 
 router.delete("/deletehistoryrange", rejectUnauthenticated, (req, res) => {
   //deletes any customer coraspondance after 2 years
@@ -110,11 +110,7 @@ setInterval(() => {
                   .then((result7) => {
                     let rows3 = JSON.stringify(result7.rows);
 
-                    if (
-                      rows1 === "[]" &&
-                      rows2 === "[]" &&
-                      rows3 === "[]"
-                    ) {
+                    if (rows1 === "[]" && rows2 === "[]" && rows3 === "[]") {
                       //logtail.info(orderID, "checking order");
                       //converts to am/pm time
                       if (
@@ -152,8 +148,7 @@ setInterval(() => {
                                 let decoSku7 = "";
 
                                 const element2 = data[index];
-                                let options =
-                                  element2.product_options;
+                                let options = element2.product_options;
                                 let qty = element2.quantity;
                                 //arrays used to determan how emails appear when sent
                                 let optionsArray = [];
@@ -221,71 +216,45 @@ setInterval(() => {
                                 ) {
                                   //run the logic that places the skus in the stock queue
                                   logtail.info(
-                                    '--DECOQUEUE--',
+                                    "--DECOQUEUE--",
                                     orderID,
                                     "goes into stock queue"
                                   );
                                   let product_length = "";
-                                  for (
-                                    let j = 0;
-                                    j < options.length;
-                                    j++
-                                  ) {
+                                  for (let j = 0; j < options.length; j++) {
                                     const opt = options[j];
-                                    let display_name =
-                                      opt.display_name;
+                                    let display_name = opt.display_name;
                                     //some strings are overly long and have unneeded info, checking for those and simplify
-                                    let checkName = display_name.slice(
-                                      0,
-                                      10
-                                    );
-                                    let checkName2 = display_name.slice(
-                                      0,
-                                      18
-                                    );
-                                    if (
-                                      checkName === "Sheet Size"
-                                    ) {
+                                    let checkName = display_name.slice(0, 10);
+                                    let checkName2 = display_name.slice(0, 18);
+                                    if (checkName === "Sheet Size") {
                                       //if the first ten letters are Sheet Size, show just that
                                       optionsArray.push(
                                         `${checkName}: ${opt.display_value}`
                                       );
-                                    } else if (
-                                      display_name === "Length"
-                                    ) {
+                                    } else if (display_name === "Length") {
                                       //if the display name of the product option is "length", define product length as it's value, ignore all others
-                                      product_length =
-                                        opt.display_value;
-                                    } else if (
-                                      display_name ===
-                                      "Tone"
-                                    ) {
+                                      product_length = opt.display_value;
+                                    } else if (display_name === "Tone") {
                                       //if display name is "Order Comments", push the name and value of that product option
                                       name = `${name} - ${opt.display_value}`;
                                     } else if (
-                                      display_name ===
-                                      "Order Comments"
+                                      display_name === "Order Comments"
                                     ) {
                                       //if display name is "Order Comments", push the name and value of that product option
                                       orderComments.push(
                                         `${opt.display_name}: ${opt.display_value}`
                                       );
                                     } else if (
-                                      checkName2 ===
-                                      "Garment Type/Color"
+                                      checkName2 === "Garment Type/Color"
                                     ) {
                                       //if the first 18 letters of the name state "Garment Type/Color", just use that and push the value
                                       optionsArray.push(
                                         `${checkName2}: ${opt.display_value}`
                                       );
-                                    } else if (
-                                      display_name ===
-                                      "Upload File"
-                                    ) {
+                                    } else if (display_name === "Upload File") {
                                       //if diplay name is Upload File, just skip it
-                                      logtail.info(
-                                        "skipping upload file"
-                                      );
+                                      logtail.info("skipping upload file");
                                     } else {
                                       //....push everything else
                                       optionsArray.push(
@@ -294,9 +263,7 @@ setInterval(() => {
                                     }
                                   }
                                   //join the arrays as one string
-                                  let optionsJoined = optionsArray.join(
-                                    ""
-                                  );
+                                  let optionsJoined = optionsArray.join("");
                                   //...and throw them in the database
                                   const query2Text =
                                     'INSERT INTO "item_queue" (email, first_name, last_name, order_number, sku, qty, product_length, product_options, created_at, description) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10) RETURNING id';
@@ -395,7 +362,10 @@ router.post("/starttask", rejectUnauthenticated, (req, res, next) => {
     ])
     .then((result) => res.status(201).send(result.rows))
     .catch(function (error) {
-      logtail.info("--DECOQUEUE-- Sorry, there was an error with your query: ", error);
+      logtail.info(
+        "--DECOQUEUE-- Sorry, there was an error with your query: ",
+        error
+      );
       res.sendStatus(500); // HTTP SERVER ERROR
     })
 
@@ -435,13 +405,16 @@ router.post("/gobacknew", rejectUnauthenticated, (req, res, next) => {
       assigned,
       created_at,
       description,
-      priority
+      priority,
     ])
     .then((result) => res.status(201).send(result.rows))
     .catch(function (error) {
-      logtail.info("--DECOQUEUE-- Sorry, there was an error with your query: ", error);
+      logtail.info(
+        "--DECOQUEUE-- Sorry, there was an error with your query: ",
+        error
+      );
       res.sendStatus(500); // HTTP SERVER ERROR
-    })
+    });
 });
 
 router.post("/markcomplete", rejectUnauthenticated, (req, res, next) => {
@@ -472,11 +445,14 @@ router.post("/markcomplete", rejectUnauthenticated, (req, res, next) => {
       product_options,
       qty,
       created_at,
-      description
+      description,
     ])
     .then((result) => res.status(201).send(result.rows))
     .catch(function (error) {
-      logtail.info("--DECOQUEUE-- Sorry, there was an error with your query: ", error);
+      logtail.info(
+        "--DECOQUEUE-- Sorry, there was an error with your query: ",
+        error
+      );
       res.sendStatus(500); // HTTP SERVER ERROR
     })
 
@@ -485,7 +461,5 @@ router.post("/markcomplete", rejectUnauthenticated, (req, res, next) => {
       res.sendStatus(500);
     });
 });
-
-
 
 module.exports = router;

@@ -10,15 +10,17 @@ const sgMail = require("@sendgrid/mail");
 sgMail.setApiKey(process.env.SENDGRID_API_KEY);
 require("dotenv").config();
 const app = express();
-const cors = require('cors');
+const cors = require("cors");
 
 const { Logtail } = require("@logtail/node");
 
 const logtail = new Logtail("KQi4An7q1YZVwaTWzM72Ct5r");
 
-app.use(cors({
-  origin: ['https://www.heattransferwarehouse.com']
-}));
+app.use(
+  cors({
+    origin: ["https://www.heattransferwarehouse.com"],
+  })
+);
 
 // Handles Ajax request for user information if user is authenticated
 router.get("/", rejectUnauthenticated, (req, res) => {
@@ -52,14 +54,15 @@ router.post("/addadmin", rejectUnauthenticated, (req, res) => {
 });
 
 router.post("/login", userStrategy.authenticate("local"), (req, res) => {
-  logtail.info("logging body", req.body.username)
+  logtail.info("logging body", req.body.username);
   const email = req.body.username;
   // setting query text to update the username
   const queryText = `update "user" set "last_login" = NOW() WHERE "email"=$1`;
 
-  pool.query(queryText, [email]).then((result) => {//when someone logs in, want to capture the time they log in
+  pool.query(queryText, [email]).then((result) => {
+    //when someone logs in, want to capture the time they log in
 
-      res.sendStatus(201)
+    res.sendStatus(201);
   });
 });
 
@@ -69,7 +72,7 @@ router.post("/logout", (req, res) => {
   res.sendStatus(200);
 });
 
-router.post('/register', (req, res) => {
+router.post("/register", (req, res) => {
   const username = req.body.username;
   const password = encryptLib.encryptPassword(req.body.password);
 
@@ -79,11 +82,9 @@ router.post('/register', (req, res) => {
     .query(queryText, [username, password])
     .then(() => res.sendStatus(201))
     .catch((err) => {
-      logtail.info('User registration failed: ', err);
+      logtail.info("User registration failed: ", err);
       res.sendStatus(500);
     });
 });
-
-
 
 module.exports = router;

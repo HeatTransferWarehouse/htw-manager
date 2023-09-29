@@ -157,3 +157,40 @@ CREATE TABLE "progress"
 	"description" TEXT,
 	"priority" VARCHAR(5)
 );
+
+CREATE TABLE "supacolor_jobs" 
+(
+	"id" serial PRIMARY KEY NOT NULL,
+	"job_id" integer UNIQUE NOT NULL,
+	"date_due" VARCHAR(320) NOT NULL,
+	"job_cost" NUMERIC(16,4) NOT NULL,
+	"expecting_artwork" BOOLEAN NOT NULL
+);
+
+CREATE TABLE "job_line_details" 
+(
+	"id" serial NOT NULL,
+	"job_id" INT REFERENCES "supacolor_jobs"("job_id"),
+	"new_asset_sku" VARCHAR(320),
+	"needs_artwork" BOOLEAN NOT NULL,
+	"customer_reference" VARCHAR(320),
+	"quantity" INT,
+	FOREIGN KEY("job_id") REFERENCES "supacolor_jobs"("job_id")
+);
+
+CREATE TABLE "artwork_upload_response" 
+(
+	"id" serial PRIMARY KEY,
+	"job_id" INT UNIQUE NOT NULL, 
+	"all_artwork_uploaded" BOOLEAN NOT NULL,
+	"all_uploads_successful" BOOLEAN NOT NULL
+);
+
+CREATE TABLE "artwork_uploads" 
+(
+	"customer_reference" VARCHAR(320) NOT NULL,
+	"upload_successful" BOOLEAN NOT NULL,
+	"message" VARCHAR(320) NOT NULL,
+	"job_id" INT,
+	FOREIGN KEY("job_id") REFERENCES "artwork_upload_response"("job_id")
+);

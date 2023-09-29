@@ -51,12 +51,12 @@ const bcClothinglist = (state = [], action) => {
   }
 };
 
-const sanmar = (state = 'WAIT', action) => {
+const sanmar = (state = "WAIT", action) => {
   switch (action.type) {
     case "SET_SANMAR":
       return action.payload;
     case "RESET_SANMAR":
-      return '';
+      return "";
     default:
       return state;
   }
@@ -73,16 +73,79 @@ const tracking = (state = [], action) => {
   }
 };
 
-const supacolor = (state = 'WAIT', action) => {
+const supacolor = (state = "WAIT", action) => {
   switch (action.type) {
     case "SET_SUPACOLOR_ORDER":
       return action.payload;
     case "RESET_SUPACOLOR_ORDER":
-      return 'WAIT';
+      return "WAIT";
     default:
       return state;
   }
 };
+
+const supacolorJobDetails = (state = {}, action) => {
+  switch (action.type) {
+    case "SET_JOB_DETAIL":
+      return action.payload;
+    case "RESET_JOB_DETAIL":
+      return {};
+    default:
+      return state;
+  }
+};
+
+const initialState = {
+  isLoading: false,
+  popupMessage: null,
+};
+
+function artWorkReducer(state = initialState, action) {
+  switch (action.type) {
+    case "UPLOAD_ARTWORK_REQUEST":
+      return {
+        ...state,
+        isLoading: true,
+      };
+    case "UPLOAD_ARTWORK_SUCCESS":
+      return {
+        ...state,
+        isLoading: false,
+        popupMessage: "Artwork uploaded successfully!",
+      };
+    case "UPLOAD_ARTWORK_FAILURE":
+      return {
+        ...state,
+        isLoading: false,
+        popupMessage: action.payload,
+      };
+    case "CLEAR_POPUP_MESSAGE":
+      return {
+        ...state,
+        popupMessage: null,
+      };
+    default:
+      return state;
+  }
+}
+
+function requestJobReducer(state = initialState, action) {
+  switch (action.type) {
+    case "REQUEST_JOB_DETAILS":
+      return {
+        ...state,
+        isLoading: true,
+      };
+    case "JOB_DETAILS_SUCCESS":
+      return {
+        ...state,
+        isLoading: false,
+        popupMessage: "Artwork uploaded successfully!",
+      };
+    default:
+      return state;
+  }
+}
 
 export default combineReducers({
   itemlist,
@@ -93,4 +156,7 @@ export default combineReducers({
   tracking,
   clothingtemplist,
   supacolor,
+  supacolorJobDetails,
+  artWorkReducer,
+  requestJobReducer,
 });
