@@ -413,28 +413,28 @@ function Supacolor() {
                 <div className="loader"></div>
               </div>
             )}
-            {popupMessage === "Artwork uploaded successfully!" ? (
+            {popupMessage && (
               <div className="popup">
                 <div className="popup-content">
-                  <BsCheckCircleFill className="popup-checkmark success" />
+                  {popupMessage === "Artwork uploaded successfully!" ? (
+                    <BsCheckCircleFill className="popup-checkmark success" />
+                  ) : (
+                    <BiSolidErrorCircle className="popup-checkmark error" />
+                  )}
                   <p>{popupMessage}</p>
-                  <button
-                    className="popup-button success-btn"
-                    onClick={closePopup}>
-                    Ok
-                  </button>
-                </div>
-              </div>
-            ) : (
-              <div className="popup">
-                <div className="popup-content">
-                  <BiSolidErrorCircle className="popup-checkmark error" />
-                  <p>{popupMessage}</p>
-                  <button
-                    className="popup-button error-btn"
-                    onClick={closePopup}>
-                    Ok
-                  </button>
+                  {popupMessage === "Artwork uploaded successfully!" ? (
+                    <button
+                      className="popup-button success-btn"
+                      onClick={closePopup}>
+                      Ok
+                    </button>
+                  ) : (
+                    <button
+                      className="popup-button error-btn"
+                      onClick={closePopup}>
+                      Ok
+                    </button>
+                  )}
                 </div>
               </div>
             )}
