@@ -272,7 +272,7 @@ function createSupacolorPayload(
 
 // sendOrderToSupacolor(mockSupacolorPayload);
 
-// This is our function that will end up sending our order details to supacolor to create the job
+// This is our function that will end up sending our order details to supacolor to create the job s
 
 /* We will also take the response of this job information and store it in our Digital Ocean database as a copy on the frontend for our Admin App which is where we will be uploading the artwork for a given order*/
 
