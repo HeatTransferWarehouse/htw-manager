@@ -223,6 +223,12 @@ form {
   color: rgb(103, 86, 255);
 }
 
+.order-items-container {
+  height: 25em;
+  width: 100%;
+  overflow-x: scroll;
+}
+
 .uploadImages-container {
   display: flex;
   flex-direction: row;
@@ -325,7 +331,19 @@ form {
   border-radius: 4px;
   width: 95%;
   height: 40em;
-  max-width: fit-content;
+  max-width: 40em;
+  padding: 1em 2em;
+  top: 50px;
+  position: relative;
+}
+
+.details-modal-styles {
+  background-color: #fff;
+  padding: 20px;
+  border-radius: 4px;
+  width: 95%;
+  height: 40em;
+  max-width: 40em;
   padding: 1em 2em;
   top: 50px;
   position: relative;
@@ -398,7 +416,6 @@ form {
 
 .popup-button {
   width: 70%;
-  background-color: green;
   color: white;
   border: none;
   border-radius: 5px;
@@ -408,10 +425,25 @@ form {
   transition: 0.3s;
 }
 
+.success-btn {
+  background-color: green;
+}
+
+.error-btn {
+  background-color: red;
+}
+
 .popup-checkmark {
-  color: green;
   width: 75px;
   height: 75px;
+}
+
+.success {
+  color: green;
+}
+
+.error {
+  color: red;
 }
 
 .popup-button:hover {
@@ -419,12 +451,9 @@ form {
   cursor: pointer;
 }
 
-@media screen and (max-width: 760px) {
-  .MuiTableRow-root {
-    width: 100%;
-  }
-  .MuiTableCell-root {
-    width: 100%;
-    display: flex;
-  }
+.upload-items-container {
+  /* background-color: #a3c0ff; */
+  height: 28em;
+  width: 100%;
+  overflow-x: scroll;
 }

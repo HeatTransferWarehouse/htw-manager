@@ -17,7 +17,11 @@ import TablePagination from "@material-ui/core/TablePagination";
 import SearchBar from "material-ui-search-bar";
 import { BsFillCloudArrowUpFill, BsCheckCircleFill } from "react-icons/bs";
 import { CgDetailsMore } from "react-icons/cg";
-import { BiSolidUpArrow, BiSolidDownArrow } from "react-icons/bi";
+import {
+  BiSolidUpArrow,
+  BiSolidDownArrow,
+  BiSolidErrorCircle,
+} from "react-icons/bi";
 
 function Supacolor() {
   const dispatch = useDispatch();
@@ -409,12 +413,26 @@ function Supacolor() {
                 <div className="loader"></div>
               </div>
             )}
-            {popupMessage && (
+            {popupMessage === "Artwork uploaded successfully!" ? (
               <div className="popup">
                 <div className="popup-content">
-                  <BsCheckCircleFill className="popup-checkmark" />
+                  <BsCheckCircleFill className="popup-checkmark success" />
                   <p>{popupMessage}</p>
-                  <button className="popup-button" onClick={closePopup}>
+                  <button
+                    className="popup-button success-btn"
+                    onClick={closePopup}>
+                    Ok
+                  </button>
+                </div>
+              </div>
+            ) : (
+              <div className="popup">
+                <div className="popup-content">
+                  <BiSolidErrorCircle className="popup-checkmark error" />
+                  <p>{popupMessage}</p>
+                  <button
+                    className="popup-button error-btn"
+                    onClick={closePopup}>
                     Ok
                   </button>
                 </div>
@@ -510,22 +528,38 @@ function Supacolor() {
               Close
             </Button>
             <div className="job-details-container">
-              <p>Big Commerce Order: {jobUploadsRef}</p>
-              {jobUploadArr.map((upload, index) => (
-                <div key={index} style={{ margin: 10 }} className="upload-item">
-                  <p style={{ fontSize: 20, margin: 2 }}>
-                    Order Item: #
-                    {upload.customer_reference.split(":")[1].trim()}
-                  </p>
-                  <ul>
-                    <li>File Uploaded: {upload.message}</li>
-                    <li>
-                      Upload Status:{" "}
-                      {upload.upload_successful ? "Success" : "Pending"}
-                    </li>
-                  </ul>
-                </div>
-              ))}
+              <p style={{ marginTop: "1em" }}>
+                <strong>Big Commerce Order:</strong> <br /> {jobUploadsRef}
+              </p>
+              <p style={{ marginTop: "1em" }}>
+                <strong>Order Items</strong>
+              </p>
+              <div className="upload-items-container">
+                {jobUploadArr.map((upload, index) => (
+                  <div
+                    key={index}
+                    style={{ margin: "1em" }}
+                    className="upload-item">
+                    <p style={{ fontSize: 17 }}>
+                      Order Item: #
+                      {upload.customer_reference.split(":")[1].trim()}
+                    </p>
+                    <ul>
+                      <li>File Uploaded: {upload.message}</li>
+                      <li>
+                        Upload Status:{" "}
+                        {upload.upload_successful ? (
+                          <span style={{ color: "green", fontWeight: "bold" }}>
+                            Success
+                          </span>
+                        ) : (
+                          "Pending"
+                        )}
+                      </li>
+                    </ul>
+                  </div>
+                ))}
+              </div>
             </div>
           </div>
         </div>
