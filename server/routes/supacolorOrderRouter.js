@@ -175,100 +175,100 @@ function createSupacolorPayload(
   // sendOrderToSupacolor(supacolorPayload);
 }
 
-let mockSupacolorPayload = {
-  orderNumber: "Order# 3453455",
-  orderComment: "Some comment",
-  mustDate: false,
-  description: "some job description",
-  deliveryAddress: {
-    deliveryMethod: "Next Day Air",
-    Organization: "Print Transfers r us",
-    contactName: "Jeremy Fictious",
-    phone: "+83475837458",
-    emailAddress: "fictious@gmail.com",
-    countryCodeIso2: "US",
-    streetAddress: "3300 Bear Hollow road",
-    address2: "",
-    //"suburb": "",
-    city: "Wilson",
-    state: "OK",
-    postalCode: "73463-6299",
-  },
-  items: [
-    {
-      itemType: "Asset",
-      code: "BL10035",
-      quantity: 20,
-      garment: "Black Tees",
-      comment: "As previous",
-      CustomerReference: "3453455: 1",
-    },
-    {
-      itemType: "PriceCode",
-      code: 'B1_A3:Blocker 1 Color - Single Image-A3 11.7" x 16.5"',
-      quantity: 20,
-      attributes: {
-        description: "Summer Holiday",
-        garment: "Polyester",
-        colors: "As Art",
-        size: "5.8w x 16.0h",
-      },
-      CustomerReference: "3453455: 2",
-    },
-    {
-      itemType: "PriceCode",
-      code: 'H1_CAP_SM:Headwear 1 Colour-2.5" x 2.5"',
-      quantity: 10,
-      attributes: {
-        description: "Blocker Transfer",
-        garment: "Polyester",
-        colors: "As Art",
-        size: "5.8w x 16.0h",
-        "Cap Type": "Seam",
-      },
-      CustomerReference: "3453455: 3",
-    },
-    {
-      itemType: "PriceCode",
-      code: 'H1_CAP_SM:Headwear 1 Colour-2.5" x 2.5"',
-      quantity: 10,
-      attributes: {
-        description: "Blocker Transfer",
-        garment: "Polyester",
-        colors: "As Art",
-        size: "5.8w x 16.0h",
-        "Cap Type": "Seam",
-      },
-      CustomerReference: "3453455: 4",
-    },
-    {
-      itemType: "PriceCode",
-      code: 'H1_CAP_SM:Headwear 1 Colour-2.5" x 2.5"',
-      quantity: 10,
-      attributes: {
-        description: "Blocker Transfer",
-        garment: "Polyester",
-        colors: "As Art",
-        size: "5.8w x 16.0h",
-        "Cap Type": "Seam",
-      },
-      CustomerReference: "3453455: 5",
-    },
-    {
-      itemType: "PriceCode",
-      code: 'H1_CAP_SM:Headwear 1 Colour-2.5" x 2.5"',
-      quantity: 10,
-      attributes: {
-        description: "Blocker Transfer",
-        garment: "Polyester",
-        colors: "As Art",
-        size: "5.8w x 16.0h",
-        "Cap Type": "Seam",
-      },
-      CustomerReference: "3453455: 6",
-    },
-  ],
-};
+// let mockSupacolorPayload = {
+//   orderNumber: "Order# 3453455",
+//   orderComment: "Some comment",
+//   mustDate: false,
+//   description: "some job description",
+//   deliveryAddress: {
+//     deliveryMethod: "Next Day Air",
+//     Organization: "Print Transfers r us",
+//     contactName: "Jeremy Fictious",
+//     phone: "+83475837458",
+//     emailAddress: "fictious@gmail.com",
+//     countryCodeIso2: "US",
+//     streetAddress: "3300 Bear Hollow road",
+//     address2: "",
+//     //"suburb": "",
+//     city: "Wilson",
+//     state: "OK",
+//     postalCode: "73463-6299",
+//   },
+//   items: [
+//     {
+//       itemType: "Asset",
+//       code: "BL10035",
+//       quantity: 20,
+//       garment: "Black Tees",
+//       comment: "As previous",
+//       CustomerReference: "3453455: 1",
+//     },
+//     {
+//       itemType: "PriceCode",
+//       code: 'B1_A3:Blocker 1 Color - Single Image-A3 11.7" x 16.5"',
+//       quantity: 20,
+//       attributes: {
+//         description: "Summer Holiday",
+//         garment: "Polyester",
+//         colors: "As Art",
+//         size: "5.8w x 16.0h",
+//       },
+//       CustomerReference: "3453455: 2",
+//     },
+//     {
+//       itemType: "PriceCode",
+//       code: 'H1_CAP_SM:Headwear 1 Colour-2.5" x 2.5"',
+//       quantity: 10,
+//       attributes: {
+//         description: "Blocker Transfer",
+//         garment: "Polyester",
+//         colors: "As Art",
+//         size: "5.8w x 16.0h",
+//         "Cap Type": "Seam",
+//       },
+//       CustomerReference: "3453455: 3",
+//     },
+//     {
+//       itemType: "PriceCode",
+//       code: 'H1_CAP_SM:Headwear 1 Colour-2.5" x 2.5"',
+//       quantity: 10,
+//       attributes: {
+//         description: "Blocker Transfer",
+//         garment: "Polyester",
+//         colors: "As Art",
+//         size: "5.8w x 16.0h",
+//         "Cap Type": "Seam",
+//       },
+//       CustomerReference: "3453455: 4",
+//     },
+//     {
+//       itemType: "PriceCode",
+//       code: 'H1_CAP_SM:Headwear 1 Colour-2.5" x 2.5"',
+//       quantity: 10,
+//       attributes: {
+//         description: "Blocker Transfer",
+//         garment: "Polyester",
+//         colors: "As Art",
+//         size: "5.8w x 16.0h",
+//         "Cap Type": "Seam",
+//       },
+//       CustomerReference: "3453455: 5",
+//     },
+//     {
+//       itemType: "PriceCode",
+//       code: 'H1_CAP_SM:Headwear 1 Colour-2.5" x 2.5"',
+//       quantity: 10,
+//       attributes: {
+//         description: "Blocker Transfer",
+//         garment: "Polyester",
+//         colors: "As Art",
+//         size: "5.8w x 16.0h",
+//         "Cap Type": "Seam",
+//       },
+//       CustomerReference: "3453455: 6",
+//     },
+//   ],
+// };
 
 // sendOrderToSupacolor(mockSupacolorPayload);
 
@@ -305,8 +305,12 @@ async function sendOrderToSupacolor(mockPayload) {
           response.data.expectingArtworkToBeUploaded,
       };
       console.log(supacolourJob);
+      // await axios.post(
+      //   "http://localhost:3000/supacolor-api/new-job",
+      //   supacolourJob
+      // );
       await axios.post(
-        "http://localhost:3000/supacolor-api/new-job",
+        "https://admin.heattransferwarehouse.com/supacolor-api/new-job",
         supacolourJob
       );
 
@@ -372,12 +376,19 @@ router.post("/upload-artwork/:jobId", upload.any(), async (req, res) => {
         })),
         allUploadsSuccessful: response.data.allUploadsSuccessful,
       };
+      // await axios.post(
+      //   `http://localhost:3000/supacolor-api/artwork`,
+      //   uploadedArtwork
+      // );
       await axios.post(
-        `http://localhost:3000/supacolor-api/artwork`,
+        `https://admin.heattransferwarehouse.com/supacolor-api/artwork`,
         uploadedArtwork
       );
+      // await axios.put(
+      //   `http://localhost:3000/supacolor-api/update-needs-artwork/${jobId}`
+      // );
       await axios.put(
-        `http://localhost:3000/supacolor-api/update-needs-artwork/${jobId}`
+        `https://admin.heattransferwarehouse.com/supacolor-api/update-needs-artwork/${jobId}`
       );
     } else {
       console.log(
