@@ -462,3 +462,20 @@ form {
   width: 100%;
   overflow-x: scroll;
 }
+
+.supacolor-table-head {
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.supacolor-info-icon {
+  margin-right: 1em;
+  transition: 0.2s;
+}
+.supacolor-info-icon:hover {
+  cursor: pointer;
+  scale: 105%;
+  color: gray;
+}

@@ -21,6 +21,7 @@ import {
   BiSolidUpArrow,
   BiSolidDownArrow,
   BiSolidErrorCircle,
+  BiSolidInfoCircle,
 } from "react-icons/bi";
 
 function Supacolor() {
@@ -120,6 +121,11 @@ function Supacolor() {
     window.open(url, "_blank");
   };
 
+  const goToDocumentation = () => {
+    const url = `https://docs.google.com/document/d/14e_R6Me_D98FLr6iHC8EDO8jx6ET6Tsuppti-rcRBCA/edit?usp=sharing`;
+    window.open(url, "_blank");
+  };
+
   const imageUpload = (jobNumber, reference) => {
     setJobId(jobNumber);
     setCustomerRef(reference);
@@ -206,13 +212,21 @@ function Supacolor() {
           margin: "auto",
           padding: "1em",
         }}>
-        <SearchBar
-          style={{ width: "95%", maxWidth: "500px" }}
-          value={searched}
-          placeholder="Search Order Number"
-          onChange={(searchVal) => requestSearch(searchVal)}
-          onCancelSearch={() => cancelSearch()}
-        />
+        <div className="supacolor-table-head">
+          <SearchBar
+            style={{ width: "95%", maxWidth: "500px" }}
+            value={searched}
+            placeholder="Search Order Number"
+            onChange={(searchVal) => requestSearch(searchVal)}
+            onCancelSearch={() => cancelSearch()}
+          />
+
+          <BiSolidInfoCircle
+            onClick={goToDocumentation}
+            className="supacolor-info-icon"
+            style={{ fontSize: 30 }}
+          />
+        </div>
         <TableContainer style={{ width: "100%" }}>
           <Table style={{ width: "100%" }} aria-label="Jobs Table">
             <TableHead>
