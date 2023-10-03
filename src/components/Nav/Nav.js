@@ -13,6 +13,7 @@ function Nav() {
   const [affiliates, setAffiliates] = useState(false);
   const [decoQueue, setDecoQueue] = useState(false);
   const [admin, setAdmin] = useState(false);
+  const [supacolor, setSupacolor] = useState(false);
 
   // This unactivates all nav destinations
   const disableAll = () => {
@@ -24,6 +25,7 @@ function Nav() {
     setAffiliates(false);
     setDecoQueue(false);
     setAdmin(false);
+    setSupacolor(false);
   };
 
   return (
@@ -59,6 +61,15 @@ function Nav() {
                       }}
                       className={resources ? "active-nav-link" : "nav-link"}>
                       Resources
+                    </NavLink>
+                    <NavLink
+                      to="/supacolor"
+                      onClick={() => {
+                        disableAll();
+                        setSupacolor(true);
+                      }}
+                      className={supacolor ? "active-nav-link" : "nav-link"}>
+                      Supacolor
                     </NavLink>
                     <NavLink
                       to="/sanmar"

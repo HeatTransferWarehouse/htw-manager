@@ -276,7 +276,7 @@ function createSupacolorPayload(
 
 /* We will also take the response of this job information and store it in our Digital Ocean database as a copy on the frontend for our Admin App which is where we will be uploading the artwork for a given order*/
 
-async function sendOrderToSupacolor(mockPayload) {
+async function sendOrderToSupacolor(supacolorPayload) {
   console.log("sending");
   try {
     const headers = {
@@ -287,7 +287,7 @@ async function sendOrderToSupacolor(mockPayload) {
     const url = `https://scapi-usa.bluerocket.co.nz/Jobs`;
 
     // Use axios.post and include the payload in the request
-    const response = await axios.post(url, mockPayload, { headers });
+    const response = await axios.post(url, supacolorPayload, { headers });
 
     if (response.status === 200) {
       //   console.log(response.data);
