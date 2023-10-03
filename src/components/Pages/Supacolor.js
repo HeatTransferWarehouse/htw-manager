@@ -52,7 +52,6 @@ function Supacolor() {
   }, [jobs, sortField]);
 
   useEffect(() => {
-    // Change the URL to match where your server is running
     fetch("/supacolor-api/get-jobs")
       .then((response) => {
         if (response.ok) {
@@ -202,7 +201,7 @@ function Supacolor() {
       <br />
       <Paper
         style={{
-          maxWidth: "1200px",
+          maxWidth: "1400px",
           width: "90%",
           margin: "auto",
           padding: "1em",
@@ -233,9 +232,9 @@ function Supacolor() {
                     Order #
                     {sort && sortField === "customerReference" ? (
                       sortDirection === "asc" ? (
-                        <BiSolidDownArrow />
-                      ) : (
                         <BiSolidUpArrow />
+                      ) : (
+                        <BiSolidDownArrow />
                       )
                     ) : (
                       <></>
@@ -254,12 +253,12 @@ function Supacolor() {
                       handleSort("jobId");
                       setSort(true);
                     }}>
-                    Job ID{" "}
+                    Job ID
                     {sort && sortField === "jobId" ? (
                       sortDirection === "asc" ? (
-                        <BiSolidDownArrow />
-                      ) : (
                         <BiSolidUpArrow />
+                      ) : (
+                        <BiSolidDownArrow />
                       )
                     ) : (
                       <></>
@@ -277,12 +276,12 @@ function Supacolor() {
                       handleSort("status");
                       setSort(true);
                     }}>
-                    Status{" "}
+                    Status
                     {sort && sortField === "status" ? (
                       sortDirection === "asc" ? (
-                        <BiSolidDownArrow />
-                      ) : (
                         <BiSolidUpArrow />
+                      ) : (
+                        <BiSolidDownArrow />
                       )
                     ) : (
                       <></>
@@ -290,7 +289,6 @@ function Supacolor() {
                   </Button>
                 </TableCell>
                 <TableCell style={{ width: "20%" }}>
-                  {" "}
                   <Button
                     style={{
                       width: "40%",
@@ -301,12 +299,12 @@ function Supacolor() {
                       handleSort("dateDue");
                       setSort(true);
                     }}>
-                    Date Due{" "}
+                    Date Due
                     {sort && sortField === "dateDue" ? (
                       sortDirection === "asc" ? (
-                        <BiSolidDownArrow />
-                      ) : (
                         <BiSolidUpArrow />
+                      ) : (
+                        <BiSolidDownArrow />
                       )
                     ) : (
                       <></>
@@ -320,7 +318,7 @@ function Supacolor() {
               {filteredJobs
                 .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                 .map((job, index) => (
-                  <TableRow key={index}>
+                  <TableRow style={{ backgroundColor: "white" }} key={index}>
                     <TableCell>
                       <button
                         className="orderNumber-btn"
@@ -516,7 +514,12 @@ function Supacolor() {
       {toggleViewDetails ? (
         <div className="details-modal">
           <div className="modal-styles">
-            <h2 style={{ textAlign: "center" }}>
+            <h2
+              style={{
+                textAlign: "center",
+                borderBottom: "1px solid gray",
+                padding: "0 0 0.5em 0",
+              }}>
               Job Details for Job #{jobDetailObj.job_id}
             </h2>
             <Button
@@ -529,8 +532,14 @@ function Supacolor() {
             </Button>
             <div className="job-details-container">
               <p style={{ marginTop: "1em" }}>
-                <strong>Big Commerce Order:</strong> <br /> {jobUploadsRef}
+                <strong>Big Commerce Order Id</strong>
               </p>
+              <button
+                className="orderNumber-btn"
+                onClick={() => goToOrder(jobUploadsRef)}
+                style={{ margin: "1em 0 0 1em" }}>
+                {jobUploadsRef}
+              </button>
               <p style={{ marginTop: "1em" }}>
                 <strong>Order Items</strong>
               </p>
@@ -538,16 +547,24 @@ function Supacolor() {
                 {jobUploadArr.map((upload, index) => (
                   <div
                     key={index}
-                    style={{ margin: "1em" }}
+                    style={{
+                      margin: "1em",
+                      borderBottom: "1px solid gray",
+                      paddingBottom: "1em",
+                    }}
                     className="upload-item">
-                    <p style={{ fontSize: 17 }}>
+                    <p
+                      style={{
+                        fontSize: 17,
+                        marginBottom: "0.25em",
+                      }}>
                       Order Item: #
                       {upload.customer_reference.split(":")[1].trim()}
                     </p>
                     <ul>
                       <li>File Uploaded: {upload.message}</li>
                       <li>
-                        Upload Status:{" "}
+                        Upload Status:
                         {upload.upload_successful ? (
                           <span style={{ color: "green", fontWeight: "bold" }}>
                             Success
