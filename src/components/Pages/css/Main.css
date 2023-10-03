@@ -305,7 +305,7 @@ form {
   width: 100%;
   height: 100%;
   background-color: rgba(0, 0, 0, 0.6);
-  z-index: 9998;
+  z-index: 999998;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -355,7 +355,7 @@ form {
   width: 100%;
   height: 100%;
   background-color: rgba(0, 0, 0, 0.6);
-  z-index: 9999;
+  z-index: 999999;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -369,7 +369,7 @@ form {
   height: 40px;
   position: absolute;
   top: 50%;
-  left: 50%;
+  left: 49%;
   animation: spin 1s linear infinite;
 }
 
@@ -389,7 +389,7 @@ form {
   width: 100%;
   height: 100%;
   background-color: rgba(0, 0, 0, 0.6);
-  z-index: 9999;
+  z-index: 999999;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -458,7 +458,24 @@ form {
 
 .upload-items-container {
   /* background-color: #a3c0ff; */
-  height: 28em;
+  height: 27em;
   width: 100%;
   overflow-x: scroll;
+}
+
+.supacolor-table-head {
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.supacolor-info-icon {
+  margin-right: 1em;
+  transition: 0.2s;
+}
+.supacolor-info-icon:hover {
+  cursor: pointer;
+  scale: 105%;
+  color: gray;
 }
