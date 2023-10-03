@@ -22,7 +22,12 @@ import Complete from "../Pages/Complete";
 import OrderLookup from "../Pages/OrderLookup";
 import OrderLookupOLD from "../Pages/OrderLookupOLD";
 import "./App.css";
+import { useDispatch } from "react-redux";
 function App() {
+  const dispatch = useDispatch();
+  useEffect(() => {
+    dispatch({ type: "FETCH_USER" });
+  }, [dispatch]);
   return (
     <Router>
       <div>
@@ -56,7 +61,7 @@ function App() {
 
           <ProtectedRoute exact path="/complete" component={Complete} />
 
-          <Route exact path="/supacolor" component={Supacolor} />
+          <ProtectedRoute exact path="/supacolor" component={Supacolor} />
 
           <AdminRoute exact path="/wallyb" component={WallyB} />
 
