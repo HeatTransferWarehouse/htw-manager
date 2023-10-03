@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useRef } from "react";
 import "bootstrap/dist/css/bootstrap.min.css";
 import { HashRouter as Router, Route, Switch } from "react-router-dom";
 import Nav from "../Nav/Nav";
@@ -23,12 +23,45 @@ import OrderLookup from "../Pages/OrderLookup";
 import OrderLookupOLD from "../Pages/OrderLookupOLD";
 import "./App.css";
 import { useDispatch } from "react-redux";
-import { useEffect } from "react";
 function App() {
   const dispatch = useDispatch();
+  const logoutTimerRef = useRef(null);
+
+  const resetTimer = () => {
+    if (logoutTimerRef.current) {
+      clearTimeout(logoutTimerRef.current);
+    }
+    logoutTimerRef.current = setTimeout(() => {
+      dispatch({ type: "UNSET_USER" });
+    }, 300000); // 300,000ms = 5 min
+  };
+
   useEffect(() => {
+    // Initially fetch the user
     dispatch({ type: "FETCH_USER" });
-  }, [dispatch]);
+
+    // Set up the initial timeout
+    resetTimer();
+
+    // Set up event listeners for various user activity
+    window.addEventListener("mousemove", resetTimer);
+    window.addEventListener("mousedown", resetTimer);
+    window.addEventListener("keypress", resetTimer);
+    window.addEventListener("scroll", resetTimer);
+    window.addEventListener("touchmove", resetTimer);
+
+    // Cleanup function to remove the event listeners and clear the timeout
+    return () => {
+      window.removeEventListener("mousemove", resetTimer);
+      window.removeEventListener("mousedown", resetTimer);
+      window.removeEventListener("keypress", resetTimer);
+      window.removeEventListener("scroll", resetTimer);
+      window.removeEventListener("touchmove", resetTimer);
+      if (logoutTimerRef.current) {
+        clearTimeout(logoutTimerRef.current);
+      }
+    };
+  });
   return (
     <Router>
       <div>
