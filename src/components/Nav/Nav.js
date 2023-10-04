@@ -9,7 +9,7 @@ function Nav() {
   const [resources, setResources] = useState(false);
   const [sanMar, setSanMar] = useState(false);
   const [brightPearl, setBrightPearl] = useState(false);
-  const [noStock, setNoStock] = useState(false);
+  // const [noStock, setNoStock] = useState(false);
   const [affiliates, setAffiliates] = useState(false);
   const [decoQueue, setDecoQueue] = useState(false);
   const [admin, setAdmin] = useState(false);
@@ -21,7 +21,7 @@ function Nav() {
     setResources(false);
     setSanMar(false);
     setBrightPearl(false);
-    setNoStock(false);
+    // setNoStock(false);
     setAffiliates(false);
     setDecoQueue(false);
     setAdmin(false);
@@ -89,7 +89,7 @@ function Nav() {
                       className={brightPearl ? "active-nav-link" : "nav-link"}>
                       Brightpearl
                     </NavLink>
-                    <NavLink
+                    {/* <NavLink
                       to="/nostock"
                       onClick={() => {
                         disableAll();
@@ -97,8 +97,8 @@ function Nav() {
                       }}
                       className={noStock ? "active-nav-link" : "nav-link"}>
                       No Stock
-                    </NavLink>
-                    <NavLink
+                    </NavLink> */}
+                    {/* <NavLink
                       to="/affiliates"
                       onClick={() => {
                         disableAll();
@@ -106,7 +106,7 @@ function Nav() {
                       }}
                       className={affiliates ? "active-nav-link" : "nav-link"}>
                       Affiliates
-                    </NavLink>
+                    </NavLink> */}
                     <NavLink
                       to="/decoqueue"
                       onClick={() => {
