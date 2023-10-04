@@ -8,7 +8,7 @@ import Main from "../Home/Main";
 import Sanmar from "../Pages/Sanmar";
 import Brightpearl from "../Pages/Brightpearl";
 import Resources from "../Pages/Resources";
-import NoStock from "../Pages/NoStock";
+// import NoStock from "../Pages/NoStock";
 import Affilates from "../Pages/Affiliates";
 import ProtectedRoute from "../ProtectedRoute/ProtectedRoute";
 import AdminRoute from "../ProtectedRoute/AdminRoute";
@@ -83,7 +83,7 @@ function App() {
 
           <ProtectedRoute exact path="/brightpearl" component={Brightpearl} />
 
-          <ProtectedRoute exact path="/nostock" component={NoStock} />
+          {/* <ProtectedRoute exact path="/nostock" component={NoStock} /> */}
 
           <ProtectedRoute exact path="/affiliates" component={Affilates} />
 
