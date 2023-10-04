@@ -1,6 +1,6 @@
 /*A number of these stylings were brought in from the projetc template*/
 body {
-  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
   margin: 0px;
 }
 
@@ -9,29 +9,31 @@ body {
   margin: 50px;
 }
 
-
 input {
   margin: 5px;
   margin-bottom: 10px;
-
 }
 
 .log-in,
 .log-out,
 .register {
-  background-color: #00003D;
+  background: linear-gradient(127deg, #a759d1 0%, #8261ee 91%);
   border-radius: 4px;
   color: white;
-  min-height: 50px;
-  min-width: 100px;
-  outline: 0;
-  cursor: pointer;
+  width: 30%;
+  height: 3em;
+  border: none;
+  transition: 0.2s;
+  margin-inline: auto;
+  margin-top: 1em;
 }
 
 .log-in:hover,
 .log-out:hover,
 .register:hover {
-  background-color: #050592;
+  background: linear-gradient(127deg, #ba8cd3 0%, #a38ee8 91%);
+  transition: 0.2s;
+  cursor: pointer;
 }
 
 /* This line makes the "Login" button look like links */
@@ -80,7 +82,6 @@ input {
 #tooltip {
   /* position: relative;  */
   display: inline-block;
-
 }
 
 /* Tooltip text */
@@ -173,7 +174,7 @@ input {
   top: 11%;
   z-index: 100000;
   background-color: white;
-  padding: .5em .5em .5em 0;
+  padding: 0.5em 0.5em 0.5em 0;
   border-radius: 15px;
 }
 
@@ -192,9 +193,10 @@ input {
   z-index: 999999;
 }
 
-.queue-nav-link, .queue-active-nav-link {
+.queue-nav-link,
+.queue-active-nav-link {
   color: #e9cbff43 !important;
-  padding: .5em;
+  padding: 0.5em;
   transition: color 1.3s linear;
   margin: 0 6em 0 6em;
 }
@@ -253,7 +255,8 @@ input {
   filter: invert(40%);
 }
 
-.infoButton:hover, .infoButton:active {
+.infoButton:hover,
+.infoButton:active {
   background-color: transparent;
   border: none;
 }

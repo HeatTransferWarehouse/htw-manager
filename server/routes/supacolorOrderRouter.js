@@ -29,7 +29,7 @@ const logtail = new Logtail("KQi4An7q1YZVwaTWzM72Ct5r");
 router.post("/create-order", function (req, res) {
   if (req.body.data && req.body.data.id) {
     const orderId = req.body.data.id;
-    // findProductsOnOrderInBigCommerce(orderId); <--- Only turn on when you are ready to launch
+    // findProductsOnOrderInBigCommerce(orderId);
     logtail.info(
       `Supacolor create order API hit via webhook: Order ID - ${orderId}`
     );
@@ -172,7 +172,7 @@ function createSupacolorPayload(
   };
 
   console.log("Supacolor Payload: ", supacolorPayload);
-  // sendOrderToSupacolor(supacolorPayload);
+  sendOrderToSupacolor(supacolorPayload);
 }
 
 // let mockSupacolorPayload = {
