@@ -1,6 +1,7 @@
 footer {
   /* stylings for the footer*/
   bottom: 0;
+
   position: absolute;
   background-color: #40e6d8;
   padding: 1%;

@@ -1349,7 +1349,7 @@ setInterval(() => {
 // Auto Restock Notify
 setInterval(() => {
   // set this to true to activate
-  stockNotify = true;
+  stockNotify = false;
 
   if (stockNotify) {
     logtail.info("--NSN-- Checking for Stocked Items..");
@@ -1771,7 +1771,7 @@ setInterval(() => {
 // Auto No Stock Notify ALL PAGES
 setInterval(() => {
   // set this to true to activate
-  slackNotify = true;
+  slackNotify = false;
 
   if (slackNotify) {
     logtail.info("--NSN-- running Slack Notify..");

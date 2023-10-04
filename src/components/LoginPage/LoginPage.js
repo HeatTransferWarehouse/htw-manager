@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 import { connect } from "react-redux";
-import { Grid } from "@material-ui/core";
+import { Button, Grid } from "@material-ui/core";
 import { Alert } from "@material-ui/lab";
 import "./LoginPage.css";
 
@@ -43,57 +43,53 @@ class LoginPage extends Component {
   render() {
     return (
       <div className="login">
-      <Grid container style={{}}>
-        <Grid item xs={12} sm={12} md={8} style={{ display: "block" }}>
-          <center>
-            {/* if error in state is true, render this alert, shows up as a toast
+        <div>
+          <div>
+            <center>
+              {/* if error in state is true, render this alert, shows up as a toast
             and conditionally renders based on value in state */}
-            {this.state.error === true && (
-              <Alert className="error" style={{}} severity="error">
-                Please provide your email address
-              </Alert>
-            )}
-            {/* line breaks for spacing */}
-            <br />
-            <br />
+              {this.state.error === true && (
+                <Alert className="error" style={{}} severity="error">
+                  Please provide your email address
+                </Alert>
+              )}
+              {/* line breaks for spacing */}
+              <br />
+              <br />
               <>
                 {/* start login form */}
                 <form onSubmit={this.login} className="reglogin">
-                  <br />
-                  <div>
-                    {/* enter email address here */}
-                    <label htmlFor="username">
-                      Email: &nbsp; &nbsp; &nbsp;{" "}
-                      {/*Creates a blank space, used for lining things up */}
+                  <h2>HTW Admin Login</h2>
+                  <div className="login-inputs">
+                    <div className="login-input">
+                      {/* enter email address here */}
+                      <label style={{ marginLeft: "5px" }} htmlFor="username">
+                        EMAIL
+                      </label>
                       <input
                         type="text"
                         name="username"
                         value={this.state.username}
                         onChange={this.handleInputChangeFor("username")}
                       />
-                    </label>
-                  </div>
-                  {/* enter password here */}
-                  <div>
-                    <label htmlFor="password">
-                      Password: &nbsp;
+                    </div>
+                    {/* enter password here */}
+                    <div className="login-input">
+                      <label style={{ marginLeft: "5px" }} htmlFor="password">
+                        PASSWORD
+                      </label>
                       <input
                         type="password"
                         name="password"
                         value={this.state.password}
                         onChange={this.handleInputChangeFor("password")}
                       />
-                    </label>
+                    </div>
                   </div>
-                  <div>
-                    {/* runs the login function on submit */}
-                    <input
-                      className="log-in"
-                      type="submit"
-                      name="submit"
-                      value="Log In"
-                    />
-                  </div>
+                  {/* runs the login function on submit */}
+                  <button className="log-in" type="submit">
+                    Login
+                  </button>
                   {/* runs login error toast */}
                   {/* {this.props.errors.loginMessage && (
                     <Alert className="loginError" style={{}} severity="error">
@@ -102,15 +98,14 @@ class LoginPage extends Component {
                   )} */}
                 </form>
               </>
-    
-          </center>
-          <center></center>
-        </Grid>
-        <Grid item xs={12} sm={12} md={7} style={{ display: "block" }}>
-          {/* logo on login page */}
-        </Grid>
-      </Grid>
-    </div>
+            </center>
+            <center></center>
+          </div>
+          <Grid item xs={12} sm={12} md={7} style={{ display: "block" }}>
+            {/* logo on login page */}
+          </Grid>
+        </div>
+      </div>
     ); //end return
   } //end render
 } //end LoginPage
