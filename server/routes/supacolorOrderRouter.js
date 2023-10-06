@@ -40,6 +40,8 @@ router.post("/create-order", function (req, res) {
   }
 });
 
+// findProductsOnOrderInBigCommerce(3479004);
+
 async function findProductsOnOrderInBigCommerce(orderId) {
   try {
     const headers = {
@@ -165,6 +167,9 @@ function createSupacolorPayload(
         garment: item.product_options[4].display_value_customer,
         colors: "CMYK",
         size: item.product_options[5].display_value_customer,
+        ...(priceCodes[index].includes("Headwear")
+          ? { "Cap Type": item.product_options[7].display_value_customer }
+          : {}),
       },
       CustomerReference: `${orderId}: ${index + 1}`,
     })),
