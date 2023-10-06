@@ -115,6 +115,10 @@ function Supacolor() {
     setSortDirection(direction);
   };
 
+  useEffect(() => {
+    console.log(jobs);
+  }, [jobs]);
+
   // Function to bring you to the order in big commerce when you click the order number
   const goToOrder = (orderNumber) => {
     const url = `https://store-et4qthkygq.mybigcommerce.com/manage/orders?viewId=${orderNumber}&orderTo=${orderNumber}&orderFrom=${orderNumber}`;
