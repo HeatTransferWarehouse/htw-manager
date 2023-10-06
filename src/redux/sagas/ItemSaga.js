@@ -174,18 +174,6 @@ function* getSanmarPrices() {
   }
 }
 
-function* supacolorSubmit(action) {
-  try {
-    const response = yield axios.post(`/api/item/supacolor`, action.payload);
-    yield put({
-      type: "SET_SUPACOLOR_ORDER",
-      payload: response.data,
-    });
-  } catch (error) {
-    console.log("Error with getting supacolor order:", error);
-  }
-}
-
 function uploadArtwork(formData, jobId) {
   return axios.post(`/supacolor-api/upload-artwork/${jobId}`, formData, {
     headers: { "Content-Type": "multipart/form-data" },
@@ -236,7 +224,6 @@ function* itemSaga() {
   yield takeLatest("ADD_SENT", addSent);
   yield takeLatest("GET_SANMAR_PRICES", getSanmarPrices);
   yield takeLatest("GET_BC_PRICES", getBcPrices);
-  yield takeLatest("SUPACOLOR_SUBMIT_ORDER", supacolorSubmit);
   yield takeLatest("UPLOAD_ARTWORK", uploadArtworkSaga);
   yield takeLatest("GET_JOB_DETAILS", getJobDetails);
 }

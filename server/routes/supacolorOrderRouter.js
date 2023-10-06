@@ -40,7 +40,7 @@ router.post("/create-order", function (req, res) {
   }
 });
 
-// findProductsOnOrderInBigCommerce(3479004);
+// findProductsOnOrderInBigCommerce(3479271);
 
 async function findProductsOnOrderInBigCommerce(orderId) {
   try {
@@ -56,7 +56,7 @@ async function findProductsOnOrderInBigCommerce(orderId) {
     if (response.status === 200) {
       // Successfully retrieved the order
       findSupacolorProductsOnOrder(response.data);
-      // console.log(response.data);
+
       return response.data;
     } else {
       // Handle the error if the status is not 200
@@ -89,6 +89,7 @@ function findSupacolorProductsOnOrder(productArray) {
     // Since we found Supacolor product, we first need to get more information about the order before we
     // can begin to send to Supacolor. Need to pass along found products.
     getOrderDetails(foundSupacolorProducts, foundSupacolorProducts[0].order_id);
+    // console.log("Found Supacolor Products", foundSupacolorProducts.map(found));
   }
 }
 
@@ -175,113 +176,13 @@ function createSupacolorPayload(
     })),
   };
 
-  console.log("Supacolor Payload: ", supacolorPayload);
-  sendOrderToSupacolor(supacolorPayload);
+  sendOrderToSupacolor(supacolorPayload, supacolorProducts);
 }
-
-// let mockSupacolorPayload = {
-//   orderNumber: "Order# 3453455",
-//   orderComment: "Some comment",
-//   mustDate: false,
-//   description: "some job description",
-//   deliveryAddress: {
-//     deliveryMethod: "Next Day Air",
-//     Organization: "Print Transfers r us",
-//     contactName: "Jeremy Fictious",
-//     phone: "+83475837458",
-//     emailAddress: "fictious@gmail.com",
-//     countryCodeIso2: "US",
-//     streetAddress: "3300 Bear Hollow road",
-//     address2: "",
-//     //"suburb": "",
-//     city: "Wilson",
-//     state: "OK",
-//     postalCode: "73463-6299",
-//   },
-//   items: [
-//     {
-//       itemType: "Asset",
-//       code: "BL10035",
-//       quantity: 20,
-//       garment: "Black Tees",
-//       comment: "As previous",
-//       CustomerReference: "3453455: 1",
-//     },
-//     {
-//       itemType: "PriceCode",
-//       code: 'B1_A3:Blocker 1 Color - Single Image-A3 11.7" x 16.5"',
-//       quantity: 20,
-//       attributes: {
-//         description: "Summer Holiday",
-//         garment: "Polyester",
-//         colors: "As Art",
-//         size: "5.8w x 16.0h",
-//       },
-//       CustomerReference: "3453455: 2",
-//     },
-//     {
-//       itemType: "PriceCode",
-//       code: 'H1_CAP_SM:Headwear 1 Colour-2.5" x 2.5"',
-//       quantity: 10,
-//       attributes: {
-//         description: "Blocker Transfer",
-//         garment: "Polyester",
-//         colors: "As Art",
-//         size: "5.8w x 16.0h",
-//         "Cap Type": "Seam",
-//       },
-//       CustomerReference: "3453455: 3",
-//     },
-//     {
-//       itemType: "PriceCode",
-//       code: 'H1_CAP_SM:Headwear 1 Colour-2.5" x 2.5"',
-//       quantity: 10,
-//       attributes: {
-//         description: "Blocker Transfer",
-//         garment: "Polyester",
-//         colors: "As Art",
-//         size: "5.8w x 16.0h",
-//         "Cap Type": "Seam",
-//       },
-//       CustomerReference: "3453455: 4",
-//     },
-//     {
-//       itemType: "PriceCode",
-//       code: 'H1_CAP_SM:Headwear 1 Colour-2.5" x 2.5"',
-//       quantity: 10,
-//       attributes: {
-//         description: "Blocker Transfer",
-//         garment: "Polyester",
-//         colors: "As Art",
-//         size: "5.8w x 16.0h",
-//         "Cap Type": "Seam",
-//       },
-//       CustomerReference: "3453455: 5",
-//     },
-//     {
-//       itemType: "PriceCode",
-//       code: 'H1_CAP_SM:Headwear 1 Colour-2.5" x 2.5"',
-//       quantity: 10,
-//       attributes: {
-//         description: "Blocker Transfer",
-//         garment: "Polyester",
-//         colors: "As Art",
-//         size: "5.8w x 16.0h",
-//         "Cap Type": "Seam",
-//       },
-//       CustomerReference: "3453455: 6",
-//     },
-//   ],
-// };
-
-// sendOrderToSupacolor(mockSupacolorPayload);
-
-// This is our function that will end up sending our order details to supacolor to create the job s
 
 /* We will also take the response of this job information and store it in our Digital Ocean database as a copy on the frontend for our Admin App which is where we will be uploading the artwork for a given order*/
 
-async function sendOrderToSupacolor(supacolorPayload) {
-  console.log("sending");
+async function sendOrderToSupacolor(supacolorPayload, supacolorProducts) {
+  console.log("Sending Order to Supacolor");
   try {
     const headers = {
       "Content-Type": "application/json",
@@ -295,20 +196,27 @@ async function sendOrderToSupacolor(supacolorPayload) {
 
     if (response.status === 200) {
       //   console.log(response.data);
+      console.log("Job Successfully Created");
       const supacolourJob = {
         jobNumber: response.data.jobNumber,
         dateDue: response.data.dateDue,
-        jobLineDetails: response.data.jobLineDetails.map((detail) => ({
-          newAssetSku: detail.newAssetSku || " ",
-          needsArtworkToBeUploaded: detail.needsArtworkToBeUploaded,
-          customerReference: detail.customerReference,
-          quantity: detail.quantity,
-        })),
+        jobLineDetails: response.data.jobLineDetails.map((detail, index) => {
+          const skus = supacolorProducts.map((prod) => prod.sku);
+
+          return {
+            customerReference: detail.customerReference,
+            needsArtworkToBeUploaded: detail.needsArtworkToBeUploaded,
+            quantity: detail.quantity,
+            needsArtworkToBeUploaded: detail.needsArtworkToBeUploaded,
+            itemSku: skus[index], // This will be an array of SKUs
+          };
+        }),
+
         totalJobCost: response.data.totalJobCost,
         expectingArtworkToBeUploaded:
           response.data.expectingArtworkToBeUploaded,
       };
-      console.log(supacolourJob);
+      // console.log(supacolourJob);
       // await axios.post(
       //   "http://localhost:3000/supacolor-api/new-job",
       //   supacolourJob
@@ -496,15 +404,15 @@ router.post("/new-job", async (req, res) => {
     for (let detail of supacolorJob.jobLineDetails) {
       await client.query(
         `
-          INSERT INTO "job_line_details" ("job_id", "new_asset_sku", "needs_artwork", "customer_reference", "quantity")
+          INSERT INTO "job_line_details" ("job_id", "customer_reference", "quantity", "item_sku", "needs_artwork")
           VALUES ($1, $2, $3, $4, $5);
           `,
         [
           supacolorJob.jobNumber,
-          detail.newAssetSku,
-          detail.needsArtworkToBeUploaded,
           detail.customerReference,
           detail.quantity,
+          detail.itemSku,
+          detail.needsArtworkToBeUploaded,
         ]
       );
     }
@@ -512,6 +420,7 @@ router.post("/new-job", async (req, res) => {
     await client.query("COMMIT;");
 
     res.sendStatus(200);
+    console.log("Job Successfully Made in DB");
   } catch (err) {
     await client.query("ROLLBACK;");
     console.log(err);
@@ -566,10 +475,10 @@ router.get("/get-jobs", async (req, res) => {
                 json_agg(
                     json_build_object(
                         'id', "job_line_details".id,
-                        'new_asset_sku', "job_line_details".new_asset_sku,
-                        'needs_artwork', "job_line_details".needs_artwork,
                         'customer_reference', "job_line_details".customer_reference,
-                        'quantity', "job_line_details".quantity
+                        'quantity', "job_line_details".quantity,
+                        'item_sku', "job_line_details".item_sku,
+                        'needs_artwork', "job_line_details".needs_artwork
                     )
                 ) AS "job_line_details"
             FROM 
