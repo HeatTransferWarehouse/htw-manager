@@ -73,17 +73,6 @@ const tracking = (state = [], action) => {
   }
 };
 
-const supacolor = (state = "WAIT", action) => {
-  switch (action.type) {
-    case "SET_SUPACOLOR_ORDER":
-      return action.payload;
-    case "RESET_SUPACOLOR_ORDER":
-      return "WAIT";
-    default:
-      return state;
-  }
-};
-
 const supacolorJobDetails = (state = {}, action) => {
   switch (action.type) {
     case "SET_JOB_DETAIL":
@@ -155,7 +144,6 @@ export default combineReducers({
   sanmar,
   tracking,
   clothingtemplist,
-  supacolor,
   supacolorJobDetails,
   artWorkReducer,
   requestJobReducer,

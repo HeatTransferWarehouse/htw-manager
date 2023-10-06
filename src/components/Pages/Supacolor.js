@@ -489,9 +489,15 @@ function Supacolor() {
                   .filter((ref) => ref.needs_artwork)
                   .map((ref, index) => (
                     <div className="uploadImages-container" key={index}>
-                      <label style={{ fontSize: 20 }}>
-                        Order Item #
-                        {ref.customer_reference.split(":")[1].trim()}
+                      <label
+                        style={{
+                          textAlign: "left",
+                          fontSize: 15,
+                        }}>
+                        Upload For: <br />
+                        <span>
+                          <strong>{ref.item_sku}</strong>
+                        </span>
                         <input
                           className="ref-input"
                           value={ref.customer_reference}
