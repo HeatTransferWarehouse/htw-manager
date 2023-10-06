@@ -473,6 +473,7 @@ form {
 .supacolor-info-icon {
   margin-right: 1em;
   transition: 0.2s;
+  color: rgb(164, 164, 164);
 }
 .supacolor-info-icon:hover {
   cursor: pointer;

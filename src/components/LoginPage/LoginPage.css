@@ -8,7 +8,7 @@
 .reglogin {
   /* styling of the login box */
   background-color: #ffffff;
-  width: 50em;
+  width: 40em;
   padding: 15px;
   border-radius: 10px;
   display: flex;

@@ -29,7 +29,7 @@ const logtail = new Logtail("KQi4An7q1YZVwaTWzM72Ct5r");
 router.post("/create-order", function (req, res) {
   if (req.body.data && req.body.data.id) {
     const orderId = req.body.data.id;
-    // findProductsOnOrderInBigCommerce(orderId);
+    findProductsOnOrderInBigCommerce(orderId);
     logtail.info(
       `Supacolor create order API hit via webhook: Order ID - ${orderId}`
     );
@@ -165,9 +165,8 @@ function createSupacolorPayload(
         garment: item.product_options[4].display_value_customer,
         colors: "CMYK",
         size: item.product_options[5].display_value_customer,
-        CapType: item.product_options[7].display_value_customer,
       },
-      CustomerReference: `${orderId} - ${index + 1}`,
+      CustomerReference: `${orderId}: ${index + 1}`,
     })),
   };
 
@@ -305,14 +304,14 @@ async function sendOrderToSupacolor(supacolorPayload) {
           response.data.expectingArtworkToBeUploaded,
       };
       console.log(supacolourJob);
-      // await axios.post(
-      //   "http://localhost:3000/supacolor-api/new-job",
-      //   supacolourJob
-      // );
       await axios.post(
-        "https://admin.heattransferwarehouse.com/supacolor-api/new-job",
+        "http://localhost:3000/supacolor-api/new-job",
         supacolourJob
       );
+      // await axios.post(
+      //   "https://admin.heattransferwarehouse.com/supacolor-api/new-job",
+      //   supacolourJob
+      // );
 
       return response.data;
     } else if (response.status === 400) {
@@ -376,20 +375,20 @@ router.post("/upload-artwork/:jobId", upload.any(), async (req, res) => {
         })),
         allUploadsSuccessful: response.data.allUploadsSuccessful,
       };
-      // await axios.post(
-      //   `http://localhost:3000/supacolor-api/artwork`,
-      //   uploadedArtwork
-      // );
       await axios.post(
-        `https://admin.heattransferwarehouse.com/supacolor-api/artwork`,
+        `http://localhost:3000/supacolor-api/artwork`,
         uploadedArtwork
       );
-      // await axios.put(
-      //   `http://localhost:3000/supacolor-api/update-needs-artwork/${jobId}`
+      // await axios.post(
+      //   `https://admin.heattransferwarehouse.com/supacolor-api/artwork`,
+      //   uploadedArtwork
       // );
       await axios.put(
-        `https://admin.heattransferwarehouse.com/supacolor-api/update-needs-artwork/${jobId}`
+        `http://localhost:3000/supacolor-api/update-needs-artwork/${jobId}`
       );
+      // await axios.put(
+      //   `https://admin.heattransferwarehouse.com/supacolor-api/update-needs-artwork/${jobId}`
+      // );
     } else {
       console.log(
         `Error placing Supacolor order ${orderId}: ${response.status}`
