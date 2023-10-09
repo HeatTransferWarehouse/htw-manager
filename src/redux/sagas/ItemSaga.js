@@ -208,6 +208,15 @@ function* getJobDetails(action) {
   }
 }
 
+function* getJobsList() {
+  try {
+    const response = yield axios.get("/supacolor-api/get-jobs");
+    yield put({ type: "GET_JOBS_LIST", payload: response.data });
+  } catch (error) {
+    console.log("Failed to get Jobs List");
+  }
+}
+
 //this takes all of the Saga functions and dispatches them
 function* itemSaga() {
   yield takeLatest("GET_ITEM_LIST", getitemlist);
@@ -226,6 +235,7 @@ function* itemSaga() {
   yield takeLatest("GET_BC_PRICES", getBcPrices);
   yield takeLatest("UPLOAD_ARTWORK", uploadArtworkSaga);
   yield takeLatest("GET_JOB_DETAILS", getJobDetails);
+  yield takeLatest("FETCH_JOBS_LIST", getJobsList);
 }
 
 export default itemSaga;

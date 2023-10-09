@@ -40,6 +40,7 @@ router.post("/create-order", function (req, res) {
   }
 });
 
+findProductsOnOrderInBigCommerce(3480214);
 // findProductsOnOrderInBigCommerce(3479271);
 
 async function findProductsOnOrderInBigCommerce(orderId) {
@@ -182,70 +183,94 @@ function createSupacolorPayload(
 /* We will also take the response of this job information and store it in our Digital Ocean database as a copy on the frontend for our Admin App which is where we will be uploading the artwork for a given order*/
 
 async function sendOrderToSupacolor(supacolorPayload, supacolorProducts) {
-  console.log("Sending Order to Supacolor");
-  try {
-    const headers = {
-      "Content-Type": "application/json",
-      Authorization: `Bearer ${process.env.SUPACOLOR_ACCESS_TOKEN}`,
-    };
+  const orderId = supacolorPayload.orderNumber.split("# ")[1];
 
-    const url = `https://scapi-usa.bluerocket.co.nz/Jobs`;
+  const isOrderIdInDatabase = await checkorderIdInDatabase(Number(orderId));
 
-    // Use axios.post and include the payload in the request
-    const response = await axios.post(url, supacolorPayload, { headers });
-
-    if (response.status === 200) {
-      //   console.log(response.data);
-      console.log("Job Successfully Created");
-      const supacolourJob = {
-        jobNumber: response.data.jobNumber,
-        dateDue: response.data.dateDue,
-        jobLineDetails: response.data.jobLineDetails.map((detail, index) => {
-          const skus = supacolorProducts.map((prod) => prod.sku);
-
-          return {
-            customerReference: detail.customerReference,
-            needsArtworkToBeUploaded: detail.needsArtworkToBeUploaded,
-            quantity: detail.quantity,
-            needsArtworkToBeUploaded: detail.needsArtworkToBeUploaded,
-            itemSku: skus[index], // This will be an array of SKUs
-          };
-        }),
-
-        totalJobCost: response.data.totalJobCost,
-        expectingArtworkToBeUploaded:
-          response.data.expectingArtworkToBeUploaded,
-      };
-      // console.log(supacolourJob);
-      // await axios.post(
-      //   "http://localhost:3000/supacolor-api/new-job",
-      //   supacolourJob
-      // );
-      await axios.post(
-        "https://admin.heattransferwarehouse.com/supacolor-api/new-job",
-        supacolourJob
-      );
-
-      return response.data;
-    } else if (response.status === 400) {
-      console.error("Bad Request: ", response.data);
-      return null;
-    } else {
-      console.log(
-        `Error placing Supacolor order ${orderId}: ${response.status}`
-      );
-      return null;
-    }
-  } catch (error) {
-    // Log the error if the request fails
-    console.log(`Failed to place Supacolor order: ${error.message}`);
-    if (error.response && error.response.data) {
-      console.log(
-        "Error response data: ",
-        JSON.stringify(error.response.data, null, 2)
-      );
-    }
+  if (isOrderIdInDatabase) {
+    console.log(`Order Id ${orderId} is already in DB`);
     return null;
+  } else {
+    console.log("Sending Order to Supacolor");
+    try {
+      const headers = {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${process.env.SUPACOLOR_ACCESS_TOKEN}`,
+      };
+
+      const url = `https://scapi-usa.bluerocket.co.nz/Jobs`;
+
+      // Use axios.post and include the payload in the request
+      const response = await axios.post(url, supacolorPayload, { headers });
+
+      if (response.status === 200) {
+        //   console.log(response.data);
+        console.log("Job Successfully Created");
+        const supacolourJob = {
+          jobNumber: response.data.jobNumber,
+          orderId: supacolorPayload.orderNumber.split("# ")[1],
+          dateDue: response.data.dateDue,
+          jobLineDetails: response.data.jobLineDetails.map((detail, index) => {
+            const skus = supacolorProducts.map((prod) => prod.sku);
+
+            return {
+              customerReference: detail.customerReference,
+              needsArtworkToBeUploaded: detail.needsArtworkToBeUploaded,
+              quantity: detail.quantity,
+              needsArtworkToBeUploaded: detail.needsArtworkToBeUploaded,
+              itemSku: skus[index], // This will be an array of SKUs
+            };
+          }),
+
+          totalJobCost: response.data.totalJobCost,
+          expectingArtworkToBeUploaded:
+            response.data.expectingArtworkToBeUploaded,
+        };
+        // console.log(supacolourJob);
+        await axios.post(
+          "http://localhost:3000/supacolor-api/new-job",
+          supacolourJob
+        );
+        // await axios.post(
+        //   "https://admin.heattransferwarehouse.com/supacolor-api/new-job",
+        //   supacolourJob
+        // );
+
+        return response.data;
+      } else if (response.status === 400) {
+        console.error("Bad Request: ", response.data);
+        return null;
+      } else {
+        console.log(
+          `Error placing Supacolor order ${orderId}: ${response.status}`
+        );
+        return null;
+      }
+    } catch (error) {
+      // Log the error if the request fails
+      console.log(`Failed to place Supacolor order: ${error.message}`);
+      if (error.response && error.response.data) {
+        console.log(
+          "Error response data: ",
+          JSON.stringify(error.response.data, null, 2)
+        );
+      }
+      return null;
+    }
+  }
+}
+
+async function checkorderIdInDatabase(orderId) {
+  try {
+    const queryText =
+      'SELECT COUNT(*) as count FROM "supacolor_jobs" WHERE "order_id" = $1;';
+    const result = await pool.query(queryText, [orderId]);
+
+    // If the count is > 0, the order ID exists in the database
+    return result.rows[0].count > 0;
+  } catch (error) {
+    console.error("Error querying the database:", error);
+    throw error; // You might want to handle this error more gracefully
   }
 }
 
@@ -288,20 +313,20 @@ router.post("/upload-artwork/:jobId", upload.any(), async (req, res) => {
         })),
         allUploadsSuccessful: response.data.allUploadsSuccessful,
       };
-      // await axios.post(
-      //   `http://localhost:3000/supacolor-api/artwork`,
-      //   uploadedArtwork
-      // );
       await axios.post(
-        `https://admin.heattransferwarehouse.com/supacolor-api/artwork`,
+        `http://localhost:3000/supacolor-api/artwork`,
         uploadedArtwork
       );
-      // await axios.put(
-      //   `http://localhost:3000/supacolor-api/update-needs-artwork/${jobId}`
+      // await axios.post(
+      //   `https://admin.heattransferwarehouse.com/supacolor-api/artwork`,
+      //   uploadedArtwork
       // );
       await axios.put(
-        `https://admin.heattransferwarehouse.com/supacolor-api/update-needs-artwork/${jobId}`
+        `http://localhost:3000/supacolor-api/update-needs-artwork/${jobId}`
       );
+      // await axios.put(
+      //   `https://admin.heattransferwarehouse.com/supacolor-api/update-needs-artwork/${jobId}`
+      // );
     } else {
       console.log(
         `Error placing Supacolor order ${orderId}: ${response.status}`
@@ -388,14 +413,15 @@ router.post("/new-job", async (req, res) => {
   console.log("Posting Job to DB");
   const client = await pool.connect();
   const text1 = `
-        INSERT INTO "supacolor_jobs" ("job_id", "date_due", "job_cost", "expecting_artwork")
-        VALUES ($1, $2, $3, $4);
+        INSERT INTO "supacolor_jobs" ("job_id", "order_id", "date_due", "job_cost", "expecting_artwork")
+        VALUES ($1, $2, $3, $4, $5);
         `;
 
   try {
     await client.query("BEGIN;");
     await client.query(text1, [
       supacolorJob.jobNumber,
+      supacolorJob.orderId,
       supacolorJob.dateDue,
       supacolorJob.totalJobCost,
       supacolorJob.expectingArtworkToBeUploaded,
