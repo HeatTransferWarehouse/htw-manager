@@ -40,7 +40,7 @@ router.post("/create-order", function (req, res) {
   }
 });
 
-findProductsOnOrderInBigCommerce(3479229);
+// findProductsOnOrderInBigCommerce(3479229);
 // findProductsOnOrderInBigCommerce(3479271);
 
 async function findProductsOnOrderInBigCommerce(orderId) {
