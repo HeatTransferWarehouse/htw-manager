@@ -217,6 +217,24 @@ function* getJobsList() {
   }
 }
 
+function* fakeDeleteJobs(action) {
+  try {
+    yield axios.put("/supacolor-api/fake-delete-job", action.payload);
+    yield put({ type: "FETCH_JOBS_LIST" });
+  } catch (error) {
+    console.log("Error Fake Deleting Jobs", error);
+  }
+}
+
+function* recoverDeletedJobs(action) {
+  try {
+    yield axios.put("/supacolor-api/recover-deleted-job", action.payload);
+    yield put({ type: "FETCH_JOBS_LIST" });
+  } catch (err) {
+    console.log("Error Recovering Deleted Jobs", err);
+  }
+}
+
 //this takes all of the Saga functions and dispatches them
 function* itemSaga() {
   yield takeLatest("GET_ITEM_LIST", getitemlist);
@@ -236,6 +254,8 @@ function* itemSaga() {
   yield takeLatest("UPLOAD_ARTWORK", uploadArtworkSaga);
   yield takeLatest("GET_JOB_DETAILS", getJobDetails);
   yield takeLatest("FETCH_JOBS_LIST", getJobsList);
+  yield takeLatest("FAKE_DELETE_JOB", fakeDeleteJobs);
+  yield takeLatest("RECOVER_DELETED_JOB", recoverDeletedJobs);
 }
 
 export default itemSaga;
