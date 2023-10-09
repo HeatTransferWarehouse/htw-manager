@@ -162,6 +162,7 @@ CREATE TABLE "supacolor_jobs"
 (
 	"id" serial PRIMARY KEY NOT NULL,
 	"job_id" integer UNIQUE NOT NULL,
+	"order_id" INTEGER UNIQUE NOT NULL,
 	"date_due" VARCHAR(320) NOT NULL,
 	"job_cost" NUMERIC(16,4) NOT NULL,
 	"expecting_artwork" BOOLEAN NOT NULL
@@ -171,10 +172,10 @@ CREATE TABLE "job_line_details"
 (
 	"id" serial NOT NULL,
 	"job_id" INT REFERENCES "supacolor_jobs"("job_id"),
-	"new_asset_sku" VARCHAR(320),
-	"needs_artwork" BOOLEAN NOT NULL,
 	"customer_reference" VARCHAR(320),
 	"quantity" INT,
+	"item_sku" VARCHAR(320),
+	"needs_artwork" BOOLEAN NOT NULL,
 	FOREIGN KEY("job_id") REFERENCES "supacolor_jobs"("job_id")
 );
 

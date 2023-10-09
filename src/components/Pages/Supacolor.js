@@ -27,7 +27,7 @@ import {
 function Supacolor() {
   const dispatch = useDispatch();
   const jobDetails = useSelector((store) => store.item.supacolorJobDetails);
-  const [jobs, setJobs] = useState([]);
+  const jobs = useSelector((store) => store.item.jobsStorage);
   const [jobDetailObj, setJobDetailObj] = useState({});
   const [jobUploadArr, setJobUploadArr] = useState([]);
   const [jobUploadsRef, setJobUploadsRef] = useState("");
@@ -50,23 +50,10 @@ function Supacolor() {
 
   useEffect(() => {
     setFilteredJobs(jobs);
-  }, [jobs, sortField]);
+  }, [jobs]);
 
   useEffect(() => {
-    fetch("/supacolor-api/get-jobs")
-      .then((response) => {
-        if (response.ok) {
-          return response.json();
-        } else {
-          throw new Error("Failed to fetch data");
-        }
-      })
-      .then((data) => {
-        setJobs(data);
-      })
-      .catch((error) => {
-        console.log("Getting Jobs Error", error);
-      });
+    dispatch({ type: "FETCH_JOBS_LIST" });
   }, []);
 
   useEffect(() => {
@@ -110,7 +97,7 @@ function Supacolor() {
       }
     });
 
-    setJobs(sortedJobs);
+    setFilteredJobs(sortedJobs);
     setSortField(field);
     setSortDirection(direction);
   };
@@ -409,7 +396,7 @@ function Supacolor() {
           </Table>
           <TablePagination
             component="div"
-            count={jobs.length}
+            count={filteredJobs.length}
             page={page}
             onPageChange={(event, newPage) => setPage(newPage)}
             rowsPerPage={rowsPerPage}

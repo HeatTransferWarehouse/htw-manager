@@ -136,6 +136,15 @@ function requestJobReducer(state = initialState, action) {
   }
 }
 
+function jobsStorage(state = [], action) {
+  switch (action.type) {
+    case "GET_JOBS_LIST":
+      return action.payload;
+    default:
+      return state;
+  }
+}
+
 export default combineReducers({
   itemlist,
   sanmarlist,
@@ -147,4 +156,5 @@ export default combineReducers({
   supacolorJobDetails,
   artWorkReducer,
   requestJobReducer,
+  jobsStorage,
 });
