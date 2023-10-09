@@ -40,7 +40,7 @@ router.post("/create-order", function (req, res) {
   }
 });
 
-findProductsOnOrderInBigCommerce(3480214);
+// findProductsOnOrderInBigCommerce(3480214);
 // findProductsOnOrderInBigCommerce(3479271);
 
 async function findProductsOnOrderInBigCommerce(orderId) {
@@ -227,14 +227,14 @@ async function sendOrderToSupacolor(supacolorPayload, supacolorProducts) {
             response.data.expectingArtworkToBeUploaded,
         };
         // console.log(supacolourJob);
-        await axios.post(
-          "http://localhost:3000/supacolor-api/new-job",
-          supacolourJob
-        );
         // await axios.post(
-        //   "https://admin.heattransferwarehouse.com/supacolor-api/new-job",
+        //   "http://localhost:3000/supacolor-api/new-job",
         //   supacolourJob
         // );
+        await axios.post(
+          "https://admin.heattransferwarehouse.com/supacolor-api/new-job",
+          supacolourJob
+        );
 
         return response.data;
       } else if (response.status === 400) {
@@ -313,20 +313,20 @@ router.post("/upload-artwork/:jobId", upload.any(), async (req, res) => {
         })),
         allUploadsSuccessful: response.data.allUploadsSuccessful,
       };
-      await axios.post(
-        `http://localhost:3000/supacolor-api/artwork`,
-        uploadedArtwork
-      );
       // await axios.post(
-      //   `https://admin.heattransferwarehouse.com/supacolor-api/artwork`,
+      //   `http://localhost:3000/supacolor-api/artwork`,
       //   uploadedArtwork
       // );
-      await axios.put(
-        `http://localhost:3000/supacolor-api/update-needs-artwork/${jobId}`
+      await axios.post(
+        `https://admin.heattransferwarehouse.com/supacolor-api/artwork`,
+        uploadedArtwork
       );
       // await axios.put(
-      //   `https://admin.heattransferwarehouse.com/supacolor-api/update-needs-artwork/${jobId}`
+      //   `http://localhost:3000/supacolor-api/update-needs-artwork/${jobId}`
       // );
+      await axios.put(
+        `https://admin.heattransferwarehouse.com/supacolor-api/update-needs-artwork/${jobId}`
+      );
     } else {
       console.log(
         `Error placing Supacolor order ${orderId}: ${response.status}`
