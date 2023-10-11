@@ -234,7 +234,6 @@ async function sendOrderToSupacolor(supacolorPayload, supacolorProducts) {
           expectingArtworkToBeUploaded:
             response.data.expectingArtworkToBeUploaded,
         };
-        // console.log(supacolourJob);
         // await axios.post(
         //   "http://localhost:3000/supacolor-api/new-job",
         //   supacolourJob
