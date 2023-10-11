@@ -40,8 +40,6 @@ router.post("/create-order", function (req, res) {
   }
 });
 
-// findProductsOnOrderInBigCommerce(3480439);
-
 async function findProductsOnOrderInBigCommerce(orderId) {
   try {
     const headers = {
@@ -186,6 +184,7 @@ function createSupacolorPayload(
   } else {
     sendOrderToSupacolor(supacolorPayload, supacolorProducts);
   }
+  // console.log(supacolorPayload);
 }
 
 /* We will also take the response of this job information and store it in our Digital Ocean database as a copy on the frontend for our Admin App which is where we will be uploading the artwork for a given order*/
@@ -207,7 +206,7 @@ async function sendOrderToSupacolor(supacolorPayload, supacolorProducts) {
         Authorization: `Bearer ${process.env.SUPACOLOR_ACCESS_TOKEN}`,
       };
 
-      const url = `https://scapi-usa.bluerocket.co.nz/Jobs`;
+      const url = `https://api.supacolor.com/Jobs`;
 
       // Use axios.post and include the payload in the request
       const response = await axios.post(url, supacolorPayload, { headers });
@@ -300,7 +299,7 @@ router.post("/upload-artwork/:jobId", upload.any(), async (req, res) => {
     });
 
     const response = await axios.post(
-      `https://scapi-usa.bluerocket.co.nz/Jobs/${jobId}/artwork`,
+      `https://api.supacolor.com/Jobs/${jobId}/artwork`,
       formData,
       {
         headers: {
@@ -633,7 +632,7 @@ async function getPriceCodeWithSku(sku) {
 
     axios({
       method: "get",
-      url: `https://scapi-usa.bluerocket.co.nz/${filteredUrl}`,
+      url: `https://api.supacolor.com/${filteredUrl}`,
       headers: {
         Authorization: `Bearer ${accessToken}`,
         "Content-Type": "application/json",
