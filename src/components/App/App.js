@@ -23,6 +23,7 @@ import OrderLookup from "../Pages/OrderLookup";
 import OrderLookupOLD from "../Pages/OrderLookupOLD";
 import "./App.css";
 import { useDispatch } from "react-redux";
+
 function App() {
   const dispatch = useDispatch();
   const logoutTimerRef = useRef(null);

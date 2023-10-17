@@ -16,14 +16,37 @@ const logtail = new Logtail("KQi4An7q1YZVwaTWzM72Ct5r");
 // Documentation can be found below ↓↓↓
 // https://docs.google.com/document/d/1SkgKDUAfp26vsusmatYqTeSvUK28Zw4KQ9-7MAM_4ks/edit
 
-// Test endpoint listening for when a product is edited
-// Delete this endpoint later
-// router.post("/", function (req, res) {
-//   // Logging
-//   logtail.info(`Supacolor API hit via webhook: ${req.body}`);
-//   console.log("Product edited: ", req.body);
-//   res.send("it werked");
-// });
+let accessToken;
+
+async function getAccessToken() {
+  try {
+    const data = new URLSearchParams();
+    data.append("client_id", process.env.CLIENT_ID);
+    data.append("client_secret", process.env.CLIENT_SECRET);
+    data.append("username", process.env.USER_NAME);
+    data.append("password", process.env.USER_PASSWORD);
+    data.append("grant_type", "password");
+    const url = `https://${process.env.AUTH_URL}/realms/${process.env.REALM}/protocol/openid-connect/token`;
+    const headers = {
+      "Content-Type": "application/x-www-form-urlencoded",
+    };
+    const response = await axios.post(url, data, { headers });
+
+    if (response.status === 200) {
+      return response.data.access_token;
+    }
+  } catch (error) {
+    console.log("Error getting Auth", error);
+  }
+}
+
+async function storeToken() {
+  try {
+    accessToken = await getAccessToken();
+  } catch (err) {
+    console.log("Error obtaining access token", err);
+  }
+}
 
 // This endpoint is listening for every time an order is placed
 router.post("/create-order", function (req, res) {
@@ -40,7 +63,11 @@ router.post("/create-order", function (req, res) {
   }
 });
 
+// findProductsOnOrderInBigCommerce(3482928);
+
+// Our function to find the order in big commerce orders webhook with the order id we received
 async function findProductsOnOrderInBigCommerce(orderId) {
+  storeToken();
   try {
     const headers = {
       "Content-Type": "application/json",
@@ -184,7 +211,6 @@ function createSupacolorPayload(
   } else {
     sendOrderToSupacolor(supacolorPayload, supacolorProducts);
   }
-  // console.log(supacolorPayload);
 }
 
 /* We will also take the response of this job information and store it in our Digital Ocean database as a copy on the frontend for our Admin App which is where we will be uploading the artwork for a given order*/
@@ -200,19 +226,21 @@ async function sendOrderToSupacolor(supacolorPayload, supacolorProducts) {
     return null;
   } else {
     console.log("Sending Order to Supacolor");
+    if (!accessToken) {
+      console.log("Failed to get access token");
+    }
     try {
       const headers = {
         "Content-Type": "application/json",
-        Authorization: `Bearer ${process.env.SUPACOLOR_ACCESS_TOKEN}`,
+        Authorization: `Bearer ${accessToken}`,
       };
 
-      const url = `https://api.supacolor.com/Jobs`;
+      const url = `https://${process.env.BASE_URL}/Jobs`;
 
       // Use axios.post and include the payload in the request
       const response = await axios.post(url, supacolorPayload, { headers });
 
       if (response.status === 200) {
-        //   console.log(response.data);
         console.log("Job Successfully Created");
         const supacolourJob = {
           jobNumber: response.data.jobNumber,
@@ -234,16 +262,12 @@ async function sendOrderToSupacolor(supacolorPayload, supacolorProducts) {
           expectingArtworkToBeUploaded:
             response.data.expectingArtworkToBeUploaded,
         };
-        // await axios.post(
-        //   "http://localhost:3000/supacolor-api/new-job",
-        //   supacolourJob
-        // );
         await axios.post(
           "https://admin.heattransferwarehouse.com/supacolor-api/new-job",
           supacolourJob
         );
 
-        return response.data;
+        // return response.data;
       } else if (response.status === 400) {
         console.error("Bad Request: ", response.data);
         return null;
@@ -266,7 +290,7 @@ async function sendOrderToSupacolor(supacolorPayload, supacolorProducts) {
     }
   }
 }
-
+// To eliminate duplicate supacolor orders being create, we have a function to check if the order is in our db already
 async function checkorderIdInDatabase(orderId) {
   try {
     const queryText =
@@ -277,17 +301,21 @@ async function checkorderIdInDatabase(orderId) {
     return result.rows[0].count > 0;
   } catch (error) {
     console.error("Error querying the database:", error);
-    throw error; // You might want to handle this error more gracefully
+    throw error;
   }
 }
 
 // This is our function to send the artwork to supacolor through their api and make a copy of the response and put it into our Digital Ocean Database
 
 router.post("/upload-artwork/:jobId", upload.any(), async (req, res) => {
+  // Get and store our token to upload artwork whenever this post is called
+  storeToken();
   try {
+    // Create our form data and jobId variables
     const { jobId } = req.params;
     const formData = new FormData();
 
+    // Append our form data into the form data var
     Object.keys(req.body).forEach((key) => {
       formData.append(key, req.body[key]);
     });
@@ -297,13 +325,19 @@ router.post("/upload-artwork/:jobId", upload.any(), async (req, res) => {
       formData.append(file.fieldname, file.buffer, file.originalname);
     });
 
+    // If we don't have an access token log and error
+    if (!accessToken) {
+      console.log("Failed to get access token");
+    }
+
+    // Our post to the create job end point with the job id and form data holding our artwork files
     const response = await axios.post(
-      `https://api.supacolor.com/Jobs/${jobId}/artwork`,
+      `https://${process.env.BASE_URL}/Jobs/${jobId}/artwork`,
       formData,
       {
         headers: {
           ...formData.getHeaders(),
-          Authorization: `Bearer ${process.env.SUPACOLOR_ACCESS_TOKEN}`,
+          Authorization: `Bearer ${accessToken}`,
         },
       }
     );
@@ -320,17 +354,10 @@ router.post("/upload-artwork/:jobId", upload.any(), async (req, res) => {
         })),
         allUploadsSuccessful: response.data.allUploadsSuccessful,
       };
-      // await axios.post(
-      //   `http://localhost:3000/supacolor-api/artwork`,
-      //   uploadedArtwork
-      // );
       await axios.post(
         `https://admin.heattransferwarehouse.com/supacolor-api/artwork`,
         uploadedArtwork
       );
-      // await axios.put(
-      //   `http://localhost:3000/supacolor-api/update-needs-artwork/${jobId}`
-      // );
       await axios.put(
         `https://admin.heattransferwarehouse.com/supacolor-api/update-needs-artwork/${jobId}`
       );
@@ -531,7 +558,6 @@ router.get("/get-jobs", async (req, res) => {
 });
 
 router.put("/fake-delete-job/", async (req, res) => {
-  console.log(req.body);
   const client = await pool.connect();
   try {
     await client.query("BEGIN");
@@ -560,7 +586,6 @@ router.put("/fake-delete-job/", async (req, res) => {
 });
 
 router.put("/recover-deleted-job/", async (req, res) => {
-  console.log(req.body);
   const client = await pool.connect();
   try {
     await client.query("BEGIN");
@@ -627,11 +652,9 @@ async function getPriceCodeWithSku(sku) {
 
     filteredUrl = `PriceCodes/price-codes?filter=${categoryCode}`;
 
-    const accessToken = process.env.SUPACOLOR_ACCESS_TOKEN;
-
     axios({
       method: "get",
-      url: `https://api.supacolor.com/${filteredUrl}`,
+      url: `https://${process.env.BASE_URL}/${filteredUrl}`,
       headers: {
         Authorization: `Bearer ${accessToken}`,
         "Content-Type": "application/json",
@@ -695,16 +718,5 @@ function findCorrectPriceCodeFromResults(results, sku) {
 
   return correctPriceCodes[0];
 }
-
-// Testing stuff below --- delete later
-
-// getPriceCodeWithSku("WE_SUPAGANG-11.7x16.5-2");
-// findProductsOnOrderInBigCommerce(3465561);
-// let multipleSkus = [
-//   "WE_SUPAGANG-11.7x16.5-2",
-//   "WE_SQ-11.7x11.7-7",
-//   "WE_A5-5.8X8.3-3",
-// ];
-// getPriceCodesFromMultipleSkus(multipleSkus);
 
 module.exports = router;

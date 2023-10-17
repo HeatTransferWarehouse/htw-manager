@@ -232,6 +232,7 @@ function Supacolor() {
       <br />
       <br />
       <br />
+
       <Paper
         style={{
           maxWidth: "1400px",
