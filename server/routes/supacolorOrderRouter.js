@@ -557,13 +557,69 @@ router.get("/get-jobs", async (req, res) => {
   }
 });
 
+router.put("/cancel-job", async (req, res) => {
+  const client = await pool.connect();
+  try {
+    await client.query("BEGIN");
+
+    const jobIds = req.body;
+    const query = `UPDATE "supacolor_jobs" SET "canceled" = true, "fake_delete" = false WHERE "supacolor_jobs".job_id = $1`;
+
+    // Collect promises
+    const promises = jobIds.map((job) => {
+      return client.query(query, [job]);
+    });
+
+    // Ensure all promises complete
+    await Promise.all(promises);
+
+    await client.query("COMMIT");
+
+    res.sendStatus(200);
+  } catch (err) {
+    await client.query("ROLLBACK");
+    console.error("Error Fake Deleting", err);
+    res.status(500).send("Error Fake Deleting");
+  } finally {
+    client.release();
+  }
+});
+
+router.put("/perm-delete-job", async (req, res) => {
+  const client = await pool.connect();
+  try {
+    await client.query("BEGIN");
+
+    const jobIds = req.body;
+    const query = `UPDATE "supacolor_jobs" SET "perm_delete" = true, "canceled" = false, "fake_delete" = false WHERE "supacolor_jobs".job_id = $1`;
+
+    // Collect promises
+    const promises = jobIds.map((job) => {
+      return client.query(query, [job]);
+    });
+
+    // Ensure all promises complete
+    await Promise.all(promises);
+
+    await client.query("COMMIT");
+
+    res.sendStatus(200);
+  } catch (err) {
+    await client.query("ROLLBACK");
+    console.error("Error Fake Deleting", err);
+    res.status(500).send("Error Fake Deleting");
+  } finally {
+    client.release();
+  }
+});
+
 router.put("/fake-delete-job/", async (req, res) => {
   const client = await pool.connect();
   try {
     await client.query("BEGIN");
 
     const jobIds = req.body;
-    const query = `UPDATE "supacolor_jobs" SET "fake_delete" = true WHERE "supacolor_jobs".job_id = $1`;
+    const query = `UPDATE "supacolor_jobs" SET "fake_delete" = true, "canceled" = false WHERE "supacolor_jobs".job_id = $1`;
 
     // Collect promises
     const promises = jobIds.map((job) => {
@@ -591,7 +647,7 @@ router.put("/recover-deleted-job/", async (req, res) => {
     await client.query("BEGIN");
 
     const jobIds = req.body;
-    const query = `UPDATE "supacolor_jobs" SET "fake_delete" = false WHERE "supacolor_jobs".job_id = $1`;
+    const query = `UPDATE "supacolor_jobs" SET "fake_delete" = false, "canceled" = false WHERE "supacolor_jobs".job_id = $1`;
 
     // Collect promises
     const promises = jobIds.map((job) => {
