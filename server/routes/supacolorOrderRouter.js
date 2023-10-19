@@ -527,9 +527,7 @@ GROUP BY
 /* This get is fetching our jobs that we put into the Digital Ocean DB to list on the frontend in the admin app */
 
 router.get("/get-jobs", async (req, res) => {
-  try {
-    const client = await pool.connect();
-    const query = `
+  const query = `
             SELECT 
                 "supacolor_jobs".*,
                 json_agg(
@@ -549,124 +547,59 @@ router.get("/get-jobs", async (req, res) => {
                 "supacolor_jobs".id, "supacolor_jobs".job_id, "supacolor_jobs".date_due, "supacolor_jobs".job_cost, "supacolor_jobs".expecting_artwork
         `;
 
-    const result = await client.query(query);
-    res.json(result.rows);
-  } catch (err) {
-    console.error("Error fetching data", err.stack);
-    res.status(500).send("Internal Server Error");
-  }
+  pool
+    .query(query)
+    .then((results) => res.send(results.rows))
+    .catch((error) => console.log("Error Getting Jobs", err));
 });
 
 router.put("/cancel-job", async (req, res) => {
-  const client = await pool.connect();
-  try {
-    await client.query("BEGIN");
+  const jobIds = req.body;
+  const query = `UPDATE "supacolor_jobs" SET "canceled" = true, "fake_delete" = false WHERE "supacolor_jobs".job_id = $1`;
 
-    const jobIds = req.body;
-    const query = `UPDATE "supacolor_jobs" SET "canceled" = true, "fake_delete" = false WHERE "supacolor_jobs".job_id = $1`;
-
-    // Collect promises
-    const promises = jobIds.map((job) => {
-      return client.query(query, [job]);
+  pool
+    .query(query, jobIds)
+    .then((results) => res.send(results.rows))
+    .catch((error) => {
+      console.log("Error Canceling Job", error);
     });
-
-    // Ensure all promises complete
-    await Promise.all(promises);
-
-    await client.query("COMMIT");
-
-    res.sendStatus(200);
-  } catch (err) {
-    await client.query("ROLLBACK");
-    console.error("Error Fake Deleting", err);
-    res.status(500).send("Error Fake Deleting");
-  } finally {
-    client.release();
-  }
 });
 
 router.put("/perm-delete-job", async (req, res) => {
-  const client = await pool.connect();
-  try {
-    await client.query("BEGIN");
+  const jobIds = req.body;
 
-    const jobIds = req.body;
-    const query = `UPDATE "supacolor_jobs" SET "perm_delete" = true, "canceled" = false, "fake_delete" = false WHERE "supacolor_jobs".job_id = $1`;
+  const query = `UPDATE "supacolor_jobs" SET "perm_delete" = true, "canceled" = false, "fake_delete" = false WHERE "supacolor_jobs".job_id = $1`;
 
-    // Collect promises
-    const promises = jobIds.map((job) => {
-      return client.query(query, [job]);
+  pool
+    .query(query, jobIds)
+    .then((results) => res.send(results.rows))
+    .catch((error) => {
+      console.log("Error Deleting Job", error);
     });
-
-    // Ensure all promises complete
-    await Promise.all(promises);
-
-    await client.query("COMMIT");
-
-    res.sendStatus(200);
-  } catch (err) {
-    await client.query("ROLLBACK");
-    console.error("Error Fake Deleting", err);
-    res.status(500).send("Error Fake Deleting");
-  } finally {
-    client.release();
-  }
 });
 
 router.put("/fake-delete-job/", async (req, res) => {
-  const client = await pool.connect();
-  try {
-    await client.query("BEGIN");
+  const jobIds = req.body;
+  const query = `UPDATE "supacolor_jobs" SET "fake_delete" = true, "canceled" = false WHERE "supacolor_jobs".job_id = $1`;
 
-    const jobIds = req.body;
-    const query = `UPDATE "supacolor_jobs" SET "fake_delete" = true, "canceled" = false WHERE "supacolor_jobs".job_id = $1`;
-
-    // Collect promises
-    const promises = jobIds.map((job) => {
-      return client.query(query, [job]);
+  pool
+    .query(query, jobIds)
+    .then((results) => res.send(results.rows))
+    .catch((error) => {
+      console.log("Error Archiving Job", error);
     });
-
-    // Ensure all promises complete
-    await Promise.all(promises);
-
-    await client.query("COMMIT");
-
-    res.sendStatus(200);
-  } catch (err) {
-    await client.query("ROLLBACK");
-    console.error("Error Fake Deleting", err);
-    res.status(500).send("Error Fake Deleting");
-  } finally {
-    client.release();
-  }
 });
 
 router.put("/recover-deleted-job/", async (req, res) => {
-  const client = await pool.connect();
-  try {
-    await client.query("BEGIN");
+  const jobIds = req.body;
+  const query = `UPDATE "supacolor_jobs" SET "fake_delete" = false, "canceled" = false WHERE "supacolor_jobs".job_id = $1`;
 
-    const jobIds = req.body;
-    const query = `UPDATE "supacolor_jobs" SET "fake_delete" = false, "canceled" = false WHERE "supacolor_jobs".job_id = $1`;
-
-    // Collect promises
-    const promises = jobIds.map((job) => {
-      return client.query(query, [job]);
+  pool
+    .query(query, jobIds)
+    .then((results) => res.send(results.rows))
+    .catch((error) => {
+      console.log("Error Recovering Job", error);
     });
-
-    // Ensure all promises complete
-    await Promise.all(promises);
-
-    await client.query("COMMIT");
-
-    res.sendStatus(200);
-  } catch (err) {
-    await client.query("ROLLBACK");
-    console.error("Error Fake Deleting", err);
-    res.status(500).send("Error Fake Deleting");
-  } finally {
-    client.release();
-  }
 });
 
 async function getPriceCodesFromMultipleSkus(supacolorProducts) {
