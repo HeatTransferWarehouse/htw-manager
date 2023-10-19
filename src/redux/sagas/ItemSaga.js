@@ -226,9 +226,26 @@ function* fakeDeleteJobs(action) {
   }
 }
 
+function* permDeleteJob(action) {
+  try {
+    yield axios.put("/supacolor-api/perm-delete-job", action.payload);
+    yield put({ type: "FETCH_JOBS_LIST" });
+  } catch (error) {
+    console.log("Error Fake Deleting Jobs", error);
+  }
+}
+
 function* recoverDeletedJobs(action) {
   try {
     yield axios.put("/supacolor-api/recover-deleted-job", action.payload);
+    yield put({ type: "FETCH_JOBS_LIST" });
+  } catch (err) {
+    console.log("Error Recovering Deleted Jobs", err);
+  }
+}
+function* cancelJobs(action) {
+  try {
+    yield axios.put("/supacolor-api/cancel-job", action.payload);
     yield put({ type: "FETCH_JOBS_LIST" });
   } catch (err) {
     console.log("Error Recovering Deleted Jobs", err);
@@ -256,6 +273,8 @@ function* itemSaga() {
   yield takeLatest("FETCH_JOBS_LIST", getJobsList);
   yield takeLatest("FAKE_DELETE_JOB", fakeDeleteJobs);
   yield takeLatest("RECOVER_DELETED_JOB", recoverDeletedJobs);
+  yield takeLatest("PERM_DELETE_JOB", permDeleteJob);
+  yield takeLatest("CANCEL_JOB", cancelJobs);
 }
 
 export default itemSaga;

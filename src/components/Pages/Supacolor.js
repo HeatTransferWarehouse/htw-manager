@@ -5,6 +5,9 @@ import "./css/bootstrap.min.css";
 import "./css/font-awesome.css";
 import "./css/flex-slider.css";
 import "./css/templatemo-softy-pinko.css";
+import "./css/Supacolor.css";
+import { BsCheckCircleFill } from "react-icons/bs";
+import { BiSolidErrorCircle } from "react-icons/bi";
 import Button from "@material-ui/core/Button";
 import Table from "@material-ui/core/Table";
 import TableBody from "@material-ui/core/TableBody";
@@ -15,19 +18,14 @@ import TableRow from "@material-ui/core/TableRow";
 import Paper from "@material-ui/core/Paper";
 import TablePagination from "@material-ui/core/TablePagination";
 import SearchBar from "material-ui-search-bar";
-import {
-  BsFillCloudArrowUpFill,
-  BsCheckCircleFill,
-  BsFillTrashFill,
-} from "react-icons/bs";
+import { BsFillCloudArrowUpFill } from "react-icons/bs";
 import { CgDetailsMore } from "react-icons/cg";
 import {
   BiSolidUpArrow,
   BiSolidDownArrow,
-  BiSolidErrorCircle,
   BiSolidInfoCircle,
 } from "react-icons/bi";
-import { MenuItem, Select } from "@material-ui/core";
+import { MenuItem, Select, Tooltip } from "@material-ui/core";
 
 function Supacolor() {
   const dispatch = useDispatch();
@@ -39,38 +37,30 @@ function Supacolor() {
   const [toggleViewDetails, setToggleViewDetails] = useState(false);
   const [toggleUploadImg, setToggleUploadImg] = useState(false);
   const [customerRef, setCustomerRef] = useState([]);
-  const [tableValue, setTableValue] = useState("");
   const [files, setFiles] = useState({});
   const [jobId, setJobId] = useState(0);
+  const [tableValue, setTableValue] = useState("");
   const [sort, setSort] = useState(false);
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(10);
   const [filteredJobs, setFilteredJobs] = useState([]);
   const [searched, setSearched] = useState("");
-  const isLoading = useSelector((state) => state.item.artWorkReducer.isLoading);
-  const popupMessage = useSelector(
-    (state) => state.item.artWorkReducer.popupMessage
-  );
+  const [jobAction, setJobAction] = useState("default");
   const [sortField, setSortField] = useState(null);
   const [sortDirection, setSortDirection] = useState("asc");
   const [checkedJobs, setCheckedJobs] = useState([]);
   const [deletedTableView, setDeletedTableView] = useState(false);
-
-  useEffect(() => {
-    setFilteredJobs(jobs);
-  }, [jobs]);
-
-  useEffect(() => {
-    if (deletedTableView) {
-      setTableValue("deleted");
-    } else {
-      setTableValue("current");
-    }
-  }, [deletedTableView]);
+  const [canceledTableView, setCanceledTableView] = useState(false);
+  const [activeTableView, setActiveTableView] = useState(true);
+  const [completedTableView, setCompletedTableView] = useState(false);
+  const isLoading = useSelector((state) => state.item.artWorkReducer.isLoading);
+  const popupMessage = useSelector(
+    (state) => state.item.artWorkReducer.popupMessage
+  );
 
   useEffect(() => {
     dispatch({ type: "FETCH_JOBS_LIST" });
-  }, []);
+  }, [dispatch]);
 
   useEffect(() => {
     jobDetails[0] !== undefined && setJobDetailObj(jobDetails[0]);
@@ -82,19 +72,92 @@ function Supacolor() {
       );
   }, [jobDetails]);
 
-  const fakeDeleteJob = () => {
-    if (checkedJobs) {
-      dispatch({ type: "FAKE_DELETE_JOB", payload: checkedJobs });
-      setCheckedJobs([]);
-    } else {
-    }
+  // Function to bring you to the order in big commerce when you click the order number
+  const goToOrder = (orderNumber) => {
+    const url = `https://store-et4qthkygq.mybigcommerce.com/manage/orders?viewId=${orderNumber}&orderTo=${orderNumber}&orderFrom=${orderNumber}`;
+    window.open(url, "_blank");
   };
+
+  const imageUpload = (jobNumber, reference) => {
+    setJobId(jobNumber);
+    setCustomerRef(reference);
+    setToggleUploadImg(true);
+  };
+
+  const closePopup = () => {
+    dispatch({ type: "CLEAR_POPUP_MESSAGE" });
+    setToggleUploadImg(false);
+    window.location.reload();
+  };
+
+  const viewJobDetails = (id, e) => {
+    setToggleViewDetails(true);
+    e.preventDefault();
+    dispatch({
+      type: "GET_JOB_DETAILS",
+      payload: id,
+    });
+  };
+
+  const exitViewJobDetails = () => {
+    setToggleViewDetails(false);
+    dispatch({ type: "RESET_JOB_DETAIL" });
+  };
+
+  const handleFileChange = (reference, event) => {
+    const file = event.target.files[0];
+    setFiles((prevFiles) => ({
+      ...prevFiles,
+      [reference]: file,
+    }));
+  };
+
+  const handleSubmit = (event) => {
+    event.preventDefault();
+    const formData = new FormData();
+    for (const ref of customerRef) {
+      if (files[ref.customer_reference]) {
+        formData.append(ref.customer_reference, files[ref.customer_reference]);
+      }
+    }
+    dispatch({
+      type: "UPLOAD_ARTWORK",
+      payload: { data: formData, id: jobId },
+    });
+  };
+
+  useEffect(() => {
+    setFilteredJobs(jobs);
+  }, [jobs]);
+
+  useEffect(() => {
+    if (deletedTableView) setTableValue("deleted");
+    if (activeTableView) setTableValue("current");
+    if (canceledTableView) setTableValue("cancelled");
+    if (completedTableView) setTableValue("complete");
+  }, [deletedTableView, canceledTableView, completedTableView]);
 
   const handleDropdownChange = (e) => {
     if (e.target.value === "deleted") {
       setDeletedTableView(true);
+      setCanceledTableView(false);
+      setActiveTableView(false);
+      setCompletedTableView(false);
     } else if (e.target.value === "current") {
+      setCompletedTableView(false);
+      setActiveTableView(true);
       setDeletedTableView(false);
+      setCanceledTableView(false);
+    } else if (e.target.value === "cancelled") {
+      setCanceledTableView(true);
+      setActiveTableView(false);
+      setDeletedTableView(false);
+      setCompletedTableView(false);
+    } else if (e.target.value === "complete") {
+      setCanceledTableView(false);
+      setActiveTableView(false);
+      setDeletedTableView(false);
+      setCompletedTableView(true);
     }
   };
 
@@ -134,49 +197,11 @@ function Supacolor() {
     setSortDirection(direction);
   };
 
-  // Function to bring you to the order in big commerce when you click the order number
-  const goToOrder = (orderNumber) => {
-    const url = `https://store-et4qthkygq.mybigcommerce.com/manage/orders?viewId=${orderNumber}&orderTo=${orderNumber}&orderFrom=${orderNumber}`;
-    window.open(url, "_blank");
-  };
-
-  const goToDocumentation = () => {
-    const url = `https://docs.google.com/document/d/14e_R6Me_D98FLr6iHC8EDO8jx6ET6Tsuppti-rcRBCA/edit?usp=sharing`;
-    window.open(url, "_blank");
-  };
-
-  const imageUpload = (jobNumber, reference) => {
-    setJobId(jobNumber);
-    setCustomerRef(reference);
-    setToggleUploadImg(true);
-  };
-
-  const closePopup = () => {
-    dispatch({ type: "CLEAR_POPUP_MESSAGE" });
-    setToggleUploadImg(false);
-    window.location.reload();
-  };
-
-  const handleFileChange = (reference, event) => {
-    const file = event.target.files[0];
-    setFiles((prevFiles) => ({
-      ...prevFiles,
-      [reference]: file,
-    }));
-  };
-
-  const handleSubmit = (event) => {
-    event.preventDefault();
-    const formData = new FormData();
-    for (const ref of customerRef) {
-      if (files[ref.customer_reference]) {
-        formData.append(ref.customer_reference, files[ref.customer_reference]);
-      }
+  const cancelJob = () => {
+    if (checkedJobs) {
+      dispatch({ type: "CANCEL_JOB", payload: checkedJobs });
+      setCheckedJobs([]);
     }
-    dispatch({
-      type: "UPLOAD_ARTWORK",
-      payload: { data: formData, id: jobId },
-    });
   };
 
   const recoverDeletedJobs = () => {
@@ -187,18 +212,25 @@ function Supacolor() {
     }
   };
 
-  const viewJobDetails = (id, e) => {
-    setToggleViewDetails(true);
-    e.preventDefault();
-    dispatch({
-      type: "GET_JOB_DETAILS",
-      payload: id,
-    });
+  const fakeDeleteJob = () => {
+    if (checkedJobs) {
+      dispatch({ type: "FAKE_DELETE_JOB", payload: checkedJobs });
+      setCheckedJobs([]);
+    }
   };
 
-  const exitViewJobDetails = () => {
-    setToggleViewDetails(false);
-    dispatch({ type: "RESET_JOB_DETAIL" });
+  const permDeleteJob = () => {
+    if (checkedJobs) {
+      dispatch({ type: "PERM_DELETE_JOB", payload: checkedJobs });
+      setCheckedJobs([]);
+    }
+  };
+
+  const handleJobDestination = () => {
+    if (jobAction === "archive") fakeDeleteJob();
+    if (jobAction === "delete") permDeleteJob();
+    if (jobAction === "active") recoverDeletedJobs();
+    if (jobAction === "cancel") cancelJob();
   };
 
   const requestSearch = (searchVal) => {
@@ -218,6 +250,17 @@ function Supacolor() {
   const cancelSearch = () => {
     setFilteredJobs(jobs);
     setSearched("");
+  };
+
+  const handleJobAction = (e) => {
+    setJobAction(e.target.value);
+  };
+
+  // Function to bring you to the order in big commerce when you click the order number
+
+  const goToDocumentation = () => {
+    const url = `https://docs.google.com/document/d/14e_R6Me_D98FLr6iHC8EDO8jx6ET6Tsuppti-rcRBCA/edit?usp=sharing`;
+    window.open(url, "_blank");
   };
 
   return (
@@ -241,7 +284,19 @@ function Supacolor() {
           padding: "1em",
         }}>
         <div style={{ width: "100%", textAlign: "center" }}>
-          {deletedTableView ? <h2>Deleted Jobs</h2> : <h2>Current Jobs</h2>}
+          {deletedTableView ? (
+            <h2>Archived Jobs</h2>
+          ) : canceledTableView ? (
+            <h2>Cancelled Jobs</h2>
+          ) : activeTableView ? (
+            <>
+              <h2>Active Jobs</h2>
+            </>
+          ) : (
+            <>
+              <h2>Completed Jobs</h2>
+            </>
+          )}
         </div>
         <div className="supacolor-table-head">
           <div style={{ display: "flex", width: "550px" }}>
@@ -253,59 +308,99 @@ function Supacolor() {
               onCancelSearch={() => cancelSearch()}
             />
             <Select
-              style={{ marginLeft: "10px" }}
+              style={{ marginLeft: "10px", width: "200px" }}
               value={tableValue}
               label="Table View"
               onChange={handleDropdownChange}>
-              <MenuItem value={"current"}>Current Jobs</MenuItem>
-              <MenuItem value={"deleted"}>Deleted Jobs</MenuItem>
+              <MenuItem value={"current"}>Active Jobs</MenuItem>
+              <MenuItem value={"deleted"}>Archived Jobs</MenuItem>
+              <MenuItem value={"cancelled"}>Cancelled Jobs</MenuItem>
+              <MenuItem value={"complete"}>Completed Jobs</MenuItem>
             </Select>
           </div>
-          <div
-            style={{
-              width: "200px",
-              display: "flex",
-              justifyContent: "flex-end",
-              alignItems: "center",
-            }}>
-            {!deletedTableView ? (
-              checkedJobs.length > 0 ? (
-                <BsFillTrashFill
-                  style={{ marginRight: "3px" }}
-                  size={25}
-                  color="red"
-                  onClick={() => fakeDeleteJob()}
-                />
-              ) : null
-            ) : checkedJobs.length > 0 ? (
-              <Button
-                style={{ marginRight: "3px" }}
-                color="primary"
-                onClick={() => recoverDeletedJobs()}>
-                Recover
-              </Button>
+          <div className="top-table-icons">
+            {checkedJobs.length ? (
+              <div className="actions-options">
+                {deletedTableView ? (
+                  <Select
+                    style={{ width: "125px" }}
+                    onChange={handleJobAction}
+                    value={jobAction}>
+                    <MenuItem value={"default"}>Select Action</MenuItem>
+                    <MenuItem value={"active"}>Active</MenuItem>
+                    <MenuItem value={"delete"}>Delete</MenuItem>
+                    <MenuItem value={"cancel"}>Cancelled</MenuItem>
+                  </Select>
+                ) : canceledTableView ? (
+                  <Select
+                    style={{ width: "125px" }}
+                    onChange={handleJobAction}
+                    value={jobAction}>
+                    <MenuItem value={"default"}>Select Action</MenuItem>
+                    <MenuItem value={"active"}>Active</MenuItem>
+                    <MenuItem value={"delete"}>Archive</MenuItem>
+                    <MenuItem value={"delete"}>Delete</MenuItem>
+                  </Select>
+                ) : activeTableView ? (
+                  <Select
+                    style={{ width: "125px" }}
+                    onChange={handleJobAction}
+                    value={jobAction}>
+                    <MenuItem value={"default"}>Select Action</MenuItem>
+                    <MenuItem value={"cancel"}>Cancelled</MenuItem>
+                    <MenuItem value={"archive"}>Archive</MenuItem>
+                    <MenuItem value={"delete"}>Delete</MenuItem>
+                  </Select>
+                ) : (
+                  <Select
+                    style={{ width: "125px" }}
+                    onChange={handleJobAction}
+                    value={jobAction}>
+                    <MenuItem value={"default"}>Select Action</MenuItem>
+                    <MenuItem value={"archive"}>Archive</MenuItem>
+                    <MenuItem value={"delete"}>Delete</MenuItem>
+                  </Select>
+                )}
+                {jobAction === "delete" ? (
+                  <Button
+                    variant="contained"
+                    color="secondary"
+                    onClick={handleJobDestination}>
+                    Save
+                  </Button>
+                ) : jobAction ? (
+                  <Button
+                    variant="contained"
+                    color="primary"
+                    onClick={handleJobDestination}>
+                    Save
+                  </Button>
+                ) : (
+                  <Button
+                    disabled
+                    variant="contained"
+                    onClick={handleJobDestination}>
+                    Save
+                  </Button>
+                )}
+              </div>
             ) : null}
 
             <BiSolidInfoCircle
               onClick={goToDocumentation}
               className="supacolor-info-icon"
-              style={{ fontSize: 30 }}
             />
           </div>
         </div>
-        <TableContainer style={{ width: "100%" }}>
-          <Table style={{ width: "100%" }} aria-label="Jobs Table">
+        <TableContainer>
+          <Table aria-label="Jobs Table">
             <TableHead>
-              <TableRow style={{ backgroundColor: "white" }}>
-                <TableCell></TableCell>
-                <TableCell style={{ width: "20%" }}>
+              <TableRow>
+                <TableCell style={{ width: "5%" }}></TableCell>
+                <TableCell style={{ width: "19%" }}>
                   <Button
+                    style={{ width: "50%" }}
                     className="th-btns"
-                    style={{
-                      width: "50%",
-                      display: "flex",
-                      justifyContent: "space-between",
-                    }}
                     onClick={() => {
                       handleSort("customerReference");
                       setSort(true);
@@ -313,23 +408,19 @@ function Supacolor() {
                     Order #
                     {sort && sortField === "customerReference" ? (
                       sortDirection === "asc" ? (
-                        <BiSolidUpArrow />
+                        <BiSolidUpArrow style={{ marginLeft: "5px" }} />
                       ) : (
-                        <BiSolidDownArrow />
+                        <BiSolidDownArrow style={{ marginLeft: "5px" }} />
                       )
                     ) : (
                       <></>
                     )}
                   </Button>
                 </TableCell>
-                <TableCell style={{ width: "20%" }}>
+                <TableCell style={{ width: "19%" }}>
                   <Button
+                    style={{ width: "50%" }}
                     className="th-btns"
-                    style={{
-                      width: "50%",
-                      display: "flex",
-                      justifyContent: "space-between",
-                    }}
                     onClick={() => {
                       handleSort("jobId");
                       setSort(true);
@@ -337,22 +428,19 @@ function Supacolor() {
                     Job ID
                     {sort && sortField === "jobId" ? (
                       sortDirection === "asc" ? (
-                        <BiSolidUpArrow />
+                        <BiSolidUpArrow style={{ marginLeft: "5px" }} />
                       ) : (
-                        <BiSolidDownArrow />
+                        <BiSolidDownArrow style={{ marginLeft: "5px" }} />
                       )
                     ) : (
                       <></>
                     )}
                   </Button>
                 </TableCell>
-                <TableCell style={{ width: "20%" }}>
+                <TableCell style={{ width: "19%" }}>
                   <Button
-                    style={{
-                      width: "46%",
-                      display: "flex",
-                      justifyContent: "space-between",
-                    }}
+                    style={{ width: "50%" }}
+                    className="status-container"
                     onClick={() => {
                       handleSort("status");
                       setSort(true);
@@ -360,22 +448,18 @@ function Supacolor() {
                     Status
                     {sort && sortField === "status" ? (
                       sortDirection === "asc" ? (
-                        <BiSolidUpArrow />
+                        <BiSolidUpArrow style={{ marginLeft: "5px" }} />
                       ) : (
-                        <BiSolidDownArrow />
+                        <BiSolidDownArrow style={{ marginLeft: "5px" }} />
                       )
                     ) : (
                       <></>
                     )}
                   </Button>
                 </TableCell>
-                <TableCell style={{ width: "20%" }}>
+                <TableCell style={{ width: "19%" }}>
                   <Button
-                    style={{
-                      width: "40%",
-                      display: "flex",
-                      justifyContent: "space-between",
-                    }}
+                    style={{ width: "50%" }}
                     onClick={() => {
                       handleSort("dateDue");
                       setSort(true);
@@ -383,36 +467,37 @@ function Supacolor() {
                     Date Due
                     {sort && sortField === "dateDue" ? (
                       sortDirection === "asc" ? (
-                        <BiSolidUpArrow />
+                        <BiSolidUpArrow style={{ marginLeft: "5px" }} />
                       ) : (
-                        <BiSolidDownArrow />
+                        <BiSolidDownArrow style={{ marginLeft: "5px" }} />
                       )
                     ) : (
                       <></>
                     )}
                   </Button>
                 </TableCell>
-                <TableCell style={{ width: "20%" }}></TableCell>
+                <TableCell style={{ width: "19%" }}></TableCell>
               </TableRow>
             </TableHead>
             <TableBody>
-              {!deletedTableView ? (
+              {activeTableView ? (
                 <>
                   {filteredJobs
                     .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                     .map((job, index) =>
-                      !job.fake_delete ? (
+                      !job.fake_delete &&
+                      !job.canceled &&
+                      !job.perm_delete &&
+                      job.job_line_details.some(
+                        (detail) => detail.needs_artwork
+                      ) ? (
                         <TableRow
                           style={{ backgroundColor: "white" }}
                           key={index}>
                           <TableCell>
                             <input
+                              className="checkbox-input"
                               type="checkbox"
-                              style={{
-                                cursor: "pointer",
-                                width: 25,
-                                height: 25,
-                              }}
                               checked={checkedJobs.includes(job.job_id)}
                               onChange={() => {
                                 if (checkedJobs.includes(job.job_id)) {
@@ -490,23 +575,154 @@ function Supacolor() {
                       ) : null
                     )}
                 </>
-              ) : (
+              ) : deletedTableView ? (
                 <>
                   {filteredJobs
                     .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                     .map((job, index) =>
-                      job.fake_delete && filteredJobs.length > 0 ? (
+                      job.fake_delete && !job.canceled && !job.perm_delete ? (
                         <TableRow
                           style={{ backgroundColor: "white" }}
                           key={index}>
                           <TableCell>
                             <input
+                              className="checkbox-input"
                               type="checkbox"
-                              style={{
-                                cursor: "pointer",
-                                width: 25,
-                                height: 25,
+                              checked={checkedJobs.includes(job.job_id)}
+                              onChange={() => {
+                                if (checkedJobs.includes(job.job_id)) {
+                                  setCheckedJobs((prevJobs) =>
+                                    prevJobs.filter((id) => id !== job.job_id)
+                                  );
+                                } else {
+                                  setCheckedJobs((prevJobs) => [
+                                    ...prevJobs,
+                                    job.job_id,
+                                  ]);
+                                }
                               }}
+                            />
+                          </TableCell>
+                          <TableCell>
+                            <button
+                              className="orderNumber-btn"
+                              onClick={() => goToOrder(job.order_id)}>
+                              {job.order_id}
+                            </button>
+                          </TableCell>
+                          <TableCell>{job.job_id}</TableCell>
+                          <TableCell>
+                            {job.job_line_details.some(
+                              (detail) => detail.needs_artwork
+                            ) ? (
+                              <div className="needs-artwork">NEEDS ARTWORK</div>
+                            ) : (
+                              <div className="artwork-uploaded">COMPLETE</div>
+                            )}
+                          </TableCell>
+                          <TableCell>{job.date_due}</TableCell>
+                          <TableCell>
+                            {job.job_line_details.some(
+                              (detail) => detail.needs_artwork
+                            ) ? (
+                              <Tooltip
+                                title="Job must be active to upload artwork."
+                                arrow>
+                                <Button
+                                  style={{
+                                    width: "170px",
+                                    display: "flex",
+                                    justifyContent: "space-between",
+                                  }}
+                                  color="primary"
+                                  component="label"
+                                  startIcon={<BsFillCloudArrowUpFill />}>
+                                  Upload Images
+                                </Button>
+                              </Tooltip>
+                            ) : (
+                              <Button
+                                style={{
+                                  width: "170px",
+                                  display: "flex",
+                                  justifyContent: "space-between",
+                                }}
+                                variant="contained"
+                                color="primary"
+                                component="label"
+                                startIcon={<CgDetailsMore />}
+                                onClick={(e) => viewJobDetails(job.job_id, e)}>
+                                View Details
+                              </Button>
+                            )}
+                          </TableCell>
+                        </TableRow>
+                      ) : null
+                    )}
+                </>
+              ) : canceledTableView ? (
+                <>
+                  {filteredJobs
+                    .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+                    .map((job, index) =>
+                      !job.fake_delete && job.canceled && !job.perm_delete ? (
+                        <TableRow
+                          style={{ backgroundColor: "white" }}
+                          key={index}>
+                          <TableCell>
+                            <input
+                              className="checkbox-input"
+                              type="checkbox"
+                              checked={checkedJobs.includes(job.job_id)}
+                              onChange={() => {
+                                if (checkedJobs.includes(job.job_id)) {
+                                  setCheckedJobs((prevJobs) =>
+                                    prevJobs.filter((id) => id !== job.job_id)
+                                  );
+                                } else {
+                                  setCheckedJobs((prevJobs) => [
+                                    ...prevJobs,
+                                    job.job_id,
+                                  ]);
+                                }
+                              }}
+                            />
+                          </TableCell>
+                          <TableCell>
+                            <button
+                              className="orderNumber-btn"
+                              onClick={() => goToOrder(job.order_id)}>
+                              {job.order_id}
+                            </button>
+                          </TableCell>
+                          <TableCell>{job.job_id}</TableCell>
+                          <TableCell>
+                            <div className="cancelled">CANCELLED</div>
+                          </TableCell>
+                          <TableCell>{job.date_due}</TableCell>
+                          <TableCell></TableCell>
+                        </TableRow>
+                      ) : null
+                    )}
+                </>
+              ) : (
+                <>
+                  {filteredJobs
+                    .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+                    .map((job, index) =>
+                      !job.fake_delete &&
+                      !job.canceled &&
+                      !job.perm_delete &&
+                      !job.job_line_details.some(
+                        (detail) => detail.needs_artwork
+                      ) ? (
+                        <TableRow
+                          style={{ backgroundColor: "white" }}
+                          key={index}>
+                          <TableCell>
+                            <input
+                              className="checkbox-input"
+                              type="checkbox"
                               checked={checkedJobs.includes(job.job_id)}
                               onChange={() => {
                                 if (checkedJobs.includes(job.job_id)) {
