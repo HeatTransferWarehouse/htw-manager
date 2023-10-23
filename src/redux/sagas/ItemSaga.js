@@ -217,35 +217,45 @@ function* getJobsList() {
   }
 }
 
-function* fakeDeleteJobs(action) {
+function* markJobArchived(action) {
   try {
-    yield axios.put("/supacolor-api/fake-delete-job", action.payload);
+    yield axios.put("/supacolor-api/mark-job-archived", action.payload);
+    yield put({ type: "FETCH_JOBS_LIST" });
+  } catch (error) {
+    console.log("Error Marking Jobs Archived", error);
+  }
+}
+
+function* markJobActive(action) {
+  // console.log(action.payload);
+  try {
+    yield axios.put("/supacolor-api/mark-job-active", action.payload);
+    yield put({ type: "FETCH_JOBS_LIST" });
+  } catch (error) {
+    console.log("Error Marking jobs Active", error);
+  }
+}
+
+function* markJobDeleted(action) {
+  try {
+    yield axios.put("/supacolor-api/mark-job-deleted", action.payload);
     yield put({ type: "FETCH_JOBS_LIST" });
   } catch (error) {
     console.log("Error Fake Deleting Jobs", error);
   }
 }
-
-function* permDeleteJob(action) {
+function* markJobComplete(action) {
   try {
-    yield axios.put("/supacolor-api/perm-delete-job", action.payload);
+    yield axios.put("/supacolor-api/mark-job-complete", action.payload);
     yield put({ type: "FETCH_JOBS_LIST" });
   } catch (error) {
-    console.log("Error Fake Deleting Jobs", error);
+    console.log("Error Marking Jobs Complete", error);
   }
 }
 
-function* recoverDeletedJobs(action) {
+function* markJobCanceled(action) {
   try {
-    yield axios.put("/supacolor-api/recover-deleted-job", action.payload);
-    yield put({ type: "FETCH_JOBS_LIST" });
-  } catch (err) {
-    console.log("Error Recovering Deleted Jobs", err);
-  }
-}
-function* cancelJobs(action) {
-  try {
-    yield axios.put("/supacolor-api/cancel-job", action.payload);
+    yield axios.put("/supacolor-api/mark-job-canceled", action.payload);
     yield put({ type: "FETCH_JOBS_LIST" });
   } catch (err) {
     console.log("Error Recovering Deleted Jobs", err);
@@ -271,10 +281,11 @@ function* itemSaga() {
   yield takeLatest("UPLOAD_ARTWORK", uploadArtworkSaga);
   yield takeLatest("GET_JOB_DETAILS", getJobDetails);
   yield takeLatest("FETCH_JOBS_LIST", getJobsList);
-  yield takeLatest("FAKE_DELETE_JOB", fakeDeleteJobs);
-  yield takeLatest("RECOVER_DELETED_JOB", recoverDeletedJobs);
-  yield takeLatest("PERM_DELETE_JOB", permDeleteJob);
-  yield takeLatest("CANCEL_JOB", cancelJobs);
+  yield takeLatest("MARK_JOB_ARCHIVED", markJobArchived);
+  yield takeLatest("MARK_JOB_DELETED", markJobDeleted);
+  yield takeLatest("MARK_JOB_CANCELED", markJobCanceled);
+  yield takeLatest("MARK_JOB_COMPLETE", markJobComplete);
+  yield takeLatest("MARK_JOB_ACTIVE", markJobActive);
 }
 
 export default itemSaga;

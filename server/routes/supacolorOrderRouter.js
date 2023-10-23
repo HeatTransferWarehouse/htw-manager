@@ -63,7 +63,7 @@ router.post("/create-order", function (req, res) {
   }
 });
 
-// findProductsOnOrderInBigCommerce(3482928);
+// findProductsOnOrderInBigCommerce(3484799);
 
 // Our function to find the order in big commerce orders webhook with the order id we received
 async function findProductsOnOrderInBigCommerce(orderId) {
@@ -246,6 +246,7 @@ async function sendOrderToSupacolor(supacolorPayload, supacolorProducts) {
           jobNumber: response.data.jobNumber,
           orderId: supacolorPayload.orderNumber.split("# ")[1],
           dateDue: response.data.dateDue,
+          contactName: supacolorPayload.deliveryAddress.contactName,
           jobLineDetails: response.data.jobLineDetails.map((detail, index) => {
             const skus = supacolorProducts.map((prod) => prod.sku);
 
@@ -266,6 +267,10 @@ async function sendOrderToSupacolor(supacolorPayload, supacolorProducts) {
           "https://admin.heattransferwarehouse.com/supacolor-api/new-job",
           supacolourJob
         );
+        // await axios.post(
+        //   "http://localhost:3000/supacolor-api/new-job",
+        //   supacolourJob
+        // );
 
         // return response.data;
       } else if (response.status === 400) {
@@ -358,9 +363,17 @@ router.post("/upload-artwork/:jobId", upload.any(), async (req, res) => {
         `https://admin.heattransferwarehouse.com/supacolor-api/artwork`,
         uploadedArtwork
       );
-      await axios.put(
-        `https://admin.heattransferwarehouse.com/supacolor-api/update-needs-artwork/${jobId}`
-      );
+      // await axios.post(
+      //   `http://localhost:3000/supacolor-api/artwork`,
+      //   uploadedArtwork
+      // );
+      if (response.data.allRequiredJobArtworkUploaded)
+        await axios.put(
+          `https://admin.heattransferwarehouse.com/supacolor-api/update-needs-artwork/${jobId}`
+        );
+      // await axios.put(
+      //   `http://localhost:3000/supacolor-api/update-needs-artwork/${jobId}`
+      // );
     } else {
       console.log(
         `Error placing Supacolor order ${orderId}: ${response.status}`
@@ -379,9 +392,9 @@ router.post("/upload-artwork/:jobId", upload.any(), async (req, res) => {
 router.put("/update-needs-artwork/:id", async (req, res) => {
   const jobId = req.params.id;
   const query = `
-    UPDATE "job_line_details"
-    SET "needs_artwork" = false
-    WHERE "job_line_details".job_id = $1;
+    UPDATE "supacolor_jobs"
+    SET "expecting_artwork" = false, "active" = false, "complete" = true
+    WHERE "supacolor_jobs".job_id = $1;
     `;
   pool
     .query(query, [jobId])
@@ -447,8 +460,8 @@ router.post("/new-job", async (req, res) => {
   console.log("Posting Job to DB");
   const client = await pool.connect();
   const text1 = `
-        INSERT INTO "supacolor_jobs" ("job_id", "order_id", "date_due", "job_cost", "expecting_artwork")
-        VALUES ($1, $2, $3, $4, $5);
+        INSERT INTO "supacolor_jobs" ("job_id", "order_id", "date_due", "job_cost", "expecting_artwork", "customer_name")
+        VALUES ($1, $2, $3, $4, $5, $6);
         `;
 
   try {
@@ -459,6 +472,7 @@ router.post("/new-job", async (req, res) => {
       supacolorJob.dateDue,
       supacolorJob.totalJobCost,
       supacolorJob.expectingArtworkToBeUploaded,
+      supacolorJob.contactName,
     ]);
 
     for (let detail of supacolorJob.jobLineDetails) {
@@ -553,52 +567,72 @@ router.get("/get-jobs", async (req, res) => {
     .catch((error) => console.log("Error Getting Jobs", err));
 });
 
-router.put("/cancel-job", async (req, res) => {
+router.put("/mark-job-canceled", async (req, res) => {
   const jobIds = req.body;
-  const query = `UPDATE "supacolor_jobs" SET "canceled" = true, "fake_delete" = false WHERE "supacolor_jobs".job_id = $1`;
-
-  pool
-    .query(query, jobIds)
-    .then((results) => res.send(results.rows))
+  const queries = jobIds.map((jobId) => {
+    const query = `UPDATE "supacolor_jobs" SET "canceled" = true, "fake_delete" = false, "active" = false, "complete" = false WHERE "supacolor_jobs".job_id = $1`;
+    return pool.query(query, [jobId]);
+  });
+  Promise.all(queries)
+    .then(() => res.sendStatus(200))
     .catch((error) => {
-      console.log("Error Canceling Job", error);
+      console.log("Error Marking Job Active", error);
+      res.status(500).send("Internal server error");
     });
 });
 
-router.put("/perm-delete-job", async (req, res) => {
+router.put("/mark-job-active", async (req, res) => {
   const jobIds = req.body;
-
-  const query = `UPDATE "supacolor_jobs" SET "perm_delete" = true, "canceled" = false, "fake_delete" = false WHERE "supacolor_jobs".job_id = $1`;
-
-  pool
-    .query(query, jobIds)
-    .then((results) => res.send(results.rows))
+  const queries = jobIds.map((jobId) => {
+    const query = `UPDATE "supacolor_jobs" SET "active" = true, "canceled" = false, "fake_delete" = false, "complete" = false WHERE "supacolor_jobs".job_id = $1`;
+    return pool.query(query, [jobId]);
+  });
+  Promise.all(queries)
+    .then(() => res.sendStatus(200))
     .catch((error) => {
-      console.log("Error Deleting Job", error);
+      console.log("Error Marking Job Active", error);
+      res.status(500).send("Internal server error");
     });
 });
 
-router.put("/fake-delete-job/", async (req, res) => {
+router.put("/mark-job-deleted", async (req, res) => {
   const jobIds = req.body;
-  const query = `UPDATE "supacolor_jobs" SET "fake_delete" = true, "canceled" = false WHERE "supacolor_jobs".job_id = $1`;
-
-  pool
-    .query(query, jobIds)
-    .then((results) => res.send(results.rows))
+  const queries = jobIds.map((jobId) => {
+    const query = `UPDATE "supacolor_jobs" SET "perm_delete" = true, "canceled" = false, "fake_delete" = false, "active" = false, "complete" = false WHERE "supacolor_jobs".job_id = $1`;
+    return pool.query(query, [jobId]);
+  });
+  Promise.all(queries)
+    .then(() => res.sendStatus(200))
     .catch((error) => {
-      console.log("Error Archiving Job", error);
+      console.log("Error Marking Job Deleted", error);
+      res.status(500).send("Internal server error");
+    });
+});
+router.put("/mark-job-complete", async (req, res) => {
+  const jobIds = req.body;
+  const queries = jobIds.map((jobId) => {
+    const query = `UPDATE "supacolor_jobs" SET "complete" = true, "canceled" = false, "fake_delete" = false, "active" = false WHERE "supacolor_jobs".job_id = $1`;
+    return pool.query(query, [jobId]);
+  });
+  Promise.all(queries)
+    .then(() => res.sendStatus(200))
+    .catch((error) => {
+      console.log("Error Marking Job Complete", error);
+      res.status(500).send("Internal server error");
     });
 });
 
-router.put("/recover-deleted-job/", async (req, res) => {
+router.put("/mark-job-archived", async (req, res) => {
   const jobIds = req.body;
-  const query = `UPDATE "supacolor_jobs" SET "fake_delete" = false, "canceled" = false WHERE "supacolor_jobs".job_id = $1`;
-
-  pool
-    .query(query, jobIds)
-    .then((results) => res.send(results.rows))
+  const queries = jobIds.map((jobId) => {
+    const query = `UPDATE "supacolor_jobs" SET "fake_delete" = true, "canceled" = false, "active" = false, "complete" = false WHERE "supacolor_jobs".job_id = $1`;
+    return pool.query(query, [jobId]);
+  });
+  Promise.all(queries)
+    .then(() => res.sendStatus(200))
     .catch((error) => {
-      console.log("Error Recovering Job", error);
+      console.log("Error Marking Job Archived", error);
+      res.status(500).send("Internal server error");
     });
 });
 
