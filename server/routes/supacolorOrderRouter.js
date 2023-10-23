@@ -63,8 +63,6 @@ router.post("/create-order", function (req, res) {
   }
 });
 
-// findProductsOnOrderInBigCommerce(3484799);
-
 // Our function to find the order in big commerce orders webhook with the order id we received
 async function findProductsOnOrderInBigCommerce(orderId) {
   storeToken();
@@ -111,7 +109,6 @@ function findSupacolorProductsOnOrder(productArray) {
     // Since we found Supacolor product, we first need to get more information about the order before we
     // can begin to send to Supacolor. Need to pass along found products.
     getOrderDetails(foundSupacolorProducts, foundSupacolorProducts[0].order_id);
-    // console.log("Found Supacolor Products", foundSupacolorProducts.map(found));
   }
 }
 
@@ -542,23 +539,26 @@ GROUP BY
 
 router.get("/get-jobs", async (req, res) => {
   const query = `
-            SELECT 
-                "supacolor_jobs".*,
-                json_agg(
-                    json_build_object(
-                        'id', "job_line_details".id,
-                        'customer_reference', "job_line_details".customer_reference,
-                        'quantity', "job_line_details".quantity,
-                        'item_sku', "job_line_details".item_sku,
-                        'needs_artwork', "job_line_details".needs_artwork
-                    )
-                ) AS "job_line_details"
-            FROM 
-                "supacolor_jobs"
-            LEFT JOIN 
-                "job_line_details" ON "supacolor_jobs".job_id = "job_line_details".job_id
-            GROUP BY 
-                "supacolor_jobs".id, "supacolor_jobs".job_id, "supacolor_jobs".date_due, "supacolor_jobs".job_cost, "supacolor_jobs".expecting_artwork
+  SELECT 
+  "supacolor_jobs".*,
+  json_agg(
+      json_build_object(
+          'id', "job_line_details".id,
+          'customer_reference', "job_line_details".customer_reference,
+          'quantity', "job_line_details".quantity,
+          'item_sku', "job_line_details".item_sku,
+          'needs_artwork', "job_line_details".needs_artwork
+      )
+  ) AS "job_line_details"
+FROM 
+  "supacolor_jobs"
+LEFT JOIN 
+  "job_line_details" ON "supacolor_jobs".job_id = "job_line_details".job_id
+WHERE
+  "supacolor_jobs"."perm_delete" = false
+GROUP BY 
+  "supacolor_jobs".id, "supacolor_jobs".job_id, "supacolor_jobs".date_due, "supacolor_jobs".job_cost, "supacolor_jobs".expecting_artwork
+;
         `;
 
   pool

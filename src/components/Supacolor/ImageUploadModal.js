@@ -2,6 +2,7 @@ import { useSelector } from "react-redux";
 import Button from "@material-ui/core/Button";
 import { BsCheckCircleFill } from "react-icons/bs";
 import { BiSolidErrorCircle } from "react-icons/bi";
+import { SlClose } from "react-icons/sl";
 import { useState } from "react";
 import React from "react";
 
@@ -87,23 +88,15 @@ export default function ImageUploadModal({
             {customerRef[0].customer_reference.split(":")[0].trim()}
           </span>
         </h2>
-        <Button
-          style={{
-            position: "absolute",
-            right: "10px",
-            top: "10px",
-            width: "15px",
-            height: "25px",
-            padding: "0px",
-          }}
-          color="secondary"
+        <button
+          className="img-upload-close-btn"
           onClick={() => {
             setToggleUploadImg(false);
             setCustomerRef([]);
             setJobId(0);
           }}>
-          Close
-        </Button>
+          <SlClose className="img-upload-x" />
+        </button>
         <form className="image-form" onSubmit={handleSubmit}>
           <div className="inputs-container">
             {customerRef

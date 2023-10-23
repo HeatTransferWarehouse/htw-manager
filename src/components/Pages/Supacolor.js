@@ -17,6 +17,7 @@ import SCTableHeader from "../Supacolor/SCPaperHeader";
 import ImageUploadModal from "../Supacolor/ImageUploadModal";
 import SCTableRow from "../Supacolor/SCTableRow";
 import SortHelper from "../Supacolor/HelperFunc/SortHelper";
+import setJobLists from "../Supacolor/HelperFunc/JobLists";
 
 function Supacolor() {
   const dispatch = useDispatch();
@@ -58,27 +59,13 @@ function Supacolor() {
   }, [dispatch]);
 
   useEffect(() => {
-    let canceledJobs = [];
-    let completedJobs = [];
-    let deletedJobs = [];
-    let activeJobs = [];
-
-    jobs.forEach((job) => {
-      if (job.canceled && !job.perm_delete) {
-        canceledJobs.push(job);
-      } else if (job.complete && !job.perm_delete) {
-        completedJobs.push(job);
-      } else if (job.fake_delete && !job.perm_delete) {
-        deletedJobs.push(job);
-      } else if (job.active && !job.perm_delete) {
-        activeJobs.push(job);
-      }
+    setJobLists({
+      setActiveJobsList,
+      setCanceledJobsList,
+      setDeletedJobsList,
+      setCompletedJobsList,
+      jobs,
     });
-
-    setCanceledJobsList(canceledJobs);
-    setCompletedJobsList(completedJobs);
-    setDeletedJobsList(deletedJobs);
-    setActiveJobsList(activeJobs);
   }, [jobs]);
 
   useEffect(() => {
@@ -101,10 +88,12 @@ function Supacolor() {
     setJobId(jobNumber);
     setCustomerRef(reference);
     setToggleUploadImg(true);
+    setCheckedJobs([]);
   };
 
   const viewJobDetails = (id, e) => {
     setToggleViewDetails(true);
+    setCheckedJobs([]);
     e.preventDefault();
     dispatch({
       type: "GET_JOB_DETAILS",
@@ -216,7 +205,12 @@ function Supacolor() {
           searched={searched}
           tableValue={tableValue}
         />
-        <TableContainer>
+        <TableContainer
+          style={{
+            maxHeight: "806px",
+            overflow: "auto",
+            position: "relative",
+          }}>
           <Table aria-label="Jobs Table">
             <SCTableHead
               sort={sort}
@@ -225,6 +219,7 @@ function Supacolor() {
               sortField={sortField}
               sortDirection={sortDirection}
             />
+
             <TableBody>
               {activeTableView ? (
                 <>
@@ -325,6 +320,14 @@ function Supacolor() {
             </TableBody>
           </Table>
           <TablePagination
+            style={{
+              position: "sticky",
+              bottom: 0,
+              zIndex: 1,
+              backgroundColor: "white",
+              height: "55px",
+              borderTop: "1px solid rgb(217, 217, 217)",
+            }}
             component="div"
             count={
               canceledTableView

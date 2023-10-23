@@ -1,5 +1,6 @@
 import { Button } from "@material-ui/core";
 import React from "react";
+import { SlClose } from "react-icons/sl";
 
 export default function DetailsModal({
   exitViewJobDetails,
@@ -19,14 +20,13 @@ export default function DetailsModal({
           }}>
           Job Details for Job #{jobDetailObj.job_id}
         </h2>
-        <Button
-          style={{ position: "absolute", right: "15px", top: "15px" }}
-          color="secondary"
+        <button
+          className="img-upload-close-btn"
           onClick={() => {
             exitViewJobDetails();
           }}>
-          Close
-        </Button>
+          <SlClose className="img-upload-x" />
+        </button>
         <div className="job-details-container">
           <p style={{ marginTop: "1em" }}>
             <strong>Big Commerce Order Id</strong>

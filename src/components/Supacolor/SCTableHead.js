@@ -10,8 +10,13 @@ export default function SCTableHead({
   sortDirection,
 }) {
   return (
-    <TableHead>
-      <TableRow>
+    <TableHead
+      style={{
+        position: "sticky",
+        top: 0,
+        zIndex: 1,
+      }}>
+      <TableRow style={{ borderBottom: "1px solid rgb(217, 217, 217)" }}>
         <TableCell style={{ width: "5%" }}></TableCell>
         <TableCell style={{ width: "15.8%%" }}>
           <Button
