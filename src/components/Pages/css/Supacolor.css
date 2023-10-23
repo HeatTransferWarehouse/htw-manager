@@ -11,6 +11,7 @@
 
 .MuiTableHead-root {
   background-color: white;
+  height: 30px;
 }
 
 .status-container {
@@ -23,6 +24,11 @@
   cursor: pointer;
   width: 25px;
   height: 25px;
+}
+
+.MuiTableCell-body,
+.MuiTableCell-root {
+  height: 30px !important;
 }
 
 .actions-options {
@@ -47,6 +53,31 @@
   width: 50%;
   display: flex;
   justify-content: space-between;
+}
+
+.img-upload-close-btn {
+  position: absolute;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: transparent;
+  border: none;
+  right: 10px;
+  top: 10px;
+  width: 40px;
+  height: 40px;
+  padding: 0px;
+  transition: 0.3s;
+}
+
+.img-upload-x {
+  color: black;
+  font-size: 40px;
+  transition: 0.3s;
+}
+
+.img-upload-x:hover {
+  color: red;
 }
 
 .MuiButton-label {
