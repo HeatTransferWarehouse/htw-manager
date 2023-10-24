@@ -38,7 +38,7 @@ app.use(passport.session());
 
 app.use(
   cors({
-    origin: ["https://admin.heattransferwarehouse.com"],
+    origin: ["https://www.heattransferwarehouse.com"],
   })
 );
 
