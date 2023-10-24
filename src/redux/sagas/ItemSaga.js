@@ -218,8 +218,16 @@ function* getJobsList() {
 }
 
 function* markJobArchived(action) {
+  let jobId;
+  for (let i = 0; i < action.payload.length; i++) {
+    jobId = action.payload[i];
+    try {
+      yield axios.put(`/supacolor-api/mark-job-archived/${jobId}`);
+    } catch (err) {
+      console.log("Error Marking Job as Complete", err);
+    }
+  }
   try {
-    yield axios.put("/supacolor-api/mark-job-archived", action.payload);
     yield put({ type: "FETCH_JOBS_LIST" });
   } catch (error) {
     console.log("Error Marking Jobs Archived", error);

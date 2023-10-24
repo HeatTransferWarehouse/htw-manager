@@ -395,7 +395,7 @@ router.put("/update-needs-artwork/:id", async (req, res) => {
     `;
   pool
     .query(query, [jobId])
-    .then(() => res.sendStatus(200))
+    .then(() => res.send(results.rows))
     .catch((err) => {
       console.log("Error Updating Artwork Needed", err);
       res.sendStatus(500);
@@ -440,7 +440,7 @@ router.post("/artwork", async (req, res) => {
     }
 
     await client.query("COMMIT;");
-    res.sendStatus(200);
+    res.res.send(results.rows);
   } catch (error) {
     await client.query("ROLLBACK;");
     console.log(error);
@@ -490,7 +490,7 @@ router.post("/new-job", async (req, res) => {
 
     await client.query("COMMIT;");
 
-    res.sendStatus(200);
+    res.send(results.rows);
     console.log("Job Successfully Made in DB");
   } catch (err) {
     await client.query("ROLLBACK;");
@@ -574,7 +574,7 @@ router.put("/mark-job-canceled/:id", async (req, res) => {
 
   pool
     .query(query, [jobId])
-    .then(() => res.sendStatus(200))
+    .then(() => res.send(results.rows))
     .catch((error) => {
       console.log("Error Marking Job Canceled", error);
       res.status(500).send("Internal server error");
@@ -586,7 +586,7 @@ router.put("/mark-job-active/:id", async (req, res) => {
   const query = `UPDATE "supacolor_jobs" SET "active" = true, "canceled" = false, "fake_delete" = false, "complete" = false WHERE "supacolor_jobs".job_id = $1`;
   pool
     .query(query, [jobId])
-    .then(() => res.sendStatus(200))
+    .then(() => res.send(results.rows))
     .catch((error) => {
       console.log("Error Marking Job Canceled", error);
       res.status(500).send("Internal server error");
@@ -598,7 +598,7 @@ router.put("/mark-job-deleted/:id", async (req, res) => {
   const query = `UPDATE "supacolor_jobs" SET "perm_delete" = true, "canceled" = false, "fake_delete" = false, "active" = false, "complete" = false WHERE "supacolor_jobs".job_id = $1`;
   pool
     .query(query, [jobId])
-    .then(() => res.sendStatus(200))
+    .then(() => res.send(results.rows))
     .catch((error) => {
       console.log("Error Marking Job Canceled", error);
       res.status(500).send("Internal server error");
@@ -609,7 +609,7 @@ router.put("/mark-job-complete/:id", async (req, res) => {
   const query = `UPDATE "supacolor_jobs" SET "complete" = true, "canceled" = false, "fake_delete" = false, "active" = false WHERE "supacolor_jobs".job_id = $1`;
   pool
     .query(query, [jobId])
-    .then(() => res.sendStatus(200))
+    .then(() => res.send(results.rows))
     .catch((error) => {
       console.log("Error Marking Job Canceled", error);
       res.status(500).send("Internal server error");
@@ -621,7 +621,7 @@ router.put("/mark-job-archived/:id", async (req, res) => {
   const query = `UPDATE "supacolor_jobs" SET "fake_delete" = true, "canceled" = false, "active" = false, "complete" = false WHERE "supacolor_jobs".job_id = $1`;
   pool
     .query(query, [jobId])
-    .then(() => res.sendStatus(200))
+    .then(() => res.send(results.rows))
     .catch((error) => {
       console.log("Error Marking Job Canceled", error);
       res.status(500).send("Internal server error");
