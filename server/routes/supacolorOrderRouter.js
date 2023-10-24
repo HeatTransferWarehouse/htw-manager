@@ -394,7 +394,7 @@ router.put("/update-needs-artwork/:id", (req, res) => {
     WHERE "supacolor_jobs".job_id = $1;
     `;
   pool
-    .query(query, [jobId])
+    .query(query, [Number(jobId)])
     .then((results) => res.send(results.rows))
     .catch((err) => {
       console.log("Error Updating Artwork Needed", err);
@@ -419,7 +419,7 @@ router.post("/artwork", async (req, res) => {
 
     // Insert into the artwork_upload_response and get the returned id
     await client.query(insertResponse, [
-      uploadedArtwork.jobId,
+      Number(uploadedArtwork.jobId),
       uploadedArtwork.allRequiredJobArtworkUploaded,
       uploadedArtwork.allUploadsSuccessful,
     ]);
@@ -434,7 +434,7 @@ router.post("/artwork", async (req, res) => {
           upload.customerReference,
           upload.uploadSuccessful,
           upload.message,
-          uploadedArtwork.jobId,
+          Number(uploadedArtwork.jobId),
         ]
       );
     }
@@ -464,7 +464,7 @@ router.post("/new-job", async (req, res) => {
   try {
     await client.query("BEGIN;");
     await client.query(text1, [
-      supacolorJob.jobNumber,
+      Number(supacolorJob.jobNumber),
       supacolorJob.orderId,
       supacolorJob.dateDue,
       supacolorJob.totalJobCost,
@@ -479,7 +479,7 @@ router.post("/new-job", async (req, res) => {
           VALUES ($1, $2, $3, $4, $5);
           `,
         [
-          supacolorJob.jobNumber,
+          Number(supacolorJob.jobNumber),
           detail.customerReference,
           detail.quantity,
           detail.itemSku,
@@ -527,7 +527,7 @@ GROUP BY
     "artwork_upload_response".all_uploads_successful;
         `;
   pool
-    .query(query, [req.params.id])
+    .query(query, [Number(req.params.id)])
     .then((results) => res.send(results.rows))
     .catch((error) => {
       res.sendStatus(500);
@@ -568,8 +568,8 @@ GROUP BY
 });
 
 router.put("/mark-job-canceled/:id", (req, res) => {
-  const jobId = req.params.id;
-
+  const jobId = Number(req.params.id);
+  console.log(jobId);
   const query = `UPDATE "supacolor_jobs" SET "canceled" = true, "fake_delete" = false, "active" = false, "complete" = false WHERE "supacolor_jobs".job_id = $1`;
 
   pool
@@ -582,7 +582,7 @@ router.put("/mark-job-canceled/:id", (req, res) => {
 });
 
 router.put("/mark-job-active/:id", (req, res) => {
-  const jobId = req.params.id;
+  const jobId = Number(req.params.id);
   const query = `UPDATE "supacolor_jobs" SET "active" = true, "canceled" = false, "fake_delete" = false, "complete" = false WHERE "supacolor_jobs".job_id = $1`;
   pool
     .query(query, [jobId])
@@ -594,7 +594,7 @@ router.put("/mark-job-active/:id", (req, res) => {
 });
 
 router.put("/mark-job-deleted/:id", (req, res) => {
-  const jobId = req.params.id;
+  const jobId = Number(req.params.id);
   const query = `UPDATE "supacolor_jobs" SET "perm_delete" = true, "canceled" = false, "fake_delete" = false, "active" = false, "complete" = false WHERE "supacolor_jobs".job_id = $1`;
   pool
     .query(query, [jobId])
@@ -605,7 +605,7 @@ router.put("/mark-job-deleted/:id", (req, res) => {
     });
 });
 router.put("/mark-job-complete/:id", (req, res) => {
-  const jobId = req.params.id;
+  const jobId = Number(req.params.id);
   const query = `UPDATE "supacolor_jobs" SET "complete" = true, "canceled" = false, "fake_delete" = false, "active" = false WHERE "supacolor_jobs".job_id = $1`;
   pool
     .query(query, [jobId])
@@ -617,7 +617,7 @@ router.put("/mark-job-complete/:id", (req, res) => {
 });
 
 router.put("/mark-job-archived/:id", (req, res) => {
-  const jobId = req.params.id;
+  const jobId = Number(req.params.id);
   const query = `UPDATE "supacolor_jobs" SET "fake_delete" = true, "canceled" = false, "active" = false, "complete" = false WHERE "supacolor_jobs".job_id = $1`;
   pool
     .query(query, [jobId])
