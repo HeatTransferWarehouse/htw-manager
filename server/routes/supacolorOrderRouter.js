@@ -567,71 +567,63 @@ GROUP BY
     .catch((error) => console.log("Error Getting Jobs", err));
 });
 
-router.put("/mark-job-canceled", async (req, res) => {
-  const jobIds = req.body;
-  const queries = jobIds.map((jobId) => {
-    const query = `UPDATE "supacolor_jobs" SET "canceled" = true, "fake_delete" = false, "active" = false, "complete" = false WHERE "supacolor_jobs".job_id = $1`;
-    return pool.query(query, [jobId]);
-  });
-  Promise.all(queries)
+router.put("/mark-job-canceled/:id", async (req, res) => {
+  const jobId = req.params.id;
+
+  const query = `UPDATE "supacolor_jobs" SET "canceled" = true, "fake_delete" = false, "active" = false, "complete" = false WHERE "supacolor_jobs".job_id = $1`;
+
+  pool
+    .query(query, [jobId])
     .then(() => res.sendStatus(200))
     .catch((error) => {
-      console.log("Error Marking Job Active", error);
+      console.log("Error Marking Job Canceled", error);
       res.status(500).send("Internal server error");
     });
 });
 
-router.put("/mark-job-active", async (req, res) => {
-  const jobIds = req.body;
-  const queries = jobIds.map((jobId) => {
-    const query = `UPDATE "supacolor_jobs" SET "active" = true, "canceled" = false, "fake_delete" = false, "complete" = false WHERE "supacolor_jobs".job_id = $1`;
-    return pool.query(query, [jobId]);
-  });
-  Promise.all(queries)
+router.put("/mark-job-active/:id", async (req, res) => {
+  const jobId = req.params.id;
+  const query = `UPDATE "supacolor_jobs" SET "active" = true, "canceled" = false, "fake_delete" = false, "complete" = false WHERE "supacolor_jobs".job_id = $1`;
+  pool
+    .query(query, [jobId])
     .then(() => res.sendStatus(200))
     .catch((error) => {
-      console.log("Error Marking Job Active", error);
+      console.log("Error Marking Job Canceled", error);
       res.status(500).send("Internal server error");
     });
 });
 
-router.put("/mark-job-deleted", async (req, res) => {
-  const jobIds = req.body;
-  const queries = jobIds.map((jobId) => {
-    const query = `UPDATE "supacolor_jobs" SET "perm_delete" = true, "canceled" = false, "fake_delete" = false, "active" = false, "complete" = false WHERE "supacolor_jobs".job_id = $1`;
-    return pool.query(query, [jobId]);
-  });
-  Promise.all(queries)
+router.put("/mark-job-deleted/:id", async (req, res) => {
+  const jobId = req.params.id;
+  const query = `UPDATE "supacolor_jobs" SET "perm_delete" = true, "canceled" = false, "fake_delete" = false, "active" = false, "complete" = false WHERE "supacolor_jobs".job_id = $1`;
+  pool
+    .query(query, [jobId])
     .then(() => res.sendStatus(200))
     .catch((error) => {
-      console.log("Error Marking Job Deleted", error);
+      console.log("Error Marking Job Canceled", error);
       res.status(500).send("Internal server error");
     });
 });
-router.put("/mark-job-complete", async (req, res) => {
-  const jobIds = req.body;
-  const queries = jobIds.map((jobId) => {
-    const query = `UPDATE "supacolor_jobs" SET "complete" = true, "canceled" = false, "fake_delete" = false, "active" = false WHERE "supacolor_jobs".job_id = $1`;
-    return pool.query(query, [jobId]);
-  });
-  Promise.all(queries)
+router.put("/mark-job-complete/:id", async (req, res) => {
+  const jobId = req.params.id;
+  const query = `UPDATE "supacolor_jobs" SET "complete" = true, "canceled" = false, "fake_delete" = false, "active" = false WHERE "supacolor_jobs".job_id = $1`;
+  pool
+    .query(query, [jobId])
     .then(() => res.sendStatus(200))
     .catch((error) => {
-      console.log("Error Marking Job Complete", error);
+      console.log("Error Marking Job Canceled", error);
       res.status(500).send("Internal server error");
     });
 });
 
-router.put("/mark-job-archived", async (req, res) => {
-  const jobIds = req.body;
-  const queries = jobIds.map((jobId) => {
-    const query = `UPDATE "supacolor_jobs" SET "fake_delete" = true, "canceled" = false, "active" = false, "complete" = false WHERE "supacolor_jobs".job_id = $1`;
-    return pool.query(query, [jobId]);
-  });
-  Promise.all(queries)
+router.put("/mark-job-archived/:id", async (req, res) => {
+  const jobId = req.params.id;
+  const query = `UPDATE "supacolor_jobs" SET "fake_delete" = true, "canceled" = false, "active" = false, "complete" = false WHERE "supacolor_jobs".job_id = $1`;
+  pool
+    .query(query, [jobId])
     .then(() => res.sendStatus(200))
     .catch((error) => {
-      console.log("Error Marking Job Archived", error);
+      console.log("Error Marking Job Canceled", error);
       res.status(500).send("Internal server error");
     });
 });

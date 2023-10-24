@@ -227,38 +227,69 @@ function* markJobArchived(action) {
 }
 
 function* markJobActive(action) {
-  // console.log(action.payload);
+  let jobId;
+  for (let i = 0; i < action.payload.length; i++) {
+    jobId = action.payload[i];
+    try {
+      yield axios.put(`/supacolor-api/mark-job-active/${jobId}`);
+    } catch (err) {
+      console.log("Error Marking Job as Complete", err);
+    }
+  }
   try {
-    yield axios.put("/supacolor-api/mark-job-active", action.payload);
     yield put({ type: "FETCH_JOBS_LIST" });
   } catch (error) {
-    console.log("Error Marking jobs Active", error);
+    console.log("Error Marking Jobs Canceled", error);
   }
 }
 
 function* markJobDeleted(action) {
+  let jobId;
+  for (let i = 0; i < action.payload.length; i++) {
+    jobId = action.payload[i];
+    try {
+      yield axios.put(`/supacolor-api/mark-job-deleted/${jobId}`);
+    } catch (err) {
+      console.log("Error Marking Job as Complete", err);
+    }
+  }
   try {
-    yield axios.put("/supacolor-api/mark-job-deleted", action.payload);
     yield put({ type: "FETCH_JOBS_LIST" });
   } catch (error) {
-    console.log("Error Fake Deleting Jobs", error);
+    console.log("Error Marking Jobs Canceled", error);
   }
 }
 function* markJobComplete(action) {
+  let jobId;
+  for (let i = 0; i < action.payload.length; i++) {
+    jobId = action.payload[i];
+    try {
+      yield axios.put(`/supacolor-api/mark-job-complete/${jobId}`);
+    } catch (err) {
+      console.log("Error Marking Job as Complete", err);
+    }
+  }
   try {
-    yield axios.put("/supacolor-api/mark-job-complete", action.payload);
     yield put({ type: "FETCH_JOBS_LIST" });
   } catch (error) {
-    console.log("Error Marking Jobs Complete", error);
+    console.log("Error Marking Jobs Canceled", error);
   }
 }
 
 function* markJobCanceled(action) {
+  let jobId;
+  for (let i = 0; i < action.payload.length; i++) {
+    jobId = action.payload[i];
+    try {
+      yield axios.put(`/supacolor-api/mark-job-canceled/${jobId}`);
+    } catch (err) {
+      console.log("Error Recovering Deleted Jobs", err);
+    }
+  }
   try {
-    yield axios.put("/supacolor-api/mark-job-canceled", action.payload);
     yield put({ type: "FETCH_JOBS_LIST" });
-  } catch (err) {
-    console.log("Error Recovering Deleted Jobs", err);
+  } catch (error) {
+    console.log("Error Marking Jobs Canceled", error);
   }
 }
 
