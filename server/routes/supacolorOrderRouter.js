@@ -386,7 +386,7 @@ router.post("/upload-artwork/:jobId", upload.any(), async (req, res) => {
 
 /* Once we upload the artwork to supacolor we want to indicate that on the frontend by changing the boolean values for our copy of the job which will have an "needs_artwork" column which is what we are updating with this route */
 
-router.put("/update-needs-artwork/:id", async (req, res) => {
+router.put("/update-needs-artwork/:id", (req, res) => {
   const jobId = req.params.id;
   const query = `
     UPDATE "supacolor_jobs"
@@ -503,7 +503,7 @@ router.post("/new-job", async (req, res) => {
 
 /* This is our route to get a specific jobs details to be able to look at on the frontend. This is coming from our Digital Ocean DB */
 
-router.get("/get-job-details/:id", async (req, res) => {
+router.get("/get-job-details/:id", (req, res) => {
   const query = `
         SELECT 
     "artwork_upload_response".*,
@@ -537,7 +537,7 @@ GROUP BY
 
 /* This get is fetching our jobs that we put into the Digital Ocean DB to list on the frontend in the admin app */
 
-router.get("/get-jobs", async (req, res) => {
+router.get("/get-jobs", (req, res) => {
   const query = `
   SELECT 
   "supacolor_jobs".*,
@@ -567,7 +567,7 @@ GROUP BY
     .catch((error) => console.log("Error Getting Jobs", err));
 });
 
-router.put("/mark-job-canceled/:id", async (req, res) => {
+router.put("/mark-job-canceled/:id", (req, res) => {
   const jobId = req.params.id;
 
   const query = `UPDATE "supacolor_jobs" SET "canceled" = true, "fake_delete" = false, "active" = false, "complete" = false WHERE "supacolor_jobs".job_id = $1`;
@@ -581,7 +581,7 @@ router.put("/mark-job-canceled/:id", async (req, res) => {
     });
 });
 
-router.put("/mark-job-active/:id", async (req, res) => {
+router.put("/mark-job-active/:id", (req, res) => {
   const jobId = req.params.id;
   const query = `UPDATE "supacolor_jobs" SET "active" = true, "canceled" = false, "fake_delete" = false, "complete" = false WHERE "supacolor_jobs".job_id = $1`;
   pool
@@ -593,7 +593,7 @@ router.put("/mark-job-active/:id", async (req, res) => {
     });
 });
 
-router.put("/mark-job-deleted/:id", async (req, res) => {
+router.put("/mark-job-deleted/:id", (req, res) => {
   const jobId = req.params.id;
   const query = `UPDATE "supacolor_jobs" SET "perm_delete" = true, "canceled" = false, "fake_delete" = false, "active" = false, "complete" = false WHERE "supacolor_jobs".job_id = $1`;
   pool
@@ -604,7 +604,7 @@ router.put("/mark-job-deleted/:id", async (req, res) => {
       res.status(500).send("Internal server error");
     });
 });
-router.put("/mark-job-complete/:id", async (req, res) => {
+router.put("/mark-job-complete/:id", (req, res) => {
   const jobId = req.params.id;
   const query = `UPDATE "supacolor_jobs" SET "complete" = true, "canceled" = false, "fake_delete" = false, "active" = false WHERE "supacolor_jobs".job_id = $1`;
   pool
@@ -616,7 +616,7 @@ router.put("/mark-job-complete/:id", async (req, res) => {
     });
 });
 
-router.put("/mark-job-archived/:id", async (req, res) => {
+router.put("/mark-job-archived/:id", (req, res) => {
   const jobId = req.params.id;
   const query = `UPDATE "supacolor_jobs" SET "fake_delete" = true, "canceled" = false, "active" = false, "complete" = false WHERE "supacolor_jobs".job_id = $1`;
   pool
