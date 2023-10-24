@@ -33,7 +33,7 @@ if (process.env.DATABASE_URL) {
     password: process.env.PG_PASSWORD,
     host:
       "localhost" ||
-      "app-27425cfb-c67d-4082-aa02-effa3f0e556e-do-user-8379856-0.b.db.ondigitalocean.com",
+      "app-9fd3b5de-e10d-4892-a837-918a0dcdab15-do-user-8379856-0.b.db.ondigitalocean.com",
     port: 5432 || 25060,
     database: process.env.DATABASE_NAME || "db",
     max: 10, // max number of clients in the pool
