@@ -211,3 +211,19 @@ form {
 .jss45 {
   display: none;
 }
+
+.formPanel {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+.form-inputs {
+  display: flex;
+  justify-content: space-evenly;
+}
+
+.form-group {
+  margin: 20px 10px 0 10px;
+}

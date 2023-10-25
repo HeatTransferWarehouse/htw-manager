@@ -130,6 +130,7 @@ function Supacolor() {
     canceledTableView,
     completedTableView,
     activeTableView,
+    allJobsTableView,
   ]);
 
   const handleSort = (field) => {
@@ -165,12 +166,10 @@ function Supacolor() {
       <br />
       <br />
       <br />
-      <br />
-      <br />
 
       <Paper
         style={{
-          maxWidth: "1400px",
+          maxWidth: "1200px",
           width: "90%",
           margin: "auto",
           padding: "1em",
@@ -208,7 +207,7 @@ function Supacolor() {
         />
         <TableContainer
           style={{
-            maxHeight: "806px",
+            maxHeight: "880px",
             overflow: "auto",
             position: "relative",
           }}>

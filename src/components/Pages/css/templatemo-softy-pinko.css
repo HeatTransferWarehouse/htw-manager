@@ -442,7 +442,7 @@ header
 */
 .header-area {
   position: fixed;
-  top: 30px;
+  top: 10px;
   left: 0px;
   right: 0px;
   z-index: 100;

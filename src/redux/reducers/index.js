@@ -1,12 +1,10 @@
-import { combineReducers } from 'redux';
-import item from './itemReducer';
-import redirect from './redirectReducer';
-import error from './errorsReducer';
-import login from './loginModeReducer';
-import user from './userReducer';
-import nostock from './nostockReducer';
-import affiliate from './affiliateReducer';
-import queue from './queueReducer';
+import { combineReducers } from "redux";
+import item from "./itemReducer";
+import redirect from "./redirectReducer";
+import error from "./errorsReducer";
+import login from "./loginModeReducer";
+import user from "./userReducer";
+import queue from "./queueReducer";
 
 // rootReducer is the primary reducer for our entire project
 // It bundles up all of the other reducers so our project can use them.
@@ -20,9 +18,7 @@ const rootReducer = combineReducers({
   error,
   login,
   user,
-  nostock,
-  affiliate,
-  queue
+  queue,
 });
 
 export default rootReducer;

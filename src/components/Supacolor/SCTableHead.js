@@ -18,9 +18,9 @@ export default function SCTableHead({
       }}>
       <TableRow style={{ borderBottom: "1px solid rgb(217, 217, 217)" }}>
         <TableCell style={{ width: "5%" }}></TableCell>
-        <TableCell style={{ width: "15.8%%" }}>
+        <TableCell style={{ width: "18%" }}>
           <Button
-            style={{ width: "73%" }}
+            style={{ width: "80%" }}
             className="th-btns"
             onClick={() => {
               handleSort("customer_name");
@@ -38,9 +38,9 @@ export default function SCTableHead({
             )}
           </Button>
         </TableCell>
-        <TableCell style={{ width: "15.8%" }}>
+        <TableCell style={{ width: "13%" }}>
           <Button
-            style={{ width: "45%" }}
+            style={{ width: "80%" }}
             className="th-btns"
             onClick={() => {
               handleSort("customerReference");
@@ -58,9 +58,9 @@ export default function SCTableHead({
             )}
           </Button>
         </TableCell>
-        <TableCell style={{ width: "15.8%" }}>
+        <TableCell style={{ width: "13%" }}>
           <Button
-            style={{ width: "40%" }}
+            style={{ width: "80%" }}
             className="th-btns"
             onClick={() => {
               handleSort("jobId");
@@ -78,9 +78,9 @@ export default function SCTableHead({
             )}
           </Button>
         </TableCell>
-        <TableCell style={{ width: "15.8%" }}>
+        <TableCell style={{ width: "20%" }}>
           <Button
-            style={{ width: "43%" }}
+            style={{ width: "80%" }}
             className="status-container"
             onClick={() => {
               handleSort("status");
@@ -98,9 +98,9 @@ export default function SCTableHead({
             )}
           </Button>
         </TableCell>
-        <TableCell style={{ width: "15.8%" }}>
+        <TableCell style={{ width: "15%" }}>
           <Button
-            style={{ width: "50%" }}
+            style={{ width: "80%" }}
             onClick={() => {
               handleSort("dateDue");
               setSort(true);
@@ -117,7 +117,7 @@ export default function SCTableHead({
             )}
           </Button>
         </TableCell>
-        <TableCell style={{ width: "15.8%" }}></TableCell>
+        <TableCell style={{ width: "16%" }}></TableCell>
       </TableRow>
     </TableHead>
   );

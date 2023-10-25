@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 import { connect } from "react-redux";
-import { Button, Grid } from "@material-ui/core";
+import { Grid } from "@material-ui/core";
 import { Alert } from "@material-ui/lab";
 import "./LoginPage.css";
 

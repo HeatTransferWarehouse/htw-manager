@@ -2,7 +2,8 @@ import React from "react";
 import { Button, MenuItem, Select } from "@material-ui/core";
 import SearchBar from "material-ui-search-bar";
 import { BiSolidInfoCircle } from "react-icons/bi";
-import { set } from "ol/transform";
+import searchFunction from "./HelperFunc/Search";
+import dropDownFunction from "./HelperFunc/DropDown";
 
 export default function SCTableHeader({
   deletedTableView,
@@ -35,37 +36,14 @@ export default function SCTableHeader({
   searched,
 }) {
   const handleDropdownChange = (e) => {
-    if (e.target.value === "deleted") {
-      setDeletedTableView(true);
-      setCanceledTableView(false);
-      setActiveTableView(false);
-      setCompletedTableView(false);
-      setAllJobsTableView(false);
-    } else if (e.target.value === "current") {
-      setCompletedTableView(false);
-      setActiveTableView(true);
-      setDeletedTableView(false);
-      setCanceledTableView(false);
-      setAllJobsTableView(false);
-    } else if (e.target.value === "cancelled") {
-      setCanceledTableView(true);
-      setActiveTableView(false);
-      setDeletedTableView(false);
-      setCompletedTableView(false);
-      setAllJobsTableView(false);
-    } else if (e.target.value === "complete") {
-      setCanceledTableView(false);
-      setActiveTableView(false);
-      setDeletedTableView(false);
-      setCompletedTableView(true);
-      setAllJobsTableView(false);
-    } else if (e.target.value === "all") {
-      setCanceledTableView(false);
-      setActiveTableView(false);
-      setDeletedTableView(false);
-      setCompletedTableView(false);
-      setAllJobsTableView(true);
-    }
+    dropDownFunction(
+      e,
+      setDeletedTableView,
+      setCanceledTableView,
+      setActiveTableView,
+      setCompletedTableView,
+      setAllJobsTableView
+    );
   };
   const markJobCanceled = () => {
     if (checkedJobs)
@@ -112,106 +90,24 @@ export default function SCTableHeader({
     if (jobAction === "complete") markJobComplete();
   };
   const requestSearch = (searchVal) => {
-    if (activeTableView) {
-      const filtered = activeJobsList.filter((job) => {
-        return (
-          job.job_line_details[0].customer_reference
-            .split(":")[0]
-            .trim()
-            .toLowerCase()
-            .includes(searchVal.toLowerCase()) ||
-          job.job_id
-            .toString()
-            .toLowerCase()
-            .includes(searchVal.toLowerCase()) ||
-          job.customer_name
-            .toString()
-            .toLowerCase()
-            .includes(searchVal.toLowerCase())
-        );
-      });
-      setFilteredActiveJobs(filtered);
-    }
-    if (deletedTableView) {
-      const filtered = deletedJobsList.filter((job) => {
-        return (
-          job.job_line_details[0].customer_reference
-            .split(":")[0]
-            .trim()
-            .toLowerCase()
-            .includes(searchVal.toLowerCase()) ||
-          job.job_id
-            .toString()
-            .toLowerCase()
-            .includes(searchVal.toLowerCase()) ||
-          job.customer_name
-            .toString()
-            .toLowerCase()
-            .includes(searchVal.toLowerCase())
-        );
-      });
-      setFilteredDeletedJobs(filtered);
-    }
-    if (canceledTableView) {
-      const filtered = canceledJobsList.filter((job) => {
-        return (
-          job.job_line_details[0].customer_reference
-            .split(":")[0]
-            .trim()
-            .toLowerCase()
-            .includes(searchVal.toLowerCase()) ||
-          job.job_id
-            .toString()
-            .toLowerCase()
-            .includes(searchVal.toLowerCase()) ||
-          job.customer_name
-            .toString()
-            .toLowerCase()
-            .includes(searchVal.toLowerCase())
-        );
-      });
-      setFilteredCanceledJobs(filtered);
-    }
-    if (completedTableView) {
-      const filtered = completedJobsList.filter((job) => {
-        return (
-          job.job_line_details[0].customer_reference
-            .split(":")[0]
-            .trim()
-            .toLowerCase()
-            .includes(searchVal.toLowerCase()) ||
-          job.job_id
-            .toString()
-            .toLowerCase()
-            .includes(searchVal.toLowerCase()) ||
-          job.customer_name
-            .toString()
-            .toLowerCase()
-            .includes(searchVal.toLowerCase())
-        );
-      });
-      setFilteredCompletedJobs(filtered);
-    }
-    if (allJobsTableView) {
-      const filtered = jobs.filter((job) => {
-        return (
-          job.job_line_details[0].customer_reference
-            .split(":")[0]
-            .trim()
-            .toLowerCase()
-            .includes(searchVal.toLowerCase()) ||
-          job.job_id
-            .toString()
-            .toLowerCase()
-            .includes(searchVal.toLowerCase()) ||
-          job.customer_name
-            .toString()
-            .toLowerCase()
-            .includes(searchVal.toLowerCase())
-        );
-      });
-      setFilteredJobs(filtered);
-    }
+    searchFunction(
+      activeTableView,
+      deletedTableView,
+      canceledTableView,
+      completedTableView,
+      allJobsTableView,
+      activeJobsList,
+      deletedJobsList,
+      canceledJobsList,
+      completedJobsList,
+      jobs,
+      searchVal,
+      setFilteredActiveJobs,
+      setFilteredDeletedJobs,
+      setFilteredCanceledJobs,
+      setFilteredCompletedJobs,
+      setFilteredJobs
+    );
   };
 
   const cancelSearch = () => {
@@ -262,7 +158,7 @@ export default function SCTableHeader({
             onCancelSearch={() => cancelSearch()}
           />
           <Select
-            style={{ marginLeft: "10px", width: "200px" }}
+            style={{ marginLeft: "10px", width: "200px", marginBottom: "5px" }}
             value={tableValue}
             label="Table View"
             onChange={handleDropdownChange}>
@@ -286,10 +182,10 @@ export default function SCTableHeader({
             <div className="actions-options">
               {deletedTableView ? (
                 <Select
-                  style={{ width: "125px" }}
+                  style={{ width: "110px", marginBottom: "5px" }}
                   onChange={handleJobAction}
                   value={jobAction}>
-                  <MenuItem value={"default"}>Select Action</MenuItem>
+                  <MenuItem value={"default"}>Select Tag</MenuItem>
                   <MenuItem value={"active"}>Active</MenuItem>
                   <MenuItem value={"cancel"}>Cancelled</MenuItem>
                   <MenuItem value={"complete"}>Completed</MenuItem>
@@ -297,10 +193,10 @@ export default function SCTableHeader({
                 </Select>
               ) : canceledTableView ? (
                 <Select
-                  style={{ width: "125px" }}
+                  style={{ width: "110px", marginBottom: "5px" }}
                   onChange={handleJobAction}
                   value={jobAction}>
-                  <MenuItem value={"default"}>Select Action</MenuItem>
+                  <MenuItem value={"default"}>Select Tag</MenuItem>
                   <MenuItem value={"active"}>Active</MenuItem>
                   <MenuItem value={"archive"}>Archive</MenuItem>
                   <MenuItem value={"complete"}>Completed</MenuItem>
@@ -308,10 +204,10 @@ export default function SCTableHeader({
                 </Select>
               ) : activeTableView ? (
                 <Select
-                  style={{ width: "125px" }}
+                  style={{ width: "110px", marginBottom: "5px" }}
                   onChange={handleJobAction}
                   value={jobAction}>
-                  <MenuItem value={"default"}>Select Action</MenuItem>
+                  <MenuItem value={"default"}>Select Tag</MenuItem>
                   <MenuItem value={"archive"}>Archive</MenuItem>
                   <MenuItem value={"cancel"}>Cancelled</MenuItem>
                   <MenuItem value={"complete"}>Completed</MenuItem>
@@ -319,10 +215,10 @@ export default function SCTableHeader({
                 </Select>
               ) : (
                 <Select
-                  style={{ width: "125px" }}
+                  style={{ width: "110px", marginBottom: "5px" }}
                   onChange={handleJobAction}
                   value={jobAction}>
-                  <MenuItem value={"default"}>Select Action</MenuItem>
+                  <MenuItem value={"default"}>Select Tag</MenuItem>
                   <MenuItem value={"active"}>Active</MenuItem>
                   <MenuItem value={"archive"}>Archive</MenuItem>
                   <MenuItem value={"cancel"}>Cancelled</MenuItem>
@@ -332,13 +228,15 @@ export default function SCTableHeader({
               )}
               {jobAction === "delete" ? (
                 <Button
-                  variant="danger"
+                  style={{ marginBottom: "5px" }}
+                  variant="contained"
                   color="secondary"
                   onClick={handleJobDestination}>
-                  Save
+                  Delete
                 </Button>
               ) : jobAction ? (
                 <Button
+                  style={{ marginBottom: "5px" }}
                   variant="contained"
                   color="primary"
                   onClick={handleJobDestination}>
@@ -346,6 +244,7 @@ export default function SCTableHeader({
                 </Button>
               ) : (
                 <Button
+                  style={{ marginBottom: "5px" }}
                   disabled
                   variant="contained"
                   onClick={handleJobDestination}>

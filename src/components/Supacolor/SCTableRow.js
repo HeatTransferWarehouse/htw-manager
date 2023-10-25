@@ -13,7 +13,16 @@ export default function SCTableRow({
   viewJobDetails,
 }) {
   return (
-    <TableRow style={{ backgroundColor: "white" }} key={index}>
+    <TableRow
+      style={{
+        border: "5px solid white",
+        backgroundColor: job.expecting_artwork
+          ? "rgba(255, 0, 0, 0.108)"
+          : job.canceled
+          ? "rgba(0, 0, 0, 0.108)"
+          : "rgba(21, 255, 0, 0.108)",
+      }}
+      key={index}>
       <TableCell>
         <input
           className="checkbox-input"
@@ -41,9 +50,11 @@ export default function SCTableRow({
       <TableCell>{job.job_id}</TableCell>
       <TableCell>
         {job.expecting_artwork ? (
-          <div className="needs-artwork">NEEDS ARTWORK</div>
+          <div className="needs-artwork">ARTWORK NEEDED</div>
+        ) : job.canceled ? (
+          <div className="job-canceled">CANCELED</div>
         ) : (
-          <div className="artwork-uploaded">COMPLETE</div>
+          <div className="artwork-uploaded">ARTWORK UPLOADED</div>
         )}
       </TableCell>
       <TableCell>{job.date_due}</TableCell>
@@ -67,7 +78,7 @@ export default function SCTableRow({
             }>
             Upload Images
           </Button>
-        ) : (
+        ) : job.canceled ? null : (
           <Button
             style={{
               width: "170px",

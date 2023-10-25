@@ -1,12 +1,9 @@
-import { all } from 'redux-saga/effects';
-import ItemSaga from './ItemSaga';
-import LoginSaga from './loginSaga';
-import RegisterSaga from './registrationSaga';
-import UserSaga from './userSaga';
-import NoStockSaga from './nostockSaga';
-import affiliateSaga from './affiliateSaga';
-import QueueItemSaga from './QueueItemSaga';
-
+import { all } from "redux-saga/effects";
+import ItemSaga from "./ItemSaga";
+import LoginSaga from "./loginSaga";
+import RegisterSaga from "./registrationSaga";
+import UserSaga from "./userSaga";
+import QueueItemSaga from "./QueueItemSaga";
 
 // rootSaga is the primary saga.
 // It bundles up all of the other sagas so our project can use them.
@@ -17,8 +14,6 @@ export default function* rootSaga() {
     LoginSaga(),
     RegisterSaga(),
     UserSaga(),
-    NoStockSaga(),
-    affiliateSaga(),
-    QueueItemSaga()
+    QueueItemSaga(),
   ]);
 }

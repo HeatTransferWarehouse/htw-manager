@@ -49,12 +49,6 @@
   font-size: 30px;
 }
 
-.th-btns {
-  width: 50%;
-  display: flex;
-  justify-content: space-between;
-}
-
 .img-upload-close-btn {
   position: absolute;
   display: flex;
@@ -153,11 +147,15 @@
   }
 }
 
+.job-canceled {
+  background-color: rgb(133, 133, 133);
+}
+
 .needs-artwork,
 .artwork-uploaded,
-.cancelled {
+.job-canceled {
   color: white;
-  width: 150px;
+  width: 160px;
   height: 38px;
   display: flex;
   justify-content: center;
@@ -350,15 +348,18 @@
 
 .supacolor-table-head {
   width: 100%;
+  height: 75px;
   display: flex;
   justify-content: space-between;
-  align-items: center;
+  align-items: flex-end;
 }
 
 .supacolor-info-icon {
   margin-right: 1em;
+  margin-bottom: 5px;
   transition: 0.2s;
   color: rgb(164, 164, 164);
+  z-index: 9999;
 }
 .supacolor-info-icon:hover {
   cursor: pointer;

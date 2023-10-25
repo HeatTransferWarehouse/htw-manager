@@ -9,8 +9,6 @@ function Nav() {
   const [resources, setResources] = useState(false);
   const [sanMar, setSanMar] = useState(false);
   const [brightPearl, setBrightPearl] = useState(false);
-  // const [noStock, setNoStock] = useState(false);
-  const [affiliates, setAffiliates] = useState(false);
   const [decoQueue, setDecoQueue] = useState(false);
   const [admin, setAdmin] = useState(false);
   const [supacolor, setSupacolor] = useState(false);
@@ -21,8 +19,6 @@ function Nav() {
     setResources(false);
     setSanMar(false);
     setBrightPearl(false);
-    // setNoStock(false);
-    setAffiliates(false);
     setDecoQueue(false);
     setAdmin(false);
     setSupacolor(false);
