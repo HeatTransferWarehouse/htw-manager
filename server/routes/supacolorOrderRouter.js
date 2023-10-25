@@ -184,9 +184,12 @@ function createSupacolorPayload(
       quantity: item.quantity,
       attributes: {
         description: "",
-        garment: item.product_options[4].display_value_customer,
+        garment:
+          item.product_options[4].display_value_customer +
+          " - " +
+          item.product_options[5].display_value_customer,
         colors: "CMYK",
-        size: item.product_options[5].display_value_customer,
+        size: "SIZED ON SHEET",
         ...(priceCodes[index].includes("Headwear")
           ? { "Cap Type": item.product_options[7].display_value_customer }
           : {}),
@@ -194,6 +197,7 @@ function createSupacolorPayload(
       CustomerReference: `${orderId}: ${index + 1}`,
     })),
   };
+  console.log(supacolorPayload.items);
   if (
     orderDetails.custom_status === "Cancelled" ||
     orderDetails.custom_status === "Refunded" ||
