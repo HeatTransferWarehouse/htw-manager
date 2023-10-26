@@ -112,6 +112,84 @@ function findSupacolorProductsOnOrder(productArray) {
   }
 }
 
+async function getOrderCoupons(
+  supacolorProducts,
+  priceCodes,
+  orderId,
+  orderDetails,
+  shippingMethod
+) {
+  try {
+    const headers = {
+      "Content-Type": "application/json",
+      "X-Auth-Token": process.env.BG_AUTH_TOKEN,
+    };
+
+    const url = `https://api.bigcommerce.com/stores/${process.env.STORE_HASH}/v2/orders/${orderId}/coupons`;
+
+    const response = await axios.get(url, { headers });
+
+    if (response.status === 200) {
+      const promoCode = response.data;
+      console.log("Sucessfully got coupons");
+
+      createSupacolorPayload(
+        supacolorProducts,
+        priceCodes,
+        orderId,
+        orderDetails,
+        shippingMethod,
+        promoCode
+      );
+    } else {
+      console.log("No coupons on order");
+      const promoCode = "";
+      createSupacolorPayload(
+        supacolorProducts,
+        priceCodes,
+        orderId,
+        orderDetails,
+        shippingMethod,
+        promoCode
+      );
+    }
+  } catch (error) {
+    console.log(`Error getting coupons for Order ${orderId}`, error);
+  }
+}
+
+async function getOrderShippingDetails(
+  supacolorProducts,
+  priceCodes,
+  orderId,
+  orderDetails
+) {
+  try {
+    const headers = {
+      "Content-Type": "application/json",
+      "X-Auth-Token": process.env.BG_AUTH_TOKEN,
+    };
+
+    const url = `https://api.bigcommerce.com/stores/${process.env.STORE_HASH}/v2/orders/${orderId}/shipping_addresses`;
+
+    const response = await axios.get(url, { headers });
+
+    if (response.status === 200) {
+      const shippingMethod = response.data;
+      console.log("SC Products", supacolorProducts);
+      getOrderCoupons(
+        supacolorProducts,
+        priceCodes,
+        orderId,
+        orderDetails,
+        shippingMethod
+      );
+    }
+  } catch (error) {
+    console.log("Error getting shipping details", error);
+  }
+}
+
 // Retrieving order details (i.e. address, name). We only run this if we find Supacolor product(s) on the order.
 async function getOrderDetails(supacolorProducts, orderId) {
   try {
@@ -131,7 +209,7 @@ async function getOrderDetails(supacolorProducts, orderId) {
       // Wait for getPriceCodesFromMultipleSkus to complete
       const priceCodes = await getPriceCodesFromMultipleSkus(supacolorProducts);
 
-      createSupacolorPayload(
+      getOrderShippingDetails(
         supacolorProducts,
         priceCodes,
         orderId,
@@ -143,11 +221,13 @@ async function getOrderDetails(supacolorProducts, orderId) {
       logtail.error(
         `Error fetching order details ${orderId}: ${response.status}`
       );
+
       return null;
     }
   } catch (error) {
     // Log the error if the request fails
     logtail.error(`Failed to fetch order details ${orderId}: ${error.message}`);
+    console.log("Error fetching order details", error);
     return null;
   }
 }
@@ -156,9 +236,12 @@ function createSupacolorPayload(
   supacolorProducts,
   priceCodes,
   orderId,
-  orderDetails
+  orderDetails,
+  shippingMethod,
+  promoCode
 ) {
   let personalInfo = orderDetails.billing_address;
+  console.log("Product", supacolorProducts);
 
   const supacolorPayload = {
     orderNumber: `Order# ${orderId}`,
@@ -166,8 +249,10 @@ function createSupacolorPayload(
     mustDate: false,
     description: "",
     deliveryAddress: {
-      deliveryMethod: "Next Day Air",
-      Organisation: personalInfo.company,
+      deliveryMethod: shippingMethod.includes("Next Day")
+        ? "FedEx® (Next Day Air)"
+        : "FedEx® (2 Day Air)",
+      Organisation: `${personalInfo.first_name} ${personalInfo.last_name}`,
       contactName: `${personalInfo.first_name} ${personalInfo.last_name}`,
       phone: personalInfo.phone,
       emailAddress: personalInfo.email,
@@ -178,6 +263,8 @@ function createSupacolorPayload(
       state: personalInfo.state,
       postalCode: personalInfo.zip,
     },
+    promocode:
+      promoCode && promoCode[0].code.includes("SUPA") ? promoCode[0].code : "",
     items: supacolorProducts.map((item, index) => ({
       itemType: "PriceCode",
       code: priceCodes[index],
@@ -185,19 +272,24 @@ function createSupacolorPayload(
       attributes: {
         description: "",
         garment:
-          item.product_options[4].display_value_customer +
+          item.product_options.filter(
+            (opt) => opt.display_name === "Garment Color"
+          )[0].display_value +
           " - " +
-          item.product_options[5].display_value_customer,
+          item.product_options.filter(
+            (opt) =>
+              opt.display_name === "Garment Type (ex: Cotton, Polyester, etc)"
+          )[0].display_value,
         colors: "CMYK",
         size: "SIZED ON SHEET",
         ...(priceCodes[index].includes("Headwear")
-          ? { "Cap Type": item.product_options[7].display_value_customer }
+          ? { "Cap Type": capTypeOption[0][0].display_value }
           : {}),
       },
       CustomerReference: `${orderId}: ${index + 1}`,
     })),
   };
-  console.log(supacolorPayload.items);
+
   if (
     orderDetails.custom_status === "Cancelled" ||
     orderDetails.custom_status === "Refunded" ||
@@ -573,7 +665,6 @@ GROUP BY
 
 router.put("/mark-job-canceled/:id", (req, res) => {
   const jobId = Number(req.params.id);
-  console.log(jobId);
   const query = `UPDATE "supacolor_jobs" SET "canceled" = true, "fake_delete" = false, "active" = false, "complete" = false WHERE "supacolor_jobs".job_id = $1`;
 
   pool
