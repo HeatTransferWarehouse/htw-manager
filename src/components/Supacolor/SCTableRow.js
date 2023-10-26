@@ -12,6 +12,12 @@ export default function SCTableRow({
   imageUpload,
   viewJobDetails,
 }) {
+  const sendToSupacolor = (jobId) => {
+    window.open(
+      `https://secure.supacolor.com/secure/viewJob.aspx?ID=${jobId}`,
+      "_blank"
+    );
+  };
   return (
     <TableRow
       style={{
@@ -47,7 +53,13 @@ export default function SCTableRow({
           {job.order_id}
         </button>
       </TableCell>
-      <TableCell>{job.job_id}</TableCell>
+      <TableCell>
+        <button
+          className="orderNumber-btn"
+          onClick={() => sendToSupacolor(job.job_id)}>
+          {job.job_id}
+        </button>
+      </TableCell>
       <TableCell>
         {job.expecting_artwork ? (
           <div className="needs-artwork">ARTWORK NEEDED</div>
