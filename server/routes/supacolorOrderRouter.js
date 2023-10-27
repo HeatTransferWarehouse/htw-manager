@@ -119,20 +119,16 @@ async function getOrderCoupons(
   orderDetails,
   shippingMethod
 ) {
+  const url = `https://api.bigcommerce.com/stores/${process.env.STORE_HASH}/v2/orders/${orderId}/coupons`;
+  const headers = {
+    "X-Auth-Token": process.env.BG_AUTH_TOKEN,
+  };
   try {
-    const headers = {
-      "Content-Type": "application/json",
-      "X-Auth-Token": process.env.BG_AUTH_TOKEN,
-    };
-
-    const url = `https://api.bigcommerce.com/stores/${process.env.STORE_HASH}/v2/orders/${orderId}/coupons`;
-
     const response = await axios.get(url, { headers });
-
-    if (response.status === 200) {
+    if (!response.data === undefined) {
       const promoCode = response.data;
-      console.log("Sucessfully got coupons");
 
+      console.log(promoCode);
       createSupacolorPayload(
         supacolorProducts,
         priceCodes,
@@ -142,8 +138,8 @@ async function getOrderCoupons(
         promoCode
       );
     } else {
-      console.log("No coupons on order");
       const promoCode = "";
+      console.log(promoCode);
       createSupacolorPayload(
         supacolorProducts,
         priceCodes,
@@ -154,7 +150,7 @@ async function getOrderCoupons(
       );
     }
   } catch (error) {
-    console.log(`Error getting coupons for Order ${orderId}`, error);
+    console.log(`Error getting coupons for Order ${orderId}`, error.message);
   }
 }
 
@@ -176,7 +172,6 @@ async function getOrderShippingDetails(
 
     if (response.status === 200) {
       const shippingMethod = response.data;
-      console.log("SC Products", supacolorProducts);
       getOrderCoupons(
         supacolorProducts,
         priceCodes,
@@ -241,7 +236,6 @@ function createSupacolorPayload(
   promoCode
 ) {
   let personalInfo = orderDetails.billing_address;
-  console.log("Product", supacolorProducts);
 
   const supacolorPayload = {
     orderNumber: orderId,
@@ -272,45 +266,37 @@ function createSupacolorPayload(
       attributes: {
         description: "",
         garment:
-          item.product_options.filter(
-            (opt) => opt.display_name === "Garment Color"
-          )[0].display_value +
-          " - " +
-          item.product_options.filter(
-            (opt) =>
-              opt.display_name === "Garment Type (ex: Cotton, Polyester, etc)"
-          )[0].display_value,
+          item.product_options.filter((opt) =>
+            opt.display_name_customer.includes("Garment Color")
+          )[0].display_value_customer +
+          "- " +
+          item.product_options.filter((opt) =>
+            opt.display_name_customer.includes("Garment Type")
+          )[0].display_value_customer,
         colors: "CMYK",
         size: "SIZED ON SHEET",
         ...(priceCodes[index].includes("Headwear")
-          ? { "Cap Type": capTypeOption[0][0].display_value }
+          ? {
+              "Cap Type": item.product_options.filter((opt) =>
+                opt.display_name_customer.includes("Headwear")
+              )[0].display_value_customer,
+            }
           : {}),
       },
       CustomerReference: `${orderId}: ${index + 1}`,
     })),
   };
+  // console.log(supacolorPayload.orderNumber);
+  // console.log(promoCode);
 
-  if (
-    orderDetails.custom_status === "Cancelled" ||
-    orderDetails.custom_status === "Refunded" ||
-    orderDetails.custom_status === "Awaiting Fulfillment" ||
-    orderDetails.custom_status === "Shipped" ||
-    orderDetails.custom_status === "Declined" ||
-    orderDetails.custom_status === "Awaiting Payment" ||
-    orderDetails.custom_status === "Completed" ||
-    orderDetails.custom_status === "Partially Refunded"
-  ) {
-    return null;
-  } else {
-    sendOrderToSupacolor(supacolorPayload, supacolorProducts);
-  }
+  sendOrderToSupacolor(supacolorPayload, supacolorProducts);
 }
 
 /* We will also take the response of this job information and store it in our Digital Ocean database as a copy on the frontend for our Admin App which is where we will be uploading the artwork for a given order*/
 
 async function sendOrderToSupacolor(supacolorPayload, supacolorProducts) {
   //
-  const orderId = supacolorPayload.orderNumber.split("# ")[1];
+  const orderId = supacolorPayload.orderNumber;
 
   const isOrderIdInDatabase = await checkorderIdInDatabase(Number(orderId));
 
@@ -337,7 +323,7 @@ async function sendOrderToSupacolor(supacolorPayload, supacolorProducts) {
         console.log("Job Successfully Created");
         const supacolourJob = {
           jobNumber: response.data.jobNumber,
-          orderId: supacolorPayload.orderNumber.split("# ")[1],
+          orderId: supacolorPayload.orderNumber,
           dateDue: response.data.dateDue,
           contactName: supacolorPayload.deliveryAddress.contactName,
           jobLineDetails: response.data.jobLineDetails.map((detail, index) => {
@@ -356,10 +342,12 @@ async function sendOrderToSupacolor(supacolorPayload, supacolorProducts) {
           expectingArtworkToBeUploaded:
             response.data.expectingArtworkToBeUploaded,
         };
+        console.log("Before");
         await axios.post(
           "https://admin.heattransferwarehouse.com/supacolor-api/new-job",
           supacolourJob
         );
+        console.log("After");
         // await axios.post(
         //   "http://localhost:3000/supacolor-api/new-job",
         //   supacolourJob
