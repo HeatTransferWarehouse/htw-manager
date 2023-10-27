@@ -62,7 +62,6 @@ router.post("/create-order", function (req, res) {
     res.status(400).send("Order ID was not found");
   }
 });
-// findProductsOnOrderInBigCommerce(3486345);
 
 // Our function to find the order in big commerce orders webhook with the order id we received
 async function findProductsOnOrderInBigCommerce(orderId) {
