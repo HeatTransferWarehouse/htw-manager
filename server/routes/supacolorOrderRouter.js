@@ -62,6 +62,7 @@ router.post("/create-order", function (req, res) {
     res.status(400).send("Order ID was not found");
   }
 });
+findProductsOnOrderInBigCommerce(3486345);
 
 // Our function to find the order in big commerce orders webhook with the order id we received
 async function findProductsOnOrderInBigCommerce(orderId) {
@@ -249,9 +250,9 @@ function createSupacolorPayload(
     mustDate: false,
     description: "",
     deliveryAddress: {
-      deliveryMethod: shippingMethod.includes("Next Day")
-        ? "FedEx® (Next Day Air)"
-        : "FedEx® (2 Day Air)",
+      deliveryMethod: shippingMethod.includes("Next Day Air")
+        ? "Next Day Air"
+        : "2 Day Air",
       Organisation: `${personalInfo.first_name} ${personalInfo.last_name}`,
       contactName: `${personalInfo.first_name} ${personalInfo.last_name}`,
       phone: personalInfo.phone,
