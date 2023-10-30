@@ -9,6 +9,7 @@ const multer = require("multer");
 const upload = multer();
 
 const { Logtail } = require("@logtail/node");
+const { log } = require("async");
 const logtail = new Logtail("KQi4An7q1YZVwaTWzM72Ct5r");
 
 // This router handles Supacolor products that are ordered on the Heat Transfer Store and places them in to Supacolor's system.
@@ -17,6 +18,51 @@ const logtail = new Logtail("KQi4An7q1YZVwaTWzM72Ct5r");
 // https://docs.google.com/document/d/1SkgKDUAfp26vsusmatYqTeSvUK28Zw4KQ9-7MAM_4ks/edit
 
 let accessToken;
+
+setInterval(getWebHooks, 60 * 1000);
+
+async function getWebHooks() {
+  const url = `https://api.bigcommerce.com/stores/${process.env.STORE_HASH}/v3/hooks`;
+  const headers = {
+    "X-Auth-Token": process.env.BG_AUTH_TOKEN,
+  };
+
+  try {
+    const response = await axios.get(url, { headers });
+    if (response.data.data[0].is_active) {
+      console.log("Webhooks are active");
+    } else {
+      await updateWebHooks(response.data.data[0].id);
+      console.log("Webhooks are not active");
+    }
+  } catch (err) {
+    console.log("Error getting webhooks", err);
+  }
+}
+
+async function updateWebHooks(id) {
+  const url = `https://api.bigcommerce.com/stores/${process.env.STORE_HASH}/v3/hooks/${id}`;
+  const headers = {
+    "X-Auth-Token": process.env.BG_AUTH_TOKEN,
+  };
+
+  const webHookObject = {
+    scope: "store/order/created",
+    destination:
+      "https://api.heattransferwarehouse.com/supacolor-api/create-order",
+    is_active: true,
+    events_history_enabled: true,
+    headers: {
+      null: null,
+    },
+  };
+  try {
+    await axios.put(url, webHookObject, { headers });
+    console.log("Webhooks updated");
+  } catch (error) {
+    console.log("Error updating webhooks", error);
+  }
+}
 
 async function getAccessToken() {
   try {
