@@ -104,6 +104,8 @@ function findSupacolorProductsOnOrder(productArray) {
     }
   }
 
+  console.log(foundSupacolorProducts);
+
   // If any Supacolor products are found, begin to send them, else we will do nothing.
   if (foundSupacolorProducts.length > 0) {
     // Since we found Supacolor product, we first need to get more information about the order before we
@@ -748,6 +750,10 @@ async function getPriceCodeWithSku(sku) {
       categoryCode = categoryCode.replace("11.7x16.5", "A3");
     }
 
+    if (categoryCode.includes("PR_BAG")) {
+      categoryCode = categoryCode.replace("SUPAGANG_", "");
+    }
+
     filteredUrl = `PriceCodes/price-codes?filter=${categoryCode}`;
 
     axios({
@@ -802,6 +808,7 @@ function findCorrectPriceCodeFromResults(results, sku) {
   // don't have Supagang and vice versa.
   for (const result of results) {
     const priceCodeIncludesSUPAGANG = result.priceCode.includes("SUPAGANG");
+    const priceCodeIncludesPRCode = result.priceCode.includes("PR_BAG");
     if (
       skuIncludesSUPAGANG === priceCodeIncludesSUPAGANG &&
       substringsToCheck.every((substring) =>
@@ -809,7 +816,8 @@ function findCorrectPriceCodeFromResults(results, sku) {
       )
     ) {
       correctPriceCodes.push(result.priceCode);
-    }
+    } else if (priceCodeIncludesPRCode)
+      correctPriceCodes.push(result.priceCode);
   }
 
   console.log("Correct price code is: ", correctPriceCodes[0]);
