@@ -32,8 +32,8 @@ async function getWebHooks() {
     if (response.data.data[0].is_active) {
       console.log("Webhooks are active");
     } else {
+      console.log("Webhooks are not active...Activating now");
       await updateWebHooks(response.data.data[0].id);
-      console.log("Webhooks are not active");
     }
   } catch (err) {
     console.log("Error getting webhooks", err);
@@ -49,11 +49,11 @@ async function updateWebHooks(id) {
   const webHookObject = {
     scope: "store/order/created",
     destination:
-      "https://api.heattransferwarehouse.com/supacolor-api/create-order",
+      "https://admin.heattransferwarehouse.com/supacolor-api/create-order",
     is_active: true,
     events_history_enabled: true,
     headers: {
-      null: null,
+      custom: "string",
     },
   };
   try {
