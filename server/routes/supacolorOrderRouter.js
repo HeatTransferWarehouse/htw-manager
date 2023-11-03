@@ -317,7 +317,7 @@ function createSupacolorPayload(
           item.product_options.filter((opt) =>
             opt.display_name_customer.includes("Garment Color")
           )[0].display_value_customer +
-          "- " +
+          " - " +
           item.product_options.filter((opt) =>
             opt.display_name_customer.includes("Garment Type")
           )[0].display_value_customer,
