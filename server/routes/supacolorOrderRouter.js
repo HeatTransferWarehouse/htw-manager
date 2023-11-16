@@ -306,7 +306,7 @@ function createSupacolorPayload(
       postalCode: personalInfo.zip,
     },
     promocode:
-      promoCode && promoCode[0].code.includes("SUPA") ? promoCode[0].code : "",
+      promoCode && promoCode[0].code.includes("HTW15") ? promoCode[0].code : "",
     items: supacolorProducts.map((item, index) => ({
       itemType: "PriceCode",
       code: priceCodes[index],
