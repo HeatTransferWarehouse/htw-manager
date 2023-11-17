@@ -76,7 +76,7 @@ function Nav() {
                       className={sanMar ? "active-nav-link" : "nav-link"}>
                       SanMar
                     </NavLink>
-                    <NavLink
+                    {/* <NavLink
                       to="/brightpearl"
                       onClick={() => {
                         disableAll();
@@ -84,7 +84,7 @@ function Nav() {
                       }}
                       className={brightPearl ? "active-nav-link" : "nav-link"}>
                       Brightpearl
-                    </NavLink>
+                    </NavLink> */}
                     {/* <NavLink
                       to="/nostock"
                       onClick={() => {
