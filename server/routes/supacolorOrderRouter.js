@@ -173,10 +173,10 @@ async function getOrderCoupons(
   };
   try {
     const response = await axios.get(url, { headers });
-    if (!response.data === undefined) {
+    // console.log(response.data);
+    if (response.data) {
       const promoCode = response.data;
 
-      console.log(promoCode);
       createSupacolorPayload(
         supacolorProducts,
         priceCodes,
@@ -187,7 +187,6 @@ async function getOrderCoupons(
       );
     } else {
       const promoCode = "";
-      console.log(promoCode);
       createSupacolorPayload(
         supacolorProducts,
         priceCodes,
@@ -305,8 +304,7 @@ function createSupacolorPayload(
       state: personalInfo.state,
       postalCode: personalInfo.zip,
     },
-    promocode:
-      promoCode && promoCode[0].code.includes("HTW15") ? promoCode[0].code : "",
+    promocode: promoCode[0].code === "HTW15" || "htw15" ? "HTW15SBS" : "",
     items: supacolorProducts.map((item, index) => ({
       itemType: "PriceCode",
       code: priceCodes[index],
@@ -334,9 +332,6 @@ function createSupacolorPayload(
       CustomerReference: `${orderId}: ${index + 1}`,
     })),
   };
-  // console.log(supacolorPayload.orderNumber);
-  // console.log(promoCode);
-
   sendOrderToSupacolor(supacolorPayload, supacolorProducts);
 }
 
