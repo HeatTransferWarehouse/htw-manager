@@ -172,10 +172,10 @@ async function getOrderCoupons(
     "X-Auth-Token": process.env.BG_AUTH_TOKEN,
   };
   try {
+    let promoCode = " ";
     const response = await axios.get(url, { headers });
-    // console.log(response.data);
     if (response.data) {
-      const promoCode = response.data;
+      promoCode = response.data;
 
       createSupacolorPayload(
         supacolorProducts,
@@ -186,7 +186,6 @@ async function getOrderCoupons(
         promoCode
       );
     } else {
-      const promoCode = "";
       createSupacolorPayload(
         supacolorProducts,
         priceCodes,
@@ -304,7 +303,11 @@ function createSupacolorPayload(
       state: personalInfo.state,
       postalCode: personalInfo.zip,
     },
-    promocode: promoCode[0].code === "HTW15" || "htw15" ? "HTW15SBS" : "",
+    promocode:
+      promoCode &&
+      (promoCode[0].code === "HTW15" || promoCode[0].code === "htw15")
+        ? "HTW15SBS"
+        : "",
     items: supacolorProducts.map((item, index) => ({
       itemType: "PriceCode",
       code: priceCodes[index],
