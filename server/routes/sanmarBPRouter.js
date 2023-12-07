@@ -1,28 +1,27 @@
-const express = require('express');
-const pool = require('../modules/pool');
+const express = require("express");
+const pool = require("../modules/pool");
 const router = express.Router();
 const axios = require("axios");
-const Client = require('ftp');
-const moment = require('moment');
+const Client = require("ftp");
+const moment = require("moment");
 const sgMail = require("@sendgrid/mail");
 const fs = require("fs");
-const jwt = require('jsonwebtoken');
+const jwt = require("jsonwebtoken");
 const app = express();
-const cors = require('cors');
+const cors = require("cors");
 sgMail.setApiKey(process.env.SENDGRID_API_KEY);
 
 const { Logtail } = require("@logtail/node");
 
 const logtail = new Logtail("KQi4An7q1YZVwaTWzM72Ct5r");
 
-app.use(cors({
-  origin: ['https://www.heattransferwarehouse.com']
-}));
+app.use(
+  cors({
+    origin: ["https://www.heattransferwarehouse.com"],
+  })
+);
 
-const {
-  updateNote,
-  getSO,
-} = require('./Capture/api');
+const { updateNote, getSO } = require("./Capture/api");
 
 // const now = new Date();
 // let millisTill8 = new Date(now.getFullYear(), now.getMonth(), now.getDate(), 8, 0, 0, 0) - now;
@@ -36,59 +35,60 @@ const {
 
 //   yesterday.setDate(yesterday.getDate() - 1);
 
-  // const host = 'ftp.sanmar.com';
-  // const user = '175733';
-  // const password = 'Sanmar33';
-  // const c = new Client();
+// const host = 'ftp.sanmar.com';
+// const user = '175733';
+// const password = 'Sanmar33';
+// const c = new Client();
 
-  // try {
-  //   logtail.info('--SANMAR-- Logging into FTP Client..');
+// try {
+//   logtail.info('--SANMAR-- Logging into FTP Client..');
 
-  //   const ftpConfig = {
-  //     host: `${host}`,
-  //     port: 21,
-  //     user: `${user}`,
-  //     password: `${password}`,
-  //   }
-    
-  //   const file = await getFile(yesterday);
+//   const ftpConfig = {
+//     host: `${host}`,
+//     port: 21,
+//     user: `${user}`,
+//     password: `${password}`,
+//   }
 
-  //   c.connect(ftpConfig);
+//   const file = await getFile(yesterday);
 
-  //   c.on('ready', function () {
-  //     c.get(`/000175733Status/${file}`, function (err, stream) {
-  //       if (err) {
-  //         logtail.info('--SANMAR-- Error on SanMar FTP Download: ', err);
-  //         c.end();
-  //       }
+//   c.connect(ftpConfig);
 
-  //       stream.once('close', function () {
-  //         c.end();
-  //       });
-        
-  //       stream.pipe(res);
+//   c.on('ready', function () {
+//     c.get(`/000175733Status/${file}`, function (err, stream) {
+//       if (err) {
+//         logtail.info('--SANMAR-- Error on SanMar FTP Download: ', err);
+//         c.end();
+//       }
 
-  //       stream.on('end', function(){
-  //         if (err) {
-  //           res.status(500).end();
-  //         } else {
-  //           res.end();
-  //         }
-  //       });
-  //     });
-  //   });
-  // } catch (err) {
-  //   logtail.info('--SANMAR-- Error on connect ftp: ', err);
-  //   res.status(500).end();
-  // }
+//       stream.once('close', function () {
+//         c.end();
+//       });
 
-  // }, millisTill8);
+//       stream.pipe(res);
+
+//       stream.on('end', function(){
+//         if (err) {
+//           res.status(500).end();
+//         } else {
+//           res.end();
+//         }
+//       });
+//     });
+//   });
+// } catch (err) {
+//   logtail.info('--SANMAR-- Error on connect ftp: ', err);
+//   res.status(500).end();
+// }
+
+// }, millisTill8);
 
 const createNote = async (e) => {
-  logtail.info('--SANMAR-- Updating Note on BP...');
-  const note = "Email Sent via Admin app. https://admin.heattransferwarehouse.com";
+  logtail.info("--SANMAR-- Updating Note on BP...");
+  const note =
+    "Email Sent via Admin app. https://admin.heattransferwarehouse.com";
   await updateNote(e, note);
-  logtail.info('--SANMAR-- Note Updated..');
+  logtail.info("--SANMAR-- Note Updated..");
 };
 
 let config = {
@@ -105,48 +105,46 @@ function timeoutPromise(interval) {
       resolve("done");
     }, interval);
   });
-};
+}
 
 async function updatePrices(bc, sanmar, start) {
   try {
-      if (bc[0]) {
-        const number = Number(start);
-        for (const item of bc) {
-          if (item.sku > number) {
+    if (bc[0]) {
+      const number = Number(start);
+      for (const item of bc) {
+        if (item.sku > number) {
           logtail.info(`--SANMAR-- Updating Product with ID: ${item.sku}`);
           await eachPrice(item, sanmar);
           await timeoutPromise(1000);
-          }
         }
-        logtail.info('--SANMAR-- DONE');
-        return;
-      } else {
-        logtail.info('--SANMAR-- No items in BC Items! Canceling!');
-        return;
       }
-    } catch (err) {
-      logtail.info('--SANMAR-- Error on Update Product: ', err);
+      logtail.info("--SANMAR-- DONE");
+      return;
+    } else {
+      logtail.info("--SANMAR-- No items in BC Items! Canceling!");
+      return;
     }
+  } catch (err) {
+    logtail.info("--SANMAR-- Error on Update Product: ", err);
+  }
 }
 
 async function eachPrice(product, sanmar) {
+  const variants = await getSanmarId(product);
 
-      const variants = await getSanmarId(product);
-
-      for (const item of sanmar) {
-        if (variants[0]) {
-          await eachSanmarItem(product, item, variants);
-        }
-      }
+  for (const item of sanmar) {
+    if (variants[0]) {
+      await eachSanmarItem(product, item, variants);
+    }
+  }
 }
 
 async function getSanmarId(product) {
-
   let config = {
     headers: {
       "X-Auth-Client": process.env.BG_AUTH_CLIENT,
       "X-Auth-Token": process.env.BG_AUTH_TOKEN,
-    }
+    },
   };
 
   let items = [];
@@ -158,105 +156,99 @@ async function getSanmarId(product) {
   let items6;
 
   try {
-    items1 = await axios
-      .get(
-        `https://api.bigcommerce.com/stores/et4qthkygq/v3/catalog/products/${product.sku}/variants?page=1&limit=100`,
-        config
-      )
+    items1 = await axios.get(
+      `https://api.bigcommerce.com/stores/et4qthkygq/v3/catalog/products/${product.sku}/variants?page=1&limit=100`,
+      config
+    );
   } catch (err) {
-    logtail.info('--SANMAR-- Error on Get Items1: ', err);
+    logtail.info("--SANMAR-- Error on Get Items1: ", err);
   }
 
   try {
-    items2 = await axios
-      .get(
-        `https://api.bigcommerce.com/stores/et4qthkygq/v3/catalog/products/${product.sku}/variants?page=2&limit=100`,
-        config
-      )
+    items2 = await axios.get(
+      `https://api.bigcommerce.com/stores/et4qthkygq/v3/catalog/products/${product.sku}/variants?page=2&limit=100`,
+      config
+    );
   } catch (err) {
-    logtail.info('--SANMAR-- Error on Get Items2: ', err);
+    logtail.info("--SANMAR-- Error on Get Items2: ", err);
   }
 
   try {
-    items3 = await axios
-      .get(
-        `https://api.bigcommerce.com/stores/et4qthkygq/v3/catalog/products/${product.sku}/variants?page=3&limit=100`,
-        config
-      )
+    items3 = await axios.get(
+      `https://api.bigcommerce.com/stores/et4qthkygq/v3/catalog/products/${product.sku}/variants?page=3&limit=100`,
+      config
+    );
   } catch (err) {
-    logtail.info('--SANMAR-- Error on Get Items3: ', err);
+    logtail.info("--SANMAR-- Error on Get Items3: ", err);
   }
 
   try {
-    items4 = await axios
-      .get(
-        `https://api.bigcommerce.com/stores/et4qthkygq/v3/catalog/products/${product.sku}/variants?page=4&limit=100`,
-        config
-      )
+    items4 = await axios.get(
+      `https://api.bigcommerce.com/stores/et4qthkygq/v3/catalog/products/${product.sku}/variants?page=4&limit=100`,
+      config
+    );
   } catch (err) {
-    logtail.info('--SANMAR-- Error on Get Items4: ', err);
+    logtail.info("--SANMAR-- Error on Get Items4: ", err);
   }
 
   try {
-    items5 = await axios
-      .get(
-        `https://api.bigcommerce.com/stores/et4qthkygq/v3/catalog/products/${product.sku}/variants?page=5&limit=100`,
-        config
-      )
+    items5 = await axios.get(
+      `https://api.bigcommerce.com/stores/et4qthkygq/v3/catalog/products/${product.sku}/variants?page=5&limit=100`,
+      config
+    );
   } catch (err) {
-    logtail.info('--SANMAR-- Error on Get Items5: ', err);
+    logtail.info("--SANMAR-- Error on Get Items5: ", err);
   }
 
   try {
-    items6 = await axios
-      .get(
-        `https://api.bigcommerce.com/stores/et4qthkygq/v3/catalog/products/${product.sku}/variants?page=6&limit=100`,
-        config
-      )
+    items6 = await axios.get(
+      `https://api.bigcommerce.com/stores/et4qthkygq/v3/catalog/products/${product.sku}/variants?page=6&limit=100`,
+      config
+    );
   } catch (err) {
-    logtail.info('--SANMAR-- Error on Get Items6: ', err);
+    logtail.info("--SANMAR-- Error on Get Items6: ", err);
   }
 
   if (items1.data.data[0]) {
-      //logtail.info('Page 1');
-  for (const item of items1.data.data) {
-    items.push(item);
-   }
+    //logtail.info('Page 1');
+    for (const item of items1.data.data) {
+      items.push(item);
+    }
   }
 
   if (items2.data.data[0]) {
-      //logtail.info('Page 2');
-  for (const item of items2.data.data) {
-    items.push(item);
-   }
+    //logtail.info('Page 2');
+    for (const item of items2.data.data) {
+      items.push(item);
+    }
   }
 
   if (items3.data.data[0]) {
-      //logtail.info('Page 3');
-  for (const item of items3.data.data) {
-    items.push(item);
-   }
+    //logtail.info('Page 3');
+    for (const item of items3.data.data) {
+      items.push(item);
+    }
   }
 
   if (items4.data.data[0]) {
-      //logtail.info('Page 4');
-  for (const item of items4.data.data) {
-    items.push(item);
-   }
+    //logtail.info('Page 4');
+    for (const item of items4.data.data) {
+      items.push(item);
+    }
   }
 
   if (items5.data.data[0]) {
     //logtail.info('Page 5');
-  for (const item of items5.data.data) {
-    items.push(item);
-   }
+    for (const item of items5.data.data) {
+      items.push(item);
+    }
   }
 
   if (items6.data.data[0]) {
     //logtail.info('Page 6');
-  for (const item of items6.data.data) {
-    items.push(item);
-   }
+    for (const item of items6.data.data) {
+      items.push(item);
+    }
   }
 
   return items;
@@ -264,33 +256,32 @@ async function getSanmarId(product) {
 
 async function eachSanmarItem(product, item, vars) {
   let preNewPrice = item.price * 1.4;
-  let newPrice = Math.round(preNewPrice * 100) / 100
+  let newPrice = Math.round(preNewPrice * 100) / 100;
   let putId = 0;
   let putVar = 0;
 
-    for (const variant of vars) {
-        if (variant.sku === item.sku) {
-          putId = variant.id;
-          putVar = variant.sku;
-      }
+  for (const variant of vars) {
+    if (variant.sku === item.sku) {
+      putId = variant.id;
+      putVar = variant.sku;
     }
+  }
 
-    if (putId !== 0) {
-    
+  if (putId !== 0) {
     //logtail.info(`${product.sku} at ${putVar} and $${newPrice}`);
 
     const http = require("https");
 
     const options = {
-      "method": "PUT",
-      "hostname": "api.bigcommerce.com",
-      "port": null,
-      "path": `/stores/${process.env.STORE_HASH}/v3/catalog/products/${product.sku}/variants/${putId}`,
-      "headers": {
-        "accept": "application/json",
+      method: "PUT",
+      hostname: "api.bigcommerce.com",
+      port: null,
+      path: `/stores/${process.env.STORE_HASH}/v3/catalog/products/${product.sku}/variants/${putId}`,
+      headers: {
+        accept: "application/json",
         "content-type": "application/json",
-        "x-auth-token": process.env.BG_AUTH_TOKEN
-      }
+        "x-auth-token": process.env.BG_AUTH_TOKEN,
+      },
     };
 
     const req = http.request(options, function (res) {
@@ -306,44 +297,43 @@ async function eachSanmarItem(product, item, vars) {
       });
     });
 
-    req.write(JSON.stringify({
-      price: newPrice
-    }));
+    req.write(
+      JSON.stringify({
+        price: newPrice,
+      })
+    );
     req.end();
 
     await timeoutPromise(100);
-
-    } else {
-      //logtail.info('No Variant Found to sync ID!');
-    }
+  } else {
+    //logtail.info('No Variant Found to sync ID!');
+  }
 }
 
 async function getFile(date) {
-
-    const newDate = moment(date).toObject();
-    let d = newDate.date
-    let m = newDate.months
-    m++
-    let y = `${newDate.years}`;
-    y = y.slice(2);
-    let file = ''
-    if (m < 10 && d < 10) {
-      file = `0${m}-0${d}-${y}status.txt`;
-    } else if (m < 10) {
-      file = `0${m}-${d}-${y}status.txt`;
-    } else if (d < 10) {
-      file = `${m}-0${d}-${y}status.txt`;
-    } else {
-      file = `${m}-${d}-${y}status.txt`;
-    }
-    logtail.info(file);
-    return file;
+  const newDate = moment(date).toObject();
+  let d = newDate.date;
+  let m = newDate.months;
+  m++;
+  let y = `${newDate.years}`;
+  y = y.slice(2);
+  let file = "";
+  if (m < 10 && d < 10) {
+    file = `0${m}-0${d}-${y}status.txt`;
+  } else if (m < 10) {
+    file = `0${m}-${d}-${y}status.txt`;
+  } else if (d < 10) {
+    file = `${m}-0${d}-${y}status.txt`;
+  } else {
+    file = `${m}-${d}-${y}status.txt`;
+  }
+  logtail.info(file);
+  return file;
 }
 
 //Get All BC Items Function
 async function getBCItems() {
-
-  logtail.info('--SANMAR-- Getting Products..');
+  logtail.info("--SANMAR-- Getting Products..");
 
   let bcResponse1;
   let bcResponse2;
@@ -375,339 +365,310 @@ async function getBCItems() {
   let bcResponse28;
   let bcResponse = [];
 
-
   try {
-    bcResponse1 = await axios
-      .get(
-        `https://api.bigcommerce.com/stores/et4qthkygq/v3/catalog/products?limit=250&page=1`,
-        config
-      )
+    bcResponse1 = await axios.get(
+      `https://api.bigcommerce.com/stores/et4qthkygq/v3/catalog/products?limit=250&page=1`,
+      config
+    );
   } catch (err) {
-    logtail.info('Error on Get1: ', err);
+    logtail.info("Error on Get1: ", err);
   }
 
   await timeoutPromise(500);
 
   try {
-    bcResponse2 = await axios
-      .get(
-        `https://api.bigcommerce.com/stores/et4qthkygq/v3/catalog/products?limit=250&page=2`,
-        config
-      )
+    bcResponse2 = await axios.get(
+      `https://api.bigcommerce.com/stores/et4qthkygq/v3/catalog/products?limit=250&page=2`,
+      config
+    );
   } catch (err) {
-    logtail.info('Error on Get2: ', err);
+    logtail.info("Error on Get2: ", err);
   }
 
   await timeoutPromise(500);
 
   try {
-    bcResponse3 = await axios
-      .get(
-        `https://api.bigcommerce.com/stores/et4qthkygq/v3/catalog/products?limit=250&page=3`,
-        config
-      )
+    bcResponse3 = await axios.get(
+      `https://api.bigcommerce.com/stores/et4qthkygq/v3/catalog/products?limit=250&page=3`,
+      config
+    );
   } catch (err) {
-    logtail.info('Error on Get3: ', err);
+    logtail.info("Error on Get3: ", err);
   }
 
   await timeoutPromise(500);
 
   try {
-    bcResponse4 = await axios
-      .get(
-        `https://api.bigcommerce.com/stores/et4qthkygq/v3/catalog/products?limit=250&page=4`,
-        config
-      )
+    bcResponse4 = await axios.get(
+      `https://api.bigcommerce.com/stores/et4qthkygq/v3/catalog/products?limit=250&page=4`,
+      config
+    );
   } catch (err) {
-    logtail.info('Error on Get4: ', err);
+    logtail.info("Error on Get4: ", err);
   }
 
   await timeoutPromise(500);
 
   try {
-    bcResponse5 = await axios
-      .get(
-        `https://api.bigcommerce.com/stores/et4qthkygq/v3/catalog/products?limit=250&page=5`,
-        config
-      )
+    bcResponse5 = await axios.get(
+      `https://api.bigcommerce.com/stores/et4qthkygq/v3/catalog/products?limit=250&page=5`,
+      config
+    );
   } catch (err) {
-    logtail.info('Error on Get5: ', err);
+    logtail.info("Error on Get5: ", err);
   }
 
   await timeoutPromise(500);
 
   try {
-    bcResponse6 = await axios
-      .get(
-        `https://api.bigcommerce.com/stores/et4qthkygq/v3/catalog/products?limit=250&page=6`,
-        config
-      )
+    bcResponse6 = await axios.get(
+      `https://api.bigcommerce.com/stores/et4qthkygq/v3/catalog/products?limit=250&page=6`,
+      config
+    );
   } catch (err) {
-    logtail.info('Error on Get6: ', err);
+    logtail.info("Error on Get6: ", err);
   }
 
   await timeoutPromise(500);
 
   try {
-    bcResponse7 = await axios
-      .get(
-        `https://api.bigcommerce.com/stores/et4qthkygq/v3/catalog/products?limit=250&page=7`,
-        config
-      )
+    bcResponse7 = await axios.get(
+      `https://api.bigcommerce.com/stores/et4qthkygq/v3/catalog/products?limit=250&page=7`,
+      config
+    );
   } catch (err) {
-    logtail.info('Error on Get7: ', err);
+    logtail.info("Error on Get7: ", err);
   }
 
   await timeoutPromise(500);
 
   try {
-    bcResponse8 = await axios
-      .get(
-        `https://api.bigcommerce.com/stores/et4qthkygq/v3/catalog/products?limit=250&page=8`,
-        config
-      )
+    bcResponse8 = await axios.get(
+      `https://api.bigcommerce.com/stores/et4qthkygq/v3/catalog/products?limit=250&page=8`,
+      config
+    );
   } catch (err) {
-    logtail.info('Error on Get8: ', err);
+    logtail.info("Error on Get8: ", err);
   }
 
   await timeoutPromise(500);
 
   try {
-    bcResponse9 = await axios
-      .get(
-        `https://api.bigcommerce.com/stores/et4qthkygq/v3/catalog/products?limit=250&page=9`,
-        config
-      )
+    bcResponse9 = await axios.get(
+      `https://api.bigcommerce.com/stores/et4qthkygq/v3/catalog/products?limit=250&page=9`,
+      config
+    );
   } catch (err) {
-    logtail.info('Error on Get9: ', err);
+    logtail.info("Error on Get9: ", err);
   }
 
   await timeoutPromise(500);
 
   try {
-    bcResponse10 = await axios
-      .get(
-        `https://api.bigcommerce.com/stores/et4qthkygq/v3/catalog/products?limit=250&page=10`,
-        config
-      )
+    bcResponse10 = await axios.get(
+      `https://api.bigcommerce.com/stores/et4qthkygq/v3/catalog/products?limit=250&page=10`,
+      config
+    );
   } catch (err) {
-    logtail.info('Error on Get10: ', err);
+    logtail.info("Error on Get10: ", err);
   }
 
   await timeoutPromise(500);
 
   try {
-    bcResponse11 = await axios
-      .get(
-        `https://api.bigcommerce.com/stores/et4qthkygq/v3/catalog/products?limit=250&page=11`,
-        config
-      )
+    bcResponse11 = await axios.get(
+      `https://api.bigcommerce.com/stores/et4qthkygq/v3/catalog/products?limit=250&page=11`,
+      config
+    );
   } catch (err) {
-    logtail.info('Error on Get11: ', err);
+    logtail.info("Error on Get11: ", err);
   }
 
   await timeoutPromise(500);
 
   try {
-    bcResponse12 = await axios
-      .get(
-        `https://api.bigcommerce.com/stores/et4qthkygq/v3/catalog/products?limit=250&page=12`,
-        config
-      )
+    bcResponse12 = await axios.get(
+      `https://api.bigcommerce.com/stores/et4qthkygq/v3/catalog/products?limit=250&page=12`,
+      config
+    );
   } catch (err) {
-    logtail.info('Error on Get12: ', err);
+    logtail.info("Error on Get12: ", err);
   }
 
   await timeoutPromise(500);
 
   try {
-    bcResponse13 = await axios
-      .get(
-        `https://api.bigcommerce.com/stores/et4qthkygq/v3/catalog/products?limit=250&page=13`,
-        config
-      )
+    bcResponse13 = await axios.get(
+      `https://api.bigcommerce.com/stores/et4qthkygq/v3/catalog/products?limit=250&page=13`,
+      config
+    );
   } catch (err) {
-    logtail.info('Error on Get13: ', err);
+    logtail.info("Error on Get13: ", err);
   }
 
   await timeoutPromise(500);
 
   try {
-    bcResponse14 = await axios
-      .get(
-        `https://api.bigcommerce.com/stores/et4qthkygq/v3/catalog/products?limit=250&page=14`,
-        config
-      )
+    bcResponse14 = await axios.get(
+      `https://api.bigcommerce.com/stores/et4qthkygq/v3/catalog/products?limit=250&page=14`,
+      config
+    );
   } catch (err) {
-    logtail.info('Error on Get14: ', err);
+    logtail.info("Error on Get14: ", err);
   }
 
   await timeoutPromise(500);
 
   try {
-    bcResponse15 = await axios
-      .get(
-        `https://api.bigcommerce.com/stores/et4qthkygq/v3/catalog/products?limit=250&page=15`,
-        config
-      )
+    bcResponse15 = await axios.get(
+      `https://api.bigcommerce.com/stores/et4qthkygq/v3/catalog/products?limit=250&page=15`,
+      config
+    );
   } catch (err) {
-    logtail.info('Error on Get15: ', err);
+    logtail.info("Error on Get15: ", err);
   }
 
   await timeoutPromise(500);
 
   try {
-    bcResponse16 = await axios
-      .get(
-        `https://api.bigcommerce.com/stores/et4qthkygq/v3/catalog/products?limit=250&page=16`,
-        config
-      )
+    bcResponse16 = await axios.get(
+      `https://api.bigcommerce.com/stores/et4qthkygq/v3/catalog/products?limit=250&page=16`,
+      config
+    );
   } catch (err) {
-    logtail.info('Error on Get16: ', err);
+    logtail.info("Error on Get16: ", err);
   }
 
   await timeoutPromise(500);
 
   try {
-    bcResponse17 = await axios
-      .get(
-        `https://api.bigcommerce.com/stores/et4qthkygq/v3/catalog/products?limit=250&page=17`,
-        config
-      )
+    bcResponse17 = await axios.get(
+      `https://api.bigcommerce.com/stores/et4qthkygq/v3/catalog/products?limit=250&page=17`,
+      config
+    );
   } catch (err) {
-    logtail.info('Error on Get17: ', err);
+    logtail.info("Error on Get17: ", err);
   }
 
   await timeoutPromise(500);
 
   try {
-    bcResponse18 = await axios
-      .get(
-        `https://api.bigcommerce.com/stores/et4qthkygq/v3/catalog/products?limit=250&page=18`,
-        config
-      )
+    bcResponse18 = await axios.get(
+      `https://api.bigcommerce.com/stores/et4qthkygq/v3/catalog/products?limit=250&page=18`,
+      config
+    );
   } catch (err) {
-    logtail.info('Error on Get18: ', err);
+    logtail.info("Error on Get18: ", err);
   }
 
   await timeoutPromise(500);
 
   try {
-    bcResponse19 = await axios
-      .get(
-        `https://api.bigcommerce.com/stores/et4qthkygq/v3/catalog/products?limit=250&page=19`,
-        config
-      )
+    bcResponse19 = await axios.get(
+      `https://api.bigcommerce.com/stores/et4qthkygq/v3/catalog/products?limit=250&page=19`,
+      config
+    );
   } catch (err) {
-    logtail.info('Error on Get19: ', err);
+    logtail.info("Error on Get19: ", err);
   }
 
   await timeoutPromise(500);
 
   try {
-    bcResponse20 = await axios
-      .get(
-        `https://api.bigcommerce.com/stores/et4qthkygq/v3/catalog/products?limit=250&page=20`,
-        config
-      )
+    bcResponse20 = await axios.get(
+      `https://api.bigcommerce.com/stores/et4qthkygq/v3/catalog/products?limit=250&page=20`,
+      config
+    );
   } catch (err) {
-    logtail.info('Error on Get20: ', err);
+    logtail.info("Error on Get20: ", err);
   }
 
   await timeoutPromise(500);
 
   try {
-    bcResponse21 = await axios
-      .get(
-        `https://api.bigcommerce.com/stores/et4qthkygq/v3/catalog/products?limit=250&page=21`,
-        config
-      )
+    bcResponse21 = await axios.get(
+      `https://api.bigcommerce.com/stores/et4qthkygq/v3/catalog/products?limit=250&page=21`,
+      config
+    );
   } catch (err) {
-    logtail.info('Error on Get21: ', err);
+    logtail.info("Error on Get21: ", err);
   }
 
   await timeoutPromise(500);
 
   try {
-    bcResponse22 = await axios
-      .get(
-        `https://api.bigcommerce.com/stores/et4qthkygq/v3/catalog/products?limit=250&page=22`,
-        config
-      )
+    bcResponse22 = await axios.get(
+      `https://api.bigcommerce.com/stores/et4qthkygq/v3/catalog/products?limit=250&page=22`,
+      config
+    );
   } catch (err) {
-    logtail.info('Error on Get22: ', err);
+    logtail.info("Error on Get22: ", err);
   }
 
   await timeoutPromise(500);
 
   try {
-    bcResponse23 = await axios
-      .get(
-        `https://api.bigcommerce.com/stores/et4qthkygq/v3/catalog/products?limit=250&page=23`,
-        config
-      )
+    bcResponse23 = await axios.get(
+      `https://api.bigcommerce.com/stores/et4qthkygq/v3/catalog/products?limit=250&page=23`,
+      config
+    );
   } catch (err) {
-    logtail.info('Error on Get23: ', err);
+    logtail.info("Error on Get23: ", err);
   }
 
   await timeoutPromise(500);
 
   try {
-    bcResponse24 = await axios
-      .get(
-        `https://api.bigcommerce.com/stores/et4qthkygq/v3/catalog/products?limit=250&page=24`,
-        config
-      )
+    bcResponse24 = await axios.get(
+      `https://api.bigcommerce.com/stores/et4qthkygq/v3/catalog/products?limit=250&page=24`,
+      config
+    );
   } catch (err) {
-    logtail.info('Error on Get24: ', err);
+    logtail.info("Error on Get24: ", err);
   }
 
   await timeoutPromise(500);
 
   try {
-    bcResponse25 = await axios
-      .get(
-        `https://api.bigcommerce.com/stores/et4qthkygq/v3/catalog/products?limit=250&page=25`,
-        config
-      )
+    bcResponse25 = await axios.get(
+      `https://api.bigcommerce.com/stores/et4qthkygq/v3/catalog/products?limit=250&page=25`,
+      config
+    );
   } catch (err) {
-    logtail.info('Error on Get25: ', err);
+    logtail.info("Error on Get25: ", err);
   }
 
   await timeoutPromise(500);
 
   try {
-    bcResponse26 = await axios
-      .get(
-        `https://api.bigcommerce.com/stores/et4qthkygq/v3/catalog/products?limit=250&page=26`,
-        config
-      )
+    bcResponse26 = await axios.get(
+      `https://api.bigcommerce.com/stores/et4qthkygq/v3/catalog/products?limit=250&page=26`,
+      config
+    );
   } catch (err) {
-    logtail.info('Error on Get26: ', err);
+    logtail.info("Error on Get26: ", err);
   }
 
   await timeoutPromise(500);
 
   try {
-    bcResponse27 = await axios
-      .get(
-        `https://api.bigcommerce.com/stores/et4qthkygq/v3/catalog/products?limit=250&page=27`,
-        config
-      )
+    bcResponse27 = await axios.get(
+      `https://api.bigcommerce.com/stores/et4qthkygq/v3/catalog/products?limit=250&page=27`,
+      config
+    );
   } catch (err) {
-    logtail.info('Error on Get27: ', err);
+    logtail.info("Error on Get27: ", err);
   }
 
   await timeoutPromise(500);
 
   try {
-    bcResponse28 = await axios
-      .get(
-        `https://api.bigcommerce.com/stores/et4qthkygq/v3/catalog/products?limit=250&page=28`,
-        config
-      )
+    bcResponse28 = await axios.get(
+      `https://api.bigcommerce.com/stores/et4qthkygq/v3/catalog/products?limit=250&page=28`,
+      config
+    );
   } catch (err) {
-    logtail.info('Error on Get28: ', err);
+    logtail.info("Error on Get28: ", err);
   }
 
   await timeoutPromise(500);
@@ -717,8 +678,7 @@ async function getBCItems() {
       bcResponse.push(item);
     }
   } catch (err) {
-    logtail.info('Error on bcCreate: ', err);
-
+    logtail.info("Error on bcCreate: ", err);
   }
 
   await timeoutPromise(500);
@@ -728,8 +688,7 @@ async function getBCItems() {
       bcResponse.push(item);
     }
   } catch (err) {
-    logtail.info('Error on bcCreate: ', err);
-
+    logtail.info("Error on bcCreate: ", err);
   }
 
   await timeoutPromise(500);
@@ -739,8 +698,7 @@ async function getBCItems() {
       bcResponse.push(item);
     }
   } catch (err) {
-    logtail.info('Error on bcCreate: ', err);
-
+    logtail.info("Error on bcCreate: ", err);
   }
 
   await timeoutPromise(500);
@@ -750,8 +708,7 @@ async function getBCItems() {
       bcResponse.push(item);
     }
   } catch (err) {
-    logtail.info('Error on bcCreate: ', err);
-
+    logtail.info("Error on bcCreate: ", err);
   }
 
   await timeoutPromise(500);
@@ -761,8 +718,7 @@ async function getBCItems() {
       bcResponse.push(item);
     }
   } catch (err) {
-    logtail.info('Error on bcCreate: ', err);
-
+    logtail.info("Error on bcCreate: ", err);
   }
 
   await timeoutPromise(500);
@@ -772,8 +728,7 @@ async function getBCItems() {
       bcResponse.push(item);
     }
   } catch (err) {
-    logtail.info('Error on bcCreate: ', err);
-
+    logtail.info("Error on bcCreate: ", err);
   }
 
   await timeoutPromise(500);
@@ -783,8 +738,7 @@ async function getBCItems() {
       bcResponse.push(item);
     }
   } catch (err) {
-    logtail.info('Error on bcCreate: ', err);
-
+    logtail.info("Error on bcCreate: ", err);
   }
 
   await timeoutPromise(500);
@@ -794,8 +748,7 @@ async function getBCItems() {
       bcResponse.push(item);
     }
   } catch (err) {
-    logtail.info('Error on bcCreate: ', err);
-
+    logtail.info("Error on bcCreate: ", err);
   }
 
   await timeoutPromise(500);
@@ -805,8 +758,7 @@ async function getBCItems() {
       bcResponse.push(item);
     }
   } catch (err) {
-    logtail.info('Error on bcCreate: ', err);
-
+    logtail.info("Error on bcCreate: ", err);
   }
 
   await timeoutPromise(500);
@@ -816,8 +768,7 @@ async function getBCItems() {
       bcResponse.push(item);
     }
   } catch (err) {
-    logtail.info('Error on bcCreate: ', err);
-
+    logtail.info("Error on bcCreate: ", err);
   }
 
   await timeoutPromise(500);
@@ -827,8 +778,7 @@ async function getBCItems() {
       bcResponse.push(item);
     }
   } catch (err) {
-    logtail.info('Error on bcCreate: ', err);
-
+    logtail.info("Error on bcCreate: ", err);
   }
 
   await timeoutPromise(500);
@@ -838,8 +788,7 @@ async function getBCItems() {
       bcResponse.push(item);
     }
   } catch (err) {
-    logtail.info('Error on bcCreate: ', err);
-
+    logtail.info("Error on bcCreate: ", err);
   }
 
   await timeoutPromise(500);
@@ -849,8 +798,7 @@ async function getBCItems() {
       bcResponse.push(item);
     }
   } catch (err) {
-    logtail.info('Error on bcCreate: ', err);
-
+    logtail.info("Error on bcCreate: ", err);
   }
 
   await timeoutPromise(500);
@@ -860,8 +808,7 @@ async function getBCItems() {
       bcResponse.push(item);
     }
   } catch (err) {
-    logtail.info('Error on bcCreate: ', err);
-
+    logtail.info("Error on bcCreate: ", err);
   }
 
   await timeoutPromise(500);
@@ -871,8 +818,7 @@ async function getBCItems() {
       bcResponse.push(item);
     }
   } catch (err) {
-    logtail.info('Error on bcCreate: ', err);
-
+    logtail.info("Error on bcCreate: ", err);
   }
 
   await timeoutPromise(500);
@@ -882,8 +828,7 @@ async function getBCItems() {
       bcResponse.push(item);
     }
   } catch (err) {
-    logtail.info('Error on bcCreate: ', err);
-
+    logtail.info("Error on bcCreate: ", err);
   }
 
   await timeoutPromise(500);
@@ -893,8 +838,7 @@ async function getBCItems() {
       bcResponse.push(item);
     }
   } catch (err) {
-    logtail.info('Error on bcCreate: ', err);
-
+    logtail.info("Error on bcCreate: ", err);
   }
 
   await timeoutPromise(500);
@@ -904,8 +848,7 @@ async function getBCItems() {
       bcResponse.push(item);
     }
   } catch (err) {
-    logtail.info('Error on bcCreate: ', err);
-
+    logtail.info("Error on bcCreate: ", err);
   }
 
   await timeoutPromise(500);
@@ -915,8 +858,7 @@ async function getBCItems() {
       bcResponse.push(item);
     }
   } catch (err) {
-    logtail.info('Error on bcCreate: ', err);
-
+    logtail.info("Error on bcCreate: ", err);
   }
 
   await timeoutPromise(500);
@@ -926,8 +868,7 @@ async function getBCItems() {
       bcResponse.push(item);
     }
   } catch (err) {
-    logtail.info('Error on bcCreate: ', err);
-
+    logtail.info("Error on bcCreate: ", err);
   }
 
   await timeoutPromise(500);
@@ -937,8 +878,7 @@ async function getBCItems() {
       bcResponse.push(item);
     }
   } catch (err) {
-    logtail.info('Error on bcCreate: ', err);
-
+    logtail.info("Error on bcCreate: ", err);
   }
 
   await timeoutPromise(500);
@@ -948,8 +888,7 @@ async function getBCItems() {
       bcResponse.push(item);
     }
   } catch (err) {
-    logtail.info('Error on bcCreate: ', err);
-
+    logtail.info("Error on bcCreate: ", err);
   }
 
   await timeoutPromise(500);
@@ -959,8 +898,7 @@ async function getBCItems() {
       bcResponse.push(item);
     }
   } catch (err) {
-    logtail.info('Error on bcCreate: ', err);
-
+    logtail.info("Error on bcCreate: ", err);
   }
 
   await timeoutPromise(500);
@@ -970,8 +908,7 @@ async function getBCItems() {
       bcResponse.push(item);
     }
   } catch (err) {
-    logtail.info('Error on bcCreate: ', err);
-
+    logtail.info("Error on bcCreate: ", err);
   }
 
   await timeoutPromise(500);
@@ -981,8 +918,7 @@ async function getBCItems() {
       bcResponse.push(item);
     }
   } catch (err) {
-    logtail.info('Error on bcCreate: ', err);
-
+    logtail.info("Error on bcCreate: ", err);
   }
 
   await timeoutPromise(500);
@@ -992,8 +928,7 @@ async function getBCItems() {
       bcResponse.push(item);
     }
   } catch (err) {
-    logtail.info('Error on bcCreate: ', err);
-
+    logtail.info("Error on bcCreate: ", err);
   }
 
   await timeoutPromise(500);
@@ -1003,8 +938,7 @@ async function getBCItems() {
       bcResponse.push(item);
     }
   } catch (err) {
-    logtail.info('Error on bcCreate: ', err);
-
+    logtail.info("Error on bcCreate: ", err);
   }
 
   await timeoutPromise(500);
@@ -1014,7 +948,7 @@ async function getBCItems() {
       bcResponse.push(item);
     }
   } catch (err) {
-    logtail.info('Error on bcCreate: ', err);
+    logtail.info("Error on bcCreate: ", err);
   }
 
   await timeoutPromise(200);
@@ -1032,10 +966,33 @@ async function calculateSales(products) {
     let newNewName2 = extraNewName2.replace(/Ñ/g, "");
     let newNewName = newNewName2.replace(/¢/g, "");
     let newName = newNewName.replace(/®/g, "");
-    if (prod.brand_id === 87 || prod.brand_id === 83 || prod.brand_id === 79 || prod.brand_id === 77 || prod.brand_id === 75 || prod.brand_id === 84 || prod.brand_id === 80 || prod.brand_id === 81 || prod.brand_id === 92 || prod.brand_id === 91 || prod.brand_id === 96 || prod.brand_id === 90 || prod.brand_id === 89 || prod.brand_id === 88 || prod.brand_id === 86 || prod.brand_id === 97 || prod.brand_id === 82 || prod.brand_id === 85 || prod.brand_id === 78 || prod.brand_id === 76 || prod.brand_id === 73 || prod.brand_id === 74) {
+    if (
+      prod.brand_id === 87 ||
+      prod.brand_id === 83 ||
+      prod.brand_id === 79 ||
+      prod.brand_id === 77 ||
+      prod.brand_id === 75 ||
+      prod.brand_id === 84 ||
+      prod.brand_id === 80 ||
+      prod.brand_id === 81 ||
+      prod.brand_id === 92 ||
+      prod.brand_id === 91 ||
+      prod.brand_id === 96 ||
+      prod.brand_id === 90 ||
+      prod.brand_id === 89 ||
+      prod.brand_id === 88 ||
+      prod.brand_id === 86 ||
+      prod.brand_id === 97 ||
+      prod.brand_id === 82 ||
+      prod.brand_id === 85 ||
+      prod.brand_id === 78 ||
+      prod.brand_id === 76 ||
+      prod.brand_id === 73 ||
+      prod.brand_id === 74
+    ) {
       newProducts.push({
         id: prod.id,
-        name: newName
+        name: newName,
       });
     }
   }
@@ -1054,9 +1011,8 @@ router.put("/updatePrices", async function (req, res) {
   try {
     await updatePrices(bc, sanmar, start);
   } catch (err) {
-    logtail.info('Error on update Prices: ', err);
+    logtail.info("Error on update Prices: ", err);
   }
-
 });
 
 router.put("/ftp", async function (req, res) {
@@ -1068,32 +1024,32 @@ router.put("/ftp", async function (req, res) {
   const c = new Client();
 
   try {
-    logtail.info('--SANMAR-- Logging into FTP Client..');
+    logtail.info("--SANMAR-- Logging into FTP Client..");
 
     const ftpConfig = {
       host: `${host}`,
       port: 21,
       user: `${user}`,
       password: `${password}`,
-    }
+    };
     const file = await getFile(date);
 
     c.connect(ftpConfig);
 
-    c.on('ready', function () {
+    c.on("ready", function () {
       c.get(`/000175733Status/${file}`, function (err, stream) {
         if (err) {
-          logtail.info('--SANMAR-- Error on SanMar FTP Download: ', err);
+          logtail.info("--SANMAR-- Error on SanMar FTP Download: ", err);
           c.end();
         }
 
-        stream.once('close', function () {
+        stream.once("close", function () {
           c.end();
         });
-        
+
         stream.pipe(res);
 
-        stream.on('end', function(){
+        stream.on("end", function () {
           if (err) {
             res.status(500).end();
           } else {
@@ -1103,10 +1059,9 @@ router.put("/ftp", async function (req, res) {
       });
     });
   } catch (err) {
-    logtail.info('--SANMAR-- Error on connect ftp: ', err);
+    logtail.info("--SANMAR-- Error on connect ftp: ", err);
     res.status(500).end();
   }
-
 });
 
 router.put("/ftpPrices", async function (req, res) {
@@ -1116,39 +1071,37 @@ router.put("/ftpPrices", async function (req, res) {
   const user = req.body.user;
   const c = new Client();
 
-
   try {
-    logtail.info('--SANMAR-- Logging into FTP Client..');
+    logtail.info("--SANMAR-- Logging into FTP Client..");
 
     const ftpConfig = {
       host: `${host}`,
       port: 21,
       user: `${user}`,
       password: `${password}`,
-    }
+    };
 
     c.connect(ftpConfig);
 
-    c.on('ready', function () {
-      logtail.info('--SANMAR-- Downloading Sanmar Prices..');
+    c.on("ready", function () {
+      logtail.info("--SANMAR-- Downloading Sanmar Prices..");
       c.get(`/SanMarPDD/SanMar_SDL_DI.zip`, function (err, stream) {
         if (err) throw err;
-        stream.once('close', function () {
+        stream.once("close", function () {
           c.end();
         });
-        stream.pipe(fs.createWriteStream('download.zip'));
+        stream.pipe(fs.createWriteStream("download.zip"));
 
-        stream.on('end', function () {
+        stream.on("end", function () {
           res.sendStatus(201);
         });
       });
     });
     //res.send('YES').status(201);
   } catch (err) {
-    logtail.info('--SANMAR-- Error on connect ftp: ', err);
-    res.status(500).send('NO');
+    logtail.info("--SANMAR-- Error on connect ftp: ", err);
+    res.status(500).send("NO");
   }
-
 });
 
 router.post("/sanmarDB", async function (req, res) {
@@ -1157,12 +1110,10 @@ router.post("/sanmarDB", async function (req, res) {
   let response = req.body.products;
 
   try {
-
     const queryText = `DELETE from "sanmar-prices"`;
-    await pool
-      .query(queryText)
+    await pool.query(queryText);
   } catch (err) {
-    logtail.info('--SANMAR-- Error on delete sanmar prices: ', err);
+    logtail.info("--SANMAR-- Error on delete sanmar prices: ", err);
     return res.status(500);
   }
 
@@ -1175,10 +1126,9 @@ router.post("/sanmarDB", async function (req, res) {
       let price = product.price;
 
       const queryText2 = `insert into "sanmar-prices" (name, sku, color, size, price) VALUES ($1, $2, $3, $4, $5);`;
-      await pool
-        .query(queryText2, [name, sku, color, size, price])
+      await pool.query(queryText2, [name, sku, color, size, price]);
     } catch (err) {
-      logtail.info('--SANMAR-- Error on post single item: ', err);
+      logtail.info("--SANMAR-- Error on post single item: ", err);
       res.sendStatus(500);
     }
   }
@@ -1193,10 +1143,9 @@ router.get("/getSanmarPrices", async function (req, res) {
 
   try {
     const queryText = `select * from "sanmar-prices"`;
-    response = await pool
-      .query(queryText)
+    response = await pool.query(queryText);
   } catch (err) {
-    logtail.info('--SANMAR-- Error on delete sanmar prices: ', err);
+    logtail.info("--SANMAR-- Error on delete sanmar prices: ", err);
     return res.status(500);
   }
 
@@ -1210,25 +1159,24 @@ router.put("/email", async function (req, res) {
   let response = [];
 
   try {
-    response = await axios
-      .get(
-        `https://api.bigcommerce.com/stores/et4qthkygq/v2/orders/${order}`,
-        config
-      )
+    response = await axios.get(
+      `https://api.bigcommerce.com/stores/et4qthkygq/v2/orders/${order}`,
+      config
+    );
   } catch (err) {
-    logtail.info('--SANMAR-- Error on get order: ', err);
+    logtail.info("--SANMAR-- Error on get order: ", err);
     res.sendStatus(500);
   }
 
   try {
-            const email = response.data.billing_address.email;
-            //const email = 'tre@heattransferwarehouse.com';
-            let first_name = response.data.billing_address.first_name;
-            logtail.info('--SANMAR-- ', email, first_name);
-            let titleString = `
+    const email = response.data.billing_address.email;
+    //const email = 'tre@heattransferwarehouse.com';
+    let first_name = response.data.billing_address.first_name;
+    logtail.info("--SANMAR-- ", email, first_name);
+    let titleString = `
             <div>
               <img
-                src="https://cdn11.bigcommerce.com/s-et4qthkygq/product_images/uploaded_images/clothing-order-2.png?t=1645461029"
+                src="https://res.cloudinary.com/heattransferwarehouse/image/upload/q_21/v1701975086/clothing-order-2_xxiblx.avif"
                 width="100%"
                 alt=""
               />
@@ -1250,9 +1198,9 @@ router.put("/email", async function (req, res) {
             <br>
             <p><strong>NOTE: </strong>Tracking Numbers are from UPS!</p>
             <br>`;
-            let infoArray = [];
-            for (const item of tracking) {
-            let info = `
+    let infoArray = [];
+    for (const item of tracking) {
+      let info = `
             <div>
             <table style="border-collapse: collapse; font-family:Arial Narrow, sans-serif;">
               <tr>
@@ -1260,56 +1208,56 @@ router.put("/email", async function (req, res) {
                 <td style="width: 80%; border: 1px solid #909090; padding: 5px; margin: 5px;"><a href="https://www.ups.com/track?loc=null&tracknum=${item}&requester=WT/trackdetails"> ${item} </a></td>
               </tr>
             </table>
-            </div>`
+            </div>`;
 
-            infoArray.push(info);
-            }
-            let newArray = infoArray.join("");
-            let locationInfo = 'Heat Transfer Warehouse Company. 1501 21st Avenue North Fargo, North Dakota 58102';
-            let lastString = `<br><br><br><div style="color:#DCDCDC; background-color:#DCDCDC; font-family:Arial Narrow, sans-serif; opacity:0.5;">${locationInfo}</div>`;
-            let final =
-              `<html>` +
-              `<div>` +
-              titleString +
-              newArray +
-              lastString +
-              `</div>` +
-              `</html>`;
-            const msg = {
-              "personalizations": [
-                {
-                  "to": [
-                    //send to the customers email address
-                    {
-                      "email": `${email}`,
-                    },
-                  ],
-                },
-              ],
-              "from": "sales@heattransferwarehouse.com", 
-              "subject": `Your clothing order from Heat Transfer Warehouse: ${order}`,
-              "html": `${final}`,
-            };
-            await sgMail
-              .send(msg)
-              .then(() => {
-                logtail.info('--SANMAR-- Email sent')
-              })
-              .catch((error) => {
-                console.error(error)
-              })
-  
-          } catch (err) {
-            logtail.info('--SANMAR-- Error on send email: ', err);
-            res.sendStatus(500);
-          }
-        
+      infoArray.push(info);
+    }
+    let newArray = infoArray.join("");
+    let locationInfo =
+      "Heat Transfer Warehouse Company. 1501 21st Avenue North Fargo, North Dakota 58102";
+    let lastString = `<br><br><br><div style="color:#DCDCDC; background-color:#DCDCDC; font-family:Arial Narrow, sans-serif; opacity:0.5;">${locationInfo}</div>`;
+    let final =
+      `<html>` +
+      `<div>` +
+      titleString +
+      newArray +
+      lastString +
+      `</div>` +
+      `</html>`;
+    const msg = {
+      personalizations: [
+        {
+          to: [
+            //send to the customers email address
+            {
+              email: `${email}`,
+            },
+          ],
+        },
+      ],
+      from: "customerservice@heattransferwarehouse.com",
+      subject: `Your clothing order from Heat Transfer Warehouse: ${order}`,
+      html: `${final}`,
+    };
+    await sgMail
+      .send(msg)
+      .then(() => {
+        logtail.info("--SANMAR-- Email sent");
+      })
+      .catch((error) => {
+        console.error(error);
+      });
+  } catch (err) {
+    logtail.info("--SANMAR-- Error on send email: ", err);
+    res.sendStatus(500);
+  }
+
   try {
     const so = await getSO(order);
-    logtail.info('--SANMAR-- ', so.response.results[0][0]);
+    logtail.info("--SANMAR-- ", so.response.results[0][0]);
     await createNote(so.response.results[0][0]);
   } catch (err) {
-    logtail.info('--SANMAR-- Error on add note: ', err);
+    logtail.info("--SANMAR-- Error on add note: ", err);
     res.sendStatus(500);
   }
 });
@@ -1350,12 +1298,10 @@ router.get("/refreshBC", async function (req, res) {
   let response = [];
 
   try {
-
     const queryText = `DELETE from "bc-prices"`;
-    await pool
-      .query(queryText)
+    await pool.query(queryText);
   } catch (err) {
-    logtail.info('--SANMAR-- Error on delete bc prices: ', err);
+    logtail.info("--SANMAR-- Error on delete bc prices: ", err);
     return res.status(500);
   }
 
@@ -1373,10 +1319,9 @@ router.get("/refreshBC", async function (req, res) {
       let sku = product.id;
 
       const queryText2 = `insert into "bc-prices" (name, sku) VALUES ($1, $2);`;
-      await pool
-        .query(queryText2, [name, sku])
+      await pool.query(queryText2, [name, sku]);
     } catch (err) {
-      logtail.info('--SANMAR-- Error on post single bc price: ', err);
+      logtail.info("--SANMAR-- Error on post single bc price: ", err);
       res.sendStatus(500);
     }
   }
@@ -1391,10 +1336,9 @@ router.get("/getBC", async function (req, res) {
 
   try {
     const queryText = `select * from "bc-prices"`;
-    response = await pool
-      .query(queryText)
+    response = await pool.query(queryText);
   } catch (err) {
-    logtail.info('--SANMAR-- Error on delete bc prices: ', err);
+    logtail.info("--SANMAR-- Error on delete bc prices: ", err);
     return res.status(500);
   }
 
@@ -1408,12 +1352,11 @@ router.post("/addOrder", async function (req, res) {
   logtail.info(o, tracking);
 
   try {
-  const queryText = `INSERT INTO "sanmar" (ref, tracking) VALUES ($1, $2);`;
-  await pool
-    .query(queryText, [o, tracking])
+    const queryText = `INSERT INTO "sanmar" (ref, tracking) VALUES ($1, $2);`;
+    await pool.query(queryText, [o, tracking]);
   } catch (err) {
-  logtail.info('--SANMAR-- Error on add order: ', err);
-  return res.status(500);
+    logtail.info("--SANMAR-- Error on add order: ", err);
+    return res.status(500);
   }
 
   logtail.info("--SANMAR-- We are about to get the sanmar list");
@@ -1428,66 +1371,70 @@ router.post("/addOrder", async function (req, res) {
       logtail.info(`--SANMAR-- Error on item query ${error}`);
       res.sendStatus(500);
     });
-
 });
 
 router.post("/items", async function (req, res) {
   logtail.info("--BRIGHTPEARL-- We are about to add to the item list");
 
   try {
-  await addItems();
+    await addItems();
   } catch (err) {
-  logtail.info('--BRIGHTPEARL-- Error on add items: ', err);
-  return res.status(500);
-  }
-
-  try {
-  res.sendStatus(200);
-  } catch (err) {
-  logtail.info('--BRIGHTPEARL-- Error on send 200: ', err);
-  return res.status(500);
-  }
-
-  async function addItems () {
-
-  for (const product of req.body.products) {
-        try {
-          let name = product.name;
-          let sku = product.sku;
-          let bulk = parseInt(product.bulk);
-          let width = product.width;
-          let type = product.type;
-          let color = product.color;
-          let sales = product.sales;
-
-          const queryText2 = `insert into "item" (name, sku, bulk, width, type, color, sales) VALUES ($1, $2, $3, $4, $5, $6, $7);`;
-          await pool
-            .query(queryText2, [name, sku, bulk, width, type, color, sales])
-        } catch (err) {
-          logtail.info('--BRIGHTPEARL-- Error on get single item: ', err);
-          return res.status(500);
-        }
-  }
- }
-});
-
-router.delete("/all", async function (req, res) {
-  logtail.info("--BRIGHTPEARL-- We are about to delete the item list");
-
-  try {
-    logtail.info('--BRIGHTPEARL-- deleting items');
-    const queryText = `DELETE from "item";`;
-    await pool
-      .query(queryText)
-  } catch (err) {
-    logtail.info('--BRIGHTPEARL-- Error on delete items: ', err);
+    logtail.info("--BRIGHTPEARL-- Error on add items: ", err);
     return res.status(500);
   }
 
   try {
     res.sendStatus(200);
   } catch (err) {
-    logtail.info('--BRIGHTPEARL-- Error on send 200: ', err);
+    logtail.info("--BRIGHTPEARL-- Error on send 200: ", err);
+    return res.status(500);
+  }
+
+  async function addItems() {
+    for (const product of req.body.products) {
+      try {
+        let name = product.name;
+        let sku = product.sku;
+        let bulk = parseInt(product.bulk);
+        let width = product.width;
+        let type = product.type;
+        let color = product.color;
+        let sales = product.sales;
+
+        const queryText2 = `insert into "item" (name, sku, bulk, width, type, color, sales) VALUES ($1, $2, $3, $4, $5, $6, $7);`;
+        await pool.query(queryText2, [
+          name,
+          sku,
+          bulk,
+          width,
+          type,
+          color,
+          sales,
+        ]);
+      } catch (err) {
+        logtail.info("--BRIGHTPEARL-- Error on get single item: ", err);
+        return res.status(500);
+      }
+    }
+  }
+});
+
+router.delete("/all", async function (req, res) {
+  logtail.info("--BRIGHTPEARL-- We are about to delete the item list");
+
+  try {
+    logtail.info("--BRIGHTPEARL-- deleting items");
+    const queryText = `DELETE from "item";`;
+    await pool.query(queryText);
+  } catch (err) {
+    logtail.info("--BRIGHTPEARL-- Error on delete items: ", err);
+    return res.status(500);
+  }
+
+  try {
+    res.sendStatus(200);
+  } catch (err) {
+    logtail.info("--BRIGHTPEARL-- Error on send 200: ", err);
     return res.status(500);
   }
 });
@@ -1496,48 +1443,49 @@ router.delete("/items:id", async function (req, res) {
   logtail.info("--BRIGHTPEARL-- We are deleting items with id:", req.params.id);
   const id = req.params.id;
   logtail.info(id);
-  
+
   try {
-      const queryText = 'delete from "item" WHERE id = $1';
-      await pool
-        .query(queryText, [id])
-      return res.status(200).send();
+    const queryText = 'delete from "item" WHERE id = $1';
+    await pool.query(queryText, [id]);
+    return res.status(200).send();
   } catch (err) {
-    logtail.info('--BRIGHTPEARL-- Error on delete: ', err);
+    logtail.info("--BRIGHTPEARL-- Error on delete: ", err);
     return res.status(500).send();
   }
-    
 });
 
 router.put("/items/:id", async function (req, res) {
-  logtail.info("--BRIGHTPEARL-- We are updating items as dead with id:", req.params.id);
+  logtail.info(
+    "--BRIGHTPEARL-- We are updating items as dead with id:",
+    req.params.id
+  );
   const ids = req.params.id;
 
   let items = [];
-  let itemToPush = '';
+  let itemToPush = "";
   for (let i = 0; i < ids.length; i++) {
-    if (ids[i] !== ',') {
-      itemToPush += (ids[i]);
-    } if (ids[i] === ',') {
+    if (ids[i] !== ",") {
+      itemToPush += ids[i];
+    }
+    if (ids[i] === ",") {
       items.push(itemToPush);
-      itemToPush = '';
+      itemToPush = "";
     }
   }
   items.push(itemToPush);
-  itemToPush = '';
+  itemToPush = "";
 
   try {
     for (item of items) {
       logtail.info(item);
-    const queryText = `UPDATE "item" SET dead = true WHERE id = ${item}`;
-    await pool
-      .query(queryText)
+      const queryText = `UPDATE "item" SET dead = true WHERE id = ${item}`;
+      await pool.query(queryText);
     }
   } catch (err) {
-    logtail.info('--BRIGHTPEARL-- Error on update: ', err);
+    logtail.info("--BRIGHTPEARL-- Error on update: ", err);
     return res.status(500).send();
   }
-  
+
   try {
     logtail.info("--BRIGHTPEARL-- We are about to get the item list");
 
@@ -1552,10 +1500,9 @@ router.put("/items/:id", async function (req, res) {
         res.sendStatus(500);
       });
   } catch (err) {
-    logtail.info('--BRIGHTPEARL-- Error on Get: ', err);
+    logtail.info("--BRIGHTPEARL-- Error on Get: ", err);
     return res.status(500).send();
   }
-    
 });
 
 module.exports = router;
