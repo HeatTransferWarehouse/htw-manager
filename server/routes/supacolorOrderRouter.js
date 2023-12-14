@@ -281,8 +281,6 @@ function createSupacolorPayload(
   shippingMethod,
   promoCode
 ) {
-  let personalInfo = orderDetails.billing_address;
-
   const supacolorPayload = {
     orderNumber: orderId,
     orderComment: "From Heat Transfer Warehouse",
@@ -292,16 +290,16 @@ function createSupacolorPayload(
       deliveryMethod: shippingMethod.includes("Next Day Air")
         ? "Next Day Air"
         : "2 Day Air",
-      Organisation: `${personalInfo.first_name} ${personalInfo.last_name}`,
-      contactName: `${personalInfo.first_name} ${personalInfo.last_name}`,
-      phone: personalInfo.phone,
-      emailAddress: personalInfo.email,
-      countryCodeIso2: personalInfo.country_iso2,
-      streetAddress: personalInfo.street_1,
-      address2: personalInfo.street_2,
-      city: personalInfo.city,
-      state: personalInfo.state,
-      postalCode: personalInfo.zip,
+      Organisation: `${shippingMethod[0].company}`,
+      contactName: `${shippingMethod[0].first_name} ${shippingMethod[0].last_name}`,
+      phone: shippingMethod[0].phone,
+      emailAddress: shippingMethod[0].email,
+      countryCodeIso2: shippingMethod[0].country_iso2,
+      streetAddress: shippingMethod[0].street_1,
+      address2: shippingMethod[0].street_2,
+      city: shippingMethod[0].city,
+      state: shippingMethod[0].state,
+      postalCode: shippingMethod[0].zip,
     },
     promocode:
       promoCode &&
