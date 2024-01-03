@@ -302,10 +302,7 @@ function createSupacolorPayload(
       postalCode: shippingMethod[0].zip,
     },
     promocode:
-      promoCode &&
-      (promoCode[0].code === "HTW15" || promoCode[0].code === "htw15")
-        ? "HTW15SBS"
-        : "",
+      promoCode && promoCode[0].code === "SUPASATURDAY" ? "SUPASATURDAY" : "",
     items: supacolorProducts.map((item, index) => ({
       itemType: "PriceCode",
       code: priceCodes[index],
