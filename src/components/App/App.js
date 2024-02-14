@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from "react";
+import React, { useCallback, useEffect, useRef } from "react";
 import "bootstrap/dist/css/bootstrap.min.css";
 import { HashRouter as Router, Route, Switch } from "react-router-dom";
 import Nav from "../Nav/Nav";
@@ -22,27 +22,27 @@ import Complete from "../Pages/Complete";
 import OrderLookup from "../Pages/OrderLookup";
 import OrderLookupOLD from "../Pages/OrderLookupOLD";
 import "./App.css";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 
 function App() {
   const dispatch = useDispatch();
   const logoutTimerRef = useRef(null);
+  const user = useSelector((store) => store.user.userReducer);
 
-  const resetTimer = () => {
+  const resetTimer = useCallback(() => {
     if (logoutTimerRef.current) {
       clearTimeout(logoutTimerRef.current);
     }
     logoutTimerRef.current = setTimeout(() => {
       dispatch({ type: "UNSET_USER" });
     }, 300000); // 300,000ms = 5 min
-  };
+  }, [dispatch]);
 
   useEffect(() => {
     // Initially fetch the user
     dispatch({ type: "FETCH_USER" });
 
     // Set up the initial timeout
-    resetTimer();
 
     // Set up event listeners for various user activity
     window.addEventListener("mousemove", resetTimer);
@@ -62,12 +62,14 @@ function App() {
         clearTimeout(logoutTimerRef.current);
       }
     };
-  });
+  }, [dispatch, resetTimer]);
   return (
     <Router>
-      <div id="Nav">
-        <Nav />
-      </div>
+      {user.id && (
+        <div id="Nav">
+          <Nav />
+        </div>
+      )}
       <Switch>
         <Route exact path="/login" component={Login} />
 

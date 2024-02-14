@@ -13,7 +13,6 @@ import DeleteModal from "../modals/deleteModal";
 import AdminRegister from "../modals/adminRegister";
 import { MdEdit } from "react-icons/md";
 import AdminEditUser from "../modals/adminEditUser";
-import { set } from "ol/transform";
 
 function WallyB() {
   const dispatch = useDispatch();

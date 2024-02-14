@@ -11,10 +11,3 @@ footer {
   margin-top: 2rem !important;
   /* z-index: 90; */
 }
-
-.login {
-  height: 50vh;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-}

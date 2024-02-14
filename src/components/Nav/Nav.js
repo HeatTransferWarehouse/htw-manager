@@ -27,7 +27,7 @@ function Nav() {
 
   useEffect(() => {
     dispatch({ type: "FETCH_USER" });
-  }, []);
+  }, [dispatch]);
 
   return (
     <header className="header-area header-sticky">

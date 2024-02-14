@@ -1,118 +1,62 @@
-import React, { Component } from "react";
-import { connect } from "react-redux";
-import { Grid } from "@material-ui/core";
-import { Alert } from "@material-ui/lab";
+import React, { useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
 import "./LoginPage.css";
 
-class LoginPage extends Component {
-  state = {
-    username: "",
-    password: "",
-    //error value used to conditionally render error toasts, default is false
-    error: false,
+export default function LoginPage() {
+  const dispatch = useDispatch();
+  const [username, setUsername] = useState("");
+  const [password, setPassword] = useState("");
+  const logInStatus = useSelector((store) => store.error.loginMessage);
+  const loginEvent = (event) => {
+    event.preventDefault();
+    dispatch({
+      type: "LOGIN",
+      payload: {
+        username: username,
+        password: password,
+      },
+    });
   };
 
-  //function ran when user logs in
-  login = (event) => {
-    //prevents any default actions
-    event.preventDefault();
-    //validates username and password on login, this info is also validated
-    //on the server
-    if (this.state.username && this.state.password) {
-      //redux sagas for login
-      this.props.dispatch({
-        type: "LOGIN",
-        payload: {
-          username: this.state.username,
-          password: this.state.password,
-        },
-      });
-    } else {
-      //error message if login failed or info is not validated
-      this.props.dispatch({ type: "LOGIN_INPUT_ERROR" });
-    }
-    //this makes it so whenever a user logs in, they go straight to homepage
-    this.props.history.push("/");
-  }; // end login
-  //This function handles storing input values into state on change
-  handleInputChangeFor = (propertyName) => (event) => {
-    this.setState({
-      [propertyName]: event.target.value,
-    });
-  }; //end handleInputChangeFor
-  render() {
-    return (
-      <div className="login">
-        <div>
-          <div>
-            <center>
-              {/* if error in state is true, render this alert, shows up as a toast
-            and conditionally renders based on value in state */}
-              {this.state.error === true && (
-                <Alert className="error" style={{}} severity="error">
-                  Please provide your email address
-                </Alert>
-              )}
-              {/* line breaks for spacing */}
-              <br />
-              <br />
-              <>
-                {/* start login form */}
-                <form onSubmit={this.login} className="reglogin">
-                  <h2>HTW Admin Login</h2>
-                  <div className="login-inputs">
-                    <div className="login-input">
-                      {/* enter email address here */}
-                      <label style={{ marginLeft: "5px" }} htmlFor="username">
-                        EMAIL
-                      </label>
-                      <input
-                        type="text"
-                        name="username"
-                        value={this.state.username}
-                        onChange={this.handleInputChangeFor("username")}
-                      />
-                    </div>
-                    {/* enter password here */}
-                    <div className="login-input">
-                      <label style={{ marginLeft: "5px" }} htmlFor="password">
-                        PASSWORD
-                      </label>
-                      <input
-                        type="password"
-                        name="password"
-                        value={this.state.password}
-                        onChange={this.handleInputChangeFor("password")}
-                      />
-                    </div>
-                  </div>
-                  {/* runs the login function on submit */}
-                  <button className="log-in" type="submit">
-                    Login
-                  </button>
-                  {/* runs login error toast */}
-                  {/* {this.props.errors.loginMessage && (
-                    <Alert className="loginError" style={{}} severity="error">
-                      {this.props.errors.loginMessage}
-                    </Alert>
-                  )} */}
-                </form>
-              </>
-            </center>
-            <center></center>
+  return (
+    <div className="login">
+      <img
+        src="https://res.cloudinary.com/heattransferwarehouse/image/upload/c_scale,q_35,w_600/v1701704613/HTW%20Home/HTW_logo_2023.avif"
+        alt=""
+        className="htw-logo"
+      />
+      <form onSubmit={loginEvent} className="login-container">
+        <h2>HTW Admin Login</h2>
+        <div className="login-inputs">
+          <div className="login-input">
+            {/* enter email address here */}
+            <label htmlFor="username">EMAIL / USERNAME</label>
+            <input
+              className={logInStatus ? "login-error" : ""}
+              type="text"
+              name="username"
+              value={username}
+              required
+              onChange={(event) => setUsername(event.target.value)}
+            />
           </div>
-          <Grid item xs={12} sm={12} md={7} style={{ display: "block" }}>
-            {/* logo on login page */}
-          </Grid>
+          <div className="login-input">
+            <label htmlFor="password">PASSWORD</label>
+            <input
+              className={logInStatus ? "login-error" : ""}
+              type="password"
+              name="password"
+              value={password}
+              required
+              onChange={(event) => setPassword(event.target.value)}
+            />
+          </div>
         </div>
-      </div>
-    ); //end return
-  } //end render
-} //end LoginPage
-
-// Instead of taking everything from state, we just want the error messages.
-const mapStateToProps = (state) => ({
-  errors: state.errors,
-});
-
-export default connect(mapStateToProps)(LoginPage);
+        {logInStatus && <p className="error-message">{logInStatus}</p>}
+        <button className="log-in" type="submit">
+          Login
+        </button>
+      </form>
+    </div>
+  );
+}
