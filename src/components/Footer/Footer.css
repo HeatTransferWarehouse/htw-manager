@@ -1,15 +1,13 @@
 footer {
   /* stylings for the footer*/
-  bottom: 0;
-
   position: absolute;
+  bottom: 0;
   background-color: #40e6d8;
   padding: 1%;
   width: 100% !important;
   color: #303030;
   background-color: black;
   text-align: center;
-  margin-top: 10% !important;
   /* z-index: 90; */
 }
 

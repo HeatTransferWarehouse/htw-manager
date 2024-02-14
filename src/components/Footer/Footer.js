@@ -11,7 +11,7 @@ class Footer extends Component {
     let thisYear = thisDate.getFullYear();
     const copyright = "\u00A9";
     return (
-      <footer className="section">
+      <footer>
         <div className="container">
           <div className="row">
             <div className="col-lg-12">

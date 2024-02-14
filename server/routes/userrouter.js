@@ -28,6 +28,51 @@ router.get("/", rejectUnauthenticated, (req, res) => {
   res.send(req.user);
 });
 
+router.get("/all", rejectUnauthenticated, (req, res) => {
+  const queryText = `SELECT * FROM "user" ORDER BY "id" ASC;`;
+  pool
+    .query(queryText)
+    .then((result) => res.send(result.rows))
+    .catch((err) => {
+      console.log("Error getting all users", err);
+      res.sendStatus(500);
+    });
+});
+
+// PUT endpoint for updating user details
+router.put("/update/:id", rejectUnauthenticated, async (req, res) => {
+  const userId = Number(req.params.id); // Assuming you pass the user ID as a URL parameter
+  const { username, password, role } = req.body;
+
+  // You may want to add additional checks to ensure that only
+  // authorized users can update the information, or users can only update their own information
+
+  try {
+    // Start a transaction
+    await pool.query("BEGIN");
+
+    const updateUserQuery = `UPDATE "user" SET
+      email = $1,
+      password = $2,
+      access_level = $3
+      WHERE id = $4`;
+
+    const hashedPassword = encryptLib.encryptPassword(password);
+
+    // Execute the update query
+    await pool.query(updateUserQuery, [username, hashedPassword, role, userId]);
+
+    // Commit the transaction
+    await pool.query("COMMIT");
+    res.sendStatus(200);
+  } catch (error) {
+    // Rollback the transaction on error
+    await pool.query("ROLLBACK");
+    logtail.error("Error updating user details", error);
+    res.status(500).send("Error updating user details");
+  }
+});
+
 router.post("/addadmin", rejectUnauthenticated, (req, res) => {
   // used to reset user logins. It's on a permenent restricted path, only accessesable by manaully changing the code. Extremely secure and protected
   const first_name = req.body.first_name;
@@ -70,6 +115,18 @@ router.post("/logout", (req, res) => {
   // Use passport's built-in method to log out the user
   req.logout();
   res.sendStatus(200);
+});
+
+router.delete("/:id", (req, res) => {
+  const id = Number(req.params.id);
+  const queryText = `DELETE FROM "user" WHERE "id" = $1`;
+  pool
+    .query(queryText, [id])
+    .then(() => res.sendStatus(200))
+    .catch((err) => {
+      logtail.info("Error deleting user", err);
+      res.sendStatus(500);
+    });
 });
 
 router.post("/register", (req, res) => {

@@ -21,14 +21,6 @@ function RegisterForm() {
 
   return (
     <>
-      <br />
-      <br />
-      <br />
-      <br />
-      <br />
-      <br />
-      <br />
-      <br />
       <form className="formPanel" onSubmit={registerUser}>
         <h2>Register</h2>
         {/* {errors.registrationMessage && (

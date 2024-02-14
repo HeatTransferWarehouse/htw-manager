@@ -65,62 +65,60 @@ function App() {
   });
   return (
     <Router>
-      <div>
-        <div id="Nav">
-          <Nav />
-        </div>
-        <Switch>
-          <Route exact path="/login" component={Login} />
-
-          <Route exact path="/orderlookup" component={OrderLookup} />
-
-          <Route exact path="/orderlookupold" component={OrderLookupOLD} />
-
-          <Route exact path="/accountlookup" component={OrderLookup} />
-
-          <ProtectedRoute exact path="/" component={Main} />
-
-          <ProtectedRoute exact path="/sanmar" component={Sanmar} />
-
-          <ProtectedRoute exact path="/brightpearl" component={Brightpearl} />
-
-          {/* <ProtectedRoute exact path="/nostock" component={NoStock} /> */}
-
-          {/* <ProtectedRoute exact path="/affiliates" component={Affilates} /> */}
-
-          <ProtectedRoute exact path="/resources" component={Resources} />
-
-          <ProtectedRoute exact path="/decoqueue" component={DecoQueue} />
-
-          <ProtectedRoute exact path="/progress" component={Progress} />
-
-          <ProtectedRoute exact path="/complete" component={Complete} />
-
-          <ProtectedRoute exact path="/supacolor" component={Supacolor} />
-
-          <AdminRoute exact path="/wallyb" component={WallyB} />
-
-          <AdminRoute exact path="/register" component={Register} />
-
-          <AdminRoute exact path="/admin" component={Admin} />
-
-          {/* If none of the other routes matched, we will show a 404. */}
-          <Route
-            render={() => (
-              <>
-                <br />
-                <br />
-                <br />
-                <br />
-                <br />
-                <br />
-                <h1 className="fourfour">404</h1>
-              </>
-            )}
-          />
-        </Switch>
-        <Footer />
+      <div id="Nav">
+        <Nav />
       </div>
+      <Switch>
+        <Route exact path="/login" component={Login} />
+
+        <Route exact path="/orderlookup" component={OrderLookup} />
+
+        <Route exact path="/orderlookupold" component={OrderLookupOLD} />
+
+        <Route exact path="/accountlookup" component={OrderLookup} />
+
+        <ProtectedRoute exact path="/" component={Main} />
+
+        <ProtectedRoute exact path="/sanmar" component={Sanmar} />
+
+        <ProtectedRoute exact path="/brightpearl" component={Brightpearl} />
+
+        {/* <ProtectedRoute exact path="/nostock" component={NoStock} /> */}
+
+        {/* <ProtectedRoute exact path="/affiliates" component={Affilates} /> */}
+
+        <ProtectedRoute exact path="/resources" component={Resources} />
+
+        <ProtectedRoute exact path="/decoqueue" component={DecoQueue} />
+
+        <ProtectedRoute exact path="/progress" component={Progress} />
+
+        <ProtectedRoute exact path="/complete" component={Complete} />
+
+        <ProtectedRoute exact path="/supacolor" component={Supacolor} />
+
+        <AdminRoute exact path="/wallyb" component={WallyB} />
+
+        <AdminRoute exact path="/register" component={Register} />
+
+        <AdminRoute exact path="/admin" component={Admin} />
+
+        {/* If none of the other routes matched, we will show a 404. */}
+        <Route
+          render={() => (
+            <>
+              <br />
+              <br />
+              <br />
+              <br />
+              <br />
+              <br />
+              <h1 className="fourfour">404</h1>
+            </>
+          )}
+        />
+      </Switch>
+      <Footer />
     </Router>
   );
 }
