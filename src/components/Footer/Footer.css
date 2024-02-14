@@ -8,6 +8,7 @@ footer {
   color: #303030;
   background-color: black;
   text-align: center;
+  margin-top: 2rem !important;
   /* z-index: 90; */
 }
 
