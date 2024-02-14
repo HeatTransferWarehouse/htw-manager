@@ -173,6 +173,7 @@ function Supacolor() {
           width: "90%",
           margin: "auto",
           padding: "1em",
+          marginBottom: "3rem",
         }}>
         <SCTableHeader
           deletedTableView={deletedTableView}
