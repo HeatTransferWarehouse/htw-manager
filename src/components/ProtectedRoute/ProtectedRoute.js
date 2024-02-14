@@ -1,7 +1,7 @@
-import React from 'react';
-import {Route} from 'react-router-dom'
-import {connect} from 'react-redux';
-import LoginPage from '../LoginPage/LoginPage';
+import React from "react";
+import { Route } from "react-router-dom";
+import { connect } from "react-redux";
+import LoginPage from "../LoginPage/LoginPage";
 
 const ProtectedRoute = (props) => {
   // Using destructuring, this takes ComponentToProtect from component
@@ -16,11 +16,11 @@ const ProtectedRoute = (props) => {
 
   let ComponentToShow;
 
-  if(user.id) {
+  if (user.id) {
     // if the user is logged in (only logged in users have ids)
     // show the component that is protected
     ComponentToShow = ComponentToProtect;
-  } else if (loginMode === 'login') {
+  } else if (loginMode === "login") {
     // if they are not logged in, check the loginMode on Redux State
     // if the mode is 'login', show the LoginPage
     ComponentToShow = LoginPage;
@@ -30,22 +30,20 @@ const ProtectedRoute = (props) => {
     ComponentToShow = LoginPage;
   }
   return (
-      <Route
-        // all props like 'exact' and 'path' that were passed in
-        // are now passed along to the 'Route' Component
-        {...otherProps}
-        component={ComponentToShow}
-      />
-  )
-}
+    <Route
+      // all props like 'exact' and 'path' that were passed in
+      // are now passed along to the 'Route' Component
+      {...otherProps}
+      component={ComponentToShow}
+    />
+  );
+};
 
 const mapStateToProps = (state) => {
   return {
-    user: state.user,
+    user: state.user.userReducer,
     loginMode: state.loginMode,
-  }
-}
+  };
+};
 
-export default connect(mapStateToProps)(ProtectedRoute)
-
-
+export default connect(mapStateToProps)(ProtectedRoute);

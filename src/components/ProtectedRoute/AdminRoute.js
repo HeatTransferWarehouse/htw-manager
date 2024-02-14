@@ -1,7 +1,7 @@
-import React from 'react';
-import {Route} from 'react-router-dom'
-import {connect} from 'react-redux';
-import Main from '../Home/Main';
+import React from "react";
+import { Route } from "react-router-dom";
+import { connect } from "react-redux";
+import Main from "../Home/Main";
 
 const AdminRoute = (props) => {
   // Using destructuring, this takes ComponentToProtect from component
@@ -16,7 +16,7 @@ const AdminRoute = (props) => {
 
   let ComponentToShow;
 
-  if(user.id && user.access_level > 1) {
+  if (user.id && user.access_level > 1) {
     // if the user is logged in (only logged in users have ids)
     // show the component that is protected
     ComponentToShow = ComponentToProtect;
@@ -26,22 +26,20 @@ const AdminRoute = (props) => {
     ComponentToShow = Main;
   }
   return (
-      <Route
-        // all props like 'exact' and 'path' that were passed in
-        // are now passed along to the 'Route' Component
-        {...otherProps}
-        component={ComponentToShow}
-      />
-  )
-}
+    <Route
+      // all props like 'exact' and 'path' that were passed in
+      // are now passed along to the 'Route' Component
+      {...otherProps}
+      component={ComponentToShow}
+    />
+  );
+};
 
 const mapStateToProps = (state) => {
   return {
-    user: state.user,
+    user: state.user.userReducer,
     loginMode: state.loginMode,
-  }
-}
+  };
+};
 
-export default connect(mapStateToProps)(AdminRoute)
-
-
+export default connect(mapStateToProps)(AdminRoute);

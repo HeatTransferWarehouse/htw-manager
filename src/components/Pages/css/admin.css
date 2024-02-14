@@ -1,0 +1,257 @@
+.admin-panel {
+  padding-top: 200px;
+}
+
+.admin-header {
+  text-align: center;
+}
+
+.admin-header h1 {
+  font-size: 2.5rem;
+  font-weight: bold;
+}
+
+.admin-users-section {
+  max-width: 800px;
+  margin: 4rem auto 0 auto;
+}
+
+.admin-users-section-header {
+  display: flex;
+  justify-content: space-between;
+}
+
+.admin-users-section-header h2 {
+  font-size: 1.5rem;
+  font-weight: bold;
+}
+
+.admin-users-header-buttons {
+  display: flex;
+}
+
+.admin-users-section-header h2 span {
+  font-size: 1.25rem;
+  position: relative;
+  bottom: 2px;
+  font-weight: normal;
+  color: rgb(98, 98, 98);
+}
+
+.admin-users-add {
+  display: flex;
+  justify-content: space-evenly;
+  align-items: center;
+  border: none;
+  background-image: linear-gradient(127deg, #a759d1 0%, #8261ee 91%);
+  border-radius: 100vw;
+  padding: 0.5rem 1rem;
+  color: white;
+  margin-left: 1rem;
+}
+
+.admin-edit-admin-icon {
+  width: 1rem;
+  height: 1rem;
+  fill: white;
+  margin-left: 0.5rem;
+}
+
+.admin-users-add:hover {
+  cursor: pointer;
+}
+
+.admin-add-user-icon {
+  width: 1.25rem;
+  height: 1.25rem;
+  fill: white;
+  margin-left: 0.5rem;
+}
+
+.admin-users {
+  border-radius: 5px;
+  border: 1px solid lightgray;
+  margin-top: 1rem;
+  padding: 0 0.5rem;
+}
+
+.admin-users-header {
+  display: grid;
+  grid-template-columns: 3fr 1fr 0.5fr 0.5fr;
+}
+
+.admin-users-header p {
+  font-size: 1.25rem;
+  font-weight: bold;
+  padding: 0.5rem 0;
+}
+
+.admin-user {
+  display: grid;
+  grid-template-columns: 3fr 1fr 0.5fr 0.5fr;
+  padding: 0.5rem 0;
+  border-top: 1px solid lightgray;
+}
+
+.admin-edit-user {
+  border: none;
+  width: 90%;
+  height: 30px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin: auto;
+  border-radius: 100vw;
+  background-color: darkgray;
+  transition: 0.3s;
+}
+
+.admin-delete-user {
+  border: none;
+  width: 90%;
+  height: 30px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin: auto;
+  border-radius: 100vw;
+  background-color: red;
+  transition: 0.3s;
+}
+
+.admin-edit-user:hover {
+  cursor: pointer;
+  background-color: rgb(98, 98, 98);
+}
+.admin-edit-user svg {
+  fill: white;
+}
+
+.admin-delete-user:hover {
+  cursor: pointer;
+  background-color: rgb(162, 0, 0);
+}
+
+.admin-delete-user svg {
+  fill: white;
+}
+
+.register-user-modal,
+.delete-user-modal,
+.edit-user-modal {
+  position: fixed;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: rgba(0, 0, 0, 0.5);
+  backdrop-filter: blur(5px);
+  width: 100vw;
+  height: 100vh;
+  top: 0;
+  left: 0;
+  z-index: 100000;
+}
+
+.formPanel,
+.delete-user-modal-content {
+  background-color: white;
+  padding: 1rem;
+  border-radius: 5px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+  width: fit-content;
+}
+
+.register-user-close {
+  padding: 0.5rem 1rem;
+  margin: 0 0.25rem;
+  border: none;
+  background-color: red;
+  border-radius: 5px;
+  color: white;
+}
+
+.register-user-close:hover {
+  cursor: pointer;
+}
+
+.register-user-add {
+  border: none;
+  background-color: #8261ee;
+  color: white;
+  padding: 0.5rem 1rem;
+  border-radius: 5px;
+}
+
+.delete-user-modal-content {
+  width: 400px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-evenly;
+}
+
+.delete-user-modal-content h2 {
+  margin: 0.5rem;
+  text-align: center;
+}
+
+.delete-user-modal-icon {
+  width: 4rem;
+  height: 4rem;
+  fill: red;
+}
+
+.delete-user-modal-buttons {
+  display: flex;
+  justify-content: center;
+  width: 100%;
+  margin-top: 1rem;
+}
+
+.delete-user-modal-buttons button {
+  padding: 0.5rem 1rem;
+  margin: 0 0.5rem;
+  font-size: 1.25rem;
+  border: none;
+  border-radius: 5px;
+}
+
+.delete-user-close {
+  background-color: lightgray;
+  color: black;
+}
+
+.delete-user-close:hover {
+  cursor: pointer;
+  background-color: rgb(98, 98, 98);
+}
+
+.delete-user-delete {
+  background-color: red;
+  color: white;
+}
+
+.delete-user-delete:hover {
+  cursor: pointer;
+  background-color: rgb(162, 0, 0);
+}
+
+select {
+  margin: 5px;
+  margin-bottom: 10px;
+}
+
+.edit-user-close {
+  background-color: red;
+  border: none;
+  padding: 0.25rem 0.5rem;
+  color: white;
+  border-radius: 5px;
+}
+.edit-user-save {
+  background-color: #8261ee;
+  border: none;
+  padding: 0.25rem 0.5rem;
+  color: white;
+  border-radius: 5px;
+}

@@ -1,6 +1,7 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { HashRouter as Router, NavLink } from "react-router-dom";
 import "./Nav.css";
+import { useDispatch, useSelector } from "react-redux";
 
 function Nav() {
   // State for the nav links. When true, they will be black. When false they will be light gray.
@@ -8,21 +9,25 @@ function Nav() {
   const [home, setHome] = useState(true);
   const [resources, setResources] = useState(false);
   const [sanMar, setSanMar] = useState(false);
-  const [brightPearl, setBrightPearl] = useState(false);
   const [decoQueue, setDecoQueue] = useState(false);
   const [admin, setAdmin] = useState(false);
   const [supacolor, setSupacolor] = useState(false);
+  const dispatch = useDispatch();
+  const user = useSelector((store) => store.user.userReducer);
 
   // This unactivates all nav destinations
   const disableAll = () => {
     setHome(false);
     setResources(false);
     setSanMar(false);
-    setBrightPearl(false);
     setDecoQueue(false);
     setAdmin(false);
     setSupacolor(false);
   };
+
+  useEffect(() => {
+    dispatch({ type: "FETCH_USER" });
+  }, []);
 
   return (
     <header className="header-area header-sticky">
@@ -76,33 +81,6 @@ function Nav() {
                       className={sanMar ? "active-nav-link" : "nav-link"}>
                       SanMar
                     </NavLink>
-                    {/* <NavLink
-                      to="/brightpearl"
-                      onClick={() => {
-                        disableAll();
-                        setBrightPearl(true);
-                      }}
-                      className={brightPearl ? "active-nav-link" : "nav-link"}>
-                      Brightpearl
-                    </NavLink> */}
-                    {/* <NavLink
-                      to="/nostock"
-                      onClick={() => {
-                        disableAll();
-                        setNoStock(true);
-                      }}
-                      className={noStock ? "active-nav-link" : "nav-link"}>
-                      No Stock
-                    </NavLink> */}
-                    {/* <NavLink
-                      to="/affiliates"
-                      onClick={() => {
-                        disableAll();
-                        setAffiliates(true);
-                      }}
-                      className={affiliates ? "active-nav-link" : "nav-link"}>
-                      Affiliates
-                    </NavLink> */}
                     <NavLink
                       to="/decoqueue"
                       onClick={() => {
@@ -112,15 +90,27 @@ function Nav() {
                       className={decoQueue ? "active-nav-link" : "nav-link"}>
                       DecoQueue
                     </NavLink>
-                    <NavLink
-                      to="/admin"
-                      onClick={() => {
-                        disableAll();
-                        setAdmin(true);
-                      }}
-                      className={admin ? "active-nav-link" : "nav-link"}>
-                      Admin
-                    </NavLink>
+                    {user.access_level === "5" && (
+                      <NavLink
+                        to="/admin"
+                        onClick={() => {
+                          disableAll();
+                          setAdmin(true);
+                        }}
+                        className={admin ? "active-nav-link" : "nav-link"}>
+                        Admin
+                      </NavLink>
+                    )}
+                    {user.id && (
+                      <NavLink
+                        to="/"
+                        onClick={() => {
+                          dispatch({ type: "LOGOUT" });
+                        }}
+                        className={admin ? "active-nav-link" : "nav-link"}>
+                        Log Out
+                      </NavLink>
+                    )}
                   </div>
                 </Router>
               </div>
