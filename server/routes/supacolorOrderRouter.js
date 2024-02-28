@@ -150,8 +150,6 @@ function findSupacolorProductsOnOrder(productArray) {
     }
   }
 
-  console.log(foundSupacolorProducts);
-
   // If any Supacolor products are found, begin to send them, else we will do nothing.
   if (foundSupacolorProducts.length > 0) {
     // Since we found Supacolor product, we first need to get more information about the order before we
@@ -383,12 +381,10 @@ async function sendOrderToSupacolor(supacolorPayload, supacolorProducts) {
           expectingArtworkToBeUploaded:
             response.data.expectingArtworkToBeUploaded,
         };
-        console.log("Before");
         await axios.post(
           "https://admin.heattransferwarehouse.com/supacolor-api/new-job",
           supacolourJob
         );
-        console.log("After");
         // await axios.post(
         //   "http://localhost:3000/supacolor-api/new-job",
         //   supacolourJob

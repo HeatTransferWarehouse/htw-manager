@@ -102,7 +102,7 @@ CREATE TABLE "item_queue"
 	"created_at" TEXT,
 	"description" TEXT,
 	"priority" VARCHAR(5) DEFAULT 'low',
-	"need_to_run" INT;
+	"need_to_run" INT
 );
 
 CREATE TABLE "history"
