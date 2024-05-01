@@ -1,9 +1,9 @@
 import React, { Component } from "react";
-import { NavLink } from 'react-router-dom';
-import { connect } from 'react-redux';
+import { NavLink } from "react-router-dom";
+import { connect } from "react-redux";
 import { Grid, TextField } from "@material-ui/core";
-import FormatListBulletedIcon from '@material-ui/icons/FormatListBulleted';
-import PlaylistAddCheckIcon from '@material-ui/icons/PlaylistAddCheck';
+import FormatListBulletedIcon from "@material-ui/icons/FormatListBulleted";
+import PlaylistAddCheckIcon from "@material-ui/icons/PlaylistAddCheck";
 import EditIcon from "@material-ui/icons/Edit";
 
 class QueueNav extends Component {
@@ -16,6 +16,7 @@ class QueueNav extends Component {
   };
 
   componentDidMount() {
+    console.log(this.props);
     //grab counts of everything
     this.props.dispatch({
       type: "GET_ITEM_LIST_COUNT",
@@ -38,60 +39,48 @@ class QueueNav extends Component {
   render() {
     return (
       <Grid container style={{}}>
-        <Grid
-          item
-          xs={12}
-          sm={12}
-          md={2}
-        >
-        </Grid>
+        <Grid item xs={12} sm={12} md={2}></Grid>
 
         {/* Show these links if they are logged in*/}
         {this.state.toggle === false ? (
           <>
-            {this.props.user.id ? (
+            {this.props.user.userReducer.id ? (
               <>
-                <Grid
-                  item
-                  xs={12}
-                  sm={12}
-                  md={12}
-                  className="queue-container"
-                >
+                <Grid item xs={12} sm={12} md={12} className="queue-container">
                   <NavLink
                     className={this.state.backgroundcolorclass}
                     to="/decoqueue"
-                    activeClassName={this.state.activebackgroundcolorclass}
-                  >
+                    activeClassName={this.state.activebackgroundcolorclass}>
                     <EditIcon></EditIcon>New{" "}
                     {/*used to display the count of all items in the new queue*/}
-                    {`(${this.props.itemlistcount[0] &&
+                    {`(${
+                      this.props.itemlistcount[0] &&
                       this.props.itemlistcount[0].count
-                      })`}
+                    })`}
                   </NavLink>
                   <NavLink
                     className={this.state.backgroundcolorclass}
                     to="/progress"
-                    activeClassName={this.state.activebackgroundcolorclass}
-                  >
+                    activeClassName={this.state.activebackgroundcolorclass}>
                     <FormatListBulletedIcon></FormatListBulletedIcon>
                     In Progress{" "}
-                    {`(${this.props.progresslistcount[0] &&
+                    {`(${
+                      this.props.progresslistcount[0] &&
                       this.props.progresslistcount[0].count
-                      })`}
+                    })`}
                   </NavLink>
                   <NavLink
                     className={this.state.backgroundcolorclass}
                     to="/complete"
-                    activeClassName={this.state.activebackgroundcolorclass}
-                  >
+                    activeClassName={this.state.activebackgroundcolorclass}>
                     <PlaylistAddCheckIcon></PlaylistAddCheckIcon>
                     Complete{" "}
-                    {`(${this.props.completelistcount[0] &&
+                    {`(${
+                      this.props.completelistcount[0] &&
                       this.props.completelistcount[0].count
-                      })`}
+                    })`}
                   </NavLink>
-                  {this.props.user.role === "csr" ? (
+                  {this.props.user.userReducer.role === "csr" ? (
                     <>
                       <TextField
                         style={{
@@ -104,8 +93,7 @@ class QueueNav extends Component {
                         //runs handleChange on input change
                         onChange={(event) =>
                           this.handleChange(event, "order_number")
-                        }
-                      ></TextField>
+                        }></TextField>
                     </>
                   ) : (
                     <span></span>
@@ -120,8 +108,7 @@ class QueueNav extends Component {
                     backgroundColor: this.state.backgroundcolor,
                     width: "30%",
                     float: "left",
-                  }}
-                >
+                  }}>
                   <Grid
                     item
                     xs={1}
@@ -131,8 +118,7 @@ class QueueNav extends Component {
                       backgroundColor: this.state.backgroundcolor,
                       width: "50%",
                       float: "left",
-                    }}
-                  >
+                    }}>
                     <div
                       style={{ float: "right" }}
                       onClick={(event) => {
@@ -165,9 +151,7 @@ class QueueNav extends Component {
                         this.props.dispatch({
                           type: "GET_COMPLETE_LIST_COUNT",
                         });
-                      }}
-                    >
-                    </div>
+                      }}></div>
                   </Grid>
                   <Grid
                     item
@@ -178,8 +162,7 @@ class QueueNav extends Component {
                       backgroundColor: this.state.backgroundcolor,
                       width: "50%",
                       float: "left",
-                    }}
-                  >
+                    }}>
                     <div
                       style={{ float: "right" }}
                       onClick={(event) => {
@@ -205,8 +188,7 @@ class QueueNav extends Component {
                         this.props.dispatch({
                           type: "GET_COMPLETE_LIST_COUNT",
                         });
-                      }}
-                    ></div>
+                      }}></div>
                   </Grid>
                   <Grid
                     item
@@ -217,9 +199,7 @@ class QueueNav extends Component {
                       backgroundColor: this.state.backgroundcolor,
                       width: "50%",
                       float: "left",
-                    }}
-                  >
-                  </Grid>
+                    }}></Grid>
                 </Grid>
               </>
             ) : (
@@ -232,8 +212,7 @@ class QueueNav extends Component {
                   backgroundColor: this.state.backgroundcolor,
                   width: "15%",
                   float: "left",
-                }}
-              >
+                }}>
                 <span></span>
               </Grid>
             )}
@@ -252,9 +231,8 @@ class QueueNav extends Component {
                     width: "15%",
                     float: "left",
                     borderRadius: "30px",
-                  }}
-                >
-                  {this.props.user.role === "csr" ? (
+                  }}>
+                  {this.props.user.userReducer.role === "csr" ? (
                     <>
                       <TextField
                         style={{
@@ -267,8 +245,7 @@ class QueueNav extends Component {
                         //runs handleChange on input change
                         onChange={(event) =>
                           this.handleChange(event, "order_number")
-                        }
-                      ></TextField>
+                        }></TextField>
                     </>
                   ) : (
                     <span></span>
@@ -283,8 +260,7 @@ class QueueNav extends Component {
                     backgroundColor: this.state.backgroundcolor,
                     width: "30%",
                     float: "left",
-                  }}
-                >
+                  }}>
                   <Grid
                     item
                     xs={1}
@@ -294,8 +270,7 @@ class QueueNav extends Component {
                       backgroundColor: this.state.backgroundcolor,
                       width: "50%",
                       float: "left",
-                    }}
-                  >
+                    }}>
                     <div
                       style={{ float: "right", margin: "0px", padding: "0px" }}
                       onClick={(event) => {
@@ -327,9 +302,7 @@ class QueueNav extends Component {
                         this.props.dispatch({
                           type: "GET_COMPLETE_LIST_COUNT",
                         });
-                      }}
-                    >
-                    </div>
+                      }}></div>
                   </Grid>
                   <Grid
                     item
@@ -340,8 +313,7 @@ class QueueNav extends Component {
                       backgroundColor: this.state.backgroundcolor,
                       width: "50%",
                       float: "left",
-                    }}
-                  >
+                    }}>
                     <div
                       style={{ float: "right", margin: "0px", padding: "0px" }}
                       onClick={(event) => {
@@ -367,8 +339,7 @@ class QueueNav extends Component {
                         this.props.dispatch({
                           type: "GET_COMPLETE_LIST_COUNT",
                         });
-                      }}
-                    ></div>
+                      }}></div>
                   </Grid>
                   <Grid
                     item
@@ -379,9 +350,7 @@ class QueueNav extends Component {
                       backgroundColor: this.state.backgroundcolor,
                       width: "50%",
                       float: "left",
-                    }}
-                  >
-                  </Grid>
+                    }}></Grid>
                 </Grid>
               </>
             ) : (
@@ -394,8 +363,7 @@ class QueueNav extends Component {
                   backgroundColor: this.state.backgroundcolor,
                   width: "15%",
                   float: "left",
-                }}
-              >
+                }}>
                 <span></span>
               </Grid>
             )}

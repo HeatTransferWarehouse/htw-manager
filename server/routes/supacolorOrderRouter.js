@@ -17,10 +17,13 @@ const logtail = new Logtail("KQi4An7q1YZVwaTWzM72Ct5r");
 // Documentation can be found below ↓↓↓
 // https://docs.google.com/document/d/1SkgKDUAfp26vsusmatYqTeSvUK28Zw4KQ9-7MAM_4ks/edit
 
+// Initializing the access token to be used in the API calls (stored securely in the .env file)
 let accessToken;
 
+// This function will run every 60 seconds to check if the webhooks are active. If they are not, it will activate them.
 setInterval(getWebHooks, 60 * 1000);
 
+// This function will run every 60 seconds to check if the access token is still valid. If it is not, it will get a new one.
 async function getWebHooks() {
   const url = `https://api.bigcommerce.com/stores/${process.env.STORE_HASH}/v3/hooks`;
   const headers = {
@@ -42,12 +45,14 @@ async function getWebHooks() {
   }
 }
 
+// This function will run every 60 seconds to check if the access token is still valid. If it is not, it will get a new one.
 async function updateWebHooks(id) {
   const url = `https://api.bigcommerce.com/stores/${process.env.STORE_HASH}/v3/hooks/${id}`;
   const headers = {
     "X-Auth-Token": process.env.BG_AUTH_TOKEN,
   };
 
+  // This is the object that will be used to update the webhooks
   const webHookObject = {
     scope: "store/order/created",
     destination:
@@ -59,6 +64,7 @@ async function updateWebHooks(id) {
     },
   };
   try {
+    // This will update the webhooks
     await axios.put(url, webHookObject, { headers });
     console.log("Webhooks updated");
   } catch (error) {
@@ -66,6 +72,7 @@ async function updateWebHooks(id) {
   }
 }
 
+// This function gets the access token from the Supacolor API
 async function getAccessToken() {
   try {
     const data = new URLSearchParams();
@@ -87,7 +94,7 @@ async function getAccessToken() {
     console.log("Error getting Auth", error);
   }
 }
-
+// This function is to store the access token for the API calls
 async function storeToken() {
   try {
     accessToken = await getAccessToken();
@@ -152,8 +159,6 @@ function findSupacolorProductsOnOrder(productArray) {
     }
   }
 
-  console.log(foundSupacolorProducts);
-
   // If any Supacolor products are found, begin to send them, else we will do nothing.
   if (foundSupacolorProducts.length > 0) {
     // Since we found Supacolor product, we first need to get more information about the order before we
@@ -162,6 +167,7 @@ function findSupacolorProductsOnOrder(productArray) {
   }
 }
 
+// Our function to get any coupons that are on the order
 async function getOrderCoupons(
   supacolorProducts,
   priceCodes,
@@ -178,6 +184,7 @@ async function getOrderCoupons(
     const response = await axios.get(url, { headers });
     if (response.data) {
       promoCode = response.data;
+      // If we have a coupon, we update the promocode var above with the actual promocode will pass it along to the next function
 
       createSupacolorPayload(
         supacolorProducts,
@@ -188,6 +195,7 @@ async function getOrderCoupons(
         promoCode
       );
     } else {
+      // if there is no promo code send the empty string promo code to the next function
       createSupacolorPayload(
         supacolorProducts,
         priceCodes,
@@ -202,6 +210,7 @@ async function getOrderCoupons(
   }
 }
 
+// Our function to get the shipping details of the order
 async function getOrderShippingDetails(
   supacolorProducts,
   priceCodes,
@@ -219,7 +228,9 @@ async function getOrderShippingDetails(
     const response = await axios.get(url, { headers });
 
     if (response.status === 200) {
+      // Successfully retrieved the shipping details
       const shippingMethod = response.data;
+      // call the function to get the coupons on the order and pass along the shipping method
       getOrderCoupons(
         supacolorProducts,
         priceCodes,
@@ -252,6 +263,7 @@ async function getOrderDetails(supacolorProducts, orderId) {
       // Wait for getPriceCodesFromMultipleSkus to complete
       const priceCodes = await getPriceCodesFromMultipleSkus(supacolorProducts);
 
+      // Call the function to get the shipping details and pass along the price codes
       getOrderShippingDetails(
         supacolorProducts,
         priceCodes,
@@ -275,6 +287,7 @@ async function getOrderDetails(supacolorProducts, orderId) {
   }
 }
 
+// This is our function to create the payload to send to Supacolor
 function createSupacolorPayload(
   supacolorProducts,
   priceCodes,
@@ -283,6 +296,7 @@ function createSupacolorPayload(
   shippingMethod,
   promoCode
 ) {
+  // This is the payload we will send to Supacolor
   const supacolorPayload = {
     orderNumber: orderId,
     orderComment: "From Heat Transfer Warehouse",
@@ -332,6 +346,7 @@ function createSupacolorPayload(
       CustomerReference: `${orderId}: ${index + 1}`,
     })),
   };
+  // Call the function to send the order to Supacolor and pass along the payload and the products
   sendOrderToSupacolor(supacolorPayload, supacolorProducts);
 }
 
@@ -340,14 +355,16 @@ function createSupacolorPayload(
 async function sendOrderToSupacolor(supacolorPayload, supacolorProducts) {
   //
   const orderId = supacolorPayload.orderNumber;
-
+  // Check if this order is already in the database
   const isOrderIdInDatabase = await checkorderIdInDatabase(Number(orderId));
 
   if (isOrderIdInDatabase) {
+    // If the order is already in the database, we don't want to send it to Supacolor again
     console.log(`Order Id ${orderId} is already in DB`);
     return null;
   } else {
     console.log("Sending Order to Supacolor");
+    // check if we have an access token
     if (!accessToken) {
       console.log("Failed to get access token");
     }
@@ -362,8 +379,10 @@ async function sendOrderToSupacolor(supacolorPayload, supacolorProducts) {
       // Use axios.post and include the payload in the request
       const response = await axios.post(url, supacolorPayload, { headers });
 
-      if (response.status === 200) {
+      if (response.status === 201) {
+        // If the status is 200, the job was successfully created
         console.log("Job Successfully Created");
+        // this creates a duplicate of the response and sends it to our Digital Ocean database
         const supacolourJob = {
           jobNumber: response.data.jobNumber,
           orderId: supacolorPayload.orderNumber,
@@ -385,12 +404,11 @@ async function sendOrderToSupacolor(supacolorPayload, supacolorProducts) {
           expectingArtworkToBeUploaded:
             response.data.expectingArtworkToBeUploaded,
         };
-        console.log("Before");
+        // This is the post to our Digital Ocean database with the response from Supacolor
         await axios.post(
           "https://admin.heattransferwarehouse.com/supacolor-api/new-job",
           supacolourJob
         );
-        console.log("After");
         // await axios.post(
         //   "http://localhost:3000/supacolor-api/new-job",
         //   supacolourJob
@@ -472,6 +490,7 @@ router.post("/upload-artwork/:jobId", upload.any(), async (req, res) => {
     );
     console.log("Artwork Upload Response", response.data);
     if (response.status === 200) {
+      // If the status is 200, the artwork was successfully uploaded and we will send the response to our Digital Ocean database
       const uploadedArtwork = {
         jobId: jobId,
         allRequiredJobArtworkUploaded:
@@ -483,6 +502,7 @@ router.post("/upload-artwork/:jobId", upload.any(), async (req, res) => {
         })),
         allUploadsSuccessful: response.data.allUploadsSuccessful,
       };
+      // This is our post to our Digital Ocean database with the response from Supacolor
       await axios.post(
         `https://admin.heattransferwarehouse.com/supacolor-api/artwork`,
         uploadedArtwork
@@ -491,6 +511,7 @@ router.post("/upload-artwork/:jobId", upload.any(), async (req, res) => {
       //   `http://localhost:3000/supacolor-api/artwork`,
       //   uploadedArtwork
       // );
+      // If all the required artwork is uploaded we will update the job in our Digital Ocean database
       if (response.data.allRequiredJobArtworkUploaded)
         await axios.put(
           `https://admin.heattransferwarehouse.com/supacolor-api/update-needs-artwork/${jobId}`
