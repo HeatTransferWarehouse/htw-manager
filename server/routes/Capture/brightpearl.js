@@ -128,6 +128,7 @@ const getBPOrderId = async (id) => {
 };
 
 const buildBCShipmentData = async (data) => {
+    console.log(data.BpData.orderNotes.response);
   let trackingNote;
   // We only want the note from Bright Pearl that contains the tracking reference
   data.BpData.orderNotes.response.map((note) => {
