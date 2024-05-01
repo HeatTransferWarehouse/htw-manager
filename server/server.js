@@ -46,7 +46,7 @@ app.use(
 
 app.use("/api/user", userRouter);
 app.use("/api/item", sanmarBP);
-// app.use("/api/capture", captureRouter);
+app.use("/api/bp-api", captureRouter);
 // app.use('/api/nostock', nostockRouter);
 // app.use('/api/affiliate', affiliateRouter);
 app.use("/supacolor-api", supacolorRouter);

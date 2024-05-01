@@ -29,12 +29,14 @@ async function getWebHooks() {
 
   try {
     const response = await axios.get(url, { headers });
-    if (response.data.data[0].is_active) {
-      console.log("Webhooks are active");
-    } else {
-      console.log("Webhooks are not active...Activating now");
-      await updateWebHooks(response.data.data[0].id);
-    }
+    response.data.data.forEach(async (hook) => {
+      if (hook.is_active) {
+        console.log(`${hook.scope} is active`);
+      } else {
+        console.log(`${hook.scope} is not active...Activating now`);
+        await updateWebHooks(hook.id);
+      }
+    });
   } catch (err) {
     console.log("Error getting webhooks", err);
   }
