@@ -140,7 +140,7 @@ const buildBCShipmentData = async (data) => {
     const trackingProviderString = trackingNote.text.split("by")[1].trim();
     const trackingProviderCode = trackingProviderString.split(" ")[0].trim();
     // If the tracking reference is "Curbside" we don't want to create a shipment in BigCommerce
-    if (!trackingReferenceNumber.toLowerCase() === "curbside") {
+    if (trackingReferenceNumber.toLowerCase() !== "curbside") {
       let trackingReferenceLink;
       //   Tracking link is not provided in any data so we look at the carrier and create a link based on that by inserting the tracking number into the link
       if (trackingProviderCode.toLowerCase() === "ups") {
