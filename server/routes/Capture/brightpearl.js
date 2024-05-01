@@ -127,16 +127,14 @@ const buildBCShipmentData = async (data) => {
   let trackingNote;
   // We only want the note from Bright Pearl that contains the tracking reference
   data.BpData.orderNotes.response.filter((note) => {
-    if (!note.text.includes("Tracking Reference")) {
-      console.log("No Tracking Reference Found");
-      return;
-    } else {
+    if (note.text.includes("Tracking Reference")) {
       trackingNote = note;
     }
   });
+  console.log(trackingNote);
   if (trackingNote) {
-    const trackingReferenceNumber = trackingNote[0].text.split(":")[1].trim();
-    const trackingProviderString = trackingNote[0].text.split("by")[1].trim();
+    const trackingReferenceNumber = trackingNote.text.split(":")[1].trim();
+    const trackingProviderString = trackingNote.text.split("by")[1].trim();
     const trackingProviderCode = trackingProviderString.split(" ")[0].trim();
     let trackingReferenceLink;
     //   Tracking link is not provided in any data so we look at the carrier and create a link based on that by inserting the tracking number into the link
@@ -173,7 +171,7 @@ const createBcShipmentOnOrder = async (data) => {
       console.log(`Shipping Info Created for Order ${data.id}`);
     }
   } catch (error) {
-    console.log("Error getting BC Order Products", error);
+    console.log("Error getting Creating BigCommerce Shipment", error);
   }
 };
 
