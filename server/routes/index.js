@@ -11,7 +11,6 @@ router.post("/bp-tracking", async (req, res) => {
     getBPOrderId(orderId);
   } else {
     console.log("No shipped status found.");
-    res.sendStatus(400);
   }
 });
 

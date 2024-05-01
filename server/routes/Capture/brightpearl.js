@@ -109,29 +109,32 @@ const getBPOrderData = async (data) => {
 };
 
 const getBPOrderId = async (id) => {
+  // First we check if the order has already been shipped in BigCommerce
+  const hasShipmentAlready = await checkBcOrderShipments(id);
   // We need to get the Bright Pearl Order ID from the external reference (BigCommerce Order ID)
-  const options = axiosOptions(
-    "GET",
-    `order-service/order-search?externalRef=${id}`
-  );
-  const orderData = await brightpearlAPI(options)
-    .then((r) => r.data.response.results[0][0])
-    .catch((err) => {
-      console.error(err.message);
-      return [];
-    });
-  await getBPOrderData({ BpId: orderData, BcId: id });
+  if (!hasShipmentAlready) {
+    const options = axiosOptions(
+      "GET",
+      `order-service/order-search?externalRef=${id}`
+    );
+    const orderData = await brightpearlAPI(options)
+      .then((r) => r.data.response.results[0][0])
+      .catch((err) => {
+        console.error(err.message);
+        return [];
+      });
+    await getBPOrderData({ BpId: orderData, BcId: id });
+  }
 };
 
 const buildBCShipmentData = async (data) => {
   let trackingNote;
   // We only want the note from Bright Pearl that contains the tracking reference
-  data.BpData.orderNotes.response.filter((note) => {
+  data.BpData.orderNotes.response.map((note) => {
     if (note.text.includes("Tracking Reference")) {
       trackingNote = note;
     }
   });
-  console.log(trackingNote);
   if (trackingNote) {
     const trackingReferenceNumber = trackingNote.text.split(":")[1].trim();
     const trackingProviderString = trackingNote.text.split("by")[1].trim();
@@ -157,8 +160,27 @@ const buildBCShipmentData = async (data) => {
   }
 };
 
+const checkBcOrderShipments = async (data) => {
+  try {
+    const headers = {
+      "Content-Type": "application/json",
+      "X-Auth-Token": process.env.BG_AUTH_TOKEN,
+    };
+    const url = `https://api.bigcommerce.com/stores/${process.env.STORE_HASH}/v2/orders/${data}/shipments`;
+
+    const response = await axios.get(url, { headers });
+    if (response.data.length > 0) {
+      return true;
+    } else {
+      return false;
+    }
+  } catch (error) {
+    console.log("Error getting BC Order Shipments", error);
+  }
+};
+
 const createBcShipmentOnOrder = async (data) => {
-  console.log(data);
+  //   console.log(data);
   try {
     const headers = {
       "Content-Type": "application/json",
@@ -166,10 +188,8 @@ const createBcShipmentOnOrder = async (data) => {
     };
     const url = `https://api.bigcommerce.com/stores/${process.env.STORE_HASH}/v2/orders/${data.id}/shipments`;
 
-    const response = await axios.post(url, data.shipmentData, { headers });
-    if (response.status === 200) {
-      console.log(`Shipping Info Created for Order ${data.id}`);
-    }
+    await axios.post(url, data.shipmentData, { headers });
+    console.log(`Shipping Info Created for Order ${data.id}`);
   } catch (error) {
     console.log("Error getting Creating BigCommerce Shipment", error);
   }
