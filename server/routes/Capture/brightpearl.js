@@ -80,7 +80,7 @@ const getBPOrderNotes = async (data) => {
   const orderNotes = await brightpearlAPI(options)
     .then((r) => r.data)
     .catch((err) => {
-      console.error(err.message);
+      console.log("Error Getting Bp Order Notes", err);
       return [];
     });
   await getBCShippingInfo({
@@ -97,7 +97,7 @@ const getBPOrderData = async (data) => {
   const orderData = await brightpearlAPI(options)
     .then((r) => r.data)
     .catch((err) => {
-      console.error(err.message);
+      console.log("Error Getting BP Order Data", err);
       return [];
     });
   // We pass the order data to getBPOrderNotes so we can get the note that contains the tracking reference from Bright Pearl
@@ -120,7 +120,7 @@ const getBPOrderId = async (id) => {
     const orderData = await brightpearlAPI(options)
       .then((r) => r.data.response.results[0][0])
       .catch((err) => {
-        console.error(err.message);
+        console.log("Error Getting Bp Order Id", err);
         return [];
       });
     await getBPOrderData({ BpId: orderData, BcId: id });
@@ -139,24 +139,30 @@ const buildBCShipmentData = async (data) => {
     const trackingReferenceNumber = trackingNote.text.split(":")[1].trim();
     const trackingProviderString = trackingNote.text.split("by")[1].trim();
     const trackingProviderCode = trackingProviderString.split(" ")[0].trim();
-    let trackingReferenceLink;
-    //   Tracking link is not provided in any data so we look at the carrier and create a link based on that by inserting the tracking number into the link
-    if (trackingProviderCode.toLowerCase() === "ups") {
-      trackingReferenceLink = `https://www.ups.com/track?HTMLVersion=5.0&Requester=NES&AgreeToTermsAndConditions=yes&loc=en_US&tracknum=${trackingReferenceNumber}/trackdetails`;
-    } else if (trackingProviderCode.toLowerCase() === "fedex") {
-      trackingReferenceLink = `https://www.fedex.com/fedextrack/?trknbr=${trackingReferenceNumber}&trkqual=12027~273987946060~FDEG`;
+    // If the tracking reference is "Curbside" we don't want to create a shipment in BigCommerce
+    if (!trackingReferenceNumber.toLowerCase() === "curbside") {
+      let trackingReferenceLink;
+      //   Tracking link is not provided in any data so we look at the carrier and create a link based on that by inserting the tracking number into the link
+      if (trackingProviderCode.toLowerCase() === "ups") {
+        trackingReferenceLink = `https://www.ups.com/track?HTMLVersion=5.0&Requester=NES&AgreeToTermsAndConditions=yes&loc=en_US&tracknum=${trackingReferenceNumber}/trackdetails`;
+      } else if (trackingProviderCode.toLowerCase() === "fedex") {
+        trackingReferenceLink = `https://www.fedex.com/fedextrack/?trknbr=${trackingReferenceNumber}&trkqual=12027~273987946060~FDEG`;
+      }
+      //   This is the data structure we need to create a shipment on an Order in BigCommerce
+      const shipmentData = {
+        order_address_id: data.BcData.id,
+        tracking_number: trackingReferenceNumber,
+        tracking_link: trackingReferenceLink,
+        shipping_method: data.BcData.shipping_method,
+        shipping_provider: trackingProviderCode.toLowerCase(),
+        tracking_carrier: trackingProviderCode,
+        items: data.products,
+      };
+      await createBcShipmentOnOrder({
+        shipmentData: shipmentData,
+        id: data.id,
+      });
     }
-    //   This is the data structure we need to create a shipment on an Order in BigCommerce
-    const shipmentData = {
-      order_address_id: data.BcData.id,
-      tracking_number: trackingReferenceNumber,
-      tracking_link: trackingReferenceLink,
-      shipping_method: data.BcData.shipping_method,
-      shipping_provider: trackingProviderCode.toLowerCase(),
-      tracking_carrier: trackingProviderCode,
-      items: data.products,
-    };
-    await createBcShipmentOnOrder({ shipmentData: shipmentData, id: data.id });
   }
 };
 
@@ -167,11 +173,12 @@ const checkBcOrderShipments = async (data) => {
       "X-Auth-Token": process.env.BG_AUTH_TOKEN,
     };
     const url = `https://api.bigcommerce.com/stores/${process.env.STORE_HASH}/v2/orders/${data}/shipments`;
-
     const response = await axios.get(url, { headers });
     if (response.data.length > 0) {
+      console.log("Order Already Shipped");
       return true;
     } else {
+      console.log("Order Not Shipped");
       return false;
     }
   } catch (error) {
@@ -180,7 +187,6 @@ const checkBcOrderShipments = async (data) => {
 };
 
 const createBcShipmentOnOrder = async (data) => {
-  //   console.log(data);
   try {
     const headers = {
       "Content-Type": "application/json",
