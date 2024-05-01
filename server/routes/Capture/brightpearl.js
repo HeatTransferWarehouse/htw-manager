@@ -161,20 +161,20 @@ const buildBCShipmentData = async (data) => {
 
 const createBcShipmentOnOrder = async (data) => {
   console.log(data);
-  //   try {
-  //     const headers = {
-  //       "Content-Type": "application/json",
-  //       "X-Auth-Token": process.env.BG_AUTH_TOKEN,
-  //     };
-  //     const url = `https://api.bigcommerce.com/stores/${process.env.STORE_HASH}/v2/orders/${data.id}/shipments`;
+  try {
+    const headers = {
+      "Content-Type": "application/json",
+      "X-Auth-Token": process.env.BG_AUTH_TOKEN,
+    };
+    const url = `https://api.bigcommerce.com/stores/${process.env.STORE_HASH}/v2/orders/${data.id}/shipments`;
 
-  //     const response = await axios.post(url, data.shipmentData, { headers });
-  //     if (response.status === 200) {
-  //       console.log(`Shipping Info Created for Order ${data.id}`);
-  //     }
-  //   } catch (error) {
-  //     console.log("Error getting BC Order Products", error);
-  //   }
+    const response = await axios.post(url, data.shipmentData, { headers });
+    if (response.status === 200) {
+      console.log(`Shipping Info Created for Order ${data.id}`);
+    }
+  } catch (error) {
+    console.log("Error getting BC Order Products", error);
+  }
 };
 
 module.exports = {
