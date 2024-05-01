@@ -21,7 +21,7 @@ app.use(
   })
 );
 
-const { updateNote, getSO } = require("./Capture/api");
+// const { updateNote, getSO } = require("./Capture/api");
 
 // const now = new Date();
 // let millisTill8 = new Date(now.getFullYear(), now.getMonth(), now.getDate(), 8, 0, 0, 0) - now;
