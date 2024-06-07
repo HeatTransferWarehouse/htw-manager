@@ -12,6 +12,7 @@ function Nav() {
   const [decoQueue, setDecoQueue] = useState(false);
   const [admin, setAdmin] = useState(false);
   const [supacolor, setSupacolor] = useState(false);
+  const [sffQueue, setSffQueue] = useState(false);
   const dispatch = useDispatch();
   const user = useSelector((store) => store.user.userReducer);
 
@@ -23,6 +24,7 @@ function Nav() {
     setDecoQueue(false);
     setAdmin(false);
     setSupacolor(false);
+    setSffQueue(false);
   };
 
   useEffect(() => {
@@ -31,7 +33,7 @@ function Nav() {
 
   return (
     <header className="header-area header-sticky">
-      <div className="container">
+      <div style={{ padding: 0 }} className="container">
         <div className="row">
           <div className="col-12">
             <nav className="main-nav">
@@ -89,6 +91,15 @@ function Nav() {
                       }}
                       className={decoQueue ? "active-nav-link" : "nav-link"}>
                       DecoQueue
+                    </NavLink>
+                    <NavLink
+                      to="/sff-queue"
+                      onClick={() => {
+                        disableAll();
+                        setSffQueue(true);
+                      }}
+                      className={sffQueue ? "active-nav-link" : "nav-link"}>
+                      SFF Queue
                     </NavLink>
                     {user.access_level === "5" && (
                       <NavLink

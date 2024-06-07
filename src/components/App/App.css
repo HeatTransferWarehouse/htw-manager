@@ -116,8 +116,8 @@ input {
 
 /*sticks the navigation bar at the top*/
 #Nav {
-  position: fixed;
   width: 100%;
+  position: sticky;
   top: 0;
   z-index: 99998;
 }

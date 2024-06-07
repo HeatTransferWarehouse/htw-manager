@@ -20,13 +20,15 @@ export default function LoginPage() {
 
   return (
     <div className="login">
-      <img
-        src="https://res.cloudinary.com/heattransferwarehouse/image/upload/c_scale,q_35,w_600/v1701704613/HTW%20Home/HTW_logo_2023.avif"
-        alt=""
-        className="htw-logo"
-      />
       <form onSubmit={loginEvent} className="login-container">
-        <h2>HTW Admin Login</h2>
+        <div>
+          <img
+            src="https://cdn11.bigcommerce.com/s-et4qthkygq/images/stencil/original/image-manager/htw-admin-favicon-purple.png?t=1685116764"
+            alt=""
+            className="htw-logo"
+          />
+          <h2>HTW Admin Login</h2>
+        </div>
         <div className="login-inputs">
           <div className="login-input">
             {/* enter email address here */}

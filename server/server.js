@@ -29,6 +29,7 @@ const sanmarBP = require("./routes/sanmarBPRouter");
 const captureRouter = require("./routes/index");
 // const affiliateRouter = require('./routes/affiliaterouter');
 const queueItemRouter = require("./routes/queueItemRouter");
+const sffQueueRouter = require("./routes/sffQueueRouter");
 const queueUserRouter = require("./routes/queueUserRouter");
 const supacolorRouter = require("./routes/supacolorOrderRouter");
 
@@ -53,6 +54,7 @@ app.use("/supacolor-api", supacolorRouter);
 
 // Queue Routers
 
+app.use("/api/sff-queue", sffQueueRouter);
 app.use("/api/user/queue/", queueUserRouter);
 app.use("/api/item/queue/", queueItemRouter);
 
