@@ -53,16 +53,32 @@ async function updateWebHooks(id) {
   };
 
   // This is the object that will be used to update the webhooks
-  const webHookObject = {
-    scope: "store/order/created",
-    destination:
-      "https://admin.heattransferwarehouse.com/supacolor-api/create-order",
-    is_active: true,
-    events_history_enabled: true,
-    headers: {
-      custom: "string",
-    },
-  };
+  let webHookObject;
+  if (id === 27305616) {
+    webHookObject = {
+      scope: "store/order/created",
+      destination:
+        "https://admin.heattransferwarehouse.com/supacolor-api/create-order",
+      is_active: true,
+      events_history_enabled: true,
+      headers: {
+        custom: "string",
+      },
+    };
+  }
+  if (id === 28123505) {
+    webHookObject = {
+      scope: "store/order/statusUpdated",
+      destination:
+        "https://admin.heattransferwarehouse.com/api/bp-api/bp-tracking",
+      is_active: true,
+      events_history_enabled: true,
+      headers: {
+        property1: "string",
+        property2: "string",
+      },
+    };
+  }
   try {
     // This will update the webhooks
     await axios.put(url, webHookObject, { headers });
