@@ -1,10 +1,11 @@
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { Header } from "./SffQueue/Componenets/Headers";
-
-import "./SffQueue/Css/main.css";
 import { useLocation } from "react-router-dom";
-import { TableComponent } from "./SffQueue/Componenets/Table";
+
+import { TableComponent } from "./Components/Table";
+
+import "./Css/main.css";
+import { LoadingModal } from "./Components/Modals";
 
 export default function SFFQueue() {
   const location = useLocation();
@@ -15,10 +16,29 @@ export default function SFFQueue() {
   const [newItems, setNewItems] = useState([]);
   const [inProgressItems, setInProgressItems] = useState([]);
   const [completedItems, setCompletedItems] = useState([]);
+  const [isMobile, setIsMobile] = useState(false);
+  const loading = useSelector((store) => store.loading.loading);
+  const [itemsLoading, setItemsLoading] = useState(true);
+
+  useEffect(() => {
+    const handleResize = () => {
+      if (window.innerWidth < 768) {
+        setIsMobile(true);
+      } else {
+        setIsMobile(false);
+      }
+    };
+
+    window.addEventListener("resize", handleResize);
+
+    handleResize();
+
+    return () => {
+      window.removeEventListener("resize", handleResize);
+    };
+  }, []);
 
   const [checkedIds, setCheckedIds] = useState([]);
-
-  console.log(checkedIds);
 
   useEffect(() => {
     dispatch({ type: "GET_QUEUE_ITEMS" });
@@ -42,29 +62,26 @@ export default function SFFQueue() {
     setInProgressItems(newInProgressItems);
     setCompletedItems(newCompletedItems);
     setNewItems(newNewItems);
+    queueItems.length > 0 && setItemsLoading(false);
   }, [queueItems]);
 
   return (
     <>
-      <Header
-        count={{
-          newCount: newItems.length,
-          inProgressCount: inProgressItems.length,
-          completedCount: completedItems.length,
-        }}
-      />
       <TableComponent
         props={{
-          items: {
-            newItems,
-            inProgressItems,
-            completedItems,
-          },
-          view,
           checkedIds,
+          items: {
+            completedItems,
+            inProgressItems,
+            newItems,
+          },
+          itemsLoading,
+          isMobile,
           setCheckedIds,
+          view,
         }}
       />
+      {loading && <LoadingModal />}
     </>
   );
 }

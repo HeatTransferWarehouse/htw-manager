@@ -21,7 +21,7 @@ import Progress from "../Pages/Progress";
 import Complete from "../Pages/Complete";
 import OrderLookup from "../Pages/OrderLookup";
 import OrderLookupOLD from "../Pages/OrderLookupOLD";
-import SFFQueue from "../Pages/SFFQueue";
+import SFFQueue from "../Pages/SffQueue/SFFQueue";
 import "./App.css";
 import { useDispatch, useSelector } from "react-redux";
 
