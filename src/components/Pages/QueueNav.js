@@ -16,7 +16,6 @@ class QueueNav extends Component {
   };
 
   componentDidMount() {
-    console.log(this.props);
     //grab counts of everything
     this.props.dispatch({
       type: "GET_ITEM_LIST_COUNT",

@@ -66,7 +66,7 @@ export default function SFFQueue() {
     setCompletedItems(newCompletedItems);
     setNewItems(newNewItems);
     !loading && setItemsLoading(false);
-  }, [queueItems]);
+  }, [queueItems, loading]);
 
   return (
     <>

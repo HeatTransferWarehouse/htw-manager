@@ -1,10 +1,9 @@
-
-import { put, takeLatest } from 'redux-saga/effects';
-import axios from 'axios';
+import { put, takeLatest } from "redux-saga/effects";
+import axios from "axios";
 
 function* deleteItem(action) {
   try {
-    yield axios.delete(`/api/item/queue/deleteitem/${action.payload}`)
+    yield axios.delete(`/api/item/queue/deleteitem/${action.payload}`);
     yield put({ type: "GET_QUEUE_ITEM_LIST" });
   } catch (error) {
     console.log("Error with adding a new item:", error);
@@ -71,7 +70,6 @@ function* startTask(action) {
   }
 }
 
-
 function* markComplete(action) {
   try {
     yield axios.post("/api/user/queue/markcomplete", action.payload);
@@ -103,7 +101,6 @@ function* needToRun(action) {
 function* getitemlist(action) {
   try {
     const response = yield axios.get(`/api/item/queue/itemlist`);
-    console.log("itemlist:", response.data)
     yield put({
       type: "SET_ITEM_QUEUE",
       payload: response.data,
@@ -187,7 +184,10 @@ function* getcompletelistcount(action) {
 
 function* orderDetails(action) {
   try {
-    const response = yield axios.post("/api/item/queue/orderdetails", action.payload);
+    const response = yield axios.post(
+      "/api/item/queue/orderdetails",
+      action.payload
+    );
     yield put({
       type: "SET_DETAILS",
       payload: response.data,
@@ -199,7 +199,10 @@ function* orderDetails(action) {
 
 function* orderLookup(action) {
   try {
-    const response = yield axios.post("/api/item/queue/orderlookup", action.payload);
+    const response = yield axios.post(
+      "/api/item/queue/orderlookup",
+      action.payload
+    );
     yield put({
       type: "SET_ORDER",
       payload: response.data,
@@ -211,7 +214,10 @@ function* orderLookup(action) {
 
 function* shippingLookup(action) {
   try {
-    const response = yield axios.post("/api/item/queue/shippinglookup", action.payload);
+    const response = yield axios.post(
+      "/api/item/queue/shippinglookup",
+      action.payload
+    );
     yield put({
       type: "SET_SHIPPING",
       payload: response.data,
@@ -236,30 +242,29 @@ function* productLookup(action) {
   }
 }
 
-
 //this takes all of the Saga functions and dispatches them
 function* QueueItemSaga() {
-  yield takeLatest('CHECK_HISTORY', checkHistory);
-  yield takeLatest('START_ITEM', startTask);
-  yield takeLatest('MARK_COMPLETE', markComplete);
-  yield takeLatest('ADD_NEW', goBackNew);
-  yield takeLatest('NEED_TO_RUN', needToRun);
-  yield takeLatest('GET_QUEUE_ITEM_LIST', getitemlist);
-  yield takeLatest('GET_ITEM_LIST_COUNT', getitemlistcount);
-  yield takeLatest('GET_PROGRESS_LIST', getprogresslist);
-  yield takeLatest('GET_PROGRESS_LIST_COUNT', getprogresslistcount);
-  yield takeLatest('GET_COMPLETE_LIST', getcompletelist);
-  yield takeLatest('GET_COMPLETE_LIST_COUNT', getcompletelistcount);
-  yield takeLatest('DELETE_ITEM_QUEUE', deleteItem);
-  yield takeLatest('DELETE_PROGRESS', deleteProgress);
-  yield takeLatest('DELETE_HISTORY', deleteHistory);
-  yield takeLatest('DELETE_COMPLETE', deleteComplete);
-  yield takeLatest('DELETE_COMPLETE_RANGE', deleteCompleteRange);
-  yield takeLatest('DELETE_HISTORY_RANGE', deleteHistoryRange);
-  yield takeLatest('ORDER_DETAILS', orderDetails);
-  yield takeLatest('ORDER_LOOKUP', orderLookup);
-  yield takeLatest('SHIPPING_LOOKUP', shippingLookup);
-  yield takeLatest('PRODUCT_LOOKUP', productLookup);
+  yield takeLatest("CHECK_HISTORY", checkHistory);
+  yield takeLatest("START_ITEM", startTask);
+  yield takeLatest("MARK_COMPLETE", markComplete);
+  yield takeLatest("ADD_NEW", goBackNew);
+  yield takeLatest("NEED_TO_RUN", needToRun);
+  yield takeLatest("GET_QUEUE_ITEM_LIST", getitemlist);
+  yield takeLatest("GET_ITEM_LIST_COUNT", getitemlistcount);
+  yield takeLatest("GET_PROGRESS_LIST", getprogresslist);
+  yield takeLatest("GET_PROGRESS_LIST_COUNT", getprogresslistcount);
+  yield takeLatest("GET_COMPLETE_LIST", getcompletelist);
+  yield takeLatest("GET_COMPLETE_LIST_COUNT", getcompletelistcount);
+  yield takeLatest("DELETE_ITEM_QUEUE", deleteItem);
+  yield takeLatest("DELETE_PROGRESS", deleteProgress);
+  yield takeLatest("DELETE_HISTORY", deleteHistory);
+  yield takeLatest("DELETE_COMPLETE", deleteComplete);
+  yield takeLatest("DELETE_COMPLETE_RANGE", deleteCompleteRange);
+  yield takeLatest("DELETE_HISTORY_RANGE", deleteHistoryRange);
+  yield takeLatest("ORDER_DETAILS", orderDetails);
+  yield takeLatest("ORDER_LOOKUP", orderLookup);
+  yield takeLatest("SHIPPING_LOOKUP", shippingLookup);
+  yield takeLatest("PRODUCT_LOOKUP", productLookup);
 }
 
 export default QueueItemSaga;
