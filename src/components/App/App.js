@@ -1,5 +1,6 @@
 import React, { useCallback, useEffect, useRef } from "react";
 import "bootstrap/dist/css/bootstrap.min.css";
+import "../../assets/styles/main.scss";
 import { HashRouter as Router, Route, Switch } from "react-router-dom";
 import Nav from "../Nav/Nav";
 import Footer from "../Footer/Footer";
@@ -21,7 +22,7 @@ import Progress from "../Pages/Progress";
 import Complete from "../Pages/Complete";
 import OrderLookup from "../Pages/OrderLookup";
 import OrderLookupOLD from "../Pages/OrderLookupOLD";
-import SFFQueue from "../Pages/SFFQueue";
+import SFFQueue from "../Pages/SffQueue/SFFQueue";
 import "./App.css";
 import { useDispatch, useSelector } from "react-redux";
 
