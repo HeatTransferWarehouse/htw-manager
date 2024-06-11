@@ -1,7 +1,6 @@
-import React, {Component} from "react";
+import React, { Component } from "react";
 import { connect } from "react-redux";
 import MUIDataTable from "mui-datatables";
-
 
 class MUITable extends Component {
   componentDidMount() {
@@ -30,7 +29,7 @@ class MUITable extends Component {
       viewColumns: false,
       searchAlwaysOpen: true,
       draggableColumns: { enabled: true },
-      selectableRows: false, //false means checkboxes are hidden, I created my own checkbox functionality so this is turned off
+      selectableRows: "none", //false means checkboxes are hidden, I created my own checkbox functionality so this is turned off
     },
   };
 
