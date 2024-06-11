@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { Pagination } from "./Pagination";
 import { useQueueActions } from "../Functions/queue-actions";
+import { FaCheck } from "react-icons/fa";
 
 export function TableHeader({ props }) {
   const [allSelected, setAllSelected] = useState(false);
@@ -10,7 +11,6 @@ export function TableHeader({ props }) {
     deleteQueueItem,
     sendBackCompletedQueueItem,
     sendBackProgressQueueItem,
-    updateQueueItemPriority,
   } = useQueueActions();
   const handleSelectAll = () => {
     let allIds = [];
@@ -63,15 +63,21 @@ export function TableHeader({ props }) {
             alignItems: "center",
             gap: "1rem",
           }}>
-          <input
-            style={{
-              margin: "0px",
-            }}
-            className="checkbox-input"
-            type="checkbox"
-            checked={isAllSelected()}
-            onChange={handleSelectAll}
-          />
+          <span className="checkbox-container">
+            <input
+              style={{
+                margin: "0px",
+              }}
+              className="checkbox-input"
+              type="checkbox"
+              id="select-all"
+              checked={isAllSelected()}
+              onChange={handleSelectAll}
+            />
+            <label htmlFor="select-all">
+              <FaCheck />
+            </label>
+          </span>
           <p>
             {props.view === "new"
               ? props.newItems.length
@@ -175,18 +181,20 @@ export function TableHeader({ props }) {
               </>
             )))}
       </div>
-      <Pagination
-        props={{
-          view: props.view,
-          newItems: props.newItems,
-          inProgressItems: props.inProgressItems,
-          completedItems: props.completedItems,
-          rowsPerPage: props.rowsPerPage,
-          setRowsPerPage: props.setRowsPerPage,
-          page: props.page,
-          setPage: props.setPage,
-        }}
-      />
+      {!props.isMobile && (
+        <Pagination
+          props={{
+            view: props.view,
+            newItems: props.newItems,
+            inProgressItems: props.inProgressItems,
+            completedItems: props.completedItems,
+            rowsPerPage: props.rowsPerPage,
+            setRowsPerPage: props.setRowsPerPage,
+            page: props.page,
+            setPage: props.setPage,
+          }}
+        />
+      )}
     </div>
   );
 }

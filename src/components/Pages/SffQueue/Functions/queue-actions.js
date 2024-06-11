@@ -4,6 +4,12 @@ import { useDispatch } from "react-redux";
 export const useQueueActions = () => {
   const dispatch = useDispatch();
 
+  const getQueueItems = (e, sort_by, order) => {
+    e.stopPropagation();
+    e.preventDefault();
+    dispatch({ type: "GET_QUEUE_ITEMS", payload: { sort_by, order } });
+  };
+
   const startQueueItem = (e, idArray) => {
     e.stopPropagation();
     e.preventDefault();
@@ -47,5 +53,6 @@ export const useQueueActions = () => {
     sendBackCompletedQueueItem,
     deleteQueueItem,
     updateQueueItemPriority,
+    getQueueItems,
   };
 };

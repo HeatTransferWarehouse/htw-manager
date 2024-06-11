@@ -2,12 +2,17 @@ import { put, takeLatest } from "redux-saga/effects";
 import axios from "axios";
 
 function* getQueueItems(action) {
+  const { sort_by, order } = action.payload || {};
   try {
-    const response = yield axios.get(`/api/sff-queue/item-queue/get`);
+    const response = yield axios.get(
+      `/api/sff-queue/item-queue/get?sort_by=${sort_by}&order=${order}`
+    );
     yield put({ type: "SET_QUEUE_ITEMS", payload: response.data });
+    yield put({ type: "SET_QUEUE_SORT", payload: { sort_by, order } });
     yield put({ type: "STOP_LOADING" });
   } catch (error) {
     console.log("Error with getting queue items:", error);
+    yield put({ type: "STOP_LOADING" });
   }
 }
 

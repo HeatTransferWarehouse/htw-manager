@@ -86,13 +86,15 @@
     "server": "nodemon --watch server server/server.js",
     "build": "react-scripts build",
     "test": "jest",
-    "eject": "react-scripts eject"
+    "eject": "react-scripts eject",
+    "sass": "sass --watch src/assets/styles:src/assets/styles"
   },
   "publishConfig": {
     "registry": "https://npm.pkg.github.com"
   },
   "devDependencies": {
-    "nodemon": "^1.19.4"
+    "nodemon": "^1.19.4",
+    "sass": "^1.77.4"
   },
   "browserslist": [
     ">0.2%",

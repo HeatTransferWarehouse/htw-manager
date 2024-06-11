@@ -7,55 +7,99 @@ import { TableCell, TableHead, TableRow } from "@material-ui/core";
 import { TableHeader } from "./TableHeader";
 import { Pagination } from "./Pagination";
 import { TableNav } from "./TableNav";
+import { useQueueActions } from "../Functions/queue-actions";
+import {
+  HiOutlineArrowNarrowUp,
+  HiOutlineArrowNarrowDown,
+} from "react-icons/hi";
+import { Filters } from "./Modals";
+import Search from "./Search";
 
 export function TableComponent({ props }) {
-  const [newItems, setNewItems] = useState(props.items.newItems);
-  const [inProgressItems, setInProgressItems] = useState(
-    props.items.inProgressItems
-  );
-  const [completedItems, setCompletedItems] = useState(
-    props.items.completedItems
-  );
-
+  const { getQueueItems } = useQueueActions();
+  const [items, setItems] = useState({
+    newItems: props.items.newItems,
+    inProgressItems: props.items.inProgressItems,
+    completedItems: props.items.completedItems,
+  });
   const [rowsPerPage, setRowsPerPage] = useState(10);
   const [page, setPage] = useState(0);
+  const [searchQuery, setSearchQuery] = useState("");
 
   useEffect(() => {
-    setNewItems(props.items.newItems);
-    setInProgressItems(props.items.inProgressItems);
-    setCompletedItems(props.items.completedItems);
-  }, [newItems, inProgressItems, completedItems, props.items]);
+    setItems({
+      newItems: props.items.newItems,
+      inProgressItems: props.items.inProgressItems,
+      completedItems: props.items.completedItems,
+    });
+  }, [props.items]);
+
+  const handleSort = (e, sort_by) => {
+    e.stopPropagation();
+    e.preventDefault();
+    const newOrder =
+      props.sort.sort_by === sort_by && props.sort.order === "asc"
+        ? "desc"
+        : "asc";
+    getQueueItems(e, sort_by, newOrder);
+  };
+
+  const handleSearch = (query) => {
+    setSearchQuery(query.toLowerCase());
+  };
+
+  const renderSortButton = (column, label) => (
+    <button className="sort-button" onClick={(e) => handleSort(e, column)}>
+      {label}
+      {props.sort.sort_by === column &&
+        (props.sort.order === "asc" ? (
+          <HiOutlineArrowNarrowUp />
+        ) : (
+          <HiOutlineArrowNarrowDown />
+        ))}
+    </button>
+  );
+
+  const currentViewItems =
+    props.view === "new"
+      ? items.newItems
+      : props.view === "progress"
+      ? items.inProgressItems
+      : items.completedItems;
+
+  // Filter items based on search query
+  const filteredItems = currentViewItems.filter(
+    (item) =>
+      item.order_number.toLowerCase().includes(searchQuery) ||
+      item.sku.toLowerCase().includes(searchQuery) ||
+      item.description.toLowerCase().includes(searchQuery)
+  );
 
   return (
-    <div
-      style={{
-        width: "100%",
-        marginInline: "auto",
-        paddingInline: "1rem",
-        marginBottom: "3rem",
-        marginTop: "5rem",
-      }}>
-      <Paper>
+    <div className="table-container">
+      <Paper className="table-root">
         <TableContainer>
           <TableNav
             count={{
-              completedCount: completedItems.length,
-              inProgressCount: inProgressItems.length,
-              newCount: newItems.length,
+              completedCount: items.completedItems.length,
+              inProgressCount: items.inProgressItems.length,
+              newCount: items.newItems.length,
             }}
           />
+          <Search onSearch={handleSearch} />
           <TableHeader
             props={{
               checkedIds: props.checkedIds,
               setCheckedIds: props.setCheckedIds,
               view: props.view,
-              newItems,
-              inProgressItems,
-              completedItems,
+              newItems: items.newItems,
+              inProgressItems: items.inProgressItems,
+              completedItems: items.completedItems,
               rowsPerPage,
               setRowsPerPage,
               page,
               setPage,
+              isMobile: props.isMobile,
             }}
           />
           <Table>
@@ -63,52 +107,35 @@ export function TableComponent({ props }) {
               <TableRow>
                 {props.isMobile ? (
                   <>
-                    <TableCell
-                      style={{
-                        fontWeight: "bold",
-                      }}>
-                      {props.view === "new"
-                        ? newItems.length
-                        : props.view === "progress"
-                        ? inProgressItems.length
-                        : completedItems.length}{" "}
-                      Items
+                    <TableCell>{filteredItems.length} Items</TableCell>
+                    <TableCell>
+                      <button
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          e.preventDefault();
+                          props.setShowFilters(!props.showFilters);
+                        }}>
+                        Filters
+                      </button>
+                      <Filters
+                        props={{
+                          showFilters: props.showFilters,
+                          setShowFilters: props.setShowFilters,
+                        }}
+                      />
                     </TableCell>
-                    <TableCell
-                      style={{
-                        minWidth: "2rem",
-                        maxWidth: "2rem",
-                      }}></TableCell>
                   </>
                 ) : (
                   <>
-                    <TableCell
-                      style={{
-                        minWidth: "3rem",
-                        maxWidth: "3rem",
-                        fontWeight: "bold",
-                      }}
-                    />
-                    <TableCell
-                      style={{
-                        minWidth: "8rem",
-                        fontWeight: "bold",
-                      }}>
-                      Order Number
+                    <TableCell style={{ minWidth: "3rem", maxWidth: "3rem" }} />
+                    <TableCell style={{ minWidth: "8rem" }}>
+                      {renderSortButton("order_number", "Order Number")}
                     </TableCell>
-                    <TableCell
-                      style={{
-                        minWidth: "9.5rem",
-                        fontWeight: "bold",
-                      }}>
-                      Sku
+                    <TableCell style={{ minWidth: "9.5rem" }}>
+                      {renderSortButton("sku", "Sku")}
                     </TableCell>
-                    <TableCell
-                      style={{
-                        minWidth: "9.5rem",
-                        fontWeight: "bold",
-                      }}>
-                      Product Name
+                    <TableCell style={{ minWidth: "9.5rem" }}>
+                      {renderSortButton("description", "Product Name")}
                     </TableCell>
                     <TableCell
                       style={{
@@ -118,88 +145,39 @@ export function TableComponent({ props }) {
                       }}>
                       Product Options
                     </TableCell>
-                    <TableCell
-                      style={{
-                        minWidth: "3rem",
-                        maxWidth: "3rem",
-                        fontWeight: "bold",
-                      }}>
-                      Qty
+                    <TableCell style={{ minWidth: "3rem", maxWidth: "3rem" }}>
+                      {renderSortButton("qty", "Qty")}
                     </TableCell>
-                    <TableCell
-                      style={{
-                        minWidth: "4rem",
-                        maxWidth: "4rem",
-                        fontWeight: "bold",
-                      }}>
-                      Priority
+                    <TableCell style={{ minWidth: "4rem", maxWidth: "4rem" }}>
+                      {renderSortButton("priority", "Priority")}
                     </TableCell>
-                    <TableCell
-                      style={{
-                        minWidth: "6.5rem",
-                        fontWeight: "bold",
-                      }}>
-                      Created At
+                    <TableCell style={{ minWidth: "108px" }}>
+                      {renderSortButton("created_at", "Created At")}
                     </TableCell>
-
-                    <TableCell
-                      style={{
-                        minWidth: "3rem",
-                        maxWidth: "3rem",
-                      }}></TableCell>
+                    <TableCell style={{ minWidth: "3rem", maxWidth: "3rem" }} />
                   </>
                 )}
               </TableRow>
             </TableHead>
-            {props.view === "new" && (
-              <TableContent
-                props={{
-                  checkedIds: props.checkedIds,
-                  isMobile: props.isMobile,
-                  items: newItems,
-                  itemsLoading: props.itemsLoading,
-                  page,
-                  rowsPerPage,
-                  setCheckedIds: props.setCheckedIds,
-                  view: props.view,
-                }}
-              />
-            )}
-            {props.view === "progress" && (
-              <TableContent
-                props={{
-                  checkedIds: props.checkedIds,
-                  isMobile: props.isMobile,
-                  items: inProgressItems,
-                  itemsLoading: props.itemsLoading,
-                  page,
-                  rowsPerPage,
-                  setCheckedIds: props.setCheckedIds,
-                  view: props.view,
-                }}
-              />
-            )}
-            {props.view === "completed" && (
-              <TableContent
-                props={{
-                  checkedIds: props.checkedIds,
-                  isMobile: props.isMobile,
-                  items: completedItems,
-                  itemsLoading: props.itemsLoading,
-                  page,
-                  rowsPerPage,
-                  setCheckedIds: props.setCheckedIds,
-                  view: props.view,
-                }}
-              />
-            )}
+            <TableContent
+              props={{
+                checkedIds: props.checkedIds,
+                isMobile: props.isMobile,
+                items: filteredItems,
+                itemsLoading: props.itemsLoading,
+                page,
+                rowsPerPage,
+                setCheckedIds: props.setCheckedIds,
+                view: props.view,
+              }}
+            />
           </Table>
           <Pagination
             props={{
               view: props.view,
-              newItems,
-              inProgressItems,
-              completedItems,
+              newItems: items.newItems,
+              inProgressItems: items.inProgressItems,
+              completedItems: items.completedItems,
               rowsPerPage,
               setRowsPerPage,
               page,

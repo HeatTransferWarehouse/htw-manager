@@ -81,8 +81,8 @@
 }
 
 .MuiTableCell-root {
-  padding: 0 !important;
-  padding-block: 1em !important;
+  padding: 0;
+  padding-block: 1em;
 }
 
 .orderNumber-btn {

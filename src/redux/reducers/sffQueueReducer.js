@@ -9,6 +9,16 @@ function queueItems(state = [], action) {
   }
 }
 
+function queueSort(state = {}, action) {
+  switch (action.type) {
+    case "SET_QUEUE_SORT":
+      return action.payload;
+    default:
+      return state;
+  }
+}
+
 export default combineReducers({
   queueItems,
+  sort: queueSort,
 });

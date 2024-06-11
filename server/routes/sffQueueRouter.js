@@ -173,7 +173,25 @@ const getCorrectProductsInBC = async (data) => {
 };
 
 router.get("/item-queue/get", async (req, res) => {
-  const query = `
+  const { sort_by, order } = req.query;
+
+  // List of valid columns for sorting
+  const validColumns = [
+    "order_number",
+    "sku",
+    "qty",
+    "created_at",
+    "description",
+    "priority",
+    "in_progress",
+    "is_complete",
+  ];
+
+  // List of valid sorting orders
+  const validOrders = ["asc", "desc"];
+
+  // Initialize base query
+  let query = `
     SELECT 
         iq.*,
         json_agg(
@@ -189,12 +207,26 @@ router.get("/item-queue/get", async (req, res) => {
         product_options po ON iq.id = po.item_queue_id
     GROUP BY 
         iq.id
-    ;`;
+  `;
 
-  pool
-    .query(query)
-    .then((results) => res.send(results.rows))
-    .catch((error) => console.log("Error Getting Custom Queue Items", error));
+  // Add ORDER BY clause if valid sort_by and order parameters are provided
+  if (
+    sort_by &&
+    validColumns.includes(sort_by) &&
+    order &&
+    validOrders.includes(order.toLowerCase())
+  ) {
+    const sortOrder = order.toUpperCase();
+    query += ` ORDER BY ${sort_by} ${sortOrder}`;
+  }
+
+  try {
+    const results = await pool.query(query);
+    res.send(results.rows);
+  } catch (error) {
+    console.error("Error Getting Custom Queue Items", error);
+    res.status(500).send({ error: "Error fetching queue items" });
+  }
 });
 
 router.post("/item-queue/add", async (req, res) => {

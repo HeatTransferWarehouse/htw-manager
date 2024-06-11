@@ -5,16 +5,10 @@ import { BiDotsHorizontalRounded } from "react-icons/bi";
 import { FaChevronDown, FaChevronUp } from "react-icons/fa";
 import { useQueueActions } from "../Functions/queue-actions";
 import { OptionsList } from "./OptionsList";
+import { FaCheck } from "react-icons/fa";
 
 export function TableContent({ props }) {
-  const {
-    startQueueItem,
-    completeQueueItem,
-    deleteQueueItem,
-    sendBackCompletedQueueItem,
-    sendBackProgressQueueItem,
-    updateQueueItemPriority,
-  } = useQueueActions();
+  const { updateQueueItemPriority } = useQueueActions();
   const [activeItemId, setActiveItemId] = useState(null);
   const [activeItemOptions, setActiveItemOptions] = useState(false);
   const [activeItemPriorityId, setActiveItemPriorityId] = useState(null); // Add a state to hold the active item's priority
@@ -62,7 +56,6 @@ export function TableContent({ props }) {
               </>
             ) : (
               <>
-                {" "}
                 <TableCell></TableCell>
                 <TableCell>
                   <span className="loading-cell" />
@@ -95,7 +88,7 @@ export function TableContent({ props }) {
   }
 
   return (
-    <TableBody>
+    <TableBody className="sff-queue-tb">
       {props.items
         .slice(
           props.page * props.rowsPerPage,
@@ -109,6 +102,13 @@ export function TableContent({ props }) {
                 : item.priority === "med"
                 ? "med-priority"
                 : "low-priority"
+            }
+            style={
+              props.checkedIds.includes(item.id)
+                ? {
+                    backgroundColor: "#f0f0f0",
+                  }
+                : {}
             }
             key={index}>
             {props.isMobile ? (
@@ -126,6 +126,9 @@ export function TableContent({ props }) {
                     </li>
                     <li className="mobile-options-item">
                       <span className="bold">Qty</span>: {item.qty}
+                    </li>
+                    <li className="mobile-options-item">
+                      <span className="bold">Priority</span>: {item.priority}
                     </li>
                     <li className="mobile-options-item">
                       <span className="bold">Created At</span>:{" "}
@@ -205,20 +208,15 @@ export function TableContent({ props }) {
                   style={{
                     minWidth: "3rem",
                     maxWidth: "3rem",
+                    padding: 0,
                   }}>
-                  <span
-                    style={{
-                      width: "100%",
-                      height: "100%",
-                      display: "flex",
-                      justifyContent: "center",
-                      alignItems: "center",
-                    }}>
+                  <span className="checkbox-container">
                     <input
                       style={{
                         margin: "0px",
                       }}
                       className="checkbox-input"
+                      id={`checkbox-${item.id}`}
                       type="checkbox"
                       checked={props.checkedIds.includes(item.id)}
                       onChange={() => {
@@ -234,6 +232,9 @@ export function TableContent({ props }) {
                         }
                       }}
                     />
+                    <label htmlFor={`checkbox-${item.id}`}>
+                      <FaCheck />
+                    </label>
                   </span>
                 </TableCell>
                 <TableCell>{item.order_number}</TableCell>

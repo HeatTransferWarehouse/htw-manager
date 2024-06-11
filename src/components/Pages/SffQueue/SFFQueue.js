@@ -2,23 +2,31 @@ import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useLocation } from "react-router-dom";
 
-import { TableComponent } from "./Components/Table";
-
-import "./Css/main.css";
 import { LoadingModal } from "./Components/Modals";
+import { TableComponent } from "./Components/Table";
 
 export default function SFFQueue() {
   const location = useLocation();
   const dispatch = useDispatch();
+
   const searchParams = new URLSearchParams(location.search);
-  const queueItems = useSelector((store) => store.sffQueue.queueItems);
   const view = searchParams.get("view") || "new"; // Default to 'new' if no parameter is
-  const [newItems, setNewItems] = useState([]);
-  const [inProgressItems, setInProgressItems] = useState([]);
-  const [completedItems, setCompletedItems] = useState([]);
-  const [isMobile, setIsMobile] = useState(false);
+
   const loading = useSelector((store) => store.loading.loading);
+  const sort = useSelector((store) => store.sffQueue.sort);
+  const queueItems = useSelector((store) => store.sffQueue.queueItems);
+
+  const [checkedIds, setCheckedIds] = useState([]);
+  const [completedItems, setCompletedItems] = useState([]);
   const [itemsLoading, setItemsLoading] = useState(true);
+  const [isMobile, setIsMobile] = useState(false);
+  const [inProgressItems, setInProgressItems] = useState([]);
+  const [newItems, setNewItems] = useState([]);
+  const [showFilters, setShowFilters] = useState(false);
+
+  useEffect(() => {
+    dispatch({ type: "GET_QUEUE_ITEMS" });
+  }, [dispatch]);
 
   useEffect(() => {
     const handleResize = () => {
@@ -26,6 +34,7 @@ export default function SFFQueue() {
         setIsMobile(true);
       } else {
         setIsMobile(false);
+        setShowFilters(false);
       }
     };
 
@@ -38,15 +47,9 @@ export default function SFFQueue() {
     };
   }, []);
 
-  const [checkedIds, setCheckedIds] = useState([]);
-
   useEffect(() => {
-    dispatch({ type: "GET_QUEUE_ITEMS" });
-  }, [dispatch]);
-
-  useEffect(() => {
-    const newInProgressItems = [];
     const newCompletedItems = [];
+    const newInProgressItems = [];
     const newNewItems = [];
 
     queueItems.forEach((item) => {
@@ -79,6 +82,9 @@ export default function SFFQueue() {
           isMobile,
           setCheckedIds,
           view,
+          sort,
+          showFilters,
+          setShowFilters,
         }}
       />
       {loading && <LoadingModal />}

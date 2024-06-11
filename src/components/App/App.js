@@ -1,5 +1,6 @@
 import React, { useCallback, useEffect, useRef } from "react";
 import "bootstrap/dist/css/bootstrap.min.css";
+import "../../assets/styles/main.scss";
 import { HashRouter as Router, Route, Switch } from "react-router-dom";
 import Nav from "../Nav/Nav";
 import Footer from "../Footer/Footer";
