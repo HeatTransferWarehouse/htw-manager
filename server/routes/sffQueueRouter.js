@@ -32,10 +32,7 @@ const brightpearlAPI = (options) => {
 router.post("/create-order", function (req, res) {
   if (req.body.data && req.body.data.id) {
     const orderId = req.body.data.id;
-    //   getBPOrderId(orderId);
-    logtail.info(
-      `Supacolor create order API hit via webhook: Order ID - ${orderId}`
-    );
+    getBPOrderId(orderId);
   } else {
     // Handle error - ID was not found in request
     logtail.error("Order ID was not found in request");
@@ -164,9 +161,15 @@ const getCorrectProductsInBC = async (data) => {
   );
 
   try {
-    await axios.post(`http://localhost:3000/api/sff-queue/item-queue/add`, {
-      items: matchingProducts,
-    });
+    await axios.post(
+      `https://admin.heattransferwarehouse.com/api/sff-queue/item-queue/add`,
+      {
+        items: matchingProducts,
+      }
+    );
+    // await axios.post(`http://localhost:3000/api/sff-queue/item-queue/add`, {
+    //   items: matchingProducts,
+    // });
   } catch (error) {
     console.log("Error posting to add-queue-items:", error.message);
   }
