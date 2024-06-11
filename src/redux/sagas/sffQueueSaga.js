@@ -9,7 +9,10 @@ function* getQueueItems(action) {
     );
     yield put({ type: "SET_QUEUE_ITEMS", payload: response.data });
     yield put({ type: "SET_QUEUE_SORT", payload: { sort_by, order } });
-    yield put({ type: "STOP_LOADING" });
+    console.log("Queue items:", response.status);
+    if (response.status === 200) {
+      yield put({ type: "STOP_LOADING" });
+    }
   } catch (error) {
     console.log("Error with getting queue items:", error);
     yield put({ type: "STOP_LOADING" });
