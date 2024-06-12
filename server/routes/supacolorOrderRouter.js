@@ -21,7 +21,7 @@ const logtail = new Logtail("KQi4An7q1YZVwaTWzM72Ct5r");
 let accessToken;
 
 // This function will run every 60 seconds to check if the webhooks are active. If they are not, it will activate them.
-setInterval(getWebHooks, 60 * 1000);
+// setInterval(getWebHooks, 60 * 1000);
 
 // This function will run every 60 seconds to check if the access token is still valid. If it is not, it will get a new one.
 async function getWebHooks() {

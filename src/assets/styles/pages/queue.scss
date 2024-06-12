@@ -1,3 +1,15 @@
+.table-container {
+  display: flex;
+  align-items: flex-start;
+  min-height: calc(100vh - 80px - 171px);
+  justify-content: center;
+  padding-block: 2rem;
+  background-color: rgb(235, 235, 235);
+}
+.sku-cell {
+  padding: 0.5rem;
+  border-radius: 5px;
+}
 .sff-queue-table-nav {
   display: flex;
   justify-content: center;
@@ -11,19 +23,12 @@
   z-index: 999;
   padding: 1rem 0.5rem;
 }
-.table-container {
-  display: flex;
-  align-items: flex-start;
-  min-height: calc(100vh - 80px - 171px);
-  justify-content: center;
-  padding-block: 2rem;
-  background-color: rgb(235, 235, 235);
-  .table-root {
-    overflow-x: auto !important;
-    padding: 1%;
-    width: 95%;
-    margin: 0;
-  }
+
+.table-root {
+  overflow-x: auto !important;
+  padding: 1%;
+  width: 95%;
+  margin: 0;
 }
 
 .search-container {

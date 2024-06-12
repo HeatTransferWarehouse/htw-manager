@@ -32,6 +32,7 @@ const queueItemRouter = require("./routes/queueItemRouter");
 const sffQueueRouter = require("./routes/sffQueueRouter");
 const queueUserRouter = require("./routes/queueUserRouter");
 const supacolorRouter = require("./routes/supacolorOrderRouter");
+const queueRouter = require("./routes/queueRouter");
 
 app.use(sessionMiddleware);
 app.use(passport.initialize());
@@ -57,6 +58,7 @@ app.use("/supacolor-api", supacolorRouter);
 app.use("/api/sff-queue", sffQueueRouter);
 app.use("/api/user/queue/", queueUserRouter);
 app.use("/api/item/queue/", queueItemRouter);
+app.use("/api/queue", queueRouter);
 
 app.get("/healthcheck", (req, res) => {
   res.sendStatus(200);

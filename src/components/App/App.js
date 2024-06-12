@@ -17,7 +17,7 @@ import WallyB from "../Pages/WallyB";
 import Admin from "../Pages/Admin";
 import Login from "../LoginPage/LoginPage";
 import Supacolor from "../Pages/Supacolor";
-import DecoQueue from "../Pages/DecoQueue";
+import DecoQueue from "../Pages/DecoQueue/DecoQueue";
 import Progress from "../Pages/Progress";
 import Complete from "../Pages/Complete";
 import OrderLookup from "../Pages/OrderLookup";

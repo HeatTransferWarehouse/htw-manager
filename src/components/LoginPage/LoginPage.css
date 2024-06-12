@@ -56,7 +56,7 @@
   padding: 0.5rem;
   margin: 0.5rem 0;
   border: 1px solid lightgray;
-  background-color: transparent;
+  background-color: white !important;
   border-radius: 5px;
 }
 

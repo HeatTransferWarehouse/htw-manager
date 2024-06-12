@@ -46,12 +46,22 @@ const getBPOrderId = async (id) => {
     `order-service/order-search?externalRef=${id}`
   );
   const orderData = await brightpearlAPI(options)
-    .then((r) => r.data.response.results[0][0])
+    .then((r) => {
+      if (r.data.response.results.length > 0) {
+        return r.data.response.results[0][0];
+      } else {
+        return [];
+      }
+    })
     .catch((err) => {
       console.log(`Error Getting Bp Order Id: ${id}`, err);
       return [];
     });
-  await getBPOrderData({ BpId: orderData, BcId: id, BcOrderId: id });
+  if (orderData.length > 0) {
+    await getBPOrderData({ BpId: orderData, BcId: id, BcOrderId: id });
+  } else {
+    console.log("No order found in Brightpearl with ID: ", id);
+  }
 };
 
 const getBPOrderData = async (data) => {
@@ -161,15 +171,15 @@ const getCorrectProductsInBC = async (data) => {
   );
 
   try {
-    await axios.post(
-      `https://admin.heattransferwarehouse.com/api/sff-queue/item-queue/add`,
-      {
-        items: matchingProducts,
-      }
-    );
-    // await axios.post(`http://localhost:3000/api/sff-queue/item-queue/add`, {
-    //   items: matchingProducts,
-    // });
+    // await axios.post(
+    //   `https://admin.heattransferwarehouse.com/api/sff-queue/item-queue/add`,
+    //   {
+    //     items: matchingProducts,
+    //   }
+    // );
+    await axios.post(`http://localhost:3000/api/sff-queue/item-queue/add`, {
+      items: matchingProducts,
+    });
   } catch (error) {
     console.log("Error posting to add-queue-items:", error.message);
   }
