@@ -11,12 +11,12 @@ export default function SFFQueue() {
 
   const searchParams = new URLSearchParams(location.search);
   const view = searchParams.get("view") || "new"; // Default to 'new' if no parameter is
-
   const loading = useSelector(
-    (store) => store.loading.sffLoadingReducer.loading
+    (store) => store.loading.decoLoadingReducer.loading
   );
-  const sort = useSelector((store) => store.sffQueue.sort);
-  const queueItems = useSelector((store) => store.sffQueue.queueItems);
+
+  const sort = useSelector((store) => store.decoQueueReducer.sort);
+  const queueItems = useSelector((store) => store.decoQueueReducer.queueItems);
 
   const [checkedIds, setCheckedIds] = useState([]);
   const [completedItems, setCompletedItems] = useState([]);
@@ -27,7 +27,7 @@ export default function SFFQueue() {
   const [showFilters, setShowFilters] = useState(false);
 
   useEffect(() => {
-    dispatch({ type: "GET_QUEUE_ITEMS" });
+    dispatch({ type: "GET_DECO_QUEUE_ITEMS" });
   }, [dispatch]);
 
   useEffect(() => {
@@ -57,7 +57,7 @@ export default function SFFQueue() {
     queueItems.forEach((item) => {
       if (item.in_progress) {
         newInProgressItems.push(item);
-      } else if (item.is_complete) {
+      } else if (item.is_completed) {
         newCompletedItems.push(item);
       } else {
         newNewItems.push(item);

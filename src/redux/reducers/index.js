@@ -6,7 +6,8 @@ import login from "./loginModeReducer";
 import user from "./userReducer";
 import queue from "./queueReducer";
 import sffQueue from "./sffQueueReducer";
-import loadingReducer from "./loadingReducer";
+import loading from "./loadingReducer";
+import decoQueueReducer from "./decoQueueReducer";
 
 // rootReducer is the primary reducer for our entire project
 // It bundles up all of the other reducers so our project can use them.
@@ -22,7 +23,8 @@ const rootReducer = combineReducers({
   user,
   queue,
   sffQueue,
-  loading: loadingReducer,
+  loading,
+  decoQueueReducer,
 });
 
 export default rootReducer;

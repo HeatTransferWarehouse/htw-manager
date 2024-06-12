@@ -157,18 +157,19 @@ export function TableContent({ props }) {
                             paddingLeft: "1rem",
                             paddingTop: "0.75rem",
                           }}>
-                          {item.product_options.map((option, index) => (
-                            <p
-                              style={{
-                                paddingBlock: "0.25rem",
-                              }}
-                              key={index}>
-                              <span className="option-name">
-                                {option.option_name}:
-                              </span>
-                              {option.option_value}
-                            </p>
-                          ))}
+                          {item.product_options &&
+                            item.product_options.map((option, index) => (
+                              <p
+                                style={{
+                                  paddingBlock: "0.25rem",
+                                }}
+                                key={index}>
+                                <span className="option-name">
+                                  {option.option_name}:
+                                </span>
+                                {option.option_value}
+                              </p>
+                            ))}
                         </div>
                       )}
                     </li>
@@ -242,14 +243,15 @@ export function TableContent({ props }) {
                 <TableCell>{item.description}</TableCell>
                 <TableCell>
                   <span>
-                    {item.product_options.map((option, index) => (
-                      <p key={index}>
-                        <span className="option-name">
-                          {option.option_name}:
-                        </span>
-                        {option.option_value}
-                      </p>
-                    ))}
+                    {item.product_options &&
+                      item.product_options.map((option, index) => (
+                        <p key={index}>
+                          <span className="option-name">
+                            {option.option_name}:
+                          </span>
+                          {option.option_value}
+                        </p>
+                      ))}
                   </span>
                 </TableCell>
                 <TableCell>{item.qty}</TableCell>
