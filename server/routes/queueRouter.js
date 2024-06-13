@@ -64,6 +64,17 @@ async function getBCOrderDetails(orderId) {
   }
 }
 
+router.post("/create-order", function (req, res) {
+  if (req.body.data && req.body.data.id) {
+    const orderId = req.body.data.id;
+    getBCOrderDetails(orderId);
+  } else {
+    // Handle error - ID was not found in request
+    console.log("Order ID was not found in request for Queue");
+    res.status(400).send("Order ID was not found");
+  }
+});
+
 // getBCOrderDetails(3538208);
 
 const createQueueInfo = async (data) => {
