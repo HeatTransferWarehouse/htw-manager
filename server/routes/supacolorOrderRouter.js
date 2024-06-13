@@ -89,7 +89,7 @@ async function updateWebHooks(id) {
       headers: null,
     };
   }
-    if (id === 28268539) {
+  if (id === 28268539) {
     webHookObject = {
       scope: "store/order/created",
       destination:
@@ -98,6 +98,7 @@ async function updateWebHooks(id) {
       events_history_enabled: true,
       headers: null,
     };
+  }
   try {
     // This will update the webhooks
     await axios.put(url, webHookObject, { headers });
