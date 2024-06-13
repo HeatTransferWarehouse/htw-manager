@@ -64,7 +64,11 @@ const getBPOrderId = async (id) => {
   );
   const orderData = await brightpearlAPI(options)
     .then((r) => {
-      return r.data.response.results[0][0];
+      if (r.data.response.results.length > 0) {
+        return r.data.response.results[0][0];
+      } else {
+        return [];
+      }
     })
     .catch((err) => {
       console.log(`Error Getting Bp Order Id: ${id}`, err);
