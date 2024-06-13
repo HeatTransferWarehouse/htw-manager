@@ -93,18 +93,20 @@ const createQueueInfo = async (data) => {
     createdAt: data.timeStamp,
   });
 
-  try {
-    await axios.post(
-      `https://admin.heattransferwarehouse.com/api/queue/item-queue/add`,
-      {
-        items: filteredProducts,
-      }
-    );
-    // await axios.post(`http://localhost:3000/api/queue/item-queue/add`, {
-    //   items: filteredProducts,
-    // });
-  } catch (error) {
-    console.log("Error posting to add-queue-items:", error.message);
+  if (filteredProducts.length > 0) {
+    try {
+      await axios.post(
+        `https://admin.heattransferwarehouse.com/api/queue/item-queue/add`,
+        {
+          items: filteredProducts,
+        }
+      );
+      // await axios.post(`http://localhost:3000/api/queue/item-queue/add`, {
+      //   items: filteredProducts,
+      // });
+    } catch (error) {
+      console.log("Error posting to add-queue-items:", error.message);
+    }
   }
 };
 
@@ -138,7 +140,6 @@ const getBCOrderProducts = async (orderId) => {
 };
 
 const filterBCProducts = async (data) => {
-  console.log(data.products);
   const matchedProducts = [];
   const skuPatterns = {
     decoSku3: ["CD", "CS", "SD", "SP-"],
