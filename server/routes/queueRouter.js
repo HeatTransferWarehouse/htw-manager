@@ -75,8 +75,6 @@ router.post("/create-order", function (req, res) {
   }
 });
 
-// getBCOrderDetails(3538208);
-
 const createQueueInfo = async (data) => {
   const orderObj = {
     order_id: data.orderData.id,
@@ -105,7 +103,10 @@ const createQueueInfo = async (data) => {
       //   items: filteredProducts,
       // });
     } catch (error) {
-      console.log("Error posting to add-queue-items:", error.message);
+      console.log(
+        `Error posting to add-queue-items for: ${data.orderData.id}`,
+        error.message
+      );
     }
   }
 };
