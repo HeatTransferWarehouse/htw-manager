@@ -83,15 +83,15 @@ const createQueueInfo = async (data) => {
   });
 
   try {
-    // await axios.post(
-    //   `https://admin.heattransferwarehouse.com/api/queue/item-queue/add`,
-    //   {
-    //     items: filteredProducts,
-    //   }
-    // );
-    await axios.post(`http://localhost:3000/api/queue/item-queue/add`, {
-      items: filteredProducts,
-    });
+    await axios.post(
+      `https://admin.heattransferwarehouse.com/api/queue/item-queue/add`,
+      {
+        items: filteredProducts,
+      }
+    );
+    // await axios.post(`http://localhost:3000/api/queue/item-queue/add`, {
+    //   items: filteredProducts,
+    // });
   } catch (error) {
     console.log("Error posting to add-queue-items:", error.message);
   }
