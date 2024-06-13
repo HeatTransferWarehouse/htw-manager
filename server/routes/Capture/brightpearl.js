@@ -174,10 +174,8 @@ const checkBcOrderShipments = async (data) => {
     const url = `https://api.bigcommerce.com/stores/${process.env.STORE_HASH}/v2/orders/${data}/shipments`;
     const response = await axios.get(url, { headers });
     if (response.data.length > 0) {
-      console.log("Order Already Shipped");
       return true;
     } else {
-      console.log("Order Not Shipped");
       return false;
     }
   } catch (error) {
@@ -194,7 +192,6 @@ const createBcShipmentOnOrder = async (data) => {
     const url = `https://api.bigcommerce.com/stores/${process.env.STORE_HASH}/v2/orders/${data.id}/shipments`;
 
     await axios.post(url, data.shipmentData, { headers });
-    console.log(`Shipping Info Created for Order ${data.id}`);
   } catch (error) {
     console.log("Error getting Creating BigCommerce Shipment", error);
   }
