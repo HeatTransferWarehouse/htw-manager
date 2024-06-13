@@ -32,10 +32,7 @@ async function getWebHooks() {
   try {
     const response = await axios.get(url, { headers });
     response.data.data.forEach(async (hook) => {
-      if (hook.is_active) {
-        console.log(`${hook.scope} is active`);
-      } else {
-        console.log(`${hook.scope} is not active...Activating now`);
+      if (!hook.is_active) {
         await updateWebHooks(hook.id);
       }
     });
@@ -99,9 +96,7 @@ async function updateWebHooks(id) {
     };
   }
   try {
-    // This will update the webhooks
     await axios.put(url, webHookObject, { headers });
-    console.log("Webhooks updated");
   } catch (error) {
     console.log("Error updating webhooks", error);
   }
