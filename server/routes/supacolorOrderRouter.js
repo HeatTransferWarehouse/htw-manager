@@ -89,6 +89,15 @@ async function updateWebHooks(id) {
       headers: null,
     };
   }
+    if (id === 28268539) {
+    webHookObject = {
+      scope: "store/order/created",
+      destination:
+        "https://admin.heattransferwarehouse.com/api/queue/create-order",
+      is_active: true,
+      events_history_enabled: true,
+      headers: null,
+    };
   try {
     // This will update the webhooks
     await axios.put(url, webHookObject, { headers });
