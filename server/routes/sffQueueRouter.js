@@ -181,15 +181,15 @@ const getCorrectProductsInBC = async (data) => {
   );
 
   try {
-    // await axios.post(
-    //   `https://admin.heattransferwarehouse.com/api/sff-queue/item-queue/add`,
-    //   {
-    //     items: matchingProducts,
-    //   }
-    // );
-    await axios.post(`http://localhost:3000/api/sff-queue/item-queue/add`, {
-      items: matchingProducts,
-    });
+    await axios.post(
+      `https://admin.heattransferwarehouse.com/api/sff-queue/item-queue/add`,
+      {
+        items: matchingProducts,
+      }
+    );
+    // await axios.post(`http://localhost:3000/api/sff-queue/item-queue/add`, {
+    //   items: matchingProducts,
+    // });
   } catch (error) {
     console.log("Error posting to add-queue-items:", error.message);
   }
