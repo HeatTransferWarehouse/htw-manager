@@ -32,7 +32,24 @@ const brightpearlAPI = (options) => {
 router.post("/create-order", function (req, res) {
   if (req.body.data && req.body.data.id) {
     const orderId = req.body.data.id;
-    getBPOrderId(orderId);
+
+    // Log the receipt of the order and intention to delay
+    logtail.info(
+      `Received order ID: ${orderId}. Will delay processing for 2 minutes.`
+    );
+
+    // Introduce a 2-minute delay before calling getBPOrderId
+    setTimeout(() => {
+      logtail.info(`Starting to process order ID: ${orderId} after delay.`);
+      getBPOrderId(orderId).catch((error) => {
+        logtail.error(`Error processing order ID: ${orderId}:`, error);
+      });
+    }, 2 * 60 * 1000); // 2 minutes in milliseconds
+
+    // Respond immediately to acknowledge receipt
+    res
+      .status(200)
+      .send("Order ID received. Processing will be delayed by 2 minutes.");
   } else {
     // Handle error - ID was not found in request
     logtail.error("Order ID was not found in request");
@@ -47,21 +64,14 @@ const getBPOrderId = async (id) => {
   );
   const orderData = await brightpearlAPI(options)
     .then((r) => {
-      if (r.data.response.results.length > 0) {
-        return r.data.response.results[0][0];
-      } else {
-        return [];
-      }
+      return r.data.response.results[0][0];
     })
     .catch((err) => {
       console.log(`Error Getting Bp Order Id: ${id}`, err);
       return [];
     });
-  if (orderData.length > 0) {
-    await getBPOrderData({ BpId: orderData, BcId: id, BcOrderId: id });
-  } else {
-    console.log("No order found in Brightpearl with ID: ", id);
-  }
+
+  await getBPOrderData({ BpId: orderData, BcId: id, BcOrderId: id });
 };
 
 const getBPOrderData = async (data) => {
