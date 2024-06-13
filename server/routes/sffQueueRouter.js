@@ -83,10 +83,8 @@ const getBPOrderData = async (data) => {
       return [];
     });
 
-  // getBpOrderProductIds({ orderData, orderId: data.BcOrderId });
+  getBpOrderProductIds({ orderData, orderId: data.BcOrderId });
 };
-
-getBPOrderId(3538689);
 
 const getBpOrderProductIds = async (data) => {
   const rowItems = [];
