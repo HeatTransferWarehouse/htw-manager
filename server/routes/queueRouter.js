@@ -75,8 +75,6 @@ router.post("/create-order", function (req, res) {
   }
 });
 
-// getBCOrderDetails(3538837);
-
 const createQueueInfo = async (data) => {
   const orderObj = {
     order_id: data.orderData.id,
@@ -93,8 +91,11 @@ const createQueueInfo = async (data) => {
     createdAt: data.timeStamp,
   });
 
+  // const dbOrders = await axios.get(
+  //   `http://admin.heattransferwarehouse.com/api/queue/item-queue/get`
+  // );
   const dbOrders = await axios.get(
-    `http://admin.heattransferwarehouse.com/api/queue/item-queue/get`
+    `http://localhost:3000/api/queue/item-queue/get`
   );
 
   const newProducts = filteredProducts.filter((product) => {
@@ -105,16 +106,17 @@ const createQueueInfo = async (data) => {
   });
 
   if (newProducts.length > 0) {
+    console.log(`Adding ${newProducts.length} items to the queue`);
     try {
-      await axios.post(
-        `https://admin.heattransferwarehouse.com/api/queue/item-queue/add`,
-        {
-          items: filteredProducts,
-        }
-      );
-      // await axios.post(`http://localhost:3000/api/queue/item-queue/add`, {
-      //   items: filteredProducts,
-      // });
+      // await axios.post(
+      //   `https://admin.heattransferwarehouse.com/api/queue/item-queue/add`,
+      //   {
+      //     items: filteredProducts,
+      //   }
+      // );
+      await axios.post(`http://localhost:3000/api/queue/item-queue/add`, {
+        items: filteredProducts,
+      });
     } catch (error) {
       console.log(
         `Error posting to add-queue-items for: ${data.orderData.id}`,
@@ -173,7 +175,7 @@ const filterBCProducts = async (data) => {
     startsWith: ["STOCK-", "SUBSTOCK-", "PHTVSTOCK-"],
   };
 
-  const combinedDecoSku3Regex = new RegExp("^(CD|CS|SD)[1-9]?$");
+  const combinedDecoSku3Regex = new RegExp("^(CD|CS|SD|SDC)[1-9]?$");
 
   data.products.forEach((product) => {
     const decoSku = product.sku;
