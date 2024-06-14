@@ -211,7 +211,7 @@ router.get("/item-queue/get", async (req, res) => {
     "description",
     "priority",
     "in_progress",
-    "completed",
+    "is_complete",
   ];
 
   // List of valid sorting orders
