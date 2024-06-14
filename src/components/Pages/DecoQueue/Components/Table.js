@@ -13,7 +13,7 @@ import {
   HiOutlineArrowNarrowDown,
 } from "react-icons/hi";
 import { Filters } from "./Modals";
-import Search from "./Search";
+import Search from "../../../Search/Search";
 
 export function TableComponent({ props }) {
   const { getQueueItems } = useQueueActions();
