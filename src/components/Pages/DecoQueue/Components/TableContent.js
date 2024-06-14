@@ -254,7 +254,9 @@ export function TableContent({ props }) {
                   <TableCell>{item.product_length}</TableCell>
                   <TableCell>{item.qty}</TableCell>
                   <TableCell>{renderPriorityButton(item)}</TableCell>
-                  <TableCell>{item.created_at.split("T")[0]}</TableCell>
+                  <TableCell>
+                    {item.created_at.split(": ")[1].split(" T")[0]}
+                  </TableCell>
                   <TableCell>{renderOptionsButton(item.id)}</TableCell>
                 </>
               )}

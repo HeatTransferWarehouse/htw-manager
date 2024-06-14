@@ -2,7 +2,10 @@ import { put, takeLatest } from "redux-saga/effects";
 import axios from "axios";
 
 function* getQueueItems(action) {
-  const { sort_by, order } = action.payload || {};
+  const { sort_by, order } = action.payload || {
+    sort_by: "created_at",
+    order: "desc",
+  };
   try {
     const response = yield axios.get(
       `/api/queue/item-queue/get?sort_by=${sort_by}&order=${order}`

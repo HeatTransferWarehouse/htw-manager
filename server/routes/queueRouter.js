@@ -75,6 +75,8 @@ router.post("/create-order", function (req, res) {
   }
 });
 
+// getBCOrderDetails(3538837);
+
 const createQueueInfo = async (data) => {
   const orderObj = {
     order_id: data.orderData.id,
@@ -91,7 +93,18 @@ const createQueueInfo = async (data) => {
     createdAt: data.timeStamp,
   });
 
-  if (filteredProducts.length > 0) {
+  const dbOrders = await axios.get(
+    `http://admin.heattransferwarehouse.com/api/queue/item-queue/get`
+  );
+
+  const newProducts = filteredProducts.filter((product) => {
+    return !dbOrders.data.some(
+      (dbOrder) =>
+        dbOrder.order_id === product.order_id && dbOrder.sku === product.sku
+    );
+  });
+
+  if (newProducts.length > 0) {
     try {
       await axios.post(
         `https://admin.heattransferwarehouse.com/api/queue/item-queue/add`,
