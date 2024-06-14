@@ -8,7 +8,7 @@ function Nav() {
   // Home is true by default.
   const [home, setHome] = useState(true);
   const [resources, setResources] = useState(false);
-  const [sanMar, setSanMar] = useState(false);
+  // const [sanMar, setSanMar] = useState(false);
   const [decoQueue, setDecoQueue] = useState(false);
   const [admin, setAdmin] = useState(false);
   const [supacolor, setSupacolor] = useState(false);
@@ -20,7 +20,6 @@ function Nav() {
   const disableAll = () => {
     setHome(false);
     setResources(false);
-    setSanMar(false);
     setDecoQueue(false);
     setAdmin(false);
     setSupacolor(false);
@@ -74,7 +73,7 @@ function Nav() {
                       className={supacolor ? "active-nav-link" : "nav-link"}>
                       Supacolor
                     </NavLink>
-                    <NavLink
+                    {/* <NavLink
                       to="/sanmar"
                       onClick={() => {
                         disableAll();
@@ -82,7 +81,7 @@ function Nav() {
                       }}
                       className={sanMar ? "active-nav-link" : "nav-link"}>
                       SanMar
-                    </NavLink>
+                    </NavLink> */}
                     <NavLink
                       to="/decoqueue"
                       onClick={() => {
