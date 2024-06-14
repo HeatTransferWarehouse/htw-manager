@@ -75,8 +75,6 @@ router.post("/create-order", function (req, res) {
   }
 });
 
-getBCOrderDetails(3538198);
-
 const createQueueInfo = async (data) => {
   const orderObj = {
     order_id: data.orderData.id,
