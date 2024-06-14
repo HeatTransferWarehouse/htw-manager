@@ -6,8 +6,8 @@ import Nav from "../Nav/Nav";
 import Footer from "../Footer/Footer";
 import Register from "../RegisterForm/RegisterForm";
 import Main from "../Home/Main";
-import Sanmar from "../Pages/Sanmar";
-import Brightpearl from "../Pages/Brightpearl";
+// import Sanmar from "../Pages/Sanmar";
+// import Brightpearl from "../Pages/Brightpearl";
 import Resources from "../Pages/Resources";
 // import NoStock from "../Pages/NoStock";
 // import Affilates from "../Pages/Affiliates";
@@ -83,9 +83,9 @@ function App() {
 
         <ProtectedRoute exact path="/" component={Main} />
 
-        <ProtectedRoute exact path="/sanmar" component={Sanmar} />
+        {/* <ProtectedRoute exact path="/sanmar" component={Sanmar} /> */}
 
-        <ProtectedRoute exact path="/brightpearl" component={Brightpearl} />
+        {/* <ProtectedRoute exact path="/brightpearl" component={Brightpearl} /> */}
 
         <ProtectedRoute exact path="/sff-queue" component={SFFQueue} />
 
