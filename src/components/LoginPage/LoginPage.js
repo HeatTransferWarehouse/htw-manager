@@ -72,7 +72,7 @@ export default function LoginPage() {
         </div>
         {logInStatus && <p className="text-red-600">{logInStatus}</p>}
         <button
-          className="bg-gradient-to-r mt-8 transition duration-200 hover:from-secondary/80 hover:to-primary/80 rounded-md from-secondary w-full py-3 text-white flex items-center justify-center to-primary"
+          className="bg-gradient-to-r mt-8 transition duration-200 bg-secondary rounded-md  w-full py-3 text-white flex items-center justify-center "
           type="submit">
           Login
         </button>

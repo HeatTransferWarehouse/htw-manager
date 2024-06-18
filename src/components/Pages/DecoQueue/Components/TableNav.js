@@ -12,9 +12,8 @@ export function TableNav({ count, props }) {
     <div className="flex justify-center items-center w-full p-4 gap-2">
       <Link
         className={twMerge(
-          "bg-transparent max-sm:w-1/3 max-sm:flex max-sm:flex-col rounded-md font-medium border-none p-2 text-secondary hover:bg-gradient-to-r hover:from-secondary hover:to-primary hover:text-white",
-          view === "new" &&
-            "bg-gradient-to-r from-secondary to-primary text-white"
+          "max-sm:w-1/3 max-sm:flex max-sm:flex-col rounded-md font-medium p-2 text-secondary   hover:text-secondary hover:bg-secondary/10 ",
+          view === "new" && "bg-secondary/10  text-secondary"
         )}
         onClick={() => {
           props.setPage(0);
@@ -26,9 +25,8 @@ export function TableNav({ count, props }) {
       </Link>
       <Link
         className={twMerge(
-          "bg-transparent max-sm:w-1/3 max-sm:flex max-sm:flex-col rounded-md font-medium border-none p-2 text-secondary hover:text-white hover:bg-gradient-to-r hover:from-secondary hover:to-primary",
-          view === "progress" &&
-            "bg-gradient-to-r from-secondary to-primary text-white"
+          "max-sm:w-1/3 max-sm:flex max-sm:flex-col rounded-md font-medium p-2 text-secondary   hover:text-secondary hover:bg-secondary/10 ",
+          view === "progress" && "bg-secondary/10  text-secondary"
         )}
         onClick={() => {
           props.setPage(0);
@@ -40,9 +38,8 @@ export function TableNav({ count, props }) {
       </Link>
       <Link
         className={twMerge(
-          "bg-transparent max-sm:w-1/3 max-sm:flex max-sm:flex-col rounded-md font-medium border-none p-2 hover:text-white text-secondary hover:bg-gradient-to-r hover:from-secondary hover:to-primary",
-          view === "completed" &&
-            "bg-gradient-to-r from-secondary to-primary text-white"
+          "max-sm:w-1/3 max-sm:flex max-sm:flex-col rounded-md font-medium p-2 text-secondary   hover:text-secondary hover:bg-secondary/10 ",
+          view === "completed" && "bg-secondary/10  text-secondary"
         )}
         onClick={() => {
           props.setPage(0);
