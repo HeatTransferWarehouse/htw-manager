@@ -2,8 +2,9 @@ import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useLocation } from "react-router-dom";
 
-import { LoadingModal } from "./Components/Modals";
+import { DeleteModal, LoadingModal, MobileFilters } from "./Components/Modals";
 import { TableComponent } from "./Components/Table";
+import { useQueueActions } from "./Functions/queue-actions";
 
 export default function SFFQueue() {
   const location = useLocation();
@@ -15,6 +16,8 @@ export default function SFFQueue() {
     (store) => store.loading.decoLoadingReducer.loading
   );
 
+  const { deleteQueueItem } = useQueueActions();
+
   const sort = useSelector((store) => store.decoQueueReducer.sort);
   const queueItems = useSelector((store) => store.decoQueueReducer.queueItems);
 
@@ -24,7 +27,9 @@ export default function SFFQueue() {
   const [isMobile, setIsMobile] = useState(false);
   const [inProgressItems, setInProgressItems] = useState([]);
   const [newItems, setNewItems] = useState([]);
-  const [showFilters, setShowFilters] = useState(false);
+  const [deleteModalActive, setDeleteModalActive] = useState(false);
+  const [singleCheckedId, setSingleCheckedId] = useState(null);
+  const [filtersActive, setFiltersActive] = useState(false);
 
   useEffect(() => {
     dispatch({ type: "GET_DECO_QUEUE_ITEMS" });
@@ -36,7 +41,7 @@ export default function SFFQueue() {
         setIsMobile(true);
       } else {
         setIsMobile(false);
-        setShowFilters(false);
+        setFiltersActive(false);
       }
     };
 
@@ -85,11 +90,26 @@ export default function SFFQueue() {
           setCheckedIds,
           view,
           sort,
-          showFilters,
-          setShowFilters,
+          filtersActive,
+          setFiltersActive,
+          setDeleteModalActive,
+          setSingleCheckedId,
         }}
       />
       {loading && <LoadingModal />}
+      {deleteModalActive && (
+        <DeleteModal
+          props={{
+            checkedIds,
+            setCheckedIds,
+            setDeleteModalActive,
+            deleteQueueItem,
+            singleCheckedId,
+            setSingleCheckedId,
+          }}
+        />
+      )}
+      <MobileFilters props={{ filtersActive, setFiltersActive, sort }} />
     </>
   );
 }

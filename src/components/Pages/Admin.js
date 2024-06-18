@@ -1,9 +1,5 @@
 import React, { useEffect, useState } from "react";
 import "./css/Main.css";
-import "./css/bootstrap.min.css";
-import "./css/font-awesome.css";
-import "./css/flex-slider.css";
-import "./css/templatemo-softy-pinko.css";
 import "./css/admin.css";
 import { useDispatch, useSelector } from "react-redux";
 import { TiUserAdd } from "react-icons/ti";

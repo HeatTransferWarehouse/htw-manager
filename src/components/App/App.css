@@ -1,16 +1,18 @@
 /*A number of these stylings were brought in from the projetc template*/
+@import url("https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,400;0,500;0,700;1,300;1,400;1,500;1,700&display=swap");
+
 body {
-  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+  font-family: "Roboto", sans-serif;
   margin: 0px;
   height: 100%;
-  min-height: 100vh;
+  min-height: 100svh;
 }
 
 #react-root {
   height: 100%;
   min-height: 100vh;
   position: relative;
-  padding-bottom: 10rem;
+  background-color: rgb(229 231 235);
 }
 
 .alert {

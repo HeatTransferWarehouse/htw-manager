@@ -15,7 +15,7 @@ function Main() {
         <div className="info">
           <div className="square"></div>
           <h2 className="animate-charcter">
-            Heat Transfer Warehouse <br /> Admin
+            Heat Transfer <br /> Warehouse <br /> Admin
           </h2>
           <br></br>
           <h4>

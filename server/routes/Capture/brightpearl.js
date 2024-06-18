@@ -97,7 +97,7 @@ const getBPOrderData = async (data) => {
   const orderData = await brightpearlAPI(options)
     .then((r) => r.data)
     .catch((err) => {
-      console.log("Error Getting BP Order Data", err);
+      console.log("Error Getting BP Order Data for BP Shipments", err);
       return [];
     });
   // We pass the order data to getBPOrderNotes so we can get the note that contains the tracking reference from Bright Pearl

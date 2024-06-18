@@ -5,63 +5,65 @@ export function OptionsList({ props }) {
   const {
     startQueueItem,
     completeQueueItem,
-    deleteQueueItem,
     sendBackCompletedQueueItem,
     sendBackProgressQueueItem,
   } = useQueueActions();
   return (
-    <div className="options-list">
-      <ul>
-        {props.view === "new" ? (
-          <>
-            <li
-              className="list-start"
-              onClick={(e) => startQueueItem(e, props.id)}>
-              Start
-            </li>
-            <li
-              onClick={(e) => {
-                completeQueueItem(e, props.id);
-              }}>
-              Complete
-            </li>
-            <li
-              className="list-delete"
-              onClick={(e) => deleteQueueItem(e, props.id)}>
-              Delete
-            </li>
-          </>
-        ) : props.view === "progress" ? (
-          <>
-            <li
-              className="list-start"
-              onClick={(e) => {
-                completeQueueItem(e, props.id);
-              }}>
-              Complete
-            </li>
-            <li onClick={(e) => sendBackProgressQueueItem(e, props.id)}>
-              Send back
-            </li>
-            <li
-              className="list-delete"
-              onClick={(e) => deleteQueueItem(e, props.id)}>
-              Delete
-            </li>
-          </>
-        ) : (
-          <>
-            <li onClick={(e) => sendBackCompletedQueueItem(e, props.id)}>
-              Send back
-            </li>
-            <li
-              className="list-delete"
-              onClick={(e) => deleteQueueItem(e, props.id)}>
-              Delete
-            </li>
-          </>
-        )}
-      </ul>
-    </div>
+    <ul>
+      {props.view === "new" ? (
+        <>
+          <li
+            className="cursor-pointer hover:bg-green-600/10 py-2 px-3 hover:text-green-600"
+            onClick={(e) => startQueueItem(e, props.id)}>
+            Start
+          </li>
+          <li
+            className="cursor-pointer hover:bg-secondary/10 py-2 px-3 hover:text-secondary"
+            onClick={(e) => {
+              completeQueueItem(e, props.id);
+            }}>
+            Complete
+          </li>
+          <li
+            className="cursor-pointer hover:bg-red-600/10 py-2 px-3 hover:text-red-600"
+            onClick={() => props.setDeleteModalActive(true)}>
+            Delete
+          </li>
+        </>
+      ) : props.view === "progress" ? (
+        <>
+          <li
+            className="cursor-pointer hover:bg-secondary/10 py-2 px-3 hover:text-secondary"
+            onClick={(e) => {
+              completeQueueItem(e, props.id);
+            }}>
+            Complete
+          </li>
+          <li
+            className="cursor-pointer hover:bg-secondary/10 py-2 px-3 hover:text-secondary"
+            onClick={(e) => sendBackProgressQueueItem(e, props.id)}>
+            Send back
+          </li>
+          <li
+            className="cursor-pointer hover:bg-red-600/10 py-2 px-3 hover:text-red-600"
+            onClick={() => props.setDeleteModalActive(true)}>
+            Delete
+          </li>
+        </>
+      ) : (
+        <>
+          <li
+            className="cursor-pointer hover:bg-secondary/10 py-2 px-3 hover:text-secondary"
+            onClick={(e) => sendBackCompletedQueueItem(e, props.id)}>
+            Send back
+          </li>
+          <li
+            className="cursor-pointer hover:bg-red-600/10 py-2 px-3 hover:text-red-600"
+            onClick={() => props.setDeleteModalActive(true)}>
+            Delete
+          </li>
+        </>
+      )}
+    </ul>
   );
 }
