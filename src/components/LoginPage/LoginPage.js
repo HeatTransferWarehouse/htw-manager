@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import "./LoginPage.css";
+import { twMerge } from "tailwind-merge";
 
 export default function LoginPage() {
   const dispatch = useDispatch();
@@ -19,22 +19,31 @@ export default function LoginPage() {
   };
 
   return (
-    <div className="login">
-      <form onSubmit={loginEvent} className="login-container">
-        <div>
+    <div className="flex fixed top-0 left-0 w-full justify-center items-center h-full z-[99999] bg-black">
+      <form
+        onSubmit={loginEvent}
+        className="flex flex-col justify-center items-center w-full max-w-[325px]">
+        <div className="flex items-center justify-center flex-col">
           <img
             src="https://cdn11.bigcommerce.com/s-et4qthkygq/images/stencil/original/image-manager/htw-admin-favicon-purple.png?t=1685116764"
             alt=""
-            className="htw-logo"
+            className="w-[100px]"
           />
-          <h2>HTW Admin Login</h2>
+          <h2 className="text-white font-bold text-3xl">HTW Admin Login</h2>
         </div>
-        <div className="login-inputs">
-          <div className="login-input">
+        <div className="w-full mt-8 flex flex-col gap-4">
+          <div>
             {/* enter email address here */}
-            <label htmlFor="username">EMAIL / USERNAME</label>
+            <label
+              className="text-white font-medium mb-2 text-left flex w-full"
+              htmlFor="username">
+              EMAIL / USERNAME
+            </label>
             <input
-              className={logInStatus ? "login-error" : ""}
+              className={twMerge(
+                logInStatus ? "border-red-600" : "border-white",
+                "bg-white m-0 text-base text-black border-2 border-solid p-2 w-full rounded-md"
+              )}
               type="text"
               name="username"
               value={username}
@@ -42,10 +51,17 @@ export default function LoginPage() {
               onChange={(event) => setUsername(event.target.value)}
             />
           </div>
-          <div className="login-input">
-            <label htmlFor="password">PASSWORD</label>
+          <div>
+            <label
+              className="text-white font-medium mb-2 text-left flex w-full"
+              htmlFor="password">
+              PASSWORD
+            </label>
             <input
-              className={logInStatus ? "login-error" : ""}
+              className={twMerge(
+                logInStatus ? "border-red-600" : "border-white",
+                "bg-white border-2 border-solid text-base border-white text-black m-0 p-2 w-full rounded-md"
+              )}
               type="password"
               name="password"
               value={password}
@@ -54,8 +70,10 @@ export default function LoginPage() {
             />
           </div>
         </div>
-        {logInStatus && <p className="error-message">{logInStatus}</p>}
-        <button className="log-in" type="submit">
+        {logInStatus && <p className="text-red-600">{logInStatus}</p>}
+        <button
+          className="bg-gradient-to-r mt-8 transition duration-200 hover:from-secondary/80 hover:to-primary/80 rounded-md from-secondary w-full py-3 text-white flex items-center justify-center to-primary"
+          type="submit">
           Login
         </button>
       </form>

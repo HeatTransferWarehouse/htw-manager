@@ -1,10 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import "./css/Main.css";
-import "./css/bootstrap.min.css";
-import "./css/font-awesome.css";
-import "./css/flex-slider.css";
-import "./css/templatemo-softy-pinko.css";
 import "./css/Supacolor.css";
 import Table from "@material-ui/core/Table";
 import TableBody from "@material-ui/core/TableBody";
@@ -159,19 +155,12 @@ function Supacolor() {
 
   return (
     <>
-      <br />
-      <br />
-      <br />
-      <br />
-      <br />
-      <br />
-      <br />
-
       <Paper
         style={{
           maxWidth: "1200px",
           width: "90%",
-          margin: "auto",
+          marginInline: "auto",
+          marginTop: "2rem",
           padding: "1em",
           marginBottom: "3rem",
         }}>

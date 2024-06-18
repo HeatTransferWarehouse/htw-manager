@@ -83,7 +83,7 @@ const getBPOrderData = async (data) => {
   const orderData = await brightpearlAPI(options)
     .then((r) => r.data)
     .catch((err) => {
-      console.log("Error Getting BP Order Data", err);
+      console.log("Error Getting BP Order Data for Sff Queue", err);
       return [];
     });
 

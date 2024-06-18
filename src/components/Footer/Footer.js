@@ -1,9 +1,5 @@
 import React, { Component } from "react";
-import "./Footer.css";
 
-// This is one of our simplest components
-//Simply puts footer on bottom of page
-//used for copywrite
 class Footer extends Component {
   // React render function
   render() {
@@ -11,19 +7,15 @@ class Footer extends Component {
     let thisYear = thisDate.getFullYear();
     const copyright = "\u00A9";
     return (
-      <footer>
-        <div className="container">
-          <div className="row">
-            <div className="col-lg-12">
-              <p className="copyright">
-                Copyright {copyright} {thisYear} Heat Transfer Warehouse
-              </p>
-            </div>
-          </div>
+      <footer className="w-full flex items-center flex-col justify-center bottom-0 h-24 left-0 z-[999999] bg-gradient-to-r from-primary to-secondary">
+        <div className="w-full max-w-screen-2xl flex items-center justify-center mx-auto">
+          <p className="text-white text-base">
+            Copyright {copyright} {thisYear} Heat Transfer Warehouse
+          </p>
         </div>
       </footer>
-    ); // end return
-  } // end render
-} // end class Footer
+    );
+  }
+}
 
 export default Footer;

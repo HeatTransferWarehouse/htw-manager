@@ -24,13 +24,8 @@ logtail.info("Logtail ready!");
 
 // Route includes
 const userRouter = require("./routes/userrouter");
-// const sanmarBP = require("./routes/sanmarBPRouter");
-// const nostockRouter = require('./routes/nostockrouter');
 const captureRouter = require("./routes/index");
-// const affiliateRouter = require('./routes/affiliaterouter');
-// const queueItemRouter = require("./routes/queueItemRouter");
 const sffQueueRouter = require("./routes/sffQueueRouter");
-// const queueUserRouter = require("./routes/queueUserRouter");
 const supacolorRouter = require("./routes/supacolorOrderRouter");
 const queueRouter = require("./routes/queueRouter");
 
@@ -47,17 +42,12 @@ app.use(
 //change this to push update 2
 
 app.use("/api/user", userRouter);
-// app.use("/api/item", sanmarBP);
 app.use("/api/bp-api", captureRouter);
-// app.use('/api/nostock', nostockRouter);
-// app.use('/api/affiliate', affiliateRouter);
 app.use("/supacolor-api", supacolorRouter);
 
 // Queue Routers
 
 app.use("/api/sff-queue", sffQueueRouter);
-// app.use("/api/user/queue/", queueUserRouter);
-// app.use("/api/item/queue/", queueItemRouter);
 app.use("/api/queue", queueRouter);
 
 app.get("/healthcheck", (req, res) => {

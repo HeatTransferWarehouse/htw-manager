@@ -1,31 +1,25 @@
 import React, { useState, useEffect } from "react";
-import { useSelector, useDispatch } from 'react-redux';
+import { useSelector, useDispatch } from "react-redux";
 import "./css/Main.css";
-import './css/bootstrap.min.css';
-import './css/font-awesome.css';
-import './css/flex-slider.css';
-import './css/templatemo-softy-pinko.css';
 import MUITable from "mui-datatables";
 import Button from "react-bootstrap/Button";
 import QueueIcon from "@material-ui/icons/Queue";
 import swal from "sweetalert";
-import SanmarImporter from '../Importer/SanmarImporter';
-import * as CSV from 'csv-string';
-import { DesktopDatePicker } from '@mui/x-date-pickers';
-import { LocalizationProvider } from '@mui/x-date-pickers';
-import AdapterDateFns from '@mui/lab/AdapterDateFns';
+import SanmarImporter from "../Importer/SanmarImporter";
+import * as CSV from "csv-string";
+import { DesktopDatePicker } from "@mui/x-date-pickers";
+import { LocalizationProvider } from "@mui/x-date-pickers";
+import AdapterDateFns from "@mui/lab/AdapterDateFns";
 import TextField from "@material-ui/core/TextField";
-import Grid from '@material-ui/core/Grid';
+import Grid from "@material-ui/core/Grid";
 import InfoIcon from "@material-ui/icons/Info";
 
-
 function Sanmar() {
-
   const SanmarOptions = {
     tableBodyHeight: "600px",
     filter: true,
-    filterType: 'multiselect',
-  }
+    filterType: "multiselect",
+  };
 
   const dispatch = useDispatch();
 
@@ -33,26 +27,29 @@ function Sanmar() {
     dispatch({
       type: "GET_SANMAR_LIST",
     });
-  }, [dispatch])
+  }, [dispatch]);
 
-  const SanmarItems = useSelector(store => store.item.clothinglist);
-  const BcItems = useSelector(store => store.item.bcClothinglist);
-  const SanmarNotify = useSelector(store => store.item.sanmar);
-  const sanmarTracking = useSelector(store => store.item.tracking);
-  const sanmarList = useSelector(store => store.item.sanmarlist);
+  const SanmarItems = useSelector((store) => store.item.clothinglist);
+  const BcItems = useSelector((store) => store.item.bcClothinglist);
+  const SanmarNotify = useSelector((store) => store.item.sanmar);
+  const sanmarTracking = useSelector((store) => store.item.tracking);
+  const sanmarList = useSelector((store) => store.item.sanmarlist);
   const [order, setOrder] = useState();
   const [start, setStart] = useState(0);
   const [date, setDate] = useState();
-  const host = 'ftp.sanmar.com';
-  const user = '175733';
-  const password = 'Sanmar33';
-  let sanmarDisplay = <h4>...</h4>
-  
+  const host = "ftp.sanmar.com";
+  const user = "175733";
+  const password = "Sanmar33";
+  let sanmarDisplay = <h4>...</h4>;
 
   async function connectFtp(d) {
-    swal('Downloading Info!');
-    if (host !== 'ftp.sanmar.com' || user !== '175733' || password !== 'Sanmar33') {
-      swal('Incorrect Login Info!');
+    swal("Downloading Info!");
+    if (
+      host !== "ftp.sanmar.com" ||
+      user !== "175733" ||
+      password !== "Sanmar33"
+    ) {
+      swal("Incorrect Login Info!");
     } else {
       dispatch({
         type: "CONNECT_FTP",
@@ -61,7 +58,7 @@ function Sanmar() {
           user: user,
           password: password,
           date: d,
-        }
+        },
       });
     }
   }
@@ -77,16 +74,16 @@ function Sanmar() {
       }
     }
     if (found === true) {
-      swal('Sending Email!');
+      swal("Sending Email!");
       dispatch({
         type: "SEND_EMAIL",
         payload: {
           order: o,
           tracking: tracking,
-        }
+        },
       });
     } else {
-      swal('Could not find Order! Make sure to download Orders first!');
+      swal("Could not find Order! Make sure to download Orders first!");
     }
   }
 
@@ -94,7 +91,7 @@ function Sanmar() {
     const arr = CSV.parse(SanmarNotify);
     let trackingPush = [];
     for (const item of arr) {
-      if (item[0] === 'CUSTOMER PO') {
+      if (item[0] === "CUSTOMER PO") {
       } else {
         let pusher = {
           order: item[0],
@@ -125,24 +122,24 @@ function Sanmar() {
       type: "UPDATE_TRACKING",
       payload: trackingPush,
     });
-    swal('Info Downloaded!');
+    swal("Info Downloaded!");
   }
 
   const updatePrices = () => {
     if (BcItems[0]) {
-      swal('Updating Prices!');
+      swal("Updating Prices!");
       dispatch({
         type: "UPDATE_PRICES",
         payload: {
           bcItems: BcItems,
           sanmar: SanmarItems,
           start: start,
-        }
+        },
       });
     } else {
-      swal('Import some prices first!');
+      swal("Import some prices first!");
     }
-  }
+  };
 
   const updateList = (o) => {
     const pusher = [];
@@ -154,7 +151,7 @@ function Sanmar() {
             order: t.order,
             tracking: t.tracking,
             method: t.method,
-          }
+          };
           pusher.push(push);
         }
       } else {
@@ -164,7 +161,7 @@ function Sanmar() {
             order: t.order,
             tracking: t.tracking,
             method: t.method,
-          }
+          };
           pusher.push(push);
         }
       }
@@ -174,7 +171,7 @@ function Sanmar() {
       type: "UPDATE_TRACKING",
       payload: pusher,
     });
-  }
+  };
 
   const addSent = (o) => {
     console.log(o);
@@ -187,22 +184,22 @@ function Sanmar() {
       }
     }
     if (found === true) {
-      swal('Manually marking this order as sent!');
+      swal("Manually marking this order as sent!");
       dispatch({
         type: "ADD_SENT",
         payload: {
           order: o,
           tracking: tracking,
-        }
+        },
       });
       updateList(o);
     } else {
-      swal('Something went wrong! Try again')
+      swal("Something went wrong! Try again");
     }
-  }
+  };
 
   async function refreshBC() {
-    swal('Getting BC Data!');
+    swal("Getting BC Data!");
     dispatch({
       type: "RESET_BC_CLOTHING",
     });
@@ -212,7 +209,7 @@ function Sanmar() {
   }
 
   async function getSanmar() {
-    swal('Getting Sanmar Data!');
+    swal("Getting Sanmar Data!");
     dispatch({
       type: "GET_SANMAR_PRICES",
     });
@@ -224,10 +221,7 @@ function Sanmar() {
     item.method,
   ]);
 
-  const emails = sanmarList.map((item) => [
-    item.ref,
-    item.tracking,
-  ]);
+  const emails = sanmarList.map((item) => [item.ref, item.tracking]);
 
   const sanmarPrices = SanmarItems.map((item) => [
     item.name,
@@ -237,20 +231,17 @@ function Sanmar() {
     item.price,
   ]);
 
-  const bcPrices = BcItems.map((item) => [
-    item.name,
-    item.sku,
-  ]);
+  const bcPrices = BcItems.map((item) => [item.name, item.sku]);
 
   switch (SanmarNotify) {
-    case '':
-      sanmarDisplay = <h4>...</h4>
+    case "":
+      sanmarDisplay = <h4>...</h4>;
       break;
-    case 'WAIT':
-      sanmarDisplay = <h4>...</h4>
+    case "WAIT":
+      sanmarDisplay = <h4>...</h4>;
       break;
-    case 'NO':
-      sanmarDisplay = <h4>Download Failed! File may not be available yet</h4>
+    case "NO":
+      sanmarDisplay = <h4>Download Failed! File may not be available yet</h4>;
       break;
     default:
       download();
@@ -277,7 +268,7 @@ function Sanmar() {
                 <DesktopDatePicker
                   label="Date"
                   value={date}
-                  minDate={new Date('2019-01-01')}
+                  minDate={new Date("2019-01-01")}
                   onChange={(newValue) => {
                     setDate(newValue);
                   }}
@@ -286,19 +277,33 @@ function Sanmar() {
               </Grid>
             </LocalizationProvider>
             <br />
-            <Button onClick={() => { connectFtp(date) }}>Download Recent Sanmar Orders</Button>
+            <Button
+              onClick={() => {
+                connectFtp(date);
+              }}>
+              Download Recent Sanmar Orders
+            </Button>
           </div>
           <br />
-          <div>
-            {sanmarDisplay}
-          </div>
+          <div>{sanmarDisplay}</div>
         </div>
         <br />
         <div className="row">
           <br />
-          <h4>Order #: </h4><input value={order} placeholder="3201122" onChange={(e) => { setOrder(e.target.value) }}></input>
+          <h4>Order #: </h4>
+          <input
+            value={order}
+            placeholder="3201122"
+            onChange={(e) => {
+              setOrder(e.target.value);
+            }}></input>
           <div>
-            <Button onClick={() => { sendEmail(order) }}>Send Email</Button>
+            <Button
+              onClick={() => {
+                sendEmail(order);
+              }}>
+              Send Email
+            </Button>
           </div>
         </div>
         <Button
@@ -306,11 +311,11 @@ function Sanmar() {
           variant="none"
           onClick={() => {
             window.open(
-              'https://docs.google.com/document/d/1pNqWk_UBeeMdLhqeGsU7Ghy1K052SWxpz05x2VEpARk/edit',
-              '_blank' // <- This is what makes it open in a new window.
+              "https://docs.google.com/document/d/1pNqWk_UBeeMdLhqeGsU7Ghy1K052SWxpz05x2VEpARk/edit",
+              "_blank" // <- This is what makes it open in a new window.
             );
-          }}
-        ><InfoIcon className="infoIcon" />
+          }}>
+          <InfoIcon className="infoIcon" />
         </Button>
       </section>
       <div className="tracking-data">
@@ -323,13 +328,13 @@ function Sanmar() {
               name: "Order #",
               options: {
                 filter: false,
-              }
+              },
             },
             {
               name: "Tracking #",
               options: {
                 filter: false,
-              }
+              },
             },
             { name: "Shipping Method" },
             {
@@ -345,9 +350,7 @@ function Sanmar() {
                       onClick={() => {
                         const o = tracking[dataIndex][0];
                         addSent(o);
-                      }
-                      }
-                    >
+                      }}>
                       Mark Sent
                     </Button>
                   );
@@ -368,13 +371,13 @@ function Sanmar() {
               name: "Order #",
               options: {
                 filter: false,
-              }
+              },
             },
             {
               name: "Tracking #",
               options: {
                 filter: false,
-              }
+              },
             },
           ]}
           options={SanmarOptions}
@@ -393,19 +396,48 @@ function Sanmar() {
               {/* <Button onClick={(e) => {refreshSanmar()}}>Refresh SanMar Prices</Button> */}
             </div>
             <div className="total-form">
-              <Button onClick={(e) => { refreshBC() }} className='sales-input'>Get BC Prices</Button>
+              <Button
+                onClick={(e) => {
+                  refreshBC();
+                }}
+                className="sales-input">
+                Get BC Prices
+              </Button>
             </div>
             <div className="total-form">
-              <Button onClick={(e) => { getSanmar() }} className='sales-input'>Get SanMar Prices</Button>
+              <Button
+                onClick={(e) => {
+                  getSanmar();
+                }}
+                className="sales-input">
+                Get SanMar Prices
+              </Button>
             </div>
             <div className="total-form">
-              <h4>ID Start: </h4><input value={start} placeholder="0" onChange={(e) => { setStart(e.target.value) }}></input>
+              <h4>ID Start: </h4>
+              <input
+                value={start}
+                placeholder="0"
+                onChange={(e) => {
+                  setStart(e.target.value);
+                }}></input>
             </div>
             <div className="total-form">
-              <Button onClick={(e) => { updatePrices() }} className='sales-input'><QueueIcon /> Update Prices</Button>
+              <Button
+                onClick={(e) => {
+                  updatePrices();
+                }}
+                className="sales-input">
+                <QueueIcon /> Update Prices
+              </Button>
             </div>
             <div className="total-form">
-              <a target="_blank" href="https://docs.google.com/document/d/1DUhwG-jtleKPVWdxK5kMGYlkdnE0BPGDA-PWtmvz8SA/edit" rel="noopener noreferrer"><strong>How to Use</strong></a>
+              <a
+                target="_blank"
+                href="https://docs.google.com/document/d/1DUhwG-jtleKPVWdxK5kMGYlkdnE0BPGDA-PWtmvz8SA/edit"
+                rel="noopener noreferrer">
+                <strong>How to Use</strong>
+              </a>
             </div>
           </div>
           <br></br>
@@ -421,17 +453,17 @@ function Sanmar() {
                     name: "Name",
                     options: {
                       filter: false,
-                    }
+                    },
                   },
                   {
                     name: "SKU",
                     options: {
                       filter: false,
-                    }
+                    },
                   },
                   { name: "Color" },
                   { name: "Size" },
-                  { name: "Price" }
+                  { name: "Price" },
                 ]}
                 options={SanmarOptions}
               />
@@ -446,14 +478,14 @@ function Sanmar() {
                     name: "Name",
                     options: {
                       filter: false,
-                    }
+                    },
                   },
                   {
                     name: "ID",
                     options: {
                       filter: false,
-                    }
-                  }
+                    },
+                  },
                 ]}
                 options={SanmarOptions}
               />
@@ -462,7 +494,7 @@ function Sanmar() {
         </div>
       </section>
     </>
-  )
+  );
 }
 
 export default Sanmar;

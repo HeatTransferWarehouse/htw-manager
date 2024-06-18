@@ -1,18 +1,42 @@
 import React, { useState, useEffect, useRef } from "react";
-import TableBody from "@material-ui/core/TableBody";
-import { TableCell, TableRow } from "@material-ui/core";
 import { BiDotsHorizontalRounded } from "react-icons/bi";
 import { FaChevronDown, FaChevronUp, FaCheck } from "react-icons/fa";
 import { useQueueActions } from "../Functions/queue-actions";
 import { OptionsList } from "./OptionsList";
+import { TableBody, TableCell, TableRow } from "../../../Table/Table";
+import { twMerge } from "tailwind-merge";
 
 export function TableContent({ props }) {
-  const { updateQueueItemPriority } = useQueueActions();
+  const { updateQueueItemPriority, getColor } = useQueueActions();
   const [activeItemId, setActiveItemId] = useState(null);
   const [activeItemPriorityId, setActiveItemPriorityId] = useState(null);
   const optionsRef = useRef(null);
   const priorityRef = useRef(null);
   const buttonClickedRef = useRef(false);
+  const [elWidth, setElWidth] = useState(0);
+  const [elTop, setElTop] = useState(0);
+  const [elRight, setElRight] = useState(0);
+  const [currentEl, setCurrentEl] = useState(null);
+
+  useEffect(() => {
+    const handleResize = () => {
+      if (currentEl) {
+        setElTop(Number(currentEl.getBoundingClientRect().top.toFixed(0)));
+        setElRight(Number(currentEl.getBoundingClientRect().right.toFixed(0)));
+        setElWidth(Number(currentEl.getBoundingClientRect().width.toFixed(0)));
+      }
+    };
+
+    window.addEventListener("resize", handleResize);
+    window.addEventListener("scroll", handleResize);
+
+    handleResize();
+
+    return () => {
+      window.removeEventListener("resize", handleResize);
+      window.removeEventListener("scroll", handleResize);
+    };
+  });
 
   useEffect(() => {
     const handleClickOutside = (event) => {
@@ -23,10 +47,18 @@ export function TableContent({ props }) {
 
       if (optionsRef.current && !optionsRef.current.contains(event.target)) {
         setActiveItemId(null);
+        setElWidth(0);
+        setElTop(0);
+        setElRight(0);
+        setCurrentEl(null);
       }
 
       if (priorityRef.current && !priorityRef.current.contains(event.target)) {
         setActiveItemPriorityId(null);
+        setElWidth(0);
+        setElTop(0);
+        setElRight(0);
+        setCurrentEl(null);
       }
     };
 
@@ -35,61 +67,6 @@ export function TableContent({ props }) {
       document.removeEventListener("click", handleClickOutside);
     };
   }, []);
-
-  const getColor = (item) => {
-    const { sku, description } = item;
-    const decoSku3 = sku.slice(0, 6);
-    const decoSku5 = sku.slice(0, 3);
-    const decoSku7 = sku.slice(0, 7);
-    const decoSku6 = sku.slice(0, 8);
-
-    if (
-      ["SD1", "SD2", "SD3", "SD4", "SD5", "SD6", "SD7", "SD8", "SD9"].includes(
-        decoSku5
-      ) ||
-      decoSku6 === "SETUPFEE" ||
-      description.includes("Rhinestone Bundle")
-    ) {
-      return "#F7B665";
-    } else if (sku.startsWith("STOCK-")) {
-      return "rgb(200 142 213)";
-    } else if (
-      ["CS1", "CS2", "CS3", "CS4", "CS5", "CS6", "CS7", "CS8", "CS9"].includes(
-        decoSku5
-      ) ||
-      decoSku6 === "CUSTOM-S" ||
-      description.includes("Pattern Vinyl Sheet and Mask Bundle")
-    ) {
-      return "#90CA6D";
-    } else if (
-      [
-        "SISER-1",
-        "SISER-2",
-        "SISER-3",
-        "SISER-4",
-        "SISER-5",
-        "SISER-6",
-        "SISER-7",
-        "SISER-8",
-        "SISER-9",
-      ].includes(decoSku7)
-    ) {
-      return "#F8F18A";
-    } else if (
-      ["CD1", "CD2", "CD3", "CD4", "CD5", "CD6", "CD7", "CD8", "CD9"].includes(
-        decoSku5
-      ) ||
-      decoSku6 === "CUSTOM-H" ||
-      sku.startsWith("PHTVSTOCK-")
-    ) {
-      return "#EEB7D2";
-    } else if (decoSku5 === "SDC") {
-      return "#F48267";
-    } else if (["SUBPAT"].includes(decoSku3) || sku.startsWith("SUBSTOCK-")) {
-      return "#7AD7F0";
-    }
-    return "white";
-  };
 
   const renderLoadingRow = (index) => (
     <TableRow className="loading-row" key={index}>
@@ -115,50 +92,120 @@ export function TableContent({ props }) {
   const renderOptionsButton = (itemId) => (
     <div className="options-container" ref={optionsRef}>
       <button
-        className={`queue-options ${activeItemId === itemId ? "active" : ""}`}
+        className={twMerge(
+          "w-8 h-8 flex items-center justify-center border-none rounded-md transition duration-200 hover:bg-secondary/10 group/options",
+          activeItemId === itemId && "bg-secondary/10"
+        )}
         onClick={(e) => {
           e.stopPropagation();
           e.preventDefault();
           buttonClickedRef.current = true;
+          setActiveItemPriorityId(null);
           setActiveItemId(activeItemId === itemId ? null : itemId);
+          props.setSingleCheckedId(itemId);
+          setCurrentEl(e.target);
+          setElWidth(Number(e.target.getBoundingClientRect().width.toFixed(0)));
+          setElTop(Number(e.target.getBoundingClientRect().top.toFixed(0)));
+          setElRight(Number(e.target.getBoundingClientRect().right.toFixed(0)));
         }}>
-        <BiDotsHorizontalRounded className="options-icon" />
+        <BiDotsHorizontalRounded
+          className={twMerge(
+            "group-hover/options:fill-secondary transition duration-200 w-6 h-6",
+            activeItemId === itemId ? "fill-secondary" : "fill-black"
+          )}
+        />
       </button>
       {activeItemId === itemId && (
-        <OptionsList props={{ view: props.view, id: itemId }} />
+        <div
+          style={{
+            top: `${elTop + 36}px`,
+            left: `${elRight - 115}px`,
+            width: `120px`,
+          }}
+          className="fixed bg-white shadow-default overflow-hidden rounded-md z-[99999]">
+          <OptionsList
+            props={{
+              view: props.view,
+              id: itemId,
+              setDeleteModalActive: props.setDeleteModalActive,
+            }}
+          />
+        </div>
       )}
     </div>
   );
 
   const renderPriorityButton = (item) => (
-    <div className="options-container priority" ref={priorityRef}>
+    <span className="w-full" ref={priorityRef}>
       <button
-        className={`priority-button ${
-          activeItemPriorityId === item.id ? "active" : ""
+        className={`border-none group/priority hover:bg-secondary/10 hover:text-secondary rounded-md transition px-2 duration-200 items-center flex justify-between w-full gap-1 py-2 ${
+          activeItemPriorityId === item.id
+            ? "text-secondary bg-secondary/10"
+            : ""
         }`}
-        onClick={() => {
+        onClick={(e) => {
+          setActiveItemId(null);
           setActiveItemPriorityId(
             activeItemPriorityId === item.id ? null : item.id
           );
+          setCurrentEl(e.target);
+          setElWidth(Number(e.target.getBoundingClientRect().width.toFixed(0)));
+          setElTop(Number(e.target.getBoundingClientRect().top.toFixed(0)));
+          setElRight(Number(e.target.getBoundingClientRect().right.toFixed(0)));
+
           buttonClickedRef.current = true;
         }}>
         {item.priority}
-        {activeItemPriorityId === item.id ? <FaChevronUp /> : <FaChevronDown />}
+        {activeItemPriorityId === item.id ? (
+          <FaChevronUp className="opacity-0 transition duration-200 group-hover/priority:opacity-100 fill-secondary" />
+        ) : (
+          <FaChevronDown className="opacity-0 transition duration-200 group-hover/priority:opacity-100 fill-secondary" />
+        )}
       </button>
       {activeItemPriorityId === item.id && (
-        <ul className="options-list">
-          <li onClick={(e) => updateQueueItemPriority(e, item.id, "low")}>
+        <ul
+          style={{
+            top: `${elTop + 48}px`,
+            left: `${elRight - elWidth}px`,
+            width: `120px`,
+          }}
+          className="fixed bg-white shadow-default rounded-md z-[99999]">
+          <li
+            className="cursor-pointer hover:bg-secondary/10 py-2 px-3 hover:text-secondary"
+            onClick={(e) => {
+              updateQueueItemPriority(e, item.id, "low");
+              setElWidth(0);
+              setElTop(0);
+              setElRight(0);
+              setCurrentEl(null);
+            }}>
             Low
           </li>
-          <li onClick={(e) => updateQueueItemPriority(e, item.id, "med")}>
+          <li
+            className="cursor-pointer hover:bg-secondary/10 py-2 px-3 hover:text-secondary"
+            onClick={(e) => {
+              updateQueueItemPriority(e, item.id, "med");
+              setElWidth(0);
+              setElTop(0);
+              setElRight(0);
+              setCurrentEl(null);
+            }}>
             Medium
           </li>
-          <li onClick={(e) => updateQueueItemPriority(e, item.id, "high")}>
+          <li
+            className="cursor-pointer hover:bg-secondary/10 py-2 px-3 hover:text-secondary"
+            onClick={(e) => {
+              updateQueueItemPriority(e, item.id, "high");
+              setElWidth(0);
+              setElTop(0);
+              setElRight(0);
+              setCurrentEl(null);
+            }}>
             High
           </li>
         </ul>
       )}
-    </div>
+    </span>
   );
 
   if (props.itemsLoading) {
@@ -170,7 +217,7 @@ export function TableContent({ props }) {
   }
 
   return (
-    <TableBody className="sff-queue-tb">
+    <TableBody>
       {props.items
         .slice(
           props.page * props.rowsPerPage,
@@ -179,89 +226,129 @@ export function TableContent({ props }) {
         .map((item, index) => {
           const color = getColor(item);
 
-          return (
-            <TableRow
-              className={`
-                ${item.priority}-priority
-                ${props.checkedIds.includes(item.id) ? "checked" : ""}
-              `}
-              key={index}>
-              {props.isMobile ? (
-                <>
-                  <TableCell>
-                    <ul className="mobile-options-list">
-                      <li>
-                        <span className="bold">Order #</span>:{" "}
-                        {item.order_number}
-                      </li>
-                      <li>
-                        <span className="bold">Product</span>:{" "}
-                        {item.description}
-                      </li>
-                      <li>
-                        <span className="bold">Sku</span>: {item.sku}
-                      </li>
-                      <li>
-                        <span className="bold">Qty</span>: {item.qty}
-                      </li>
-                      <li>
-                        <span className="bold">Priority</span>: {item.priority}
-                      </li>
-                      <li>
-                        <span className="bold">Created At</span>:{" "}
-                        {item.created_at.split("T")[0]}
-                      </li>
-                      <li>
-                        <span className="bold">
-                          Product Options {item.product_options}
-                        </span>
-                      </li>
-                    </ul>
-                  </TableCell>
-                  <TableCell>{renderOptionsButton(item.id)}</TableCell>
-                </>
-              ) : (
-                <>
-                  <TableCell className="checkbox-cell">
-                    <span className="checkbox-container">
-                      <input
-                        className="checkbox-input"
-                        id={`checkbox-${item.id}`}
-                        type="checkbox"
-                        checked={props.checkedIds.includes(item.id)}
-                        onChange={() => {
-                          props.checkedIds.includes(item.id)
-                            ? props.setCheckedIds((prev) =>
-                                prev.filter((id) => id !== item.id)
-                              )
-                            : props.setCheckedIds((prev) => [...prev, item.id]);
-                        }}
-                      />
-                      <label htmlFor={`checkbox-${item.id}`}>
-                        <FaCheck />
-                      </label>
-                    </span>
-                  </TableCell>
-                  <TableCell>{item.order_number}</TableCell>
-                  <TableCell>
-                    <span
-                      className="sku-cell"
-                      style={{ backgroundColor: color }}>
-                      {item.sku}
-                    </span>
-                  </TableCell>
-                  <TableCell>{item.description}</TableCell>
-                  <TableCell>{item.product_length}</TableCell>
-                  <TableCell>{item.qty}</TableCell>
-                  <TableCell>{renderPriorityButton(item)}</TableCell>
-                  <TableCell>
-                    {item.created_at.split(": ")[1].split(" T")[0]}
-                  </TableCell>
-                  <TableCell>{renderOptionsButton(item.id)}</TableCell>
-                </>
-              )}
-            </TableRow>
-          );
+          if (props.isMobile) {
+            return (
+              <TableRow isMobile={props.isMobile} key={index}>
+                <TableCell isMobile={index === 0 && props.isMobile}>
+                  <span className="checkbox-container">
+                    <input
+                      style={{
+                        margin: "0px",
+                      }}
+                      className="checkbox-input"
+                      id={`checkbox-${item.id}`}
+                      type="checkbox"
+                      checked={props.checkedIds.includes(item.id)}
+                      onChange={() => {
+                        if (props.checkedIds.includes(item.id)) {
+                          props.setCheckedIds((prevIds) =>
+                            prevIds.filter((id) => id !== item.id)
+                          );
+                        } else {
+                          props.setCheckedIds((prevIds) => [
+                            ...prevIds,
+                            item.id,
+                          ]);
+                        }
+                      }}
+                    />
+                    <label htmlFor={`checkbox-${item.id}`}>
+                      <FaCheck />
+                    </label>
+                  </span>
+                </TableCell>
+                <TableCell isMobile={index === 0 && props.isMobile}>
+                  <div className="flex flex-col px-2">
+                    <p className="py-2">{item.order_number}</p>
+                    <p className="py-2 font-medium">{item.description}</p>
+                    <p className="py-2">
+                      <span
+                        className="rounded-md !p-2"
+                        style={{
+                          backgroundColor: color,
+                        }}>
+                        {item.sku}
+                      </span>
+                    </p>
+                    {item.length && (
+                      <p className="py-2">
+                        <span className="font-medium">Length</span>:{" "}
+                        {item.length}
+                      </p>
+                    )}
+                    <p className="py-2 absolute top-2 right-4">x{item.qty}</p>
+                    <p className="flex items-center">
+                      <span className="font-medium">Priority</span>:{" "}
+                      {renderPriorityButton(item)}
+                    </p>
+                    <p className="py-2 absolute bottom-2 right-4">
+                      {item.created_at.split(": ")[1].split(" T")[0]}
+                    </p>
+                  </div>
+                </TableCell>
+                <TableCell
+                  isMobile={index === 0 && props.isMobile}
+                  className={"!p-0"}>
+                  {renderOptionsButton(item.id)}
+                </TableCell>
+              </TableRow>
+            );
+          } else {
+            return (
+              <TableRow key={index}>
+                <TableCell>
+                  <span className="checkbox-container">
+                    <input
+                      style={{
+                        margin: "0px",
+                      }}
+                      className="checkbox-input"
+                      id={`checkbox-${item.id}`}
+                      type="checkbox"
+                      checked={props.checkedIds.includes(item.id)}
+                      onChange={() => {
+                        if (props.checkedIds.includes(item.id)) {
+                          props.setCheckedIds((prevIds) =>
+                            prevIds.filter((id) => id !== item.id)
+                          );
+                        } else {
+                          props.setCheckedIds((prevIds) => [
+                            ...prevIds,
+                            item.id,
+                          ]);
+                        }
+                      }}
+                    />
+                    <label htmlFor={`checkbox-${item.id}`}>
+                      <FaCheck />
+                    </label>
+                  </span>
+                </TableCell>
+                <TableCell minWidth={"7rem"}>{item.order_number}</TableCell>
+                <TableCell className={"!p-2"} minWidth={"10rem"}>
+                  <span
+                    className="rounded-md !p-2"
+                    style={{
+                      backgroundColor: color,
+                    }}>
+                    {item.sku}
+                  </span>
+                </TableCell>
+                <TableCell minWidth={"15rem"}>{item.description}</TableCell>
+                <TableCell minWidth={"15rem"}>{item.length}</TableCell>
+                <TableCell>{item.qty}</TableCell>
+                <TableCell className={"!p-2"} minWidth={"5rem"}>
+                  {renderPriorityButton(item)}
+                </TableCell>
+                <TableCell minWidth={"8rem"}>
+                  {item.created_at.split(": ")[1].split(" T")[0]}
+                </TableCell>
+                <TableCell className={"!p-0"}>
+                  {renderOptionsButton(item.id)}
+                </TableCell>
+              </TableRow>
+            );
+          }
         })}
     </TableBody>
   );
