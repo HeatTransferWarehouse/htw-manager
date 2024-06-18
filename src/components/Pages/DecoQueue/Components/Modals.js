@@ -271,7 +271,7 @@ const MobileFilters = ({ props }) => {
       </div>
       {props.sort.sort_by !== sortBy || props.sort.order !== order ? (
         <button
-          className="absolute w-full py-4 z-[9999999] bg-gradient-to-r from-primary to-secondary text-white font-medium bottom-0 left-0 text-xl"
+          className="absolute w-full py-4 z-[9999999] bg-secondary text-white font-medium bottom-0 left-0 text-xl"
           onClick={(e) => {
             e.preventDefault();
             e.stopPropagation();
