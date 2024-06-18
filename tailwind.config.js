@@ -8,9 +8,8 @@ module.exports = {
         secondary: "#8261ee",
         dark: "#1d1d1d",
       },
-      backgroundImage: {
-        gradient:
-          "linear-gradient(90deg, #a759d1 0%, #8261ee 29%, #ff1362, 67%, #fc4242 80%, #a759d1 100%)",
+      backgroundColor: {
+        grad: "linear-gradient(90deg, #a759d1 0%, #8261ee 29%, #ff1362, 67%, #fc4242 80%, #a759d1 100%)",
       },
       gridTemplateColumns: {
         queue: "3rem 3fr 4fr 6fr 6fr 5rem 2fr 2fr 3rem",
