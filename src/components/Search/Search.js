@@ -54,7 +54,7 @@ const Search = ({ onSearch }) => {
           placeholder="Search"
           value={query}
           onChange={handleInputChange}
-          className="w-full m-0 p-2 shadow-default rounded-md focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-transparent hover:outline-none hover:ring-2 hover:ring-primary/50 hover:border-transparent"
+          className="w-full m-0 p-2 shadow-default border border-solid rounded-md focus:outline-none focus:ring-2 focus:border-secondary  hover:border-secondary"
           ref={inputRef}
         />
         <span className="absolute text-gray-400 right-2 h-5 w-fit flex items-center ">

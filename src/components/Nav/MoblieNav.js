@@ -32,8 +32,7 @@ export function MobileNav({ props }) {
                 to="/"
                 className={twMerge(
                   "p-4",
-                  props.home &&
-                    " bg-gradient-to-r from-secondary to-primary text-white"
+                  props.home && "bg-secondary text-white"
                 )}>
                 Home
               </NavLink>
@@ -46,8 +45,7 @@ export function MobileNav({ props }) {
                 to="/resources"
                 className={twMerge(
                   "p-4",
-                  props.resources &&
-                    " bg-gradient-to-r from-secondary to-primary text-white"
+                  props.resources && "bg-secondary text-white"
                 )}>
                 Resources
               </NavLink>
@@ -60,8 +58,7 @@ export function MobileNav({ props }) {
                 to="/supacolor"
                 className={twMerge(
                   "p-4",
-                  props.supacolor &&
-                    " bg-gradient-to-r from-secondary to-primary text-white"
+                  props.supacolor && "bg-secondary text-white"
                 )}>
                 Supacolor
               </NavLink>
@@ -74,8 +71,7 @@ export function MobileNav({ props }) {
                 to="/decoqueue"
                 className={twMerge(
                   "p-4",
-                  props.decoQueue &&
-                    " bg-gradient-to-r from-secondary to-primary text-white"
+                  props.decoQueue && "bg-secondary text-white"
                 )}>
                 DecoQueue
               </NavLink>
@@ -88,8 +84,7 @@ export function MobileNav({ props }) {
                 to="/sff-queue"
                 className={twMerge(
                   "p-4",
-                  props.sffQueue &&
-                    " bg-gradient-to-r from-secondary to-primary text-white"
+                  props.sffQueue && "bg-secondary text-white"
                 )}>
                 SFF Queue
               </NavLink>
@@ -103,8 +98,7 @@ export function MobileNav({ props }) {
                   to="/admin"
                   className={twMerge(
                     "p-4",
-                    props.admin &&
-                      " bg-gradient-to-r from-secondary to-primary text-white"
+                    props.admin && "bg-secondary text-white"
                   )}>
                   Admin
                 </NavLink>
