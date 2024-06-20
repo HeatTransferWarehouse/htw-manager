@@ -28,6 +28,7 @@ const captureRouter = require("./routes/index");
 const sffQueueRouter = require("./routes/sffQueueRouter");
 const supacolorRouter = require("./routes/supacolorOrderRouter");
 const queueRouter = require("./routes/queueRouter");
+const lookupRouter = require("./routes/orderLookUp");
 
 app.use(sessionMiddleware);
 app.use(passport.initialize());
@@ -44,6 +45,7 @@ app.use(
 app.use("/api/user", userRouter);
 app.use("/api/bp-api", captureRouter);
 app.use("/supacolor-api", supacolorRouter);
+app.use("/api/lookup", lookupRouter);
 
 // Queue Routers
 
