@@ -3,7 +3,7 @@ import axios from "axios";
 
 function* deleteItem(action) {
   try {
-    yield axios.delete(`/api/item/queue/deleteitem/${action.payload}`);
+    yield axios.delete(`/api/lookup/deleteitem/${action.payload}`);
     yield put({ type: "GET_QUEUE_ITEM_LIST" });
   } catch (error) {
     console.log("Error with adding a new item:", error);
@@ -12,7 +12,7 @@ function* deleteItem(action) {
 
 function* deleteProgress(action) {
   try {
-    yield axios.delete(`/api/item/queue/deleteprogress/${action.payload}`);
+    yield axios.delete(`/api/lookup/deleteprogress/${action.payload}`);
     yield put({ type: "GET_PROGRESS_LIST" });
   } catch (error) {
     console.log("Error with adding a new item:", error);
@@ -21,7 +21,7 @@ function* deleteProgress(action) {
 
 function* deleteHistory(action) {
   try {
-    yield axios.delete(`/api/item/queue/deletehistory/${action.payload}`);
+    yield axios.delete(`/api/lookup/deletehistory/${action.payload}`);
     yield put({ type: "GET_HISTORY_LIST" });
   } catch (error) {
     console.log("Error with adding a new item:", error);
@@ -30,7 +30,7 @@ function* deleteHistory(action) {
 
 function* deleteComplete(action) {
   try {
-    yield axios.delete(`/api/item/queue/deletecomplete/${action.payload}`);
+    yield axios.delete(`/api/lookup/deletecomplete/${action.payload}`);
     yield put({ type: "GET_COMPLETE_LIST" });
   } catch (error) {
     console.log("Error with adding a new item:", error);
@@ -91,7 +91,7 @@ function* goBackNew(action) {
 
 function* needToRun(action) {
   try {
-    yield axios.put("/api/item/queue/run", action.payload);
+    yield axios.put("/api/lookup/run", action.payload);
     yield put({ type: "GET_QUEUE_ITEM_LIST" });
   } catch (error) {
     console.log("Error with editing an item:", error);
@@ -100,7 +100,7 @@ function* needToRun(action) {
 
 function* getitemlist(action) {
   try {
-    const response = yield axios.get(`/api/item/queue/itemlist`);
+    const response = yield axios.get(`/api/lookup/itemlist`);
     yield put({
       type: "SET_ITEM_QUEUE",
       payload: response.data,
@@ -124,7 +124,7 @@ function* checkHistory(action) {
 
 function* getitemlistcount(action) {
   try {
-    const response = yield axios.get(`/api/item/queue/itemlistcount`);
+    const response = yield axios.get(`/api/lookup/itemlistcount`);
     yield put({
       type: "SET_ITEM_COUNT",
       payload: response.data,
@@ -136,7 +136,7 @@ function* getitemlistcount(action) {
 
 function* getprogresslist(action) {
   try {
-    const response = yield axios.get(`/api/item/queue/progresslist`);
+    const response = yield axios.get(`/api/lookup/progresslist`);
     yield put({
       type: "SET_PROGRESS",
       payload: response.data,
@@ -148,7 +148,7 @@ function* getprogresslist(action) {
 
 function* getprogresslistcount(action) {
   try {
-    const response = yield axios.get(`/api/item/queue/progresslistcount`);
+    const response = yield axios.get(`/api/lookup/progresslistcount`);
     yield put({
       type: "SET_PROGRESS_COUNT",
       payload: response.data,
@@ -160,7 +160,7 @@ function* getprogresslistcount(action) {
 
 function* getcompletelist(action) {
   try {
-    const response = yield axios.get(`/api/item/queue/completelist`);
+    const response = yield axios.get(`/api/lookup/completelist`);
     yield put({
       type: "SET_COMPLETE_QUEUE",
       payload: response.data,
@@ -172,7 +172,7 @@ function* getcompletelist(action) {
 
 function* getcompletelistcount(action) {
   try {
-    const response = yield axios.get(`/api/item/queue/completelistcount`);
+    const response = yield axios.get(`/api/lookup/completelistcount`);
     yield put({
       type: "SET_COMPLETE_COUNT",
       payload: response.data,
@@ -185,7 +185,7 @@ function* getcompletelistcount(action) {
 function* orderDetails(action) {
   try {
     const response = yield axios.post(
-      "/api/item/queue/orderdetails",
+      "/api/lookup/orderdetails",
       action.payload
     );
     yield put({
@@ -200,7 +200,7 @@ function* orderDetails(action) {
 function* orderLookup(action) {
   try {
     const response = yield axios.post(
-      "/api/item/queue/orderlookup",
+      "/api/lookup/orderlookup",
       action.payload
     );
     yield put({
@@ -215,7 +215,7 @@ function* orderLookup(action) {
 function* shippingLookup(action) {
   try {
     const response = yield axios.post(
-      "/api/item/queue/shippinglookup",
+      "/api/lookup/shippinglookup",
       action.payload
     );
     yield put({
@@ -230,7 +230,7 @@ function* shippingLookup(action) {
 function* productLookup(action) {
   try {
     const response = yield axios.post(
-      "/api/item/queue/productlookup",
+      "/api/lookup/productlookup",
       action.payload
     );
     yield put({
