@@ -11,6 +11,7 @@ function Nav() {
   const [admin, setAdmin] = useState(false);
   const [supacolor, setSupacolor] = useState(false);
   const [sffQueue, setSffQueue] = useState(false);
+  const [clothingQueue, setClothingQueue] = useState(false);
   const dispatch = useDispatch();
   const user = useSelector((store) => store.user.userReducer);
   const [pagePath, setPagePath] = useState(window.location.hash.split("#")[1]);
@@ -54,6 +55,10 @@ function Nav() {
         disableAll();
         setSffQueue(true);
         break;
+      case "/queue/clothing":
+        disableAll();
+        setClothingQueue(true);
+        break;
       default:
         break;
     }
@@ -67,6 +72,7 @@ function Nav() {
     setAdmin(false);
     setSupacolor(false);
     setSffQueue(false);
+    setClothingQueue(false);
   };
 
   useEffect(() => {
@@ -140,6 +146,17 @@ function Nav() {
                   sffQueue ? "text-secondary bg-secondary/10" : "text-dark"
                 } p-2 hover:bg-secondary/10 hover:text-secondary rounded-md`}>
                 SFF Queue
+              </NavLink>
+              <NavLink
+                to="/queue/clothing"
+                onClick={() => {
+                  disableAll();
+                  setClothingQueue(true);
+                }}
+                className={`${
+                  clothingQueue ? "text-secondary bg-secondary/10" : "text-dark"
+                } p-2 hover:bg-secondary/10 hover:text-secondary rounded-md`}>
+                Clothing Queue
               </NavLink>
               {user.access_level === "5" && (
                 <NavLink

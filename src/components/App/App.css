@@ -8,11 +8,40 @@ body {
   min-height: 100svh;
 }
 
+/* Otherwise, use `::-webkit-scrollbar-*` pseudo-elements */
+
+.main-container {
+  display: flex;
+  flex-direction: column;
+  height: calc(100vh - 97.2px);
+  overflow-y: scroll;
+  position: relative;
+
+  @media (max-width: 1024px) {
+    height: calc(100vh - 84.16px);
+  }
+}
+
 #react-root {
   height: 100%;
-  min-height: 100vh;
-  position: relative;
+  max-height: 100vh;
+  overflow: hidden;
   background-color: rgb(229 231 235);
+}
+
+.animate-in {
+  animation: animateIn 0.3s ease 0.15s both;
+}
+
+@keyframes animateIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 .alert {

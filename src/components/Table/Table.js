@@ -6,7 +6,7 @@ const Table = ({ className, children }) => {
     <div
       className={twMerge(
         className,
-        "w-[calc(100%-2rem)] max-w-screen-2xl mx-auto bg-white my-8 rounded-md shadow-default"
+        "w-[calc(100%-2rem)] animate-in opacity-0 max-w-screen-2xl mx-auto bg-white my-8 rounded-md shadow-default"
       )}>
       {children}
     </div>
@@ -31,32 +31,32 @@ const TableContainer = ({ className, children }) => {
       window.removeEventListener("resize", handleResize);
     };
   });
+  return <div className={twMerge(className, "w-full")}>{children}</div>;
+};
+
+const TableHeader = ({ className, children, tableFor }) => {
   return (
     <div
-      style={{
-        height: height > 0 ? height : "",
-      }}
       className={twMerge(
         className,
-        "w-full overflow-y-auto h-fit max-md:overflow-x-scroll max-md:h-[400px]"
+        "grid",
+        tableFor === "clothing" ? "grid-cols-clothing" : "grid-cols-queue"
       )}>
       {children}
     </div>
   );
 };
 
-const TableHeader = ({ className, children }) => {
-  return (
-    <div className={twMerge(className, "grid grid-cols-queue")}>{children}</div>
-  );
-};
-
-const TableRow = ({ className, children, isMobile }) => {
+const TableRow = ({ className, children, isMobile, tableFor }) => {
   return (
     <div
       className={twMerge(
         className,
-        isMobile ? "grid-cols-queueMobile" : "grid-cols-queue",
+        isMobile
+          ? "grid-cols-queueMobile"
+          : tableFor === "clothing"
+          ? "grid-cols-clothing"
+          : "grid-cols-queue",
         "w-full grid relative"
       )}>
       {children}

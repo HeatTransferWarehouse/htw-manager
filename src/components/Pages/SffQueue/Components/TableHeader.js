@@ -67,8 +67,16 @@ export function TableHeaderContainer({ props }) {
       className={twMerge(
         "flex justify-between items-center py-2 border-t border-b border-solid border-gray-200"
       )}>
-      <div className="flex items-start md:items-center max-md:flex-col grow">
-        <div className="flex items-center gap-2 pl-2">
+      <div
+        style={{
+          width: props.isMobile ? "100%" : "fit-content",
+        }}
+        className="flex items-start md:items-center max-md:flex-col overflow-hidden">
+        <div
+          className="flex items-center justify-between pl-2 pr-4"
+          style={{
+            width: props.isMobile ? "100%" : "fit-content",
+          }}>
           <span className="checkbox-container">
             <input
               style={{

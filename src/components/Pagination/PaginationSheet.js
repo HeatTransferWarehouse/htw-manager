@@ -4,13 +4,9 @@ import { twMerge } from "tailwind-merge";
 export function PaginationSheet({ props }) {
   return (
     <div
-      style={{
-        top: `${props.buttonTop}px`,
-        left: `${props.buttonRight}px`,
-        width: `${props.buttonWidth}px`,
-      }}
       className={twMerge(
-        "fixed shadow-default bg-white z-[999999] rounded-md overflow-hidden"
+        "absolute left-6 w-[120px] shadow-default bg-white z-[999999] rounded-md overflow-hidden",
+        props.position === "bottom" ? "bottom-12" : "top-12"
       )}>
       <ul className="w-full">
         <li

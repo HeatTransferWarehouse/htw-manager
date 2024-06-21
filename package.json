@@ -37,6 +37,7 @@
     "basic-ftp": "^4.6.6",
     "bcryptjs": "^2.4.3",
     "bootstrap": "^4.5.0",
+    "color-name-list": "^10.23.0",
     "cookie-session": "^2.0.0",
     "cors": "^2.8.5",
     "csv-string": "^4.0.1",
@@ -44,6 +45,7 @@
     "express": "^4.18.1",
     "fs": "0.0.1-security",
     "ftp": "^0.3.10",
+    "get-image-colors": "^4.0.1",
     "jsonwebtoken": "^8.5.1",
     "lupus": "^0.0.1",
     "luxon": "^2.3.0",
@@ -84,7 +86,7 @@
   },
   "scripts": {
     "start": "node server/server.js",
-    "client": "react-scripts start",
+    "client": "concurrently \"react-scripts start\" \"npx tailwindcss -i ./src/input.css -o ./src/output.css --watch\"",
     "server": "nodemon --watch server server/server.js",
     "build": "react-scripts build",
     "test": "jest",
@@ -95,6 +97,7 @@
     "registry": "https://npm.pkg.github.com"
   },
   "devDependencies": {
+    "concurrently": "^8.2.2",
     "nodemon": "^1.19.4",
     "sass": "^1.77.4",
     "tailwindcss": "^3.4.4"

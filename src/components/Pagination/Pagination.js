@@ -86,7 +86,7 @@ export function Pagination({ props }) {
           ? "border-t border-solid border-gray-200"
           : ""
       )}>
-      <div className="flex items-center gap-6">
+      <div className="flex items-center relative gap-6">
         <div className="flex items-center gap-2">
           {rowsPerPageOpen && (
             <PaginationSheet
