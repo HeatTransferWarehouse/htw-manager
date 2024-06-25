@@ -15,6 +15,7 @@ import {
   TableHeader,
 } from "../../../Table/Table";
 import { TableHeaderContainer } from "./TableHeader";
+import { IoMdInformationCircle } from "react-icons/io";
 
 export function TableComponent({ props }) {
   const { getQueueItems } = useQueueActions();
@@ -71,12 +72,56 @@ export function TableComponent({ props }) {
       : items.completedItems;
 
   // Filter items based on search query
-  const filteredItems = currentViewItems.filter(
-    (item) =>
-      item.order_number.toLowerCase().includes(searchQuery) ||
-      item.sku.toLowerCase().includes(searchQuery) ||
-      item.description.toLowerCase().includes(searchQuery)
-  );
+  const filteredItems = currentViewItems.filter((item) => {
+    let searchMatch = false;
+
+    if (searchQuery.includes(":")) {
+      // Advanced search
+      const queryParts = searchQuery.split("&").map((part) => part.split(":"));
+
+      const searchMap = {};
+      queryParts.forEach(([key, value]) => {
+        if (value) {
+          if (!searchMap[key]) {
+            searchMap[key] = [];
+          }
+          searchMap[key].push(value.toLowerCase());
+        }
+      });
+
+      searchMatch = Object.keys(searchMap).every((key) => {
+        if (key === "sku") {
+          return searchMap[key].includes(item.sku.toLowerCase());
+        } else if (key === "id") {
+          return searchMap[key].some((value) =>
+            item.order_number.toString().includes(value)
+          );
+        } else if (key === "name") {
+          return searchMap[key].some((value) =>
+            item.description.toLowerCase().includes(value)
+          );
+        } else if (key === "date") {
+          return searchMap[key].some((value) =>
+            item.created_at.toLowerCase().includes(value)
+          );
+        } else if (key === "qty") {
+          return searchMap[key].some((value) =>
+            item.qty.toString().toLowerCase().includes(value)
+          );
+        }
+        return false;
+      });
+    } else {
+      // Basic search
+      searchMatch =
+        item.order_number.toString().includes(searchQuery) ||
+        item.sku.toLowerCase().includes(searchQuery) ||
+        item.description.toLowerCase().includes(searchQuery) ||
+        item.created_at.toLowerCase().includes(searchQuery);
+    }
+
+    return searchMatch;
+  });
 
   return (
     <Table>
@@ -92,7 +137,15 @@ export function TableComponent({ props }) {
           setCheckedIds: props.setCheckedIds,
         }}
       />
-      <Search onSearch={handleSearch} />
+      <div className="flex px-4 mt-6 relative items-start md:items-center flex-col md:flex-row justify-start gap-4 mb-4">
+        <span
+          className="z-50 flex gap-2 items-center absolute hover:text-secondary cursor-pointer group/searchInfo left-4 -top-8"
+          onClick={props.setShowAdvancedSearchModal}>
+          <IoMdInformationCircle className="w-6 h-6 hover/group-searchInfo:fill-secondary" />
+          <p>Learn about Advanced Searching</p>
+        </span>
+        <Search onSearch={handleSearch} className={"!m-0 !p-0"} />
+      </div>
       <TableHeaderContainer
         props={{
           checkedIds: props.checkedIds,

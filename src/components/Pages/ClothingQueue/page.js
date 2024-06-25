@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { TableComponent } from "./components/table";
 import { useLocation } from "react-router-dom/cjs/react-router-dom.min";
+import AdvancedSearchModal from "./components/advanced-search-modal";
 
 export default function ClothingQueue() {
   const location = useLocation();
@@ -18,8 +19,10 @@ export default function ClothingQueue() {
   const [orderedItems, setOrderedItems] = useState([]);
 
   const [isMobile, setIsMobile] = useState(false);
+  const [showAdvancedSearchModal, setShowAdvancedSearchModal] = useState(false);
   const [itemsLoading, setItemsLoading] = useState(true);
   const [checkedIds, setCheckedIds] = useState([]);
+  const [singleCheckedId, setSingleCheckedId] = useState(null);
   //   const [deleteModalActive, setDeleteModalActive] = useState(false);
   //   const [singleCheckedId, setSingleCheckedId] = useState(null);
 
@@ -62,7 +65,6 @@ export default function ClothingQueue() {
     !loading && setItemsLoading(false);
   }, [items, loading]);
 
-  console.log(items);
   return (
     <>
       <TableComponent
@@ -77,9 +79,15 @@ export default function ClothingQueue() {
           setCheckedIds,
           view,
           sort,
+          setSingleCheckedId,
+          singleCheckedId,
+          setShowAdvancedSearchModal,
           //   setDeleteModalActive,
           //   setSingleCheckedId,
         }}
+      />
+      <AdvancedSearchModal
+        props={{ setShowAdvancedSearchModal, open: showAdvancedSearchModal }}
       />
     </>
   );

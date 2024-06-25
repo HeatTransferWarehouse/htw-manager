@@ -6,6 +6,7 @@ body {
   margin: 0px;
   height: 100%;
   min-height: 100svh;
+  overflow: hidden;
 }
 
 /* Otherwise, use `::-webkit-scrollbar-*` pseudo-elements */
@@ -13,13 +14,25 @@ body {
 .main-container {
   display: flex;
   flex-direction: column;
-  height: calc(100vh - 97.2px);
+  height: calc((var(--vh, 1vh) * 100) - 97px);
   overflow-y: scroll;
   position: relative;
+  scrollbar-color: rgb(155, 155, 155) transparent;
 
   @media (max-width: 1024px) {
-    height: calc(100vh - 84.16px);
+    height: calc((var(--vh, 1vh) * 100) - 84.16px);
   }
+}
+
+.sr-only {
+  border: 0;
+  clip: rect(0, 0, 0, 0);
+  height: 1px;
+  margin: -1px;
+  overflow: hidden;
+  padding: 0;
+  position: absolute;
+  width: 1px;
 }
 
 #react-root {

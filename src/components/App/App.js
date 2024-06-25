@@ -9,7 +9,7 @@ import Resources from "../Pages/Resources";
 import ProtectedRoute from "../ProtectedRoute/ProtectedRoute";
 import AdminRoute from "../ProtectedRoute/AdminRoute";
 import WallyB from "../Pages/WallyB";
-import Admin from "../Pages/Admin";
+import Admin from "../Pages/Admin/Admin";
 import Login from "../LoginPage/LoginPage";
 import Supacolor from "../Pages/Supacolor";
 import DecoQueue from "../Pages/DecoQueue/DecoQueue";
@@ -37,6 +37,17 @@ function App() {
   useEffect(() => {
     // Initially fetch the user
     dispatch({ type: "FETCH_USER" });
+
+    // Function to set the --vh custom property
+    const setVhProperty = () => {
+      const vh = window.innerHeight * 0.01;
+      document.documentElement.style.setProperty("--vh", `${vh}px`);
+    };
+
+    // Initial calculation
+    setVhProperty();
+
+    window.addEventListener("resize", setVhProperty);
 
     // Set up the initial timeout
 

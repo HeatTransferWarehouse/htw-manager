@@ -2,7 +2,7 @@ import React from "react";
 import { useQueueActions } from "../functions/actions";
 
 export function OptionsList({ props }) {
-  const { updateQueueOrderedStatus } = useQueueActions();
+  const { updateQueueOrderedStatus, deleteQueueItem } = useQueueActions();
   return (
     <ul>
       {props.view === "new" ? (
@@ -14,7 +14,7 @@ export function OptionsList({ props }) {
           </li>
           <li
             className="cursor-pointer whitespace-nowrap hover:bg-red-600/10 py-2 px-3 hover:text-red-600"
-            onClick={() => props.setDeleteModalActive(true)}>
+            onClick={() => deleteQueueItem(props.id)}>
             Delete
           </li>
         </>
@@ -23,11 +23,11 @@ export function OptionsList({ props }) {
           <li
             className="cursor-pointer whitespace-nowrap hover:bg-secondary/10 py-2 px-3 hover:text-secondary"
             onClick={() => updateQueueOrderedStatus(props.id, false)}>
-            Un-Marl Ordered
+            Un-Mark Ordered
           </li>
           <li
             className="cursor-pointer whitespace-nowrap hover:bg-red-600/10 py-2 px-3 hover:text-red-600"
-            onClick={() => props.setDeleteModalActive(true)}>
+            onClick={() => deleteQueueItem(props.id)}>
             Delete
           </li>
         </>

@@ -209,6 +209,14 @@ export function TableContent({ props }) {
     );
   }
 
+  if (props.items.length === 0) {
+    return (
+      <div className="w-full flex items-center py-8 justify-center">
+        <p className="text-2xl">No Items to show</p>
+      </div>
+    );
+  }
+
   return (
     <TableBody>
       {props.items

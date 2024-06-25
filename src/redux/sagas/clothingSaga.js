@@ -1,4 +1,4 @@
-import { put, takeLatest } from "redux-saga/effects";
+import { put, takeLatest, call } from "redux-saga/effects";
 import axios from "axios";
 
 function* getClothingQueueItems(action) {
@@ -26,20 +26,21 @@ function* getClothingQueueItems(action) {
 }
 
 function* updateClothingOrderedStatus(action) {
-  const ids = Array.isArray(action.payload) ? action.payload : [action.payload];
+  const { idArray, boolean } = action.payload;
 
   try {
     yield put({ type: "START_CLOTHING_QUEUE_LOADING" });
 
-    const promises = ids.map((id) => {
-      return axios.put(`/api/clothing-queue/item/update/ordered/${id}`);
-    });
-
-    // Resolve all promises
-    yield Promise.all(promises);
+    yield call(() =>
+      axios.put(`/api/clothing-queue/items/update/ordered`, {
+        idArray,
+        bool: boolean,
+      })
+    );
 
     yield put({ type: "GET_CLOTHING_QUEUE_ITEMS" });
   } catch (error) {
+    console.error("Error updating Ordered status", error);
     yield put({ type: "STOP_CLOTHING_QUEUE_LOADING" });
     yield put({
       type: "SET_CLOTHING_QUEUE_ERROR",

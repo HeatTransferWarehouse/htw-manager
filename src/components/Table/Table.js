@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React from "react";
 import { twMerge } from "tailwind-merge";
 
 const Table = ({ className, children }) => {
@@ -14,23 +14,6 @@ const Table = ({ className, children }) => {
 };
 
 const TableContainer = ({ className, children }) => {
-  const [height, setHeight] = useState(0);
-  useEffect(() => {
-    const handleResize = () => {
-      if (window.innerWidth < 768) {
-        setHeight(528);
-      } else {
-        setHeight(0);
-      }
-    };
-    handleResize();
-
-    window.addEventListener("resize", handleResize);
-
-    return () => {
-      window.removeEventListener("resize", handleResize);
-    };
-  });
   return <div className={twMerge(className, "w-full")}>{children}</div>;
 };
 

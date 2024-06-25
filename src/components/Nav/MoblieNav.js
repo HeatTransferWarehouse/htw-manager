@@ -6,17 +6,32 @@ import { useDispatch } from "react-redux";
 
 export function MobileNav({ props }) {
   const dispatch = useDispatch();
+
+  const bgRef = React.useRef(null);
+
+  function handleOutsideClick(e) {
+    if (bgRef.current === e.target) {
+      props.setIsOpen(false);
+    }
+  }
+
   return (
     <>
       <div
-        className={`fixed top-0 left-0 transition-opacity duration-200 ${
-          props.isOpen ? "opacity-100" : "opacity-0 pointer-events-none"
+        ref={bgRef}
+        onClick={handleOutsideClick}
+        className={`fixed top-0 left-0 transition ${
+          props.isOpen
+            ? "opacity-100 duration-100"
+            : "opacity-0 duration-500 pointer-events-none"
         } bg-black/50 h-screen z-[51] w-full`}>
         <nav
           className={`fixed top-0 left-0 transition-transform duration-200 ease-in-out shadow-2xl overflow-auto bg-white h-screen z-[999999] w-full max-w-[300px] ${
             props.isOpen ? "translate-x-0" : "-translate-x-full"
           }`}>
           <button
+            id="close-nav"
+            aria-label="Close Nav"
             className="absolute top-0 right-0 p-4"
             onClick={props.toggleMenu}>
             <FaXmark className="w-6 h-6" />
@@ -87,6 +102,19 @@ export function MobileNav({ props }) {
                   props.sffQueue && "bg-secondary text-white"
                 )}>
                 SFF Queue
+              </NavLink>
+              <NavLink
+                onClick={() => {
+                  props.setIsOpen(false);
+                  props.disableAll();
+                  props.setClothingQueue(true);
+                }}
+                to="/queue/clothing"
+                className={twMerge(
+                  "p-4",
+                  props.clothingQueue && "bg-secondary text-white"
+                )}>
+                Clothing Queue
               </NavLink>
               {props.user.access_level === "5" && (
                 <NavLink

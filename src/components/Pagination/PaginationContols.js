@@ -6,6 +6,7 @@ export function PaginationControls({ props }) {
   return (
     <div className="flex items-center gap-1">
       <button
+        aria-label="Previous Page"
         className={twMerge(
           "p-3 rounded-full transition duration-200 ",
           props.page === 0
@@ -28,6 +29,7 @@ export function PaginationControls({ props }) {
         />
       </button>
       <button
+        aria-label="Next Page"
         className={twMerge(
           "p-3 rounded-full transition duration-200 ",
           !props.nextIsDisabled

@@ -15,6 +15,7 @@ import { Nav } from "./nav";
 import { Header } from "./header";
 import { TableContent } from "./table-body";
 import { useQueueActions } from "../functions/actions";
+import { IoMdInformationCircle } from "react-icons/io";
 
 export function TableComponent({ props }) {
   const { getQueueItems } = useQueueActions();
@@ -25,6 +26,7 @@ export function TableComponent({ props }) {
   const [rowsPerPage, setRowsPerPage] = useState(10);
   const [page, setPage] = useState(0);
   const [searchQuery, setSearchQuery] = useState("");
+  const [date, setDate] = useState(new Date().toISOString().split("T")[0]);
 
   useEffect(() => {
     setItems({
@@ -62,16 +64,75 @@ export function TableComponent({ props }) {
   const currentViewItems =
     props.view === "new" ? items.newItems : items.orderedItems;
 
-  // Filter items based on search query
-  const filteredItems = currentViewItems.filter(
-    (item) =>
-      item.order_id.toString().includes(searchQuery) ||
-      item.sku.toLowerCase().includes(searchQuery) ||
-      item.name.toLowerCase().includes(searchQuery) ||
-      item.date.toLowerCase().includes(searchQuery) ||
-      item.color.toLowerCase().includes(searchQuery) ||
-      item.size.toLowerCase().includes(searchQuery)
-  );
+  // Normalize date format for comparison
+  const normalizedDate = (date) => {
+    return new Date(date).toISOString().split("T")[0];
+  };
+
+  // Filter items based on search query and date
+
+  const filteredItems = currentViewItems.filter((item) => {
+    const itemDate = normalizedDate(item.date.split(" or")[0]);
+
+    let searchMatch = false;
+
+    if (searchQuery.includes(":")) {
+      // Advanced search
+      const queryParts = searchQuery.split("&").map((part) => part.split(":"));
+
+      const searchMap = {};
+      queryParts.forEach(([key, value]) => {
+        if (value) {
+          if (!searchMap[key]) {
+            searchMap[key] = [];
+          }
+          searchMap[key].push(value.toLowerCase());
+        }
+      });
+
+      searchMatch = Object.keys(searchMap).every((key) => {
+        if (key === "sku") {
+          return searchMap[key].includes(item.sku.toLowerCase());
+        } else if (key === "size") {
+          return searchMap[key].includes(item.size.toLowerCase());
+        } else if (key === "id") {
+          return searchMap[key].some((value) =>
+            item.order_id.toString().includes(value)
+          );
+        } else if (key === "name") {
+          return searchMap[key].some((value) =>
+            item.name.toLowerCase().includes(value)
+          );
+        } else if (key === "color") {
+          return searchMap[key].some((value) =>
+            item.color.toLowerCase().includes(value)
+          );
+        } else if (key === "date") {
+          return searchMap[key].some((value) =>
+            item.date.toLowerCase().includes(value)
+          );
+        } else if (key === "qty") {
+          return searchMap[key].some(
+            (value) => item.qty === parseInt(value, 10)
+          );
+        }
+        return false;
+      });
+    } else {
+      // Basic search
+      searchMatch =
+        item.order_id.toString().includes(searchQuery) ||
+        item.sku.toLowerCase().includes(searchQuery) ||
+        item.name.toLowerCase().includes(searchQuery) ||
+        item.color.toLowerCase().includes(searchQuery) ||
+        item.size.toLowerCase().includes(searchQuery) ||
+        item.date.toLowerCase().includes(searchQuery);
+    }
+
+    const dateMatch = itemDate === date;
+
+    return searchMatch && dateMatch;
+  });
 
   return (
     <Table>
@@ -86,7 +147,28 @@ export function TableComponent({ props }) {
           setCheckedIds: props.setCheckedIds,
         }}
       />
-      <Search onSearch={handleSearch} />
+      <div className="flex px-4 mt-6 relative items-start md:items-center flex-col md:flex-row justify-start gap-4 mb-4">
+        <span
+          className="z-50 flex gap-2 items-center absolute hover:text-secondary cursor-pointer group/searchInfo left-4 -top-8"
+          onClick={props.setShowAdvancedSearchModal}>
+          <IoMdInformationCircle className="w-6 h-6 hover/group-searchInfo:fill-secondary" />
+          <p>Learn about Advanced Searching</p>
+        </span>
+        <Search onSearch={handleSearch} className={"!m-0 !p-0"} />
+        <label className="sr-only" htmlFor="date">
+          Date
+        </label>
+        <input
+          className="p-2 m-0 shadow-default rounded-md cursor-pointer"
+          type="date"
+          id="date"
+          name="date"
+          onChange={(e) => {
+            setDate(e.target.value);
+          }}
+          value={date.split(" or")[0]}
+        />
+      </div>
       <Header
         props={{
           checkedIds: props.checkedIds,
@@ -121,11 +203,12 @@ export function TableComponent({ props }) {
             <TableHeadCell minWidth={"7rem"}>
               {renderSortButton("size", "Size")}
             </TableHeadCell>
-            <TableHeadCell>{renderSortButton("quantity", "Qty")}</TableHeadCell>
+            <TableHeadCell>{renderSortButton("qty", "Qty")}</TableHeadCell>
             <TableHeadCell minWidth={"8rem"}>
-              {renderSortButton("date", "Created At")}
+              {renderSortButton("date", "Order For")}
             </TableHeadCell>
             <TableHeadCell />
+            <span className="hidden" />
           </TableHeader>
         )}
         <TableContent
@@ -140,6 +223,7 @@ export function TableComponent({ props }) {
             setDeleteModalActive: props.setDeleteModalActive,
             setSingleCheckedId: props.setSingleCheckedId,
             view: props.view,
+            date,
           }}
         />
       </TableContainer>

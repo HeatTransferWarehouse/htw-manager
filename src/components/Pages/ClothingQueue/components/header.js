@@ -8,7 +8,7 @@ import { useQueueActions } from "../functions/actions";
 
 export function Header({ props }) {
   const [allSelected, setAllSelected] = useState(false);
-  const { updateQueueOrderedStatus } = useQueueActions();
+  const { updateQueueOrderedStatus, deleteQueueItem } = useQueueActions();
 
   const handleSelectAll = () => {
     let pageItems = [];
@@ -108,7 +108,7 @@ export function Header({ props }) {
                   onClick={(e) => {
                     e.preventDefault();
                     e.stopPropagation();
-                    updateQueueOrderedStatus(e, props.checkedIds);
+                    updateQueueOrderedStatus(props.checkedIds, true);
                     setAllSelected(false);
                     props.setCheckedIds([]);
                   }}>
@@ -120,32 +120,9 @@ export function Header({ props }) {
                   onClick={(e) => {
                     e.stopPropagation();
                     e.preventDefault();
-                    props.setDeleteModalActive(true);
-                  }}>
-                  Delete
-                  <CgTrash className="w-5 h-5 fill-red-600" />
-                </button>
-              </div>
-            ) : props.view === "progress" ? (
-              <div className="flex items-center px-4 pt-2 max-md:pb-2 justify-start gap-2 max-w-full md:w-fit overflow-x-auto">
-                <button
-                  className="w-fit min-w-fit flex items-center justify-center gap-2 snap-start whitespace-nowrap border border-solid text-secondary hover:bg-secondary/10 border-secondary rounded-md p-2"
-                  onClick={(e) => {
-                    e.preventDefault();
-                    e.stopPropagation();
-                    updateQueueOrderedStatus(props.checkedIds);
+                    deleteQueueItem(props.checkedIds);
                     setAllSelected(false);
                     props.setCheckedIds([]);
-                  }}>
-                  Mark Ordered
-                  <MdOutlineChecklistRtl className="fill-secondary w-6 h-6" />
-                </button>
-                <button
-                  className="w-fit min-w-fit flex items-center justify-center gap-2 snap-start whitespace-nowrap border border-solid text-red-600 hover:bg-red-600/10 border-red-600 rounded-md p-2"
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    e.preventDefault();
-                    props.setDeleteModalActive(true);
                   }}>
                   Delete
                   <CgTrash className="w-5 h-5 fill-red-600" />
@@ -154,11 +131,25 @@ export function Header({ props }) {
             ) : (
               <div className="flex items-center px-4 pt-2 max-md:pb-2 justify-start gap-2 max-w-full md:gro overflow-x-auto">
                 <button
+                  className="w-fit min-w-fit flex items-center justify-center gap-2 snap-start whitespace-nowrap border border-solid text-secondary hover:bg-secondary/10 border-secondary rounded-md p-2"
+                  onClick={(e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    updateQueueOrderedStatus(props.checkedIds, false);
+                    setAllSelected(false);
+                    props.setCheckedIds([]);
+                  }}>
+                  Un-Mark Ordered
+                  <MdOutlineChecklistRtl className="fill-secondary w-6 h-6" />
+                </button>
+                <button
                   className="w-fit min-w-fit flex items-center justify-center gap-2 snap-start whitespace-nowrap border border-solid text-red-600 hover:bg-red-600/10 border-red-600 rounded-md p-2"
                   onClick={(e) => {
                     e.stopPropagation();
                     e.preventDefault();
-                    props.setDeleteModalActive(true);
+                    deleteQueueItem(props.checkedIds);
+                    setAllSelected(false);
+                    props.setCheckedIds([]);
                   }}>
                   Delete
                   <CgTrash className="w-5 h-5 fill-red-600" />

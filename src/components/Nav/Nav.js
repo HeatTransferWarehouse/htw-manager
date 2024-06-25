@@ -99,8 +99,10 @@ function Nav() {
                   setHome(true);
                 }}
                 className={`${
-                  home ? "text-secondary bg-secondary/10" : "text-dark"
-                } p-2 hover:bg-secondary/10 hover:text-secondary rounded-md`}>
+                  home
+                    ? "text-secondary border-secondary"
+                    : "text-dark border-white"
+                } p-2 hover:border-secondary hover:text-secondary border-b-[3px] border-solid`}>
                 Home
               </NavLink>
               <NavLink
@@ -110,8 +112,10 @@ function Nav() {
                   setResources(true);
                 }}
                 className={`${
-                  resources ? "text-secondary bg-secondary/10" : "text-dark"
-                } p-2 hover:bg-secondary/10 hover:text-secondary rounded-md`}>
+                  resources
+                    ? "text-secondary border-secondary"
+                    : "text-dark border-white"
+                } p-2 hover:border-secondary hover:text-secondary border-b-[3px] border-solid`}>
                 Resources
               </NavLink>
               <NavLink
@@ -121,8 +125,10 @@ function Nav() {
                   setSupacolor(true);
                 }}
                 className={`${
-                  supacolor ? "text-secondary bg-secondary/10" : "text-dark"
-                } p-2 hover:bg-secondary/10 hover:text-secondary rounded-md`}>
+                  supacolor
+                    ? "text-secondary border-secondary"
+                    : "text-dark border-white"
+                } p-2 hover:border-secondary hover:text-secondary border-b-[3px] border-solid`}>
                 Supacolor
               </NavLink>
               <NavLink
@@ -132,8 +138,10 @@ function Nav() {
                   setDecoQueue(true);
                 }}
                 className={`${
-                  decoQueue ? "text-secondary bg-secondary/10" : "text-dark"
-                } p-2 hover:bg-secondary/10 hover:text-secondary rounded-md`}>
+                  decoQueue
+                    ? "text-secondary border-secondary"
+                    : "text-dark border-white"
+                } p-2 hover:border-secondary hover:text-secondary border-b-[3px] border-solid`}>
                 DecoQueue
               </NavLink>
               <NavLink
@@ -143,8 +151,10 @@ function Nav() {
                   setSffQueue(true);
                 }}
                 className={`${
-                  sffQueue ? "text-secondary bg-secondary/10" : "text-dark"
-                } p-2 hover:bg-secondary/10 hover:text-secondary rounded-md`}>
+                  sffQueue
+                    ? "text-secondary border-secondary"
+                    : "text-dark border-white"
+                } p-2 hover:border-secondary hover:text-secondary border-b-[3px] border-solid`}>
                 SFF Queue
               </NavLink>
               <NavLink
@@ -154,8 +164,10 @@ function Nav() {
                   setClothingQueue(true);
                 }}
                 className={`${
-                  clothingQueue ? "text-secondary bg-secondary/10" : "text-dark"
-                } p-2 hover:bg-secondary/10 hover:text-secondary rounded-md`}>
+                  clothingQueue
+                    ? "text-secondary border-secondary"
+                    : "text-dark border-white"
+                } p-2 hover:border-secondary hover:text-secondary border-b-[3px] border-solid`}>
                 Clothing Queue
               </NavLink>
               {user.access_level === "5" && (
@@ -166,8 +178,10 @@ function Nav() {
                     setAdmin(true);
                   }}
                   className={`${
-                    admin ? "text-secondary bg-secondary/10" : "text-dark"
-                  } p-2 hover:bg-secondary/10 hover:text-secondary rounded-md`}>
+                    admin
+                      ? "text-secondary border-secondary"
+                      : "text-dark border-white"
+                  } p-2 hover:border-secondary hover:text-secondary border-b-[3px] border-solid`}>
                   Admin
                 </NavLink>
               )}
@@ -181,7 +195,7 @@ function Nav() {
                   onClick={() => {
                     dispatch({ type: "LOGOUT" });
                   }}
-                  className="p-2 hover:bg-secondary/10 hover:text-secondary rounded-md">
+                  className="p-2 hover:text-secondary">
                   Log Out
                 </NavLink>
               )}
@@ -196,7 +210,7 @@ function Nav() {
               alt="Heat Transfer Warehouse Logo"
             />
           </a>
-          <button onClick={toggleMenu}>
+          <button id="open-nav" aria-label="Open Nav" onClick={toggleMenu}>
             <RxHamburgerMenu className="w-6 h-6" />
           </button>
         </div>
@@ -220,6 +234,8 @@ function Nav() {
           isOpen,
           setIsOpen,
           toggleMenu,
+          clothingQueue,
+          setClothingQueue,
         }}
       />
     </>

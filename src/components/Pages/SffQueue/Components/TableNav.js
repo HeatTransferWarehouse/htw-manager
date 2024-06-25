@@ -12,8 +12,8 @@ export function TableNav({ count, props }) {
     <div className="flex justify-center items-center w-full p-4 gap-2">
       <Link
         className={twMerge(
-          "max-sm:w-1/3 max-sm:flex max-sm:flex-col rounded-md font-medium p-2 text-secondary   hover:text-secondary hover:bg-secondary/10 ",
-          view === "new" && "bg-secondary/10  text-secondary"
+          "max-sm:w-1/3 max-sm:flex max-sm:flex-col rounded-md font-medium p-2 text-secondary   hover:text-white hover:bg-secondary ",
+          view === "new" && "bg-secondary  text-white"
         )}
         onClick={() => {
           props.setPage(0);
@@ -25,8 +25,8 @@ export function TableNav({ count, props }) {
       </Link>
       <Link
         className={twMerge(
-          "max-sm:w-1/3 max-sm:flex max-sm:flex-col rounded-md font-medium p-2 text-secondary   hover:text-secondary hover:bg-secondary/10 ",
-          view === "progress" && "bg-secondary/10  text-secondary"
+          "max-sm:w-1/3 max-sm:flex max-sm:flex-col rounded-md font-medium p-2 text-secondary   hover:text-white hover:bg-secondary ",
+          view === "progress" && "bg-secondary  text-white"
         )}
         onClick={() => {
           props.setPage(0);
@@ -38,8 +38,8 @@ export function TableNav({ count, props }) {
       </Link>
       <Link
         className={twMerge(
-          "max-sm:w-1/3 max-sm:flex max-sm:flex-col rounded-md font-medium p-2 text-secondary   hover:text-secondary hover:bg-secondary/10 ",
-          view === "completed" && "bg-secondary/10  text-secondary"
+          "max-sm:w-1/3 max-sm:flex max-sm:flex-col rounded-md font-medium p-2 text-secondary   hover:text-white hover:bg-secondary ",
+          view === "completed" && "bg-secondary  text-white"
         )}
         onClick={() => {
           props.setPage(0);

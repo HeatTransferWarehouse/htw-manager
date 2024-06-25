@@ -3,7 +3,8 @@ const express = require("express");
 const axios = require("axios");
 const router = express.Router();
 const pool = require("../modules/pool");
-const moment = require("moment");
+const moment = require("moment-timezone");
+const Jimp = require("jimp");
 
 const clothingCategoryIds = [
   468, 498, 556, 910, 911, 912, 913, 909, 527, 555, 508, 509, 507, 510, 597,
@@ -14,35 +15,61 @@ const clothingCategoryIds = [
   573, 1319, 598, 583,
 ];
 
+router.post("/order-webhook", function (req, res) {
+  if (req.body.data && req.body.data.id) {
+    const orderId = req.body.data.id;
+    getOrderProducts(orderId);
+  } else {
+    // Handle error - ID was not found in request
+    console.log("Order ID was not found in request for Queue");
+    res.status(400).send("Order ID was not found");
+  }
+});
+
 const getOrderProducts = async (orderId) => {
   // Will Be implemented later
 
-  //   const days = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
-  //   const months = [
-  //     "Jan",
-  //     "Feb",
-  //     "Mar",
-  //     "Apr",
-  //     "May",
-  //     "Jun",
-  //     "Jul",
-  //     "Aug",
-  //     "Sep",
-  //     "Oct",
-  //     "Nov",
-  //     "Dec",
-  //   ];
-  //   const monthName = months[date.getMonth()];
-  //   const dayName = days[date.getDay()];
-  // const hours = date.getHours().toString().padStart(2, "0");
-  // const minutes = date.getMinutes().toString().padStart(2, "0");
-  // const seconds = date.getSeconds().toString().padStart(2, "0");
-  const date = new Date();
-  const year = date.getFullYear();
-  const day = date.getDate().toString().padStart(2, "0");
-  const month = (date.getMonth() + 1).toString().padStart(2, "0");
+  const date = moment().tz("America/Chicago"); // CST is 'America/Chicago' in IANA time zone database
+  const days = [
+    "Sunday",
+    "Monday",
+    "Tuesday",
+    "Wednesday",
+    "Thursday",
+    "Friday",
+    "Saturday",
+  ];
+  const months = [
+    "January",
+    "February",
+    "March",
+    "April",
+    "May",
+    "June",
+    "July",
+    "August",
+    "September",
+    "October",
+    "November",
+    "December",
+  ];
+  const monthName = months[date.month()];
+  const dayName = days[date.day()];
+  const year = date.year();
+  let day = date.date().toString().padStart(2, "0");
+  const month = (date.month() + 1).toString().padStart(2, "0");
+  let hours = date.hour().toString().padStart(2, "0");
+  let afterFive = false;
+  if (hours > 17) {
+    afterFive = true;
+  }
 
-  const currentDate = `${month}/${day}/${year}`;
+  if (afterFive) {
+    day = (parseInt(day) + 1).toString().padStart(2, "0");
+  }
+
+  const currentDate = `${month}/${day}/${year} or ${dayName}, ${monthName} ${day}, ${year}`;
+
   try {
     const response = await axios.get(
       `https://api.bigcommerce.com/stores/${process.env.STORE_HASH}/v2/orders/${orderId}/products`,
@@ -58,35 +85,43 @@ const getOrderProducts = async (orderId) => {
 
     const products = response.data;
 
-    console.log(products);
-
     for (const product of products) {
-      const color = product.product_options.find(
-        (option) => option.display_name === "Color"
-      )?.display_value;
-      const foundProduct = await getProductById(product.product_id);
-      const swatchImage = await getProductSwatchImage(
-        foundProduct.data.id,
-        color
-      );
-      if (foundProduct) {
-        const productObject = {
-          orderId: orderId,
-          productId: foundProduct.data.id,
-          name: foundProduct.data.name,
-          sku: foundProduct.data.sku,
-          quantity: product.quantity,
-          categories: foundProduct.data.categories,
-          color,
-          swatchImage,
-          size: product.product_options.find(
-            (option) => option.display_name === "Size"
-          )?.display_value,
-          date: currentDate,
-        };
-        searchedProducts.push(productObject);
+      if (product.product_id !== 0) {
+        const color = product.product_options.find(
+          (option) => option.display_name === "Color"
+        )?.display_value;
+        const foundProduct = await getProductById(product.product_id);
+        const swatchInfo = await getProductSwatchImage(
+          foundProduct.data.id,
+          color
+        );
+        if (foundProduct) {
+          const productObject = {
+            orderId: orderId,
+            productId: foundProduct.data.id,
+            name: foundProduct.data.name,
+            sku: foundProduct.data.sku,
+            quantity: product.quantity,
+            categories: foundProduct.data.categories,
+            color,
+            swatchImage: swatchInfo.swatchImage,
+            textColor: swatchInfo.textColor,
+            size: product.product_options.find(
+              (option) => option.display_name === "Size"
+            )?.display_value,
+            date: currentDate,
+          };
+          searchedProducts.push(productObject);
+        }
       }
     }
+
+    // const dbItems = await axios.get(
+    //   "http://localhost:3000/api/clothing-queue/items/get"
+    // );
+    const dbItems = await axios.get(
+      "https://admin.heattransferwarehouse.com/api/clothing-queue/items/get"
+    );
 
     if (searchedProducts.length > 0) {
       const filteredProducts = searchedProducts.filter((product) => {
@@ -96,20 +131,46 @@ const getOrderProducts = async (orderId) => {
         );
       });
 
-      console.log(filteredProducts);
+      const productsToAdd = [];
 
-      try {
-        // await axios.post(
-        //   `https://admin.heattransferwarehouse.com/api/sff-queue/item-queue/add`,
-        //   {
-        //     items: matchingProducts,
-        //   }
-        // );
-        await axios.post(`http://localhost:3000/api/clothing-queue/item/add`, {
-          items: filteredProducts,
+      for (const filteredProduct of filteredProducts) {
+        const match = dbItems.data.find((dbItem) => {
+          return (
+            dbItem.order_id === filteredProduct.orderId &&
+            dbItem.product_id === filteredProduct.productId &&
+            dbItem.name === filteredProduct.name &&
+            dbItem.sku === filteredProduct.sku &&
+            dbItem.qty === filteredProduct.quantity &&
+            dbItem.color === filteredProduct.color &&
+            dbItem.size === filteredProduct.size &&
+            dbItem.date === filteredProduct.date &&
+            dbItem.swatch_url === filteredProduct.swatchImage &&
+            dbItem.swatch_text_color === filteredProduct.textColor
+          );
         });
-      } catch (error) {
-        console.log("Error posting to add-queue-items:", error.message);
+
+        if (!match) {
+          productsToAdd.push(filteredProduct);
+        }
+      }
+
+      if (productsToAdd.length > 0) {
+        try {
+          // await axios.post(
+          //   `http://localhost:3000/api/clothing-queue/item/add`,
+          //   {
+          //     items: productsToAdd,
+          //   }
+          // );
+          await axios.post(
+            `https://admin.heattransferwarehouse.com/api/clothing-queue/item/add`,
+            {
+              items: productsToAdd,
+            }
+          );
+        } catch (error) {
+          console.log("Error posting to add-queue-items:", error.message);
+        }
       }
     }
   } catch (error) {
@@ -141,9 +202,41 @@ const getProductSwatchImage = async (productId, name) => {
       }
     });
 
-    return swatchImage;
+    let textColor = "black";
+
+    if (swatchImage) {
+      textColor = await determineTextColor(swatchImage);
+    }
+
+    return { swatchImage, textColor };
   } catch (error) {
     console.log("Error getting product swatch image", error);
+  }
+};
+
+const determineTextColor = async (imageUrl) => {
+  try {
+    const { data } = await axios({
+      url: imageUrl,
+      responseType: "arraybuffer",
+    });
+
+    const image = await Jimp.read(data);
+
+    let colorSum = 0;
+    for (let x = 0; x < image.bitmap.width; x++) {
+      for (let y = 0; y < image.bitmap.height; y++) {
+        const pixelColor = Jimp.intToRGBA(image.getPixelColor(x, y));
+        const brightness = (pixelColor.r + pixelColor.g + pixelColor.b) / 3;
+        colorSum += brightness;
+      }
+    }
+
+    const avgBrightness = colorSum / (image.bitmap.width * image.bitmap.height);
+    return avgBrightness > 127.5 ? "black" : "white";
+  } catch (error) {
+    console.error("Error determining text color:", error);
+    return "black"; // Default to black if there is an error
   }
 };
 
@@ -172,7 +265,7 @@ router.get("/items/get", async (req, res) => {
   const validColumns = [
     "order_id",
     "sku",
-    "quantity",
+    "qty",
     "date",
     "name",
     "color",
@@ -226,6 +319,7 @@ router.post("/item/add", async (req, res) => {
         size,
         date,
         swatchImage,
+        textColor,
       } = item;
 
       const insertQuery = `
@@ -234,12 +328,13 @@ router.post("/item/add", async (req, res) => {
             product_id, 
             name, 
             sku, 
-            quantity, 
+            qty, 
             color, 
             size,
             date,
-            swatch_url
-          ) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)
+            swatch_url,
+            swatch_text_color
+          ) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10)
         `;
 
       const insertValues = [
@@ -252,6 +347,7 @@ router.post("/item/add", async (req, res) => {
         size, // Convert options to JSON string
         date, // Convert date to ISO format
         swatchImage,
+        textColor,
       ];
 
       await client.query(insertQuery, insertValues); // Execute the insert query
@@ -306,39 +402,55 @@ router.delete("/item/delete/:id", async (req, res) => {
   }
 });
 
-router.put("/item/update/ordered/:id", async (req, res) => {
-  const { id } = req.params;
+router.put("/items/update/ordered", async (req, res) => {
+  const { idArray, bool } = req.body;
+
+  if (
+    !Array.isArray(idArray) ||
+    idArray.some((id) => !Number.isInteger(Number(id)))
+  ) {
+    return res.status(400).send({
+      success: false,
+      message: "Invalid ID format. ID must be an array of integers.",
+    });
+  }
+
+  if (typeof bool !== "boolean") {
+    return res.status(400).send({
+      success: false,
+      message: "Invalid boolean value for is_ordered.",
+    });
+  }
 
   const client = await pool.connect();
 
   try {
     await client.query("BEGIN");
 
-    const updateQuery = `
-            UPDATE clothing_queue
-            SET is_ordered = true
-            WHERE id = $1
-        `;
+    const updatePromises = idArray.map((id) =>
+      client.query(`UPDATE clothing_queue SET is_ordered = $1 WHERE id = $2`, [
+        bool,
+        Number(id),
+      ])
+    );
 
-    await client.query(updateQuery, [id]);
+    await Promise.all(updatePromises);
 
     await client.query("COMMIT");
     res.send({
       success: true,
-      message: "Item updated successfully.",
+      message: "Items updated successfully.",
     });
   } catch (error) {
     await client.query("ROLLBACK");
-    console.error("Error Updating Item:", error);
+    console.error("Error updating items:", error);
     res.status(500).send({
       success: false,
-      message: "Error updating item.",
+      message: "Error updating items.",
     });
   } finally {
     client.release();
   }
 });
-
-getOrderProducts(3539880);
 
 module.exports = router;
