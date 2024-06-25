@@ -1,21 +1,14 @@
 import React, { useState } from "react";
-import { useQueueActions } from "../Functions/queue-actions";
 import { FaCheck } from "react-icons/fa";
 import { Pagination } from "../../../Pagination/Pagination";
-import { PiPlayBold } from "react-icons/pi";
 import { MdOutlineChecklistRtl } from "react-icons/md";
 import { CgTrash } from "react-icons/cg";
-import { BiReset } from "react-icons/bi";
 import { twMerge } from "tailwind-merge";
+import { useQueueActions } from "../functions/actions";
 
-export function TableHeaderContainer({ props }) {
+export function Header({ props }) {
   const [allSelected, setAllSelected] = useState(false);
-  const {
-    startQueueItem,
-    completeQueueItem,
-    sendBackCompletedQueueItem,
-    sendBackProgressQueueItem,
-  } = useQueueActions();
+  const { updateQueueOrderedStatus, deleteQueueItem } = useQueueActions();
 
   const handleSelectAll = () => {
     let pageItems = [];
@@ -105,38 +98,21 @@ export function TableHeaderContainer({ props }) {
               </>
             )}
           </div>
-          <button
-            className="rounded-md block md:hidden border border-solid border-secondary text-secondary px-6 py-2"
-            onClick={(e) => {
-              e.preventDefault();
-              e.stopPropagation();
-              props.setFiltersActive(true);
-            }}>
-            Filter
-          </button>
         </div>
         {allSelected ||
           (props.checkedIds.length > 0 &&
             (props.view === "new" ? (
-              <div className="flex items-center px-4 pt-2 max-md:pb-2 justify-start gap-2 max-w-full md:grow overflow-x-auto">
-                <button
-                  className="w-fit flex items-center gap-2 whitespace-nowrap border border-solid text-green-600 hover:bg-green-600/10 border-green-600 rounded-md p-2"
-                  onClick={(e) => {
-                    startQueueItem(e, props.checkedIds);
-                    setAllSelected(false);
-                    props.setCheckedIds([]);
-                  }}>
-                  Start
-                  <PiPlayBold className="w-4 fill-green-600 h-4" />
-                </button>
+              <div className="flex items-center px-4 pt-2 max-md:pb-2 justify-start gap-2 max-w-full md:w-fit overflow-x-auto">
                 <button
                   className="w-fit min-w-fit flex items-center justify-center gap-2 snap-start whitespace-nowrap border border-solid text-secondary hover:bg-secondary/10 border-secondary rounded-md p-2"
                   onClick={(e) => {
-                    completeQueueItem(e, props.checkedIds);
+                    e.preventDefault();
+                    e.stopPropagation();
+                    updateQueueOrderedStatus(props.checkedIds, true);
                     setAllSelected(false);
                     props.setCheckedIds([]);
                   }}>
-                  Complete
+                  Mark Ordered
                   <MdOutlineChecklistRtl className="fill-secondary w-6 h-6" />
                 </button>
                 <button
@@ -144,40 +120,9 @@ export function TableHeaderContainer({ props }) {
                   onClick={(e) => {
                     e.stopPropagation();
                     e.preventDefault();
-                    props.setDeleteModalActive(true);
-                  }}>
-                  Delete
-                  <CgTrash className="w-5 h-5 fill-red-600" />
-                </button>
-              </div>
-            ) : props.view === "progress" ? (
-              <div className="flex items-center px-4 pt-2 max-md:pb-2 justify-start gap-2 max-w-full md:grow overflow-x-auto">
-                <button
-                  className="w-fit min-w-fit flex items-center justify-center gap-2 snap-start whitespace-nowrap border border-solid text-secondary hover:bg-secondary/10 border-secondary rounded-md p-2"
-                  onClick={(e) => {
-                    completeQueueItem(e, props.checkedIds);
+                    deleteQueueItem(props.checkedIds);
                     setAllSelected(false);
                     props.setCheckedIds([]);
-                  }}>
-                  Complete
-                  <MdOutlineChecklistRtl className="fill-secondary w-6 h-6" />
-                </button>
-                <button
-                  className="w-fit min-w-fit flex items-center justify-center gap-2 snap-start whitespace-nowrap border border-solid text-secondary hover:bg-secondary/10 border-secondary rounded-md p-2"
-                  onClick={(e) => {
-                    sendBackProgressQueueItem(e, props.checkedIds);
-                    setAllSelected(false);
-                    props.setCheckedIds([]);
-                  }}>
-                  Send to New
-                  <BiReset className="w-6 h-6 fill-secondary" />
-                </button>
-                <button
-                  className="w-fit min-w-fit flex items-center justify-center gap-2 snap-start whitespace-nowrap border border-solid text-red-600 hover:bg-red-600/10 border-red-600 rounded-md p-2"
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    e.preventDefault();
-                    props.setDeleteModalActive(true);
                   }}>
                   Delete
                   <CgTrash className="w-5 h-5 fill-red-600" />
@@ -188,29 +133,23 @@ export function TableHeaderContainer({ props }) {
                 <button
                   className="w-fit min-w-fit flex items-center justify-center gap-2 snap-start whitespace-nowrap border border-solid text-secondary hover:bg-secondary/10 border-secondary rounded-md p-2"
                   onClick={(e) => {
-                    sendBackCompletedQueueItem(e, props.checkedIds);
+                    e.preventDefault();
+                    e.stopPropagation();
+                    updateQueueOrderedStatus(props.checkedIds, false);
                     setAllSelected(false);
                     props.setCheckedIds([]);
                   }}>
-                  Send to Progress
-                  <BiReset className="w-6 h-6 fill-secondary" />
-                </button>
-                <button
-                  className="w-fit min-w-fit flex items-center justify-center gap-2 snap-start whitespace-nowrap border border-solid text-secondary hover:bg-secondary/10 border-secondary rounded-md p-2"
-                  onClick={(e) => {
-                    sendBackProgressQueueItem(e, props.checkedIds);
-                    setAllSelected(false);
-                    props.setCheckedIds([]);
-                  }}>
-                  Send to New
-                  <BiReset className="w-6 h-6 fill-secondary" />
+                  Un-Mark Ordered
+                  <MdOutlineChecklistRtl className="fill-secondary w-6 h-6" />
                 </button>
                 <button
                   className="w-fit min-w-fit flex items-center justify-center gap-2 snap-start whitespace-nowrap border border-solid text-red-600 hover:bg-red-600/10 border-red-600 rounded-md p-2"
                   onClick={(e) => {
                     e.stopPropagation();
                     e.preventDefault();
-                    props.setDeleteModalActive(true);
+                    deleteQueueItem(props.checkedIds);
+                    setAllSelected(false);
+                    props.setCheckedIds([]);
                   }}>
                   Delete
                   <CgTrash className="w-5 h-5 fill-red-600" />

@@ -2,7 +2,12 @@ import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useLocation } from "react-router-dom";
 
-import { DeleteModal, LoadingModal, MobileFilters } from "./Components/Modals";
+import {
+  DeleteModal,
+  LoadingModal,
+  MobileFilters,
+  AdvancedSearchModal,
+} from "./Components/Modals";
 import { TableComponent } from "./Components/Table";
 import { useQueueActions } from "./Functions/queue-actions";
 
@@ -23,6 +28,7 @@ export default function SFFQueue() {
 
   const [checkedIds, setCheckedIds] = useState([]);
   const [completedItems, setCompletedItems] = useState([]);
+  const [showAdvancedSearchModal, setShowAdvancedSearchModal] = useState(false);
   const [itemsLoading, setItemsLoading] = useState(true);
   const [isMobile, setIsMobile] = useState(false);
   const [inProgressItems, setInProgressItems] = useState([]);
@@ -94,6 +100,7 @@ export default function SFFQueue() {
           setFiltersActive,
           setDeleteModalActive,
           setSingleCheckedId,
+          setShowAdvancedSearchModal,
         }}
       />
       {loading && <LoadingModal />}
@@ -110,6 +117,9 @@ export default function SFFQueue() {
         />
       )}
       <MobileFilters props={{ filtersActive, setFiltersActive, sort }} />
+      <AdvancedSearchModal
+        props={{ setShowAdvancedSearchModal, open: showAdvancedSearchModal }}
+      />
     </>
   );
 }

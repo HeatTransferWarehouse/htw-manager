@@ -2,7 +2,7 @@ import React from "react";
 import { Link, useLocation } from "react-router-dom";
 import { twMerge } from "tailwind-merge";
 
-export function TableNav({ count, props }) {
+export function Nav({ count, props }) {
   const location = useLocation();
   const pathname = location.pathname;
   const searchParams = new URLSearchParams(location.search);
@@ -26,28 +26,15 @@ export function TableNav({ count, props }) {
       <Link
         className={twMerge(
           "max-sm:w-1/3 max-sm:flex max-sm:flex-col rounded-md font-medium p-2 text-secondary   hover:text-white hover:bg-secondary ",
-          view === "progress" && "bg-secondary  text-white"
+          view === "ordered" && "bg-secondary  text-white"
         )}
         onClick={() => {
           props.setPage(0);
           props.setRowsPerPage(10);
           props.setCheckedIds([]);
         }}
-        to={`${pathname}?view=progress`}>
-        In Progress <span>({count.inProgressCount})</span>
-      </Link>
-      <Link
-        className={twMerge(
-          "max-sm:w-1/3 max-sm:flex max-sm:flex-col rounded-md font-medium p-2 text-secondary   hover:text-white hover:bg-secondary ",
-          view === "completed" && "bg-secondary  text-white"
-        )}
-        onClick={() => {
-          props.setPage(0);
-          props.setRowsPerPage(10);
-          props.setCheckedIds([]);
-        }}
-        to={`${pathname}?view=completed`}>
-        Completed <span>({count.completedCount})</span>
+        to={`${pathname}?view=ordered`}>
+        Ordered <span>({count.orderedCount})</span>
       </Link>
     </div>
   );

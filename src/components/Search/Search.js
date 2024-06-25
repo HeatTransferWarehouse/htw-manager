@@ -1,5 +1,6 @@
 import React, { useState, useRef, useEffect } from "react";
 import { IoIosClose } from "react-icons/io";
+import { twMerge } from "tailwind-merge";
 
 // Function to detect the user's operating system
 const detectOS = () => {
@@ -7,7 +8,7 @@ const detectOS = () => {
   return platform.includes("mac") ? "mac" : "pc";
 };
 
-const Search = ({ onSearch }) => {
+const Search = ({ onSearch, className }) => {
   const [query, setQuery] = useState("");
   const os = detectOS(); // Detect OS when component mounts
   const inputRef = useRef(null);
@@ -47,17 +48,17 @@ const Search = ({ onSearch }) => {
   }, []);
 
   return (
-    <div className="w-full px-4 mb-4">
+    <div className={twMerge(className, "w-full max-w-[500px] px-4 mb-4")}>
       <span className="relative w-full max-w-[500px] flex items-center">
         <input
           type="text"
           placeholder="Search"
           value={query}
           onChange={handleInputChange}
-          className="w-full m-0 p-2 shadow-default border border-solid rounded-md focus:outline-none focus:ring-2 focus:border-secondary  hover:border-secondary"
+          className="w-full m-0 p-2 shadow-default border border-solid border-transparent rounded-md focus:outline-none placeholder:text-gray-600 focus:ring-2 focus:border-secondary  hover:border-secondary"
           ref={inputRef}
         />
-        <span className="absolute text-gray-400 right-2 h-5 w-fit flex items-center ">
+        <span className="absolute text-gray-600 right-2 h-5 w-fit flex items-center ">
           {showClearInput && (
             <button
               className="w-8 h-8 relative left-1 rounded-full group/clear transition duration-200 hover:bg-secondary/10"
@@ -66,7 +67,7 @@ const Search = ({ onSearch }) => {
                 e.stopPropagation();
                 handleInputClear(false);
               }}>
-              <IoIosClose className="w-full transition duration-200 hover/group-clear:fill-secondary fill-gray-400 h-full" />
+              <IoIosClose className="w-full transition duration-200 hover/group-clear:fill-secondary fill-gray-600 h-full" />
             </button>
           )}
           {!showClearInput && (

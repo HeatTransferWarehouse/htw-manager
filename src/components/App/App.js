@@ -9,13 +9,14 @@ import Resources from "../Pages/Resources";
 import ProtectedRoute from "../ProtectedRoute/ProtectedRoute";
 import AdminRoute from "../ProtectedRoute/AdminRoute";
 import WallyB from "../Pages/WallyB";
-import Admin from "../Pages/Admin";
+import Admin from "../Pages/Admin/Admin";
 import Login from "../LoginPage/LoginPage";
 import Supacolor from "../Pages/Supacolor";
 import DecoQueue from "../Pages/DecoQueue/DecoQueue";
 import OrderLookup from "../Pages/OrderLookup";
 import OrderLookupOLD from "../Pages/OrderLookupOLD";
 import SFFQueue from "../Pages/SffQueue/SFFQueue";
+import ClothingQueue from "../Pages/ClothingQueue/page";
 import "./App.css";
 import { useDispatch, useSelector } from "react-redux";
 
@@ -36,6 +37,17 @@ function App() {
   useEffect(() => {
     // Initially fetch the user
     dispatch({ type: "FETCH_USER" });
+
+    // Function to set the --vh custom property
+    const setVhProperty = () => {
+      const vh = window.innerHeight * 0.01;
+      document.documentElement.style.setProperty("--vh", `${vh}px`);
+    };
+
+    // Initial calculation
+    setVhProperty();
+
+    window.addEventListener("resize", setVhProperty);
 
     // Set up the initial timeout
 
@@ -61,7 +73,7 @@ function App() {
   return (
     <Router>
       {user.id && <Nav />}
-      <div className="min-h-[calc(100vh-84px-96px)] lg:min-h-[calc(100vh-97px-96px)]  relative flex flex-col">
+      <main className="main-container">
         <Switch>
           <Route exact path="/login" component={Login} />
 
@@ -80,6 +92,12 @@ function App() {
           <ProtectedRoute exact path="/decoqueue" component={DecoQueue} />
 
           <ProtectedRoute exact path="/supacolor" component={Supacolor} />
+
+          <ProtectedRoute
+            exact
+            path="/queue/clothing"
+            component={ClothingQueue}
+          />
 
           <AdminRoute exact path="/wallyb" component={WallyB} />
 
@@ -102,7 +120,7 @@ function App() {
             )}
           />
         </Switch>
-      </div>
+      </main>
     </Router>
   );
 }

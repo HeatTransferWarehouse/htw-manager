@@ -13,30 +13,6 @@ export function TableContent({ props }) {
   const optionsRef = useRef(null);
   const priorityRef = useRef(null);
   const buttonClickedRef = useRef(false);
-  const [elWidth, setElWidth] = useState(0);
-  const [elTop, setElTop] = useState(0);
-  const [elRight, setElRight] = useState(0);
-  const [currentEl, setCurrentEl] = useState(null);
-
-  useEffect(() => {
-    const handleResize = () => {
-      if (currentEl) {
-        setElTop(Number(currentEl.getBoundingClientRect().top.toFixed(0)));
-        setElRight(Number(currentEl.getBoundingClientRect().right.toFixed(0)));
-        setElWidth(Number(currentEl.getBoundingClientRect().width.toFixed(0)));
-      }
-    };
-
-    window.addEventListener("resize", handleResize);
-    window.addEventListener("scroll", handleResize);
-
-    handleResize();
-
-    return () => {
-      window.removeEventListener("resize", handleResize);
-      window.removeEventListener("scroll", handleResize);
-    };
-  });
 
   useEffect(() => {
     const handleClickOutside = (event) => {
@@ -47,18 +23,10 @@ export function TableContent({ props }) {
 
       if (optionsRef.current && !optionsRef.current.contains(event.target)) {
         setActiveItemId(null);
-        setElWidth(0);
-        setElTop(0);
-        setElRight(0);
-        setCurrentEl(null);
       }
 
       if (priorityRef.current && !priorityRef.current.contains(event.target)) {
         setActiveItemPriorityId(null);
-        setElWidth(0);
-        setElTop(0);
-        setElRight(0);
-        setCurrentEl(null);
       }
     };
 
@@ -92,6 +60,7 @@ export function TableContent({ props }) {
   const renderOptionsButton = (itemId) => (
     <div className="options-container" ref={optionsRef}>
       <button
+        aria-label="Open Options"
         className={twMerge(
           "w-8 h-8 flex items-center justify-center border-none rounded-md transition duration-200 hover:bg-secondary/10 group/options",
           activeItemId === itemId && "bg-secondary/10"
@@ -100,13 +69,8 @@ export function TableContent({ props }) {
           e.stopPropagation();
           e.preventDefault();
           buttonClickedRef.current = true;
-          setActiveItemPriorityId(null);
           setActiveItemId(activeItemId === itemId ? null : itemId);
           props.setSingleCheckedId(itemId);
-          setCurrentEl(e.target);
-          setElWidth(Number(e.target.getBoundingClientRect().width.toFixed(0)));
-          setElTop(Number(e.target.getBoundingClientRect().top.toFixed(0)));
-          setElRight(Number(e.target.getBoundingClientRect().right.toFixed(0)));
         }}>
         <BiDotsHorizontalRounded
           className={twMerge(
@@ -116,13 +80,7 @@ export function TableContent({ props }) {
         />
       </button>
       {activeItemId === itemId && (
-        <div
-          style={{
-            top: `${elTop + 36}px`,
-            left: `${elRight - 115}px`,
-            width: `120px`,
-          }}
-          className="fixed bg-white shadow-default overflow-hidden rounded-md z-[99999]">
+        <div className="absolute top-10 w-fit right-0 bg-white shadow-default overflow-hidden rounded-md z-[99999]">
           <OptionsList
             props={{
               view: props.view,
@@ -136,23 +94,18 @@ export function TableContent({ props }) {
   );
 
   const renderPriorityButton = (item) => (
-    <span className="w-full" ref={priorityRef}>
+    <span className="w-full relative" ref={priorityRef}>
       <button
-        className={`border-none group/priority hover:bg-secondary/10 hover:text-secondary rounded-md transition px-2 duration-200 items-center flex justify-between w-full gap-1 py-2 ${
-          activeItemPriorityId === item.id
-            ? "text-secondary bg-secondary/10"
-            : ""
-        }`}
+        aria-label="Open Options"
+        className={twMerge(
+          "w-full h-8 flex items-center px-2 justify-between border-none rounded-md transition duration-200 hover:bg-secondary/10 group/priority",
+          activeItemPriorityId === item.id && "bg-secondary/10 text-secondary"
+        )}
         onClick={(e) => {
           setActiveItemId(null);
           setActiveItemPriorityId(
             activeItemPriorityId === item.id ? null : item.id
           );
-          setCurrentEl(e.target);
-          setElWidth(Number(e.target.getBoundingClientRect().width.toFixed(0)));
-          setElTop(Number(e.target.getBoundingClientRect().top.toFixed(0)));
-          setElRight(Number(e.target.getBoundingClientRect().right.toFixed(0)));
-
           buttonClickedRef.current = true;
         }}>
         {item.priority}
@@ -163,21 +116,11 @@ export function TableContent({ props }) {
         )}
       </button>
       {activeItemPriorityId === item.id && (
-        <ul
-          style={{
-            top: `${elTop + 48}px`,
-            left: `${elRight - elWidth}px`,
-            width: `120px`,
-          }}
-          className="fixed bg-white shadow-default rounded-md z-[99999]">
+        <ul className="absolute top-10 w-full right-0 bg-white shadow-default overflow-hidden rounded-md z-[99999]">
           <li
             className="cursor-pointer hover:bg-secondary/10 py-2 px-3 hover:text-secondary"
             onClick={(e) => {
               updateQueueItemPriority(e, item.id, "low");
-              setElWidth(0);
-              setElTop(0);
-              setElRight(0);
-              setCurrentEl(null);
             }}>
             Low
           </li>
@@ -185,10 +128,6 @@ export function TableContent({ props }) {
             className="cursor-pointer hover:bg-secondary/10 py-2 px-3 hover:text-secondary"
             onClick={(e) => {
               updateQueueItemPriority(e, item.id, "med");
-              setElWidth(0);
-              setElTop(0);
-              setElRight(0);
-              setCurrentEl(null);
             }}>
             Medium
           </li>
@@ -196,10 +135,6 @@ export function TableContent({ props }) {
             className="cursor-pointer hover:bg-secondary/10 py-2 px-3 hover:text-secondary"
             onClick={(e) => {
               updateQueueItemPriority(e, item.id, "high");
-              setElWidth(0);
-              setElTop(0);
-              setElRight(0);
-              setCurrentEl(null);
             }}>
             High
           </li>
@@ -213,6 +148,14 @@ export function TableContent({ props }) {
       <TableBody>
         {Array.from({ length: 10 }).map((_, index) => renderLoadingRow(index))}
       </TableBody>
+    );
+  }
+
+  if (props.items.length === 0) {
+    return (
+      <div className="w-full flex items-center py-8 justify-center">
+        <p className="text-2xl">No Items to show</p>
+      </div>
     );
   }
 

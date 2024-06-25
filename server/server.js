@@ -29,6 +29,8 @@ const sffQueueRouter = require("./routes/sffQueueRouter");
 const supacolorRouter = require("./routes/supacolorOrderRouter");
 const queueRouter = require("./routes/queueRouter");
 const lookupRouter = require("./routes/orderLookUp");
+const clothingQueueRouter = require("./routes/clothingQueue");
+const adminRouter = require("./routes/admin");
 
 app.use(sessionMiddleware);
 app.use(passport.initialize());
@@ -51,6 +53,11 @@ app.use("/api/lookup", lookupRouter);
 
 app.use("/api/sff-queue", sffQueueRouter);
 app.use("/api/queue", queueRouter);
+app.use("/api/clothing-queue", clothingQueueRouter);
+
+// Admin Router
+
+app.use("/api/admin", adminRouter);
 
 app.get("/healthcheck", (req, res) => {
   res.sendStatus(200);

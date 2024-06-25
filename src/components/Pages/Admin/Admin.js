@@ -1,18 +1,20 @@
 import React, { useEffect, useState } from "react";
-import "./css/Main.css";
-import "./css/admin.css";
+import "../css/admin.css";
 import { useDispatch, useSelector } from "react-redux";
 import { TiUserAdd } from "react-icons/ti";
 import { FaUserEdit } from "react-icons/fa";
 import { FaTrash } from "react-icons/fa6";
-import DeleteModal from "../modals/deleteModal";
-import AdminRegister from "../modals/adminRegister";
+import DeleteModal from "../../modals/deleteModal";
+import AdminRegister from "../../modals/adminRegister";
 import { MdEdit } from "react-icons/md";
-import AdminEditUser from "../modals/adminEditUser";
+import AdminEditUser from "../../modals/adminEditUser";
+import Webhooks from "./components/webhooks";
+import { CreateWebhook } from "./components/modals";
 
 function WallyB() {
   const dispatch = useDispatch();
   const users = useSelector((store) => store.user.allUsersReducer);
+  const webhooks = useSelector((store) => store.admin.webhooks);
   const [selectedUserId, setSelectedUserId] = useState(null);
   const currentUser = useSelector((store) => store.user.userReducer);
   const [registerFormActive, setRegisterFormActive] = useState(false);
@@ -21,8 +23,10 @@ function WallyB() {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [role, setRole] = useState(null);
+  const [webhookModalActive, setWebhookModalActive] = useState(true);
   useEffect(() => {
     dispatch({ type: "FETCH_ALL_USERS" });
+    dispatch({ type: "GET_WEBHOOKS" });
   }, [dispatch]);
 
   // const errors = useSelector((store) => store.errors);
@@ -62,11 +66,11 @@ function WallyB() {
 
   return (
     <>
-      <main className="admin-panel">
+      <main className="my-4 flex flex-col max-w-screen-xl w-full mx-auto gap-8">
         <div className="admin-header">
           <h1>Admin Controls</h1>
         </div>
-        <div className="admin-users-section">
+        <div className="bg-white rounded-md shadow-default w-full p-4 max-w-screen-xl">
           <div className="admin-users-section-header">
             <h2>
               Active Users{" "}
@@ -137,6 +141,7 @@ function WallyB() {
             })}
           </div>
         </div>
+        <Webhooks props={{ webhooks }} />
       </main>
       {registerFormActive && (
         <AdminRegister
@@ -169,6 +174,12 @@ function WallyB() {
           setRole={setRole}
         />
       )}
+      <CreateWebhook
+        props={{
+          open: webhookModalActive,
+          setOpen: setWebhookModalActive,
+        }}
+      />
     </>
   );
 }

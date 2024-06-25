@@ -1,8 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { TableContent } from "./TableContent";
 import { Pagination } from "../../../Pagination/Pagination";
-import { TableNav } from "./TableNav";
-import { useQueueActions } from "../Functions/queue-actions";
 import {
   HiOutlineArrowNarrowUp,
   HiOutlineArrowNarrowDown,
@@ -14,36 +11,36 @@ import {
   TableHeadCell,
   TableHeader,
 } from "../../../Table/Table";
-import { TableHeaderContainer } from "./TableHeader";
+import { Nav } from "./nav";
+import { Header } from "./header";
+import { TableContent } from "./table-body";
+import { useQueueActions } from "../functions/actions";
 import { IoMdInformationCircle } from "react-icons/io";
 
 export function TableComponent({ props }) {
   const { getQueueItems } = useQueueActions();
   const [items, setItems] = useState({
     newItems: props.items.newItems,
-    inProgressItems: props.items.inProgressItems,
-    completedItems: props.items.completedItems,
+    orderedItems: props.items.orderedItems,
   });
   const [rowsPerPage, setRowsPerPage] = useState(10);
   const [page, setPage] = useState(0);
   const [searchQuery, setSearchQuery] = useState("");
+  const [date, setDate] = useState(new Date().toISOString().split("T")[0]);
 
   useEffect(() => {
     setItems({
       newItems: props.items.newItems,
-      inProgressItems: props.items.inProgressItems,
-      completedItems: props.items.completedItems,
+      orderedItems: props.items.orderedItems,
     });
   }, [props.items]);
 
-  const handleSort = (e, sort_by) => {
-    e.stopPropagation();
-    e.preventDefault();
+  const handleSort = (sort_by) => {
     const newOrder =
       props.sort.sort_by === sort_by && props.sort.order === "asc"
         ? "desc"
         : "asc";
-    getQueueItems(e, sort_by, newOrder);
+    getQueueItems(sort_by, newOrder);
   };
 
   const handleSearch = (query) => {
@@ -53,7 +50,7 @@ export function TableComponent({ props }) {
   const renderSortButton = (column, label) => (
     <button
       className="w-fit p-2 rounded-md whitespace-nowrap flex items-center gap-1 hover:bg-gray-100"
-      onClick={(e) => handleSort(e, column)}>
+      onClick={(e) => handleSort(column)}>
       {label}
       {props.sort.sort_by === column &&
         (props.sort.order === "asc" ? (
@@ -65,14 +62,18 @@ export function TableComponent({ props }) {
   );
 
   const currentViewItems =
-    props.view === "new"
-      ? items.newItems
-      : props.view === "progress"
-      ? items.inProgressItems
-      : items.completedItems;
+    props.view === "new" ? items.newItems : items.orderedItems;
 
-  // Filter items based on search query
+  // Normalize date format for comparison
+  const normalizedDate = (date) => {
+    return new Date(date).toISOString().split("T")[0];
+  };
+
+  // Filter items based on search query and date
+
   const filteredItems = currentViewItems.filter((item) => {
+    const itemDate = normalizedDate(item.date.split(" or")[0]);
+
     let searchMatch = false;
 
     if (searchQuery.includes(":")) {
@@ -92,21 +93,27 @@ export function TableComponent({ props }) {
       searchMatch = Object.keys(searchMap).every((key) => {
         if (key === "sku") {
           return searchMap[key].includes(item.sku.toLowerCase());
+        } else if (key === "size") {
+          return searchMap[key].includes(item.size.toLowerCase());
         } else if (key === "id") {
           return searchMap[key].some((value) =>
-            item.order_number.toString().includes(value)
+            item.order_id.toString().includes(value)
           );
         } else if (key === "name") {
           return searchMap[key].some((value) =>
-            item.description.toLowerCase().includes(value)
+            item.name.toLowerCase().includes(value)
+          );
+        } else if (key === "color") {
+          return searchMap[key].some((value) =>
+            item.color.toLowerCase().includes(value)
           );
         } else if (key === "date") {
           return searchMap[key].some((value) =>
-            item.created_at.toLowerCase().includes(value)
+            item.date.toLowerCase().includes(value)
           );
         } else if (key === "qty") {
-          return searchMap[key].some((value) =>
-            item.qty.toString().toLowerCase().includes(value)
+          return searchMap[key].some(
+            (value) => item.qty === parseInt(value, 10)
           );
         }
         return false;
@@ -114,22 +121,25 @@ export function TableComponent({ props }) {
     } else {
       // Basic search
       searchMatch =
-        item.order_number.toString().includes(searchQuery) ||
+        item.order_id.toString().includes(searchQuery) ||
         item.sku.toLowerCase().includes(searchQuery) ||
-        item.description.toLowerCase().includes(searchQuery) ||
-        item.created_at.toLowerCase().includes(searchQuery);
+        item.name.toLowerCase().includes(searchQuery) ||
+        item.color.toLowerCase().includes(searchQuery) ||
+        item.size.toLowerCase().includes(searchQuery) ||
+        item.date.toLowerCase().includes(searchQuery);
     }
 
-    return searchMatch;
+    const dateMatch = itemDate === date;
+
+    return searchMatch && dateMatch;
   });
 
   return (
     <Table>
-      <TableNav
+      <Nav
         count={{
-          completedCount: items.completedItems.length,
-          inProgressCount: items.inProgressItems.length,
           newCount: items.newItems.length,
+          orderedCount: items.orderedItems.length,
         }}
         props={{
           setRowsPerPage,
@@ -145,8 +155,21 @@ export function TableComponent({ props }) {
           <p>Learn about Advanced Searching</p>
         </span>
         <Search onSearch={handleSearch} className={"!m-0 !p-0"} />
+        <label className="sr-only" htmlFor="date">
+          Date
+        </label>
+        <input
+          className="p-2 m-0 shadow-default rounded-md cursor-pointer"
+          type="date"
+          id="date"
+          name="date"
+          onChange={(e) => {
+            setDate(e.target.value);
+          }}
+          value={date.split(" or")[0]}
+        />
       </div>
-      <TableHeaderContainer
+      <Header
         props={{
           checkedIds: props.checkedIds,
           setCheckedIds: props.setCheckedIds,
@@ -163,26 +186,29 @@ export function TableComponent({ props }) {
       />
       <TableContainer>
         {!props.isMobile && (
-          <TableHeader>
+          <TableHeader tableFor={"clothing"}>
             <TableHeadCell />
             <TableHeadCell minWidth={"7rem"}>
-              {renderSortButton("order_number", "Order Number")}
+              {renderSortButton("order_id", "Order Number")}
             </TableHeadCell>
             <TableHeadCell minWidth={"10rem"}>
               {renderSortButton("sku", "Sku")}
             </TableHeadCell>
             <TableHeadCell minWidth={"15rem"}>
-              {renderSortButton("description", "Product Name")}
+              {renderSortButton("name", "Product Name")}
             </TableHeadCell>
-            <TableHeadCell minWidth={"15rem"}>Product Length</TableHeadCell>
+            <TableHeadCell minWidth={"7rem"}>
+              {renderSortButton("color", "Color")}
+            </TableHeadCell>
+            <TableHeadCell minWidth={"7rem"}>
+              {renderSortButton("size", "Size")}
+            </TableHeadCell>
             <TableHeadCell>{renderSortButton("qty", "Qty")}</TableHeadCell>
-            <TableHeadCell minWidth={"5rem"}>
-              {renderSortButton("priority", "Priority")}
-            </TableHeadCell>
             <TableHeadCell minWidth={"8rem"}>
-              {renderSortButton("created_at", "Created At")}
+              {renderSortButton("date", "Order For")}
             </TableHeadCell>
             <TableHeadCell />
+            <span className="hidden" />
           </TableHeader>
         )}
         <TableContent
@@ -197,6 +223,7 @@ export function TableComponent({ props }) {
             setDeleteModalActive: props.setDeleteModalActive,
             setSingleCheckedId: props.setSingleCheckedId,
             view: props.view,
+            date,
           }}
         />
       </TableContainer>
