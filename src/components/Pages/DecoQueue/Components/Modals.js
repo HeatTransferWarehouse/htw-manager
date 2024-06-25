@@ -374,12 +374,6 @@ function AdvancedSearchModal({ props }) {
               </li>
             </ul>
           </div>
-          <p className="mt-4">
-            <span className="font-bold">Note:</span> Advanced searches are for{" "}
-            <strong>EXACT MATCHES</strong>. If you want to filter as you type,
-            use a basic search query by simply typing in the value you would
-            like to search for.
-          </p>
         </ModalContent>
       </Modal>
     </ModalOverlay>

@@ -24,7 +24,7 @@ export function TableComponent({ props }) {
     inProgressItems: props.items.inProgressItems,
     completedItems: props.items.completedItems,
   });
-  const [rowsPerPage, setRowsPerPage] = useState(10);
+  const [rowsPerPage, setRowsPerPage] = useState(25);
   const [page, setPage] = useState(0);
   const [searchQuery, setSearchQuery] = useState("");
 
@@ -91,7 +91,9 @@ export function TableComponent({ props }) {
 
       searchMatch = Object.keys(searchMap).every((key) => {
         if (key === "sku") {
-          return searchMap[key].includes(item.sku.toLowerCase());
+          return searchMap[key].some((value) =>
+            item.sku.toLowerCase().includes(value)
+          );
         } else if (key === "id") {
           return searchMap[key].some((value) =>
             item.order_number.toString().includes(value)

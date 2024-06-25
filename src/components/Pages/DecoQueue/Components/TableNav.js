@@ -17,7 +17,7 @@ export function TableNav({ count, props }) {
         )}
         onClick={() => {
           props.setPage(0);
-          props.setRowsPerPage(10);
+          props.setRowsPerPage(25);
           props.setCheckedIds([]);
         }}
         to={`${pathname}?view=new`}>
@@ -30,7 +30,7 @@ export function TableNav({ count, props }) {
         )}
         onClick={() => {
           props.setPage(0);
-          props.setRowsPerPage(10);
+          props.setRowsPerPage(25);
           props.setCheckedIds([]);
         }}
         to={`${pathname}?view=progress`}>
@@ -43,7 +43,7 @@ export function TableNav({ count, props }) {
         )}
         onClick={() => {
           props.setPage(0);
-          props.setRowsPerPage(10);
+          props.setRowsPerPage(25);
           props.setCheckedIds([]);
         }}
         to={`${pathname}?view=completed`}>
