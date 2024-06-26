@@ -141,10 +141,10 @@ const getOrderProducts = async (orderId) => {
             dbItem.name === filteredProduct.name &&
             dbItem.sku === filteredProduct.sku &&
             dbItem.qty === filteredProduct.quantity &&
-            dbItem.color === filteredProduct.color &&
-            dbItem.size === filteredProduct.size &&
+            (dbItem.color ?? "") === (filteredProduct.color ?? "") &&
+            (dbItem.size ?? "") === (filteredProduct.size ?? "") &&
             dbItem.date === filteredProduct.date &&
-            dbItem.swatch_url === filteredProduct.swatchImage &&
+            (dbItem.swatch_url ?? "") === (filteredProduct.swatchImage ?? "") &&
             dbItem.swatch_text_color === filteredProduct.textColor
           );
         });
@@ -155,6 +155,7 @@ const getOrderProducts = async (orderId) => {
       }
 
       if (productsToAdd.length > 0) {
+        console.log("Products to add:", productsToAdd);
         try {
           // await axios.post(
           //   `http://localhost:3000/api/clothing-queue/item/add`,
@@ -171,6 +172,8 @@ const getOrderProducts = async (orderId) => {
         } catch (error) {
           console.log("Error posting to add-queue-items:", error.message);
         }
+      } else {
+        console.log("No new products to add.");
       }
     }
   } catch (error) {
@@ -354,6 +357,7 @@ router.post("/item/add", async (req, res) => {
     }
 
     await client.query("COMMIT"); // Commit the transaction
+    console.log("Items added successfully.");
     res.send({
       success: true,
       message: "Items added successfully.",
