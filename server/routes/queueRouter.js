@@ -98,17 +98,25 @@ const createQueueInfo = async (data) => {
   //   `http://localhost:3000/api/queue/item-queue/get`
   // );
 
-  const newProducts = filteredProducts.filter((product) => {
-    return !dbOrders.data.some(
-      (dbOrder) =>
-        dbOrder.order_number === product.order_id && dbOrder.sku === product.sku
-    );
-  });
+  const productsToAdd = [];
 
-  console.log("New Products", newProducts);
+  for (const filteredProduct of filteredProducts) {
+    const match = dbOrders.data.find((dbItem) => {
+      return (
+        Number(dbItem.order_number) === Number(filteredProduct.orderId) &&
+        dbItem.description === filteredProduct.description &&
+        dbItem.sku === filteredProduct.sku &&
+        Number(dbItem.qty) === Number(filteredProduct.quantity)
+      );
+    });
 
-  if (newProducts.length > 0) {
-    console.log(`Adding ${newProducts.length} items to the queue`);
+    if (!match) {
+      productsToAdd.push(filteredProduct);
+    }
+  }
+
+  if (productsToAdd.length > 0) {
+    console.log(`Adding ${productsToAdd.length} items to the queue`);
     try {
       await axios.post(
         `https://admin.heattransferwarehouse.com/api/queue/item-queue/add`,
@@ -211,7 +219,7 @@ const filterBCProducts = async (data) => {
         quantity: product.quantity,
         productOptions,
         createdAt: data.createdAt,
-        descriptions: product.name,
+        description: product.name,
       };
       matchedProducts.push(productObj);
     }
