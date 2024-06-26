@@ -54,12 +54,12 @@ async function getBCOrderDetails(orderId) {
       createQueueInfo({ orderData: response.data, timeStamp: dateString });
     } else {
       // Handle the error if the status is not 200
-      logtail.error(`Error fetching order ${orderId}: ${response.status}`);
+      console.log(`Error fetching order ${orderId}: ${response.status}`);
       return null;
     }
   } catch (error) {
     // Log the error if the request fails
-    logtail.error(`Failed to fetch order ${orderId}: ${error.message}`);
+    console.log(`Failed to fetch order ${orderId}: ${error.message}`);
     return null;
   }
 }
@@ -101,9 +101,11 @@ const createQueueInfo = async (data) => {
   const newProducts = filteredProducts.filter((product) => {
     return !dbOrders.data.some(
       (dbOrder) =>
-        dbOrder.order_id === product.order_id && dbOrder.sku === product.sku
+        dbOrder.order_number === product.order_id && dbOrder.sku === product.sku
     );
   });
+
+  console.log("New Products", newProducts);
 
   if (newProducts.length > 0) {
     console.log(`Adding ${newProducts.length} items to the queue`);
