@@ -155,7 +155,6 @@ const getOrderProducts = async (orderId) => {
       }
 
       if (productsToAdd.length > 0) {
-        console.log("Products to add:", productsToAdd);
         try {
           // await axios.post(
           //   `http://localhost:3000/api/clothing-queue/item/add`,
@@ -172,8 +171,6 @@ const getOrderProducts = async (orderId) => {
         } catch (error) {
           console.log("Error posting to add-queue-items:", error.message);
         }
-      } else {
-        console.log("No new products to add.");
       }
     }
   } catch (error) {
