@@ -66,14 +66,13 @@ export function TableComponent({ props }) {
 
   // Normalize date format for comparison
   const normalizedDate = (date) => {
-    return new Date(date).toISOString().split("T")[0];
+    if (!date) return "";
+    const d = new Date(date);
+    return isNaN(d.getTime()) ? "" : d.toISOString().split("T")[0];
   };
 
   // Filter items based on search query and date
-
   const filteredItems = currentViewItems.filter((item) => {
-    const itemDate = normalizedDate(item.date.split(" or")[0]);
-
     let searchMatch = false;
 
     if (searchQuery.includes(":")) {
@@ -92,28 +91,24 @@ export function TableComponent({ props }) {
 
       searchMatch = Object.keys(searchMap).every((key) => {
         if (key === "sku") {
-          return searchMap[key].includes(item.sku.toLowerCase());
-        } else if (key === "size") {
-          return searchMap[key].includes(item.size.toLowerCase());
+          return searchMap[key].some((value) =>
+            (item.sku ?? "").toString().toLowerCase().includes(value)
+          );
         } else if (key === "id") {
           return searchMap[key].some((value) =>
-            item.order_id.toString().includes(value)
+            (item.order_id ?? "").toString().includes(value)
           );
         } else if (key === "name") {
           return searchMap[key].some((value) =>
-            item.name.toLowerCase().includes(value)
-          );
-        } else if (key === "color") {
-          return searchMap[key].some((value) =>
-            item.color.toLowerCase().includes(value)
+            (item.description ?? "").toLowerCase().includes(value)
           );
         } else if (key === "date") {
           return searchMap[key].some((value) =>
-            item.date.toLowerCase().includes(value)
+            (item.date ?? "").toLowerCase().includes(value)
           );
         } else if (key === "qty") {
-          return searchMap[key].some(
-            (value) => item.qty === parseInt(value, 10)
+          return searchMap[key].some((value) =>
+            (item.qty ?? "").toString().toLowerCase().includes(value)
           );
         }
         return false;
@@ -121,15 +116,16 @@ export function TableComponent({ props }) {
     } else {
       // Basic search
       searchMatch =
-        item.order_id.toString().includes(searchQuery) ||
-        item.sku.toLowerCase().includes(searchQuery) ||
-        item.name.toLowerCase().includes(searchQuery) ||
-        item.color.toLowerCase().includes(searchQuery) ||
-        item.size.toLowerCase().includes(searchQuery) ||
-        item.date.toLowerCase().includes(searchQuery);
+        (item.order_id ?? "").toString().includes(searchQuery) ||
+        (item.sku ?? "").toString().toLowerCase().includes(searchQuery) ||
+        (item.description ?? "").toLowerCase().includes(searchQuery) ||
+        (item.date ?? "").toLowerCase().includes(searchQuery);
     }
 
-    const dateMatch = itemDate === date;
+    // Check if item date matches the selected date
+    const itemDate = normalizedDate(item.date.split(" or")[0]);
+    const selectedDate = normalizedDate(date);
+    const dateMatch = itemDate === selectedDate;
 
     return searchMatch && dateMatch;
   });
