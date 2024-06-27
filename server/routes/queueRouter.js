@@ -104,7 +104,6 @@ const createQueueInfo = async (data) => {
     const match = dbOrders.data.find((dbItem) => {
       return (
         Number(dbItem.order_number) === Number(filteredProduct.orderId) &&
-        dbItem.description === filteredProduct.description &&
         dbItem.sku === filteredProduct.sku &&
         Number(dbItem.qty) === Number(filteredProduct.quantity)
       );
@@ -116,16 +115,15 @@ const createQueueInfo = async (data) => {
   }
 
   if (productsToAdd.length > 0) {
-    console.log(`Adding ${productsToAdd.length} items to the queue`);
     try {
       await axios.post(
         `https://admin.heattransferwarehouse.com/api/queue/item-queue/add`,
         {
-          items: filteredProducts,
+          items: productsToAdd,
         }
       );
       // await axios.post(`http://localhost:3000/api/queue/item-queue/add`, {
-      //   items: filteredProducts,
+      //   items: productsToAdd,
       // });
     } catch (error) {
       console.log(
@@ -435,7 +433,7 @@ router.post("/item-queue/add", async (req, res) => {
         quantity,
         productOptions,
         createdAt,
-        descriptions,
+        description,
       } = item;
 
       const queryText = `INSERT INTO item_queue_updated (order_number, email, first_name, last_name, sku, qty, product_length, created_at, description) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9) RETURNING id;`;
@@ -449,12 +447,13 @@ router.post("/item-queue/add", async (req, res) => {
         quantity,
         productOptions,
         createdAt,
-        descriptions,
+        description,
       ];
 
       await client.query(queryText, values);
     }
     await client.query("COMMIT");
+    res.sendStatus(200); // Ensure a response is sent
   } catch (err) {
     console.log("Error adding items to queue:", err.message);
     res.sendStatus(500);
