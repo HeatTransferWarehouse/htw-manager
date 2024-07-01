@@ -5,7 +5,6 @@ export function OptionsList({ props }) {
   const {
     startQueueItem,
     completeQueueItem,
-    deleteQueueItem,
     sendBackCompletedQueueItem,
     sendBackProgressQueueItem,
   } = useQueueActions();
