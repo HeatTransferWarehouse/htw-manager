@@ -13,7 +13,6 @@ export function TableHeaderContainer({ props }) {
   const {
     startQueueItem,
     completeQueueItem,
-    deleteQueueItem,
     sendBackCompletedQueueItem,
     sendBackProgressQueueItem,
   } = useQueueActions();
@@ -133,9 +132,8 @@ export function TableHeaderContainer({ props }) {
                 <button
                   className="w-fit min-w-fit flex items-center gap-2 whitespace-nowrap border border-solid text-red-600 hover:bg-red-600/10 border-red-600 rounded-md p-2"
                   onClick={(e) => {
-                    deleteQueueItem(e, props.checkedIds);
+                    props.setDeleteModalActive(props.checkedIds);
                     setAllSelected(false);
-                    props.setCheckedIds([]);
                   }}>
                   Delete
                   <CgTrash className="w-5 h-5 fill-red-600" />
@@ -166,9 +164,8 @@ export function TableHeaderContainer({ props }) {
                 <button
                   className="w-fit min-w-fit flex items-center gap-2 whitespace-nowrap border border-solid text-red-600 hover:bg-red-600/10 border-red-600 rounded-md p-2"
                   onClick={(e) => {
-                    deleteQueueItem(e, props.checkedIds);
+                    props.setDeleteModalActive(props.checkedIds);
                     setAllSelected(false);
-                    props.setCheckedIds([]);
                   }}>
                   Delete
                   <CgTrash className="w-5 h-5 fill-red-600" />
@@ -199,9 +196,8 @@ export function TableHeaderContainer({ props }) {
                 <button
                   className="w-fit min-w-fit flex items-center gap-2 whitespace-nowrap border border-solid text-red-600 hover:bg-red-600/10 border-red-600 rounded-md p-2"
                   onClick={(e) => {
-                    deleteQueueItem(e, props.checkedIds);
+                    props.setDeleteModalActive(props.checkedIds);
                     setAllSelected(false);
-                    props.setCheckedIds([]);
                   }}>
                   Delete
                   <CgTrash className="w-5 h-5 fill-red-600" />

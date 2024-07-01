@@ -2,7 +2,7 @@ import React from "react";
 import { useQueueActions } from "../functions/actions";
 
 export function OptionsList({ props }) {
-  const { updateQueueOrderedStatus, deleteQueueItem } = useQueueActions();
+  const { updateQueueOrderedStatus } = useQueueActions();
   return (
     <ul>
       {props.view === "new" ? (

@@ -155,6 +155,7 @@ function Supacolor() {
 
   return (
     <>
+      <h1 className="font-bold mx-auto mb-4 mt-8 text-4xl">Supa Queue</h1>
       <Paper
         className="opacity-0 animate-in"
         style={{

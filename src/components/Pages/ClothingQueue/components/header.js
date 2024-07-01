@@ -8,7 +8,7 @@ import { useQueueActions } from "../functions/actions";
 
 export function Header({ props }) {
   const [allSelected, setAllSelected] = useState(false);
-  const { updateQueueOrderedStatus, deleteQueueItem } = useQueueActions();
+  const { updateQueueOrderedStatus } = useQueueActions();
 
   const handleSelectAll = () => {
     let pageItems = [];

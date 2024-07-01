@@ -56,8 +56,8 @@ function WallyB() {
 
   return (
     <>
+      <h1 className="font-bold mx-auto mb-4 mt-8 text-4xl">Admin Dashboard</h1>
       <div className="my-4 px-4 opacity-0 animate-in flex flex-col max-w-screen-xl w-full mx-auto gap-8">
-        <h1 className="font-bold text-4xl">Admin Dashboard</h1>
         <UserTable
           props={{
             users,

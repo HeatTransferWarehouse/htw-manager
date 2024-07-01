@@ -79,6 +79,7 @@ export default function SFFQueue() {
 
   return (
     <>
+      <h1 className="font-bold mx-auto mb-4 mt-8 text-4xl">Deco Queue</h1>
       <TableComponent
         props={{
           checkedIds,

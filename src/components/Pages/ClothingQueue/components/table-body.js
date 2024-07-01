@@ -73,7 +73,7 @@ export function TableContent({ props }) {
         />
       </button>
       {activeItemId === itemId && (
-        <div className="absolute top-10 w-fit right-0 bg-white shadow-default overflow-hidden rounded-md z-[99999]">
+        <div className="absolute top-10 w-fit min-w-32 right-0 bg-white shadow-default overflow-hidden rounded-md z-[99999]">
           <OptionsList
             props={{
               view: props.view,
