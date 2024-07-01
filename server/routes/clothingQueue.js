@@ -191,21 +191,26 @@ const getProductSwatchImage = async (productId, name) => {
     );
 
     let swatchImage = "";
+    let textColor = "black"; // Default text color
 
-    response.data.data.map((option) => {
-      if (option.display_name === "Color") {
-        option.option_values.map((value) => {
-          if (value.label === name) {
-            swatchImage = value.value_data.image_url;
-          }
-        });
+    if (response && response.data && response.data.data) {
+      response.data.data.forEach((option) => {
+        if (option.display_name === "Color" && option.option_values) {
+          option.option_values.forEach((value) => {
+            if (
+              value.label === name &&
+              value.value_data &&
+              value.value_data.image_url
+            ) {
+              swatchImage = value.value_data.image_url;
+            }
+          });
+        }
+      });
+
+      if (swatchImage) {
+        textColor = await determineTextColor(swatchImage);
       }
-    });
-
-    let textColor = "black";
-
-    if (swatchImage) {
-      textColor = await determineTextColor(swatchImage);
     }
 
     return { swatchImage, textColor };
@@ -354,7 +359,6 @@ router.post("/item/add", async (req, res) => {
     }
 
     await client.query("COMMIT"); // Commit the transaction
-    console.log("Items added successfully.");
     res.send({
       success: true,
       message: "Items added successfully.",
@@ -453,5 +457,7 @@ router.put("/items/update/ordered", async (req, res) => {
     client.release();
   }
 });
+
+getOrderProducts(3541752);
 
 module.exports = router;

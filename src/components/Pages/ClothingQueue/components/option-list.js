@@ -14,7 +14,7 @@ export function OptionsList({ props }) {
           </li>
           <li
             className="cursor-pointer whitespace-nowrap hover:bg-red-600/10 py-2 px-3 hover:text-red-600"
-            onClick={() => deleteQueueItem(props.id)}>
+            onClick={() => props.setDeleteModalActive(true)}>
             Delete
           </li>
         </>
@@ -27,7 +27,7 @@ export function OptionsList({ props }) {
           </li>
           <li
             className="cursor-pointer whitespace-nowrap hover:bg-red-600/10 py-2 px-3 hover:text-red-600"
-            onClick={() => deleteQueueItem(props.id)}>
+            onClick={() => props.setDeleteModalActive(true)}>
             Delete
           </li>
         </>

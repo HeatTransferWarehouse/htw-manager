@@ -2,10 +2,13 @@ import React, { useContext, useEffect, useState } from "react";
 import "../css/admin.css";
 import { useDispatch, useSelector } from "react-redux";
 import DeleteModal from "../../modals/deleteModal";
-import AdminRegister from "../../modals/adminRegister";
-import AdminEditUser from "../../modals/adminEditUser";
 import Webhooks from "./components/webhooks";
-import { CreateWebhook, UpdateWebhook } from "./components/modals";
+import {
+  CreateWebhook,
+  RegisterUser,
+  UpdateUser,
+  UpdateWebhook,
+} from "./components/modals";
 import UserTable from "./components/user-table";
 import { BreakpointsContext } from "../../../context/BreakpointsContext";
 
@@ -15,13 +18,12 @@ function WallyB() {
   const users = useSelector((store) => store.user.allUsersReducer);
   const webhooks = useSelector((store) => store.admin.webhooks);
   const [selectedUserId, setSelectedUserId] = useState(null);
+  const [selectedWebhookId, setSelectedWebhookId] = useState(null);
   const currentUser = useSelector((store) => store.user.userReducer);
   const [registerFormActive, setRegisterFormActive] = useState(false);
   const [deleteModalActive, setDeleteModalActive] = useState(false);
   const [editUserActive, setEditUserActive] = useState(false);
-  const [username, setUsername] = useState("");
-  const [password, setPassword] = useState("");
-  const [role, setRole] = useState(null);
+  const [user, setUser] = useState({});
   const [webhookModalActive, setWebhookModalActive] = useState(false);
   const [updateWebhookModalActive, setUpdateWebhookModalActive] =
     useState(false);
@@ -32,39 +34,24 @@ function WallyB() {
     dispatch({ type: "GET_WEBHOOKS" });
   }, [dispatch]);
 
-  // const errors = useSelector((store) => store.errors);
-  const registerUser = (event) => {
-    event.preventDefault();
-
+  const deleteUser = () => {
     dispatch({
-      type: "REGISTER",
-      payload: {
-        username: username,
-        password: password,
-      },
+      type: "DELETE_USER",
+      payload: selectedUserId,
     });
-    setUsername("");
-    setPassword("");
-    setRegisterFormActive(false);
-  }; // end registerUser
-
-  const editUser = (event) => {
-    event.preventDefault();
-
-    dispatch({
-      type: "UPDATE_USER",
-      payload: {
-        id: selectedUserId,
-        username: username,
-        password: password,
-        role: role,
-      },
-    });
+    setDeleteModalActive(false);
     setSelectedUserId(null);
-    setUsername("");
-    setPassword("");
-    setRole(null);
-    setEditUserActive(false);
+  };
+
+  const deleteWebhook = () => {
+    console.log("running");
+    dispatch({
+      type: "DELETE_WEBHOOK",
+      payload: selectedWebhookId,
+    });
+
+    setDeleteModalActive(false);
+    setSelectedWebhookId(null);
   };
 
   return (
@@ -77,11 +64,10 @@ function WallyB() {
             currentUser,
             setRegisterFormActive,
             setEditUserActive,
-            setUsername,
-            setRole,
+            setUser,
+            breakpoint,
             setSelectedUserId,
             setDeleteModalActive,
-            breakpoint,
           }}
         />
         <Webhooks
@@ -90,41 +76,18 @@ function WallyB() {
             setOpen: setWebhookModalActive,
             setUpdateOpen: setUpdateWebhookModalActive,
             setActiveWebhook,
+            setSelectedWebhookId,
+            setDeleteModalActive,
             breakpoint,
           }}
         />
       </div>
-      {registerFormActive && (
-        <AdminRegister
-          registerUser={registerUser}
-          setRegisterFormActive={setRegisterFormActive}
-          username={username}
-          setUsername={setUsername}
-          setPassword={setPassword}
-          password={password}
-        />
-      )}
-      {deleteModalActive && (
-        <DeleteModal
-          selectedUserId={selectedUserId}
-          setDeleteModalActive={setDeleteModalActive}
-          setSelectedUserId={setSelectedUserId}
-        />
-      )}
-      {editUserActive && (
-        <AdminEditUser
-          currentUser={currentUser}
-          selectedUserId={selectedUserId}
-          editUser={editUser}
-          setEditUserActive={setEditUserActive}
-          username={username}
-          password={password}
-          role={role}
-          setUsername={setUsername}
-          setPassword={setPassword}
-          setRole={setRole}
-        />
-      )}
+      <RegisterUser
+        props={{
+          open: registerFormActive,
+          setOpen: setRegisterFormActive,
+        }}
+      />
       <CreateWebhook
         props={{
           open: webhookModalActive,
@@ -137,6 +100,22 @@ function WallyB() {
           setActiveWebhook,
           open: updateWebhookModalActive,
           setOpen: setUpdateWebhookModalActive,
+        }}
+      />
+      <UpdateUser
+        props={{
+          open: editUserActive,
+          setOpen: setEditUserActive,
+          user,
+          setUser,
+        }}
+      />
+      <DeleteModal
+        props={{
+          open: deleteModalActive,
+          setOpen: setDeleteModalActive,
+          deleteFunction: selectedUserId ? deleteUser : deleteWebhook,
+          setId: selectedUserId ? setSelectedUserId : setSelectedWebhookId,
         }}
       />
     </>

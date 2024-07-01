@@ -234,11 +234,11 @@ const UpdateWebhook = ({ props }) => {
         <ModalContent>
           <Form>
             <Fieldset>
-              <Label htmlFor={"scope"}>Scope</Label>
+              <Label htmlFor={"update-scope"}>Scope</Label>
               <Select
                 className={"w-fit"}
-                id={"scope"}
-                name={"scope select"}
+                id={"update-scope"}
+                name={"update-scope"}
                 onChange={(e) => setSelectedScope(e.target.value)}
                 onClick={openScopeDrawer}
                 open={scopeDrawerOpen}
@@ -265,11 +265,11 @@ const UpdateWebhook = ({ props }) => {
               </Select>
             </Fieldset>
             <Fieldset>
-              <Label htmlFor={"destination"}>Destination</Label>
+              <Label htmlFor={"update-destination"}>Destination</Label>
               <Input
                 className={"max-w-96 w-full"}
-                id={"destination"}
-                name={"destination"}
+                id={"update-destination"}
+                name={"update-destination"}
                 onChange={(e) => setDestination(e.target.value)}
                 placeholder={"ex. /api/router/route"}
                 type={"text"}
@@ -341,4 +341,253 @@ const UpdateWebhook = ({ props }) => {
   );
 };
 
-export { CreateWebhook, UpdateWebhook };
+const UpdateUser = ({ props }) => {
+  const dispatch = useDispatch();
+  const closeRef = useRef(null);
+  const bgRef = useRef(null);
+  const [selectDrawerOpen, setSelectDrawerOpen] = useState(false);
+  const [username, setUsername] = useState("");
+  const [password, setPassword] = useState("");
+  const [role, setRole] = useState(null);
+  const [userId, setUserId] = useState(null);
+
+  useEffect(() => {
+    setUsername(props?.user.email);
+    setRole(props?.user.access_level === 5 ? "Admin" : "Member");
+    setPassword(props?.user.password);
+    setUserId(props?.user.id);
+    setUserId(props?.user.id);
+  }, [props.user]);
+
+  const updateUser = async (e) => {
+    e.preventDefault();
+
+    dispatch({
+      type: "UPDATE_USER",
+      payload: {
+        id: userId,
+        username: username,
+        password: password,
+        role: role,
+      },
+    });
+    setUsername("");
+    setPassword("");
+    setRole(null);
+    setUserId(null);
+    props.setOpen(false);
+  };
+
+  const handleOutsideClick = (e) => {
+    if (bgRef.current === e.target) {
+      props.setOpen(false);
+    }
+  };
+
+  const openSelectDrawer = (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+    setSelectDrawerOpen(!selectDrawerOpen);
+  };
+
+  const bind = useDrag(({ down, movement: [, my], cancel }) => {
+    if (my > 100) {
+      cancel(props.setOpen(false));
+    }
+    if (!down && my > 50) {
+      props.setOpen(false);
+    }
+  });
+
+  return (
+    <ModalOverlay
+      ref={bgRef}
+      handleClick={handleOutsideClick}
+      open={props.open}>
+      <Modal open={props.open} width={"sm"}>
+        <ModalCloseMobile ref={closeRef} bind={bind} />
+        <ModalCloseDesktop handleClick={() => props.setOpen(false)} />
+        <ModalTitle>Edit User</ModalTitle>
+        <ModalContent>
+          <Form>
+            <Fieldset>
+              <Label htmlFor={"role"}>Role</Label>
+              <Select
+                className={"w-32"}
+                id={"role"}
+                name={"role"}
+                onChange={(e) => setRole(e.target.value)}
+                onClick={openSelectDrawer}
+                open={selectDrawerOpen}
+                setOpen={setSelectDrawerOpen}
+                value={role === 5 ? "Admin" : "Member"}
+                required={true}>
+                <OptionSheet width={"8rem"} open={selectDrawerOpen}>
+                  <Option selectedValue={role} value={"Select Role"}>
+                    Select Role
+                  </Option>
+                  <Option
+                    onClick={() => {
+                      setRole(5);
+                      setSelectDrawerOpen(false);
+                    }}
+                    selectedValue={role}
+                    value={5}>
+                    Admin
+                  </Option>
+                  <Option
+                    onClick={() => {
+                      setRole(0);
+                      setSelectDrawerOpen(false);
+                    }}
+                    selectedValue={role}
+                    value={0}>
+                    Member
+                  </Option>
+                </OptionSheet>
+              </Select>
+            </Fieldset>
+            <Fieldset>
+              <Label htmlFor={"edit-username"}>Email/Username</Label>
+              <Input
+                className={"max-w-96 w-full"}
+                id={"edit-username"}
+                name={"edit-username"}
+                onChange={(e) => setUsername(e.target.value)}
+                type={"text"}
+                value={username}
+                required={true}
+              />
+            </Fieldset>
+            <Fieldset>
+              <Label htmlFor={"edit-password"}>Password</Label>
+              <Input
+                className={"max-w-96 w-full"}
+                id={"edit-password"}
+                name={"edit-password"}
+                placeholder={"Enter new password"}
+                onChange={(e) => setPassword(e.target.value)}
+                type={"password"}
+                value={password}
+                required={true}
+              />
+            </Fieldset>
+
+            <div className="w-full flex justify-center items-center gap-2">
+              <Button
+                onClick={(e) => {
+                  e.preventDefault();
+                  e.stopPropagation();
+                  props.setOpen(false);
+                }}
+                variant={"neutral"}>
+                Cancel
+              </Button>
+              <Button variant={"secondary"} onClick={updateUser}>
+                Update User
+              </Button>
+            </div>
+          </Form>
+        </ModalContent>
+      </Modal>
+    </ModalOverlay>
+  );
+};
+
+const RegisterUser = ({ props }) => {
+  const dispatch = useDispatch();
+  const closeRef = useRef(null);
+  const bgRef = useRef(null);
+  const [username, setUsername] = useState("");
+  const [password, setPassword] = useState("");
+
+  const registerUser = async (e) => {
+    e.preventDefault();
+
+    dispatch({
+      type: "REGISTER",
+      payload: {
+        username: username,
+        password: password,
+      },
+    });
+    setUsername("");
+    setPassword("");
+    props.setOpen(false);
+  };
+
+  const handleOutsideClick = (e) => {
+    if (bgRef.current === e.target) {
+      props.setOpen(false);
+    }
+  };
+
+  const bind = useDrag(({ down, movement: [, my], cancel }) => {
+    if (my > 100) {
+      cancel(props.setOpen(false));
+    }
+    if (!down && my > 50) {
+      props.setOpen(false);
+    }
+  });
+
+  return (
+    <ModalOverlay
+      ref={bgRef}
+      handleClick={handleOutsideClick}
+      open={props.open}>
+      <Modal open={props.open} width={"sm"}>
+        <ModalCloseMobile ref={closeRef} bind={bind} />
+        <ModalCloseDesktop handleClick={() => props.setOpen(false)} />
+        <ModalTitle>Register User</ModalTitle>
+        <ModalContent>
+          <Form className={"items-center"}>
+            <Fieldset className={"w-fit"}>
+              <Label htmlFor={"register-username"}>Email/Username</Label>
+              <Input
+                className={"max-w-96 min-w-96 w-full"}
+                id={"register-username"}
+                name={"register-username"}
+                onChange={(e) => setUsername(e.target.value)}
+                placeholder={"Enter username/email"}
+                type={"text"}
+                value={username}
+                required={true}
+              />
+            </Fieldset>
+            <Fieldset className={"w-fit"}>
+              <Label htmlFor={"register-password"}>Password</Label>
+              <Input
+                className={"max-w-96 min-w-96 w-full"}
+                id={"register-password"}
+                name={"register-password"}
+                placeholder={"Enter password"}
+                onChange={(e) => setPassword(e.target.value)}
+                type={"password"}
+                value={password}
+                required={true}
+              />
+            </Fieldset>
+
+            <div className="w-full flex mt-4 justify-center items-center gap-2">
+              <Button
+                onClick={(e) => {
+                  e.preventDefault();
+                  e.stopPropagation();
+                  props.setOpen(false);
+                }}
+                variant={"neutral"}>
+                Cancel
+              </Button>
+              <Button variant={"secondary"} onClick={registerUser}>
+                Register User
+              </Button>
+            </div>
+          </Form>
+        </ModalContent>
+      </Modal>
+    </ModalOverlay>
+  );
+};
+
+export { CreateWebhook, UpdateWebhook, UpdateUser, RegisterUser };

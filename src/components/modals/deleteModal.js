@@ -1,42 +1,48 @@
-import { useDispatch } from "react-redux";
-import { IoMdAlert } from "react-icons/io";
-import React from "react";
+import { RiAlertLine } from "react-icons/ri";
+import React, { useRef } from "react";
+import { Modal, ModalContent, ModalOverlay, ModalTitle } from "../Modal/modal";
+import { Button } from "../ui/button";
 
-export default function DeleteModal(props) {
-  const dispatch = useDispatch();
+export default function DeleteModal({ props }) {
+  const bgRef = useRef(null);
+
+  const handleOutsideClick = (e) => {
+    if (bgRef.current === e.target) {
+      props.setOpen(false);
+      props.setId(null);
+    }
+  };
+
   return (
-    <>
-      <div className="delete-user-modal">
-        <div className="delete-user-modal-content">
-          <IoMdAlert className="delete-user-modal-icon" />
-
-          <h2>Are you sure you want to delete this user?</h2>
-          <div className="delete-user-modal-buttons">
-            <button
-              onClick={(e) => {
-                e.preventDefault();
-                props.setDeleteModalActive(false);
-                props.setSelectedUserId(null);
-              }}
-              className="delete-user-close">
-              Cancel
-            </button>
-            <button
-              onClick={(e) => {
-                e.preventDefault();
-                props.setDeleteModalActive(false);
-                dispatch({
-                  type: "DELETE_USER",
-                  payload: props.selectedUserId,
-                });
-                props.setSelectedUserId(null);
-              }}
-              className="delete-user-delete">
-              Delete
-            </button>
-          </div>
-        </div>
-      </div>
-    </>
+    <ModalOverlay
+      ref={bgRef}
+      handleClick={handleOutsideClick}
+      open={props.open}>
+      <Modal open={props.open} width={"xs"}>
+        <ModalTitle>
+          <span className="rounded-full mb-4 mx-auto w-fit flex items-center justify-center p-4 bg-red-600/10">
+            <RiAlertLine className="h-10 w-10 fill-red-600" />
+          </span>
+          Are you sure?
+        </ModalTitle>
+        <ModalContent>
+          <p className="text-gray-800 text-center">
+            This action cannot be undone. All data will be permanently deleted.
+          </p>
+          <Button
+            className={"w-full"}
+            onClick={props.deleteFunction}
+            variant={"danger"}>
+            Delete
+          </Button>
+          <Button
+            className={"w-full"}
+            onClick={() => props.setOpen(false)}
+            variant={"neutral"}>
+            Cancel
+          </Button>
+        </ModalContent>
+      </Modal>
+    </ModalOverlay>
   );
 }

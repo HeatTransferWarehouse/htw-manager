@@ -12,6 +12,7 @@ module.exports = {
         grad: "linear-gradient(90deg, #a759d1 0%, #6240D0 29%, #ff1362, 67%, #fc4242 80%, #a759d1 100%)",
       },
       screens: {
+        xs: "375px",
         sm: "640px",
         md: "768px",
         lg: "1024px",

@@ -7,7 +7,7 @@ const Form = ({ children, className, action }) => {
   return (
     <form
       action={action}
-      className={twMerge(className, "flex items-start flex-col w-full gap-4")}>
+      className={twMerge("flex items-start flex-col w-full gap-4", className)}>
       {children}
     </form>
   );
@@ -16,7 +16,7 @@ const Form = ({ children, className, action }) => {
 const Fieldset = ({ children, className }) => {
   return (
     <fieldset
-      className={twMerge(className, "flex w-full flex-col items-start gap-2")}>
+      className={twMerge("flex w-full flex-col items-start gap-2", className)}>
       {children}
     </fieldset>
   );
@@ -24,7 +24,7 @@ const Fieldset = ({ children, className }) => {
 
 const Label = ({ children, className, htmlFor }) => {
   return (
-    <label className={twMerge(className, "font-medium")} htmlFor={htmlFor}>
+    <label className={twMerge("font-medium", className)} htmlFor={htmlFor}>
       {children}
     </label>
   );
@@ -51,7 +51,7 @@ const Input = ({
       onChange={onChange}
       placeholder={placeholder}
       type={type}
-      value={value}
+      value={value || ""}
       required={required}
     />
   );
@@ -102,7 +102,7 @@ const Select = ({
   );
 };
 
-const OptionSheet = ({ children, className, open }) => {
+const OptionSheet = ({ children, className, open, width }) => {
   const [childrenCount, setChildrenCount] = useState(0);
 
   useEffect(() => {
@@ -133,7 +133,7 @@ const OptionSheet = ({ children, className, open }) => {
         height: open ? `${childrenCount * 2}rem` : "0px",
         maxHeight: "15rem",
         transition: "height 300ms",
-        width: "fit-content",
+        width: width ? width : "fit-content",
       }}>
       {children}
     </div>

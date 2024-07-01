@@ -55,23 +55,28 @@ export default function UserTable({ props }) {
           } else {
             if (props.breakpoint === "mobile") {
               return (
-                <div className="w-full flex items-center gap-2 py-2 border-t border-solid border-gray-200 last-of-type:border-b">
+                <div
+                  className="w-full flex items-center gap-2 py-2 border-t border-solid border-gray-200 last-of-type:border-b"
+                  key={user.id}>
                   <div className="flex grow flex-col">
                     <p className="flex items-center">{user.email}</p>
                     <p className="flex items-center">
                       {user.access_level === "5" ? "Admin" : "Member"}
                     </p>
                     <p className="flex items-center">
-                      {user.last_login.split("T")[0]}
+                      {user.last_login ? user.last_login.split("T")[0] : "N/A"}
                     </p>
                   </div>
                   <div className="w-fit flex gap-2">
                     <Button
                       className={"p-2"}
                       onClick={() => {
-                        props.setSelectedUserId(user.id);
-                        props.setUsername(user.email);
-                        props.setRole(user.access_level);
+                        props.setUser({
+                          id: user.id,
+                          email: user.email,
+                          password: user.password,
+                          access_level: user.access_level,
+                        });
                         props.setEditUserActive(true);
                       }}
                       variant={"neutral"}>
@@ -99,15 +104,18 @@ export default function UserTable({ props }) {
                     {user.access_level === "5" ? "Admin" : "Member"}
                   </p>
                   <p className="flex items-center">
-                    {user.last_login.split("T")[0]}
+                    {user.last_login ? user.last_login.split("T")[0] : "N/A"}
                   </p>
 
                   <Button
                     className={"w-full"}
                     onClick={() => {
-                      props.setSelectedUserId(user.id);
-                      props.setUsername(user.email);
-                      props.setRole(user.access_level);
+                      props.setUser({
+                        id: user.id,
+                        email: user.email,
+                        password: user.password,
+                        access_level: user.access_level,
+                      });
                       props.setEditUserActive(true);
                     }}
                     variant={"neutral"}>
