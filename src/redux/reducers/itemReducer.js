@@ -84,6 +84,15 @@ const supacolorJobDetails = (state = {}, action) => {
   }
 };
 
+const supacolorSort = (state = {}, action) => {
+  switch (action.type) {
+    case "SET_SUPA_SORT":
+      return action.payload;
+    default:
+      return state;
+  }
+};
+
 const initialState = {
   isLoading: false,
   popupMessage: null,
@@ -157,4 +166,5 @@ export default combineReducers({
   artWorkReducer,
   requestJobReducer,
   jobsStorage,
+  supacolorSort,
 });

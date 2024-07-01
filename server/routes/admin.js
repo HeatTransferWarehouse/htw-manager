@@ -55,20 +55,27 @@ router.put("/update/webhook/:id", async (req, res) => {
   const { scope, destination, is_active, events_history_enabled, headers } =
     req.body;
   try {
-    let url = `https://api.bigcommerce.com/stores/${process.env.STORE_HASH}/v3/hooks/${req.params.id}`;
-    let options = {
-      method: "PUT",
+    const url = `https://api.bigcommerce.com/stores/${process.env.STORE_HASH}/v3/hooks/${req.params.id}`;
+    const data = {
+      scope: scope,
+      destination: destination,
+      is_active: is_active,
+      events_history_enabled: events_history_enabled,
+      headers: headers,
+    };
+    const config = {
       headers: {
         "Content-Type": "application/json",
         "X-Auth-Token": process.env.BG_AUTH_TOKEN,
       },
-      body: `{"scope":${scope},"destination":${destination},"is_active":${is_active},"events_history_enabled":${events_history_enabled},"headers":${headers}`,
     };
-    await axios.put(url, options);
+
+    await axios.put(url, data, config);
 
     return res.sendStatus(200);
   } catch (error) {
-    console.log("Error deleting Webhook", error);
+    console.log("Error updating Webhook", error);
+    return res.status(500).send("Error updating Webhook");
   }
 });
 
@@ -77,26 +84,27 @@ router.post("/create/webhook", async (req, res) => {
     req.body;
 
   try {
-    let url = `https://api.bigcommerce.com/stores/${process.env.STORE_HASH}/v3/hooks`;
-    let options = {
-      method: "POST",
+    const url = `https://api.bigcommerce.com/stores/${process.env.STORE_HASH}/v3/hooks`;
+    const data = {
+      scope: scope,
+      destination: destination,
+      is_active: is_active,
+      events_history_enabled: events_history_enabled,
+      headers: headers,
+    };
+    const config = {
       headers: {
         "Content-Type": "application/json",
         "X-Auth-Token": process.env.BG_AUTH_TOKEN,
       },
-      body: {
-        scope: scope,
-        destination: destination,
-        is_active: is_active,
-        events_history_enabled: events_history_enabled,
-        headers: headers,
-      },
     };
-    await axios.post(url, options);
+
+    await axios.post(url, data, config);
 
     return res.sendStatus(200);
   } catch (error) {
     console.log("Error adding Webhook", error);
+    return res.status(500).send("Error adding Webhook");
   }
 });
 

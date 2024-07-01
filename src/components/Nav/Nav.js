@@ -1,10 +1,13 @@
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { HashRouter as Router, NavLink } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { MobileNav } from "./MoblieNav";
 import { RxHamburgerMenu } from "react-icons/rx";
+import { BreakpointsContext } from "../../context/BreakpointsContext";
 
 function Nav() {
+  const breakPoint = useContext(BreakpointsContext);
+
   const [home, setHome] = useState(false);
   const [resources, setResources] = useState(false);
   const [decoQueue, setDecoQueue] = useState(false);
@@ -28,6 +31,17 @@ function Nav() {
     e.stopPropagation();
     setIsOpen(!isOpen);
   };
+
+  useEffect(() => {
+    const mainContainer = document.getElementsByClassName("main-container")[0];
+    if (mainContainer) {
+      if (isOpen) {
+        mainContainer.classList.add("no-pointer-events");
+      } else {
+        mainContainer.classList.remove("no-pointer-events");
+      }
+    }
+  }, [isOpen]);
 
   useEffect(() => {
     switch (pagePath) {
@@ -79,9 +93,40 @@ function Nav() {
     dispatch({ type: "FETCH_USER" });
   }, [dispatch]);
 
+  const props = {
+    user: user,
+    home: home,
+    resources: resources,
+    decoQueue: decoQueue,
+    admin: admin,
+    supacolor: supacolor,
+    sffQueue: sffQueue,
+    disableAll: disableAll,
+    setHome: setHome,
+    setResources: setResources,
+    setDecoQueue: setDecoQueue,
+    setAdmin: setAdmin,
+    setSupacolor: setSupacolor,
+    setSffQueue: setSffQueue,
+    isOpen: isOpen,
+    setIsOpen: setIsOpen,
+    toggleMenu: toggleMenu,
+    clothingQueue: clothingQueue,
+    setClothingQueue: setClothingQueue,
+  };
+
+  const renderNav = () => {
+    if (breakPoint === "tablet") {
+      return <MobileNav {...props} />;
+    } else if (breakPoint === "mobile") {
+      return <MobileNav {...props} />;
+    }
+    return null;
+  };
+
   return (
     <>
-      <header className="bg-white sticky top-0 z-50 py-4 px-8 flex items-center justify-center shadow-default">
+      <header className="bg-white relative w-full h-[86px] z-50 py-4 px-8 flex items-center justify-center shadow-default">
         <div className="w-full max-lg:hidden max-w-screen-2xl flex items-center justify-between">
           <a href="https://www.heattransferwarehouse.com/">
             <img
@@ -90,7 +135,7 @@ function Nav() {
               alt="Heat Transfer Warehouse Logo"
             />
           </a>
-          <nav className="flex gap-8 items-center">
+          <nav className="flex gap-4 items-center">
             <Router>
               <NavLink
                 to="/"
@@ -215,29 +260,7 @@ function Nav() {
           </button>
         </div>
       </header>
-      <MobileNav
-        props={{
-          user,
-          home,
-          resources,
-          decoQueue,
-          admin,
-          supacolor,
-          sffQueue,
-          disableAll,
-          setHome,
-          setResources,
-          setDecoQueue,
-          setAdmin,
-          setSupacolor,
-          setSffQueue,
-          isOpen,
-          setIsOpen,
-          toggleMenu,
-          clothingQueue,
-          setClothingQueue,
-        }}
-      />
+      {renderNav()}
     </>
   );
 }

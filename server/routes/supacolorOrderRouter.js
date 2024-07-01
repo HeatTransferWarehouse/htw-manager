@@ -719,7 +719,13 @@ GROUP BY
 /* This get is fetching our jobs that we put into the Digital Ocean DB to list on the frontend in the admin app */
 
 router.get("/get-jobs", (req, res) => {
-  const query = `
+  const { sort_by, order } = req.query;
+
+  const validColumns = ["order_id", "job_id", "customer_name", "date_due"];
+
+  const validOrders = ["asc", "desc"];
+
+  let query = `
   SELECT 
   "supacolor_jobs".*,
   json_agg(
@@ -739,8 +745,18 @@ WHERE
   "supacolor_jobs"."perm_delete" = false
 GROUP BY 
   "supacolor_jobs".id, "supacolor_jobs".job_id, "supacolor_jobs".date_due, "supacolor_jobs".job_cost, "supacolor_jobs".expecting_artwork
-;
+
         `;
+
+  if (
+    sort_by &&
+    validColumns.includes(sort_by) &&
+    order &&
+    validOrders.includes(order.toLowerCase())
+  ) {
+    const sortOrder = order.toUpperCase();
+    query += ` ORDER BY ${sort_by} ${sortOrder}`;
+  }
 
   pool
     .query(query)

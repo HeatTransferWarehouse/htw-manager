@@ -1,18 +1,17 @@
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import "../css/admin.css";
 import { useDispatch, useSelector } from "react-redux";
-import { TiUserAdd } from "react-icons/ti";
-import { FaUserEdit } from "react-icons/fa";
-import { FaTrash } from "react-icons/fa6";
 import DeleteModal from "../../modals/deleteModal";
 import AdminRegister from "../../modals/adminRegister";
-import { MdEdit } from "react-icons/md";
 import AdminEditUser from "../../modals/adminEditUser";
 import Webhooks from "./components/webhooks";
-import { CreateWebhook } from "./components/modals";
+import { CreateWebhook, UpdateWebhook } from "./components/modals";
+import UserTable from "./components/user-table";
+import { BreakpointsContext } from "../../../context/BreakpointsContext";
 
 function WallyB() {
   const dispatch = useDispatch();
+  const breakpoint = useContext(BreakpointsContext);
   const users = useSelector((store) => store.user.allUsersReducer);
   const webhooks = useSelector((store) => store.admin.webhooks);
   const [selectedUserId, setSelectedUserId] = useState(null);
@@ -23,7 +22,11 @@ function WallyB() {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [role, setRole] = useState(null);
-  const [webhookModalActive, setWebhookModalActive] = useState(true);
+  const [webhookModalActive, setWebhookModalActive] = useState(false);
+  const [updateWebhookModalActive, setUpdateWebhookModalActive] =
+    useState(false);
+  const [activeWebhook, setActiveWebhook] = useState({});
+
   useEffect(() => {
     dispatch({ type: "FETCH_ALL_USERS" });
     dispatch({ type: "GET_WEBHOOKS" });
@@ -66,83 +69,31 @@ function WallyB() {
 
   return (
     <>
-      <main className="my-4 flex flex-col max-w-screen-xl w-full mx-auto gap-8">
-        <div className="admin-header">
-          <h1>Admin Controls</h1>
-        </div>
-        <div className="bg-white rounded-md shadow-default w-full p-4 max-w-screen-xl">
-          <div className="admin-users-section-header">
-            <h2>
-              Active Users{" "}
-              <span className="active-users">({users.length - 1})</span>
-            </h2>
-            <div className="admin-users-header-buttons">
-              <button
-                onClick={(e) => {
-                  e.stopPropagation();
-                  setRegisterFormActive(true);
-                }}
-                className="admin-users-add">
-                New User
-                <TiUserAdd className="admin-add-user-icon" />
-              </button>
-              <button
-                onClick={(e) => {
-                  e.stopPropagation();
-                  setEditUserActive(true);
-                  setUsername(currentUser.email);
-                  setRole(currentUser.access_level);
-                  setSelectedUserId(currentUser.id);
-                }}
-                className="admin-users-add">
-                Edit My Info
-                <MdEdit className="admin-edit-admin-icon" />
-              </button>
-            </div>
-          </div>
-          <div className="admin-users">
-            <div className="admin-users-header">
-              <p className="admin-users-email">Email</p>
-              <p className="admin-users-role">Role</p>
-              <p className="empty-column"></p>
-              <p className="empty-column"></p>
-            </div>
-            {users.map((user) => {
-              if (user.id === currentUser.id) {
-                return null;
-              } else {
-                return (
-                  <div className="admin-user" key={user.id}>
-                    <p className="admin-user-email">{user.email}</p>
-                    <p className="admin-user-role">
-                      {user.access_level === "5" ? "Admin" : "Staff"}
-                    </p>
-                    <button
-                      onClick={() => {
-                        setSelectedUserId(user.id);
-                        setUsername(user.email);
-                        setRole(user.access_level);
-                        setEditUserActive(true);
-                      }}
-                      className="admin-edit-user">
-                      <FaUserEdit />
-                    </button>
-                    <button
-                      onClick={() => {
-                        setSelectedUserId(user.id);
-                        setDeleteModalActive(true);
-                      }}
-                      className="admin-delete-user">
-                      <FaTrash />
-                    </button>
-                  </div>
-                );
-              }
-            })}
-          </div>
-        </div>
-        <Webhooks props={{ webhooks }} />
-      </main>
+      <div className="my-4 px-4 opacity-0 animate-in flex flex-col max-w-screen-xl w-full mx-auto gap-8">
+        <h1 className="font-bold text-4xl">Admin Dashboard</h1>
+        <UserTable
+          props={{
+            users,
+            currentUser,
+            setRegisterFormActive,
+            setEditUserActive,
+            setUsername,
+            setRole,
+            setSelectedUserId,
+            setDeleteModalActive,
+            breakpoint,
+          }}
+        />
+        <Webhooks
+          props={{
+            webhooks,
+            setOpen: setWebhookModalActive,
+            setUpdateOpen: setUpdateWebhookModalActive,
+            setActiveWebhook,
+            breakpoint,
+          }}
+        />
+      </div>
       {registerFormActive && (
         <AdminRegister
           registerUser={registerUser}
@@ -178,6 +129,14 @@ function WallyB() {
         props={{
           open: webhookModalActive,
           setOpen: setWebhookModalActive,
+        }}
+      />
+      <UpdateWebhook
+        props={{
+          webhook: activeWebhook,
+          setActiveWebhook,
+          open: updateWebhookModalActive,
+          setOpen: setUpdateWebhookModalActive,
         }}
       />
     </>
