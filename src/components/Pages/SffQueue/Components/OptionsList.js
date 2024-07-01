@@ -5,7 +5,6 @@ export function OptionsList({ props }) {
   const {
     startQueueItem,
     completeQueueItem,
-    deleteQueueItem,
     sendBackCompletedQueueItem,
     sendBackProgressQueueItem,
   } = useQueueActions();
@@ -27,7 +26,7 @@ export function OptionsList({ props }) {
           </li>
           <li
             className="cursor-pointer hover:bg-red-600/10 py-2 px-3 hover:text-red-600"
-            onClick={(e) => deleteQueueItem(e, props.id)}>
+            onClick={(e) => props.setDeleteModalActive(true)}>
             Delete
           </li>
         </>
@@ -47,7 +46,7 @@ export function OptionsList({ props }) {
           </li>
           <li
             className="cursor-pointer hover:bg-red-600/10 py-2 px-3 hover:text-red-600"
-            onClick={(e) => deleteQueueItem(e, props.id)}>
+            onClick={(e) => props.setDeleteModalActive(true)}>
             Delete
           </li>
         </>
@@ -60,7 +59,7 @@ export function OptionsList({ props }) {
           </li>
           <li
             className="cursor-pointer hover:bg-red-600/10 py-2 px-3 hover:text-red-600"
-            onClick={(e) => deleteQueueItem(e, props.id)}>
+            onClick={(e) => props.setDeleteModalActive(true)}>
             Delete
           </li>
         </>

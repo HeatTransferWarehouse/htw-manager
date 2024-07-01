@@ -83,6 +83,7 @@ export default function ClothingQueue() {
 
   return (
     <>
+      <h1 className="font-bold mx-auto mb-4 mt-8 text-4xl">Clothing Queue</h1>
       <TableComponent
         props={{
           checkedIds,
@@ -99,7 +100,6 @@ export default function ClothingQueue() {
           singleCheckedId,
           setShowAdvancedSearchModal,
           setDeleteModalActive,
-          setSingleCheckedId,
         }}
       />
       <div>

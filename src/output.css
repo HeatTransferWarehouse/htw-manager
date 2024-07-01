@@ -993,6 +993,10 @@ video {
   min-width: 24rem;
 }
 
+.min-w-32 {
+  min-width: 8rem;
+}
+
 .max-w-96 {
   max-width: 24rem;
 }
