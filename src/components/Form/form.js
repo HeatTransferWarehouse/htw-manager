@@ -16,7 +16,7 @@ const Form = ({ children, className, action }) => {
 const Fieldset = ({ children, className }) => {
   return (
     <fieldset
-      className={twMerge(className, "flex w-fit flex-col items-start gap-2")}>
+      className={twMerge(className, "flex w-full flex-col items-start gap-2")}>
       {children}
     </fieldset>
   );
@@ -43,8 +43,8 @@ const Input = ({
   return (
     <input
       className={twMerge(
-        className,
-        "inline-flex peer focus-visible:ring-secondary/20 w-full rounded-md border border-gray-300 py-2.5 px-2 text-base placeholder:text-gray-500 focus-visible:border-secondary focus-visible:outline-none focus-visible:ring-4 hover:border-secondary disabled:bg-gray-100 disabled:hover:border-gray-300"
+        "inline-flex peer m-0 focus-visible:ring-secondary/20 w-full rounded-md border border-gray-300 py-2.5 px-2 text-base placeholder:text-gray-500 focus-visible:border-secondary focus-visible:outline-none focus-visible:ring-4 hover:border-secondary disabled:bg-gray-100 disabled:hover:border-gray-300",
+        className
       )}
       id={id}
       name={name}
@@ -76,7 +76,7 @@ const Select = ({
   }, [setOpen]);
 
   return (
-    <div className={twMerge(className, "relative ml-1 w-fit flex flex-col")}>
+    <div className={twMerge("relative ml-1 w-fit flex flex-col", className)}>
       <select
         className={twMerge("sr-only")}
         id={id}
@@ -125,9 +125,9 @@ const OptionSheet = ({ children, className, open }) => {
   return (
     <div
       className={twMerge(
-        className,
         open ? "shadow-default" : "h-0",
-        "absolute w-full rounded-md top-0 overflow-y-auto left-0 mt-12 bg-white"
+        "absolute w-full rounded-md top-0 overflow-y-auto left-0 mt-12 bg-white",
+        className
       )}
       style={{
         height: open ? `${childrenCount * 2}rem` : "0px",
@@ -160,7 +160,7 @@ const Option = ({ value, children, onClick, selectedValue }) => {
 const RadioGroup = ({ children, className }) => {
   return (
     <div
-      className={twMerge(className, "flex flex-col items-start gap-2 w-full")}>
+      className={twMerge("flex flex-col items-start gap-2 w-full", className)}>
       {children}
     </div>
   );
@@ -189,27 +189,14 @@ const RadioButton = ({
       />
       <span
         className={twMerge(
-          className,
           checked ? "border-secondary" : "border-black",
-          "flex border border-solid items-center justify-center h-6 w-6 rounded-full gap-2"
+          "flex border border-solid items-center justify-center h-6 w-6 rounded-full gap-2",
+          className
         )}>
         {checked && <span className="bg-secondary w-4 h-4 rounded-full" />}
       </span>
       {value}
     </Label>
-  );
-};
-
-const SubmitButton = ({ children, className, onClick }) => {
-  return (
-    <button
-      className={twMerge(
-        className,
-        "bg-secondary text-white py-2 px-4 mt-4 rounded-md hover:bg-secondary-darker disabled:bg-gray-100 disabled:hover:bg-gray-100"
-      )}
-      onClick={onClick}>
-      {children}
-    </button>
   );
 };
 
@@ -223,5 +210,4 @@ export {
   OptionSheet,
   RadioGroup,
   RadioButton,
-  SubmitButton,
 };

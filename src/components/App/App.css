@@ -14,14 +14,19 @@ body {
 .main-container {
   display: flex;
   flex-direction: column;
-  height: calc((var(--vh, 1vh) * 100) - 97px);
+  height: calc((var(--vh, 1vh) * 100) - 86px);
   overflow-y: scroll;
   position: relative;
   scrollbar-color: rgb(155, 155, 155) transparent;
 
-  @media (max-width: 1024px) {
-    height: calc((var(--vh, 1vh) * 100) - 84.16px);
+  &.no-pointer-events {
+    pointer-events: none;
   }
+}
+
+/* styles.css or a similar stylesheet */
+.smooth-transition {
+  transition: margin-top 0.5s ease;
 }
 
 .sr-only {

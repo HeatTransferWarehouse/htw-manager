@@ -50,7 +50,6 @@ function App() {
     window.addEventListener("resize", setVhProperty);
 
     // Set up the initial timeout
-
     // Set up event listeners for various user activity
     window.addEventListener("mousemove", resetTimer);
     window.addEventListener("mousedown", resetTimer);
@@ -70,41 +69,29 @@ function App() {
       }
     };
   }, [dispatch, resetTimer]);
+
   return (
     <Router>
       {user.id && <Nav />}
       <main className="main-container">
         <Switch>
           <Route exact path="/login" component={Login} />
-
           <Route exact path="/orderlookup" component={OrderLookup} />
-
           <Route exact path="/orderlookupold" component={OrderLookupOLD} />
-
           <Route exact path="/accountlookup" component={OrderLookup} />
-
           <ProtectedRoute exact path="/" component={Main} />
-
           <ProtectedRoute exact path="/sff-queue" component={SFFQueue} />
-
           <ProtectedRoute exact path="/resources" component={Resources} />
-
           <ProtectedRoute exact path="/decoqueue" component={DecoQueue} />
-
           <ProtectedRoute exact path="/supacolor" component={Supacolor} />
-
           <ProtectedRoute
             exact
             path="/queue/clothing"
             component={ClothingQueue}
           />
-
           <AdminRoute exact path="/wallyb" component={WallyB} />
-
           <AdminRoute exact path="/register" component={Register} />
-
           <AdminRoute exact path="/admin" component={Admin} />
-
           {/* If none of the other routes matched, we will show a 404. */}
           <Route
             render={() => (
@@ -124,11 +111,5 @@ function App() {
     </Router>
   );
 }
-
-// const mapStateToProps = (state) => ({
-//   user: state.user,
-// });
-
-// this allows us to use <App /> in index.js **
 
 export default App;

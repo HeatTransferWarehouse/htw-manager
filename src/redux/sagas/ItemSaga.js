@@ -208,10 +208,17 @@ function* getJobDetails(action) {
   }
 }
 
-function* getJobsList() {
+function* getJobsList(action) {
+  const { sort_by, order } = action.payload || {
+    sort_by: "order_id",
+    order: "desc",
+  };
   try {
-    const response = yield axios.get("/supacolor-api/get-jobs");
+    const response = yield axios.get(
+      `/supacolor-api/get-jobs?sort_by=${sort_by}&order=${order}`
+    );
     yield put({ type: "GET_JOBS_LIST", payload: response.data });
+    yield put({ type: "SET_SUPA_SORT", payload: { sort_by, order } });
   } catch (error) {
     console.log("Failed to get Jobs List");
   }

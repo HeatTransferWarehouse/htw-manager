@@ -23,7 +23,11 @@ const TableHeader = ({ className, children, tableFor }) => {
       className={twMerge(
         className,
         "grid",
-        tableFor === "clothing" ? "grid-cols-clothing" : "grid-cols-queue"
+        tableFor === "clothing"
+          ? "grid-cols-clothing"
+          : tableFor === "supacolor"
+          ? "grid-cols-supacolor"
+          : "grid-cols-queue"
       )}>
       {children}
     </div>
@@ -39,6 +43,8 @@ const TableRow = ({ className, children, isMobile, tableFor }) => {
           ? "grid-cols-queueMobile"
           : tableFor === "clothing"
           ? "grid-cols-clothing"
+          : tableFor === "supacolor"
+          ? "grid-cols-supacolor"
           : "grid-cols-queue",
         "w-full grid relative"
       )}>

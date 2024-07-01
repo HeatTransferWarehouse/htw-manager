@@ -156,6 +156,7 @@ function Supacolor() {
   return (
     <>
       <Paper
+        className="opacity-0 animate-in"
         style={{
           maxWidth: "1200px",
           width: "90%",

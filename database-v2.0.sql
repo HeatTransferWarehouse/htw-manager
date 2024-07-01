@@ -163,9 +163,15 @@ CREATE TABLE "supacolor_jobs"
 	"id" serial PRIMARY KEY NOT NULL,
 	"job_id" integer UNIQUE NOT NULL,
 	"order_id" INTEGER UNIQUE NOT NULL,
+	"customer_name" VARCHAR(320) NOT NULL,
 	"date_due" VARCHAR(320) NOT NULL,
 	"job_cost" NUMERIC(16,4) NOT NULL,
-	"expecting_artwork" BOOLEAN NOT NULL
+	"expecting_artwork" BOOLEAN NOT NULL,
+	"fake_deleted" BOOLEAN DEFAULT FALSE,
+	"canceled" BOOLEAN DEFAULT FALSE,
+	"perm_delete" BOOLEAN DEFAULT FALSE,
+	"active" BOOLEAN DEFAULT TRUE,
+	"complete" BOOLEAN DEFAULT FALSE
 );
 
 CREATE TABLE "job_line_details" 
