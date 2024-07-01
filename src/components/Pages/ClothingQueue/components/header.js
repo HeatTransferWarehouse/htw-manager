@@ -120,9 +120,8 @@ export function Header({ props }) {
                   onClick={(e) => {
                     e.stopPropagation();
                     e.preventDefault();
-                    deleteQueueItem(props.checkedIds);
+                    props.setDeleteModalActive(props.checkedIds);
                     setAllSelected(false);
-                    props.setCheckedIds([]);
                   }}>
                   Delete
                   <CgTrash className="w-5 h-5 fill-red-600" />
@@ -147,9 +146,8 @@ export function Header({ props }) {
                   onClick={(e) => {
                     e.stopPropagation();
                     e.preventDefault();
-                    deleteQueueItem(props.checkedIds);
+                    props.setDeleteModalActive(props.checkedIds);
                     setAllSelected(false);
-                    props.setCheckedIds([]);
                   }}>
                   Delete
                   <CgTrash className="w-5 h-5 fill-red-600" />

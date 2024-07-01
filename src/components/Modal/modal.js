@@ -1,6 +1,7 @@
-import React, { forwardRef } from "react";
+import React, { forwardRef, useContext } from "react";
 import { IoIosCloseCircle } from "react-icons/io";
 import { twMerge } from "tailwind-merge";
+import { BreakpointsContext } from "../../context/BreakpointsContext";
 
 const ModalOverlay = forwardRef(
   ({ children, className, handleClick, open }, ref) => {
@@ -21,13 +22,16 @@ const ModalOverlay = forwardRef(
   }
 );
 
-const Modal = ({ children, open, className, width }) => {
+const Modal = ({ children, open, className, width, style }) => {
+  const breakpoint = useContext(BreakpointsContext);
+
   const size = {
     "2xl": "max-w-screen-2xl",
     xl: "max-w-screen-xl",
     lg: "max-w-screen-lg",
     md: "max-w-screen-md",
     sm: "max-w-screen-sm",
+    xs: "max-w-screen-xs",
   };
   return (
     <div
@@ -35,8 +39,10 @@ const Modal = ({ children, open, className, width }) => {
         open ? "translate-y-0" : "translate-y-[100%] md:translate-y-[200%]",
         "bg-white relative overflow-hidden max-md:rounded-t-xl duration-200 transition max-md:rounded-b-none flex flex-col max-md:max-h-[80%] z-[9999] p-4 w-full rounded-md shadow-default",
         size[width],
-        className
-      )}>
+        className,
+        breakpoint === "mobile" && "max-w-full"
+      )}
+      style={style}>
       {children}
     </div>
   );
@@ -45,7 +51,7 @@ const Modal = ({ children, open, className, width }) => {
 const ModalCloseMobile = forwardRef(({ bind }, ref) => {
   return (
     <div
-      className="flex items-center justify-center min-h-12 md:hidden h-12 top-0 w-full bg-white z-[999999]"
+      className="flex items-center justify-center min-h-4 md:hidden h-4 top-0 w-full bg-white z-[999999] mb-4"
       style={{
         touchAction: "none",
       }}

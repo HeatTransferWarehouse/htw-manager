@@ -1,6 +1,5 @@
 import React from "react";
 import { GoDotFill } from "react-icons/go";
-import { useAdminActions } from "../actions/admin-actions";
 import { FaPlus } from "react-icons/fa6";
 import { Button } from "../../../ui/button";
 import { Card } from "../../../ui/card";
@@ -8,7 +7,6 @@ import { MdEdit } from "react-icons/md";
 import { MdDelete } from "react-icons/md";
 
 export default function Webhooks({ props }) {
-  const { deleteWebhook } = useAdminActions();
   return (
     <Card width={"xl"}>
       <div className="flex items-center max-md:flex-col max-md:gap-4 justify-between mb-4">
@@ -30,11 +28,11 @@ export default function Webhooks({ props }) {
             <p className="text-lg w-fit max-md:text-base relative font-bold flex items-center gap-2">
               {webhook.scope}
               {webhook.is_active ? (
-                <span className="w-4 h-4 flex absolute -top-2 -right-5 items-center justify-center border border-solid border-green-600 rounded-full">
+                <span className="w-4 h-4 flex absolute  -right-5 items-center justify-center border border-solid border-green-600 rounded-full">
                   <GoDotFill className="w-full h-full animate-pulse fill-green-600" />
                 </span>
               ) : (
-                <span className="w-4 h-4 flex absolute -top-2 right-0 rounded-full items-center justify-center border border-solid border-red-600">
+                <span className="w-4 h-4 flex absolute  -right-5 rounded-full items-center justify-center border border-solid border-red-600">
                   <GoDotFill className="w-3 h-3 fill-red-600" />
                 </span>
               )}
@@ -66,7 +64,10 @@ export default function Webhooks({ props }) {
             </Button>
             <Button
               className={"p-2"}
-              onClick={() => deleteWebhook(webhook.id)}
+              onClick={() => {
+                props.setSelectedWebhookId(webhook.id);
+                props.setDeleteModalActive(true);
+              }}
               variant={"danger"}>
               {props.breakpoint === "mobile" ? (
                 <MdDelete className="w-4 h-4 fill-white" />

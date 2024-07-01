@@ -3,6 +3,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { TableComponent } from "./components/table";
 import { useLocation } from "react-router-dom/cjs/react-router-dom.min";
 import AdvancedSearchModal from "./components/advanced-search-modal";
+import DeleteModal from "../../modals/deleteModal";
 
 export default function ClothingQueue() {
   const location = useLocation();
@@ -23,8 +24,7 @@ export default function ClothingQueue() {
   const [itemsLoading, setItemsLoading] = useState(true);
   const [checkedIds, setCheckedIds] = useState([]);
   const [singleCheckedId, setSingleCheckedId] = useState(null);
-  //   const [deleteModalActive, setDeleteModalActive] = useState(false);
-  //   const [singleCheckedId, setSingleCheckedId] = useState(null);
+  const [deleteModalActive, setDeleteModalActive] = useState(false);
 
   useEffect(() => {
     dispatch({ type: "GET_CLOTHING_QUEUE_ITEMS" });
@@ -65,6 +65,22 @@ export default function ClothingQueue() {
     !loading && setItemsLoading(false);
   }, [items, loading]);
 
+  const handleDelete = (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+    if (checkedIds.length === 0) {
+      dispatch({
+        type: "DELETE_CLOTHING_QUEUE_ITEM",
+        payload: singleCheckedId,
+      });
+      setSingleCheckedId(null);
+    } else {
+      dispatch({ type: "DELETE_CLOTHING_QUEUE_ITEM", payload: checkedIds });
+      setCheckedIds([]);
+    }
+    setDeleteModalActive(false);
+  };
+
   return (
     <>
       <TableComponent
@@ -82,13 +98,22 @@ export default function ClothingQueue() {
           setSingleCheckedId,
           singleCheckedId,
           setShowAdvancedSearchModal,
-          //   setDeleteModalActive,
-          //   setSingleCheckedId,
+          setDeleteModalActive,
+          setSingleCheckedId,
         }}
       />
-      <AdvancedSearchModal
-        props={{ setShowAdvancedSearchModal, open: showAdvancedSearchModal }}
-      />
+      <div>
+        <AdvancedSearchModal
+          props={{ setShowAdvancedSearchModal, open: showAdvancedSearchModal }}
+        />
+        <DeleteModal
+          props={{
+            open: deleteModalActive,
+            setOpen: setDeleteModalActive,
+            deleteFunction: handleDelete,
+          }}
+        />
+      </div>
     </>
   );
 }
