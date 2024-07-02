@@ -453,6 +453,4 @@ router.put("/items/update/ordered", async (req, res) => {
   }
 });
 
-getOrderProducts(3541889);
-
 module.exports = router;
