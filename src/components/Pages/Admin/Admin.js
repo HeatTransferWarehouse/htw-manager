@@ -44,7 +44,6 @@ function WallyB() {
   };
 
   const deleteWebhook = () => {
-    console.log("running");
     dispatch({
       type: "DELETE_WEBHOOK",
       payload: selectedWebhookId,

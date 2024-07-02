@@ -30,7 +30,6 @@ export default function ImageUploadModal({
   const popupMessage = useSelector(
     (state) => state.item.artWorkReducer.popupMessage
   );
-  console.log(popupMessage);
   const [files, setFiles] = useState({});
   const closeRef = useRef(null);
   const bgRef = useRef(null);
