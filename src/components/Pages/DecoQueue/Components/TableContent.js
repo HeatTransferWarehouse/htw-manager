@@ -231,7 +231,7 @@ export function TableContent({ props }) {
                 </TableCell>
                 <TableCell
                   isMobile={index === 0 && props.isMobile}
-                  className={"!p-0"}>
+                  className="p-0">
                   {renderOptionsButton(item.id)}
                 </TableCell>
               </TableRow>
@@ -267,8 +267,8 @@ export function TableContent({ props }) {
                     </label>
                   </span>
                 </TableCell>
-                <TableCell minWidth={"7rem"}>{item.order_number}</TableCell>
-                <TableCell className={"!p-2"} minWidth={"10rem"}>
+                <TableCell minWidth="7rem">{item.order_number}</TableCell>
+                <TableCell className="p-2" minWidth="10rem">
                   <span
                     className="rounded-md !p-2"
                     style={{
@@ -277,16 +277,16 @@ export function TableContent({ props }) {
                     {item.sku}
                   </span>
                 </TableCell>
-                <TableCell minWidth={"15rem"}>{item.description}</TableCell>
-                <TableCell minWidth={"15rem"}>{item.length}</TableCell>
+                <TableCell minWidth="15rem">{item.description}</TableCell>
+                <TableCell minWidth="15rem">{item.length}</TableCell>
                 <TableCell>{item.qty}</TableCell>
-                <TableCell className={"!p-2"} minWidth={"5rem"}>
+                <TableCell className="p-2" minWidth="5rem">
                   {renderPriorityButton(item)}
                 </TableCell>
-                <TableCell minWidth={"8rem"}>
+                <TableCell minWidth="8rem">
                   {item.created_at.split(": ")[1].split(" T")[0]}
                 </TableCell>
-                <TableCell className={"!p-0"}>
+                <TableCell className="p-0">
                   {renderOptionsButton(item.id)}
                 </TableCell>
               </TableRow>

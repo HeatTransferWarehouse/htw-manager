@@ -146,7 +146,7 @@ export function TableComponent({ props }) {
           <IoMdInformationCircle className="w-6 h-6 hover/group-searchInfo:fill-secondary" />
           <p>Learn about Advanced Searching</p>
         </span>
-        <Search onSearch={handleSearch} className={"!m-0 !p-0"} />
+        <Search onSearch={handleSearch} className="m-0 p-0" />
       </div>
       <TableHeaderContainer
         props={{
@@ -167,21 +167,21 @@ export function TableComponent({ props }) {
         {!props.isMobile && (
           <TableHeader>
             <TableHeadCell />
-            <TableHeadCell minWidth={"7rem"}>
+            <TableHeadCell minWidth="7rem">
               {renderSortButton("order_number", "Order Number")}
             </TableHeadCell>
-            <TableHeadCell minWidth={"10rem"}>
+            <TableHeadCell minWidth="10rem">
               {renderSortButton("sku", "Sku")}
             </TableHeadCell>
-            <TableHeadCell minWidth={"15rem"}>
+            <TableHeadCell minWidth="15rem">
               {renderSortButton("description", "Product Name")}
             </TableHeadCell>
-            <TableHeadCell minWidth={"15rem"}>Product Length</TableHeadCell>
+            <TableHeadCell minWidth="15rem">Product Length</TableHeadCell>
             <TableHeadCell>{renderSortButton("qty", "Qty")}</TableHeadCell>
-            <TableHeadCell minWidth={"5rem"}>
+            <TableHeadCell minWidth="5rem">
               {renderSortButton("priority", "Priority")}
             </TableHeadCell>
-            <TableHeadCell minWidth={"8rem"}>
+            <TableHeadCell minWidth="8rem">
               {renderSortButton("created_at", "Created At")}
             </TableHeadCell>
             <TableHeadCell />

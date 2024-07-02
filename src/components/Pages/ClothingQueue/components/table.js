@@ -26,7 +26,6 @@ export function TableComponent({ props }) {
   const [rowsPerPage, setRowsPerPage] = useState(10);
   const [page, setPage] = useState(0);
   const [searchQuery, setSearchQuery] = useState("");
-  const [date, setDate] = useState(new Date().toISOString().split("T")[0]);
 
   useEffect(() => {
     setItems({
@@ -63,13 +62,6 @@ export function TableComponent({ props }) {
 
   const currentViewItems =
     props.view === "new" ? items.newItems : items.orderedItems;
-
-  // Normalize date format for comparison
-  const normalizedDate = (date) => {
-    if (!date) return "";
-    const d = new Date(date);
-    return isNaN(d.getTime()) ? "" : d.toISOString().split("T")[0];
-  };
 
   // Filter items based on search query and date
   const filteredItems = currentViewItems.filter((item) => {
@@ -122,12 +114,7 @@ export function TableComponent({ props }) {
         (item.date ?? "").toLowerCase().includes(searchQuery);
     }
 
-    // Check if item date matches the selected date
-    const itemDate = normalizedDate(item.date.split(" or")[0]);
-    const selectedDate = normalizedDate(date);
-    const dateMatch = itemDate === selectedDate;
-
-    return searchMatch && dateMatch;
+    return searchMatch;
   });
 
   return (
@@ -151,19 +138,6 @@ export function TableComponent({ props }) {
           <p>Learn about Advanced Searching</p>
         </span>
         <Search onSearch={handleSearch} className={"!m-0 !p-0"} />
-        <label className="sr-only" htmlFor="date">
-          Date
-        </label>
-        <input
-          className="p-2 m-0 shadow-default rounded-md cursor-pointer"
-          type="date"
-          id="date"
-          name="date"
-          onChange={(e) => {
-            setDate(e.target.value);
-          }}
-          value={date.split(" or")[0]}
-        />
       </div>
       <Header
         props={{
@@ -219,7 +193,6 @@ export function TableComponent({ props }) {
             setDeleteModalActive: props.setDeleteModalActive,
             setSingleCheckedId: props.setSingleCheckedId,
             view: props.view,
-            date,
           }}
         />
       </TableContainer>

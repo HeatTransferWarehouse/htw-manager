@@ -342,8 +342,7 @@ function Supacolor() {
           />
         </TableContainer>
       </Paper>
-      {/* Here is our Popup Modal for Clicking the Upload Image Button */}
-      {toggleUploadImg ? (
+      <div>
         <ImageUploadModal
           customerRef={customerRef}
           setCustomerRef={setCustomerRef}
@@ -352,22 +351,20 @@ function Supacolor() {
           dispatch={dispatch}
           goToOrder={goToOrder}
           setToggleUploadImg={setToggleUploadImg}
+          toggleUploadImg={toggleUploadImg}
         />
-      ) : (
-        <></>
-      )}
-      {/* Here is our Popup Modal for viewing a completed Job to Supacolor */}
-      {toggleViewDetails ? (
-        <DetailsModal
-          exitViewJobDetails={exitViewJobDetails}
-          goToOrder={goToOrder}
-          jobDetailObj={jobDetailObj}
-          jobUploadArr={jobUploadArr}
-          jobUploadsRef={jobUploadsRef}
-        />
-      ) : (
-        <></>
-      )}
+
+        {/* Here is our Popup Modal for viewing a completed Job to Supacolor */}
+        {toggleViewDetails && (
+          <DetailsModal
+            exitViewJobDetails={exitViewJobDetails}
+            goToOrder={goToOrder}
+            jobDetailObj={jobDetailObj}
+            jobUploadArr={jobUploadArr}
+            jobUploadsRef={jobUploadsRef}
+          />
+        )}
+      </div>
     </>
   );
 }

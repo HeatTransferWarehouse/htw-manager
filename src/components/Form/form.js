@@ -3,10 +3,11 @@ import { twMerge } from "tailwind-merge";
 import { FaCheck } from "react-icons/fa6";
 import { FaChevronUp, FaChevronDown } from "react-icons/fa6";
 
-const Form = ({ children, className, action }) => {
+const Form = ({ children, className, action, onSubmit }) => {
   return (
     <form
       action={action}
+      onSubmit={onSubmit}
       className={twMerge("flex items-start flex-col w-full gap-4", className)}>
       {children}
     </form>
@@ -39,15 +40,19 @@ const Input = ({
   id,
   name,
   required,
+  accept,
+  readOnly,
 }) => {
   return (
     <input
+      accept={accept}
       className={twMerge(
         "inline-flex peer m-0 focus-visible:ring-secondary/20 w-full rounded-md border border-gray-300 py-2.5 px-2 text-base placeholder:text-gray-500 focus-visible:border-secondary focus-visible:outline-none focus-visible:ring-4 hover:border-secondary disabled:bg-gray-100 disabled:hover:border-gray-300",
         className
       )}
       id={id}
       name={name}
+      readOnly={readOnly}
       onChange={onChange}
       placeholder={placeholder}
       type={type}
