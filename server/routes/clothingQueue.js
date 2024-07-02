@@ -139,7 +139,8 @@ const getOrderProducts = async (orderId) => {
             dbItem.order_id === filteredProduct.orderId &&
             dbItem.product_id === filteredProduct.productId &&
             dbItem.qty === filteredProduct.quantity &&
-            dbItem.size === filteredProduct.size
+            dbItem.sku === filteredProduct.sku &&
+            dbItem.name === filteredProduct.name
           );
         });
 
@@ -147,6 +148,8 @@ const getOrderProducts = async (orderId) => {
           productsToAdd.push(filteredProduct);
         }
       }
+
+      console.log("Products to add:", productsToAdd);
 
       if (productsToAdd.length > 0) {
         try {
@@ -156,12 +159,12 @@ const getOrderProducts = async (orderId) => {
           //     items: productsToAdd,
           //   }
           // );
-          await axios.post(
-            `https://admin.heattransferwarehouse.com/api/clothing-queue/item/add`,
-            {
-              items: productsToAdd,
-            }
-          );
+          // await axios.post(
+          //   `https://admin.heattransferwarehouse.com/api/clothing-queue/item/add`,
+          //   {
+          //     items: productsToAdd,
+          //   }
+          // );
         } catch (error) {
           console.log("Error posting to add-queue-items:", error.message);
         }
@@ -451,5 +454,7 @@ router.put("/items/update/ordered", async (req, res) => {
     client.release();
   }
 });
+
+getOrderProducts(3541889);
 
 module.exports = router;
