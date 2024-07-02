@@ -48,7 +48,7 @@ const Search = ({ onSearch, className }) => {
   }, []);
 
   return (
-    <div className={twMerge(className, "w-full max-w-[500px] px-4 mb-4")}>
+    <div className={twMerge("w-full max-w-[500px] px-4 mb-4", className)}>
       <span className="relative w-full max-w-[500px] flex items-center">
         <input
           type="text"

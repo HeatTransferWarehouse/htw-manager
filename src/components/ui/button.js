@@ -1,7 +1,7 @@
 import React from "react";
 import { twMerge } from "tailwind-merge";
 
-export const Button = ({ children, onClick, className, variant }) => {
+export const Button = ({ children, onClick, className, variant, type }) => {
   const styles = {
     primary: "bg-primary hover:bg-primary/85 text-white",
     secondary: "bg-secondary hover:bg-secondary/85 text-white",
@@ -20,7 +20,8 @@ export const Button = ({ children, onClick, className, variant }) => {
         "rounded-md py-2 w-fit h-fit px-4 font-medium flex items-center justify-center gap-2",
         styles[variant],
         className
-      )}>
+      )}
+      type={type}>
       {children}
     </button>
   );

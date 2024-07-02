@@ -7,6 +7,7 @@ import { MdEdit } from "react-icons/md";
 import { MdDelete } from "react-icons/md";
 
 export default function Webhooks({ props }) {
+  console.log(props.webhooks);
   return (
     <Card width={"xl"}>
       <div className="flex items-center max-md:flex-col max-md:gap-4 justify-between mb-4">

@@ -82,18 +82,18 @@ const CreateWebhook = ({ props }) => {
       ref={bgRef}
       handleClick={handleOutsideClick}
       open={props.open}>
-      <Modal open={props.open} width={"sm"}>
+      <Modal open={props.open} width="sm">
         <ModalCloseMobile ref={closeRef} bind={bind} />
         <ModalCloseDesktop handleClick={() => props.setOpen(false)} />
         <ModalTitle>Create Webhook</ModalTitle>
         <ModalContent>
           <Form>
             <Fieldset>
-              <Label htmlFor={"scope"}>Scope</Label>
+              <Label htmlFor="scope">Scope</Label>
               <Select
-                className={"w-fit"}
-                id={"scope"}
-                name={"scope select"}
+                className="w-fit"
+                id="scope"
+                name="scope select"
                 onChange={(e) => setSelectedScope(e.target.value)}
                 onClick={openScopeDrawer}
                 open={scopeDrawerOpen}
@@ -101,7 +101,7 @@ const CreateWebhook = ({ props }) => {
                 value={selectedScope}
                 required={true}>
                 <OptionSheet open={scopeDrawerOpen}>
-                  <Option selectedValue={selectedScope} value={"Select Scope"}>
+                  <Option selectedValue={selectedScope} value="Select Scope">
                     Select Scope
                   </Option>
                   {Scopes.events?.map((scope) => (
@@ -120,14 +120,14 @@ const CreateWebhook = ({ props }) => {
               </Select>
             </Fieldset>
             <Fieldset>
-              <Label htmlFor={"destination"}>Destination</Label>
+              <Label htmlFor="destination">Destination</Label>
               <Input
-                className={"max-w-96 w-full"}
-                id={"destination"}
-                name={"destination"}
+                className="max-w-96 w-full"
+                id="destination"
+                name="destination"
                 onChange={(e) => setDestination(e.target.value)}
-                placeholder={"ex. /api/router/route"}
-                type={"text"}
+                placeholder="ex. /api/router/route"
+                type="text"
                 value={destination}
                 required={true}
               />
@@ -136,25 +136,25 @@ const CreateWebhook = ({ props }) => {
               <Label>Active</Label>
               <RadioGroup>
                 <RadioButton
-                  id={"active-true"}
-                  value={"Yes"}
+                  id="active-true"
+                  value="Yes"
                   checked={isActive === true}
-                  name={"active true"}
+                  name="active true"
                   onChange={() => setIsActive(true)}
                   required={true}
                 />
                 <RadioButton
-                  id={"active-false"}
-                  value={"No"}
+                  id="active-false"
+                  value="No"
                   checked={isActive === false}
-                  name={"active-false"}
+                  name="active-false"
                   onChange={() => setIsActive(false)}
                   required={true}
                 />
               </RadioGroup>
             </Fieldset>
             <div className="w-full flex justify-center items-center gap-2">
-              <Button variant={"secondary"} onClick={submitWebhook}>
+              <Button variant="secondary" onClick={submitWebhook}>
                 Create Webhook
               </Button>
             </div>
@@ -227,18 +227,18 @@ const UpdateWebhook = ({ props }) => {
       ref={bgRef}
       handleClick={handleOutsideClick}
       open={props.open}>
-      <Modal open={props.open} width={"sm"}>
+      <Modal open={props.open} width="sm">
         <ModalCloseMobile ref={closeRef} bind={bind} />
         <ModalCloseDesktop handleClick={() => props.setOpen(false)} />
         <ModalTitle>Update Webhook</ModalTitle>
         <ModalContent>
           <Form>
             <Fieldset>
-              <Label htmlFor={"update-scope"}>Scope</Label>
+              <Label htmlFor="update-scope">Scope</Label>
               <Select
-                className={"w-fit"}
-                id={"update-scope"}
-                name={"update-scope"}
+                className="w-fit"
+                id="update-scope"
+                name="update-scope"
                 onChange={(e) => setSelectedScope(e.target.value)}
                 onClick={openScopeDrawer}
                 open={scopeDrawerOpen}
@@ -246,7 +246,7 @@ const UpdateWebhook = ({ props }) => {
                 value={selectedScope}
                 required={true}>
                 <OptionSheet open={scopeDrawerOpen}>
-                  <Option selectedValue={selectedScope} value={"Select Scope"}>
+                  <Option selectedValue={selectedScope} value="Select Scope">
                     Select Scope
                   </Option>
                   {Scopes.events?.map((scope) => (
@@ -265,14 +265,14 @@ const UpdateWebhook = ({ props }) => {
               </Select>
             </Fieldset>
             <Fieldset>
-              <Label htmlFor={"update-destination"}>Destination</Label>
+              <Label htmlFor="update-destination">Destination</Label>
               <Input
-                className={"max-w-96 w-full"}
-                id={"update-destination"}
-                name={"update-destination"}
+                className="max-w-96 w-full"
+                id="update-destination"
+                name="update-destination"
                 onChange={(e) => setDestination(e.target.value)}
-                placeholder={"ex. /api/router/route"}
-                type={"text"}
+                placeholder="ex. /api/router/route"
+                type="text"
                 value={destination}
                 required={true}
               />
@@ -281,18 +281,18 @@ const UpdateWebhook = ({ props }) => {
               <Label>Active</Label>
               <RadioGroup>
                 <RadioButton
-                  id={"active-update-true"}
-                  value={"Yes"}
+                  id="active-update-true"
+                  value="Yes"
                   checked={isActive === true}
-                  name={"active-update-true"}
+                  name="active-update-true"
                   onChange={() => setIsActive(true)}
                   required={true}
                 />
                 <RadioButton
-                  id={"active-update-false"}
-                  value={"No"}
+                  id="active-update-false"
+                  value="No"
                   checked={isActive === false}
-                  name={"active-update-false"}
+                  name="active-update-false"
                   onChange={() => setIsActive(false)}
                   required={true}
                 />
@@ -302,18 +302,18 @@ const UpdateWebhook = ({ props }) => {
               <Label>Enable Events History</Label>
               <RadioGroup>
                 <RadioButton
-                  id={"events-true"}
-                  value={"Yes"}
+                  id="events-true"
+                  value="Yes"
                   checked={eventsActive === true}
-                  name={"events-true"}
+                  name="events-true"
                   onChange={() => setEventsActive(true)}
                   required={true}
                 />
                 <RadioButton
-                  id={"events-false"}
-                  value={"No"}
+                  id="events-false"
+                  value="No"
                   checked={eventsActive === false}
-                  name={"events-false"}
+                  name="events-false"
                   onChange={() => setEventsActive(false)}
                   required={true}
                 />
@@ -327,10 +327,10 @@ const UpdateWebhook = ({ props }) => {
                   props.setOpen(false);
                   props.setActiveWebhook({});
                 }}
-                variant={"neutral"}>
+                variant="neutral">
                 Cancel
               </Button>
-              <Button variant={"secondary"} onClick={updateWebhook}>
+              <Button variant="secondary" onClick={updateWebhook}>
                 Update Webhook
               </Button>
             </div>
@@ -404,26 +404,26 @@ const UpdateUser = ({ props }) => {
       ref={bgRef}
       handleClick={handleOutsideClick}
       open={props.open}>
-      <Modal open={props.open} width={"sm"}>
+      <Modal open={props.open} width="sm">
         <ModalCloseMobile ref={closeRef} bind={bind} />
         <ModalCloseDesktop handleClick={() => props.setOpen(false)} />
         <ModalTitle>Edit User</ModalTitle>
         <ModalContent>
           <Form>
             <Fieldset>
-              <Label htmlFor={"role"}>Role</Label>
+              <Label htmlFor="role">Role</Label>
               <Select
-                className={"w-32"}
-                id={"role"}
-                name={"role"}
+                className="w-32"
+                id="role"
+                name="role"
                 onChange={(e) => setRole(e.target.value)}
                 onClick={openSelectDrawer}
                 open={selectDrawerOpen}
                 setOpen={setSelectDrawerOpen}
                 value={role === 5 ? "Admin" : "Member"}
                 required={true}>
-                <OptionSheet width={"8rem"} open={selectDrawerOpen}>
-                  <Option selectedValue={role} value={"Select Role"}>
+                <OptionSheet width="8rem" open={selectDrawerOpen}>
+                  <Option selectedValue={role} value="Select Role">
                     Select Role
                   </Option>
                   <Option
@@ -448,26 +448,26 @@ const UpdateUser = ({ props }) => {
               </Select>
             </Fieldset>
             <Fieldset>
-              <Label htmlFor={"edit-username"}>Email/Username</Label>
+              <Label htmlFor="edit-username">Email/Username</Label>
               <Input
-                className={"max-w-96 w-full"}
-                id={"edit-username"}
-                name={"edit-username"}
+                className="max-w-96 w-full"
+                id="edit-username"
+                name="edit-username"
                 onChange={(e) => setUsername(e.target.value)}
-                type={"text"}
+                type="text"
                 value={username}
                 required={true}
               />
             </Fieldset>
             <Fieldset>
-              <Label htmlFor={"edit-password"}>Password</Label>
+              <Label htmlFor="edit-password">Password</Label>
               <Input
-                className={"max-w-96 w-full"}
-                id={"edit-password"}
-                name={"edit-password"}
-                placeholder={"Enter new password"}
+                className="max-w-96 w-full"
+                id="edit-password"
+                name="edit-password"
+                placeholder="Enter new password"
                 onChange={(e) => setPassword(e.target.value)}
-                type={"password"}
+                type="password"
                 value={password}
                 required={true}
               />
@@ -480,10 +480,10 @@ const UpdateUser = ({ props }) => {
                   e.stopPropagation();
                   props.setOpen(false);
                 }}
-                variant={"neutral"}>
+                variant="neutral">
                 Cancel
               </Button>
-              <Button variant={"secondary"} onClick={updateUser}>
+              <Button variant="secondary" onClick={updateUser}>
                 Update User
               </Button>
             </div>
@@ -536,34 +536,34 @@ const RegisterUser = ({ props }) => {
       ref={bgRef}
       handleClick={handleOutsideClick}
       open={props.open}>
-      <Modal open={props.open} width={"sm"}>
+      <Modal open={props.open} width="sm">
         <ModalCloseMobile ref={closeRef} bind={bind} />
         <ModalCloseDesktop handleClick={() => props.setOpen(false)} />
         <ModalTitle>Register User</ModalTitle>
         <ModalContent>
-          <Form className={"items-center"}>
-            <Fieldset className={"w-fit"}>
-              <Label htmlFor={"register-username"}>Email/Username</Label>
+          <Form className="items-center">
+            <Fieldset className="w-fit">
+              <Label htmlFor="register-username">Email/Username</Label>
               <Input
-                className={"max-w-96 min-w-96 w-full"}
-                id={"register-username"}
-                name={"register-username"}
+                className="max-w-96 min-w-96 w-full"
+                id="register-username"
+                name="register-username"
                 onChange={(e) => setUsername(e.target.value)}
-                placeholder={"Enter username/email"}
-                type={"text"}
+                placeholder="Enter username/email"
+                type="text"
                 value={username}
                 required={true}
               />
             </Fieldset>
-            <Fieldset className={"w-fit"}>
-              <Label htmlFor={"register-password"}>Password</Label>
+            <Fieldset className="w-fit">
+              <Label htmlFor="register-password">Password</Label>
               <Input
-                className={"max-w-96 min-w-96 w-full"}
-                id={"register-password"}
-                name={"register-password"}
-                placeholder={"Enter password"}
+                className="max-w-96 min-w-96 w-full"
+                id="register-password"
+                name="register-password"
+                placeholder="Enter password"
                 onChange={(e) => setPassword(e.target.value)}
-                type={"password"}
+                type="password"
                 value={password}
                 required={true}
               />
@@ -576,10 +576,10 @@ const RegisterUser = ({ props }) => {
                   e.stopPropagation();
                   props.setOpen(false);
                 }}
-                variant={"neutral"}>
+                variant="neutral">
                 Cancel
               </Button>
-              <Button variant={"secondary"} onClick={registerUser}>
+              <Button variant="secondary" onClick={registerUser}>
                 Register User
               </Button>
             </div>

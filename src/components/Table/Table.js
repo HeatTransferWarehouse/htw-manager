@@ -21,13 +21,13 @@ const TableHeader = ({ className, children, tableFor }) => {
   return (
     <div
       className={twMerge(
-        className,
         "grid",
         tableFor === "clothing"
           ? "grid-cols-clothing"
           : tableFor === "supacolor"
           ? "grid-cols-supacolor"
-          : "grid-cols-queue"
+          : "grid-cols-queue",
+        className
       )}>
       {children}
     </div>
@@ -38,7 +38,6 @@ const TableRow = ({ className, children, isMobile, tableFor }) => {
   return (
     <div
       className={twMerge(
-        className,
         isMobile
           ? "grid-cols-queueMobile"
           : tableFor === "clothing"
@@ -46,7 +45,8 @@ const TableRow = ({ className, children, isMobile, tableFor }) => {
           : tableFor === "supacolor"
           ? "grid-cols-supacolor"
           : "grid-cols-queue",
-        "w-full grid relative"
+        "w-full grid relative",
+        className
       )}>
       {children}
     </div>
@@ -63,7 +63,7 @@ const TableHeadCell = ({ className, children, minWidth }) => {
       style={{
         minWidth: minWidth,
       }}
-      className={twMerge(className, "p-2 font-bold flex items-center")}>
+      className={twMerge("p-2 font-bold flex items-center", className)}>
       {children}
     </span>
   );
@@ -76,9 +76,9 @@ const TableCell = ({ className, children, minWidth, isMobile }) => {
         minWidth: minWidth,
       }}
       className={twMerge(
-        className,
         "py-2 pl-4 flex items-center border-t border-solid border-gray-200",
-        isMobile && "border-none"
+        isMobile && "border-none",
+        className
       )}>
       {children}
     </span>
