@@ -155,7 +155,6 @@ function Supacolor() {
 
   return (
     <>
-      <h1 className="font-bold mx-auto mb-4 mt-8 text-4xl">Supa Queue</h1>
       <Paper
         className="opacity-0 animate-in"
         style={{
@@ -342,7 +341,8 @@ function Supacolor() {
           />
         </TableContainer>
       </Paper>
-      <div>
+      {/* Here is our Popup Modal for Clicking the Upload Image Button */}
+      {toggleUploadImg ? (
         <ImageUploadModal
           customerRef={customerRef}
           setCustomerRef={setCustomerRef}
@@ -351,20 +351,22 @@ function Supacolor() {
           dispatch={dispatch}
           goToOrder={goToOrder}
           setToggleUploadImg={setToggleUploadImg}
-          toggleUploadImg={toggleUploadImg}
         />
-
-        {/* Here is our Popup Modal for viewing a completed Job to Supacolor */}
-        {toggleViewDetails && (
-          <DetailsModal
-            exitViewJobDetails={exitViewJobDetails}
-            goToOrder={goToOrder}
-            jobDetailObj={jobDetailObj}
-            jobUploadArr={jobUploadArr}
-            jobUploadsRef={jobUploadsRef}
-          />
-        )}
-      </div>
+      ) : (
+        <></>
+      )}
+      {/* Here is our Popup Modal for viewing a completed Job to Supacolor */}
+      {toggleViewDetails ? (
+        <DetailsModal
+          exitViewJobDetails={exitViewJobDetails}
+          goToOrder={goToOrder}
+          jobDetailObj={jobDetailObj}
+          jobUploadArr={jobUploadArr}
+          jobUploadsRef={jobUploadsRef}
+        />
+      ) : (
+        <></>
+      )}
     </>
   );
 }
