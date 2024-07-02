@@ -138,14 +138,8 @@ const getOrderProducts = async (orderId) => {
           return (
             dbItem.order_id === filteredProduct.orderId &&
             dbItem.product_id === filteredProduct.productId &&
-            dbItem.name === filteredProduct.name &&
-            dbItem.sku === filteredProduct.sku &&
             dbItem.qty === filteredProduct.quantity &&
-            (dbItem.color ?? "") === (filteredProduct.color ?? "") &&
-            (dbItem.size ?? "") === (filteredProduct.size ?? "") &&
-            dbItem.date === filteredProduct.date &&
-            (dbItem.swatch_url ?? "") === (filteredProduct.swatchImage ?? "") &&
-            dbItem.swatch_text_color === filteredProduct.textColor
+            dbItem.size === filteredProduct.size
           );
         });
 
@@ -153,6 +147,7 @@ const getOrderProducts = async (orderId) => {
           productsToAdd.push(filteredProduct);
         }
       }
+      console.log("Products to add:", productsToAdd);
 
       if (productsToAdd.length > 0) {
         try {
@@ -457,7 +452,5 @@ router.put("/items/update/ordered", async (req, res) => {
     client.release();
   }
 });
-
-getOrderProducts(3541752);
 
 module.exports = router;
