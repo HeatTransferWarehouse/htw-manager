@@ -147,7 +147,6 @@ const getOrderProducts = async (orderId) => {
           productsToAdd.push(filteredProduct);
         }
       }
-      console.log("Products to add:", productsToAdd);
 
       if (productsToAdd.length > 0) {
         try {
