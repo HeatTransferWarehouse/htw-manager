@@ -43,6 +43,8 @@ const allowedOrigins = [
   // "http://localhost:5005", // Allow localhost for development
   "https://www.heattransferwarehouse.com",
   "https://heat-transfer-warehouse-sandbox.mybigcommerce.com",
+  "https://admin.heattransferwarehouse.com",
+  "https://manager.heattransferwarehouse.com",
 ];
 
 // CORS Middleware (allow both localhost and production)
