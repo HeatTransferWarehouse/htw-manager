@@ -29,12 +29,12 @@ router.post("/update-item-price", async (req, res) => {
     }
 
     // URL for adding the item to the cart
-    const updateUrl = `https://api.bigcommerce.com/stores/${process.env.hash}/v3/carts/${cartId}/items/${cartItemId}`;
+    const updateUrl = `https://api.bigcommerce.com/stores/${hash}/v3/carts/${cartId}/items/${cartItemId}`;
 
     // // Headers for BigCommerce API requests
     const headers = {
       "Content-Type": "application/json",
-      "X-Auth-Token": process.env.SANDBOX_API_KEY,
+      "X-Auth-Token": apiKey,
     };
 
     const constructedCartItem = {
