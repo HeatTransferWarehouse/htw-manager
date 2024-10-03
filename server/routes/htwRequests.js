@@ -11,8 +11,25 @@ router.post("/update-item-price", async (req, res) => {
     const cartId = data.cartId;
     const itemPrice = data.itemPrice;
 
+    const requestOrigin = req.get("origin");
+
+    let hash, apiKey;
+
+    if (
+      requestOrigin ===
+      "https://heat-transfer-warehouse-sandbox.mybigcommerce.com"
+    ) {
+      hash = process.env.SANDBOX_HASH;
+      apiKey = process.env.SANDBOX_API_KEY;
+    } else if (requestOrigin === "https://www.heattransferwarehouse.com") {
+      hash = process.env.BG_AUTH_TOKEN;
+      apiKey = process.env.STORE_HASH;
+    } else {
+      throw new Error("Invalid origin");
+    }
+
     // URL for adding the item to the cart
-    const updateUrl = `https://api.bigcommerce.com/stores/${process.env.SANDBOX_HASH}/v3/carts/${cartId}/items/${cartItemId}`;
+    const updateUrl = `https://api.bigcommerce.com/stores/${process.env.hash}/v3/carts/${cartId}/items/${cartItemId}`;
 
     // // Headers for BigCommerce API requests
     const headers = {
