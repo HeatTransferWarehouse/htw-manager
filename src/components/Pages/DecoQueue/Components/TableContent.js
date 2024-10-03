@@ -213,12 +213,6 @@ export function TableContent({ props }) {
                         {item.sku}
                       </span>
                     </p>
-                    {item.length && (
-                      <p className="py-2">
-                        <span className="font-medium">Length</span>:{" "}
-                        {item.length}
-                      </p>
-                    )}
                     <p className="py-2 absolute top-2 right-4">x{item.qty}</p>
                     <p className="flex items-center">
                       <span className="font-medium">Priority</span>:{" "}
@@ -278,7 +272,6 @@ export function TableContent({ props }) {
                   </span>
                 </TableCell>
                 <TableCell minWidth="15rem">{item.description}</TableCell>
-                <TableCell minWidth="15rem">{item.length}</TableCell>
                 <TableCell>{item.qty}</TableCell>
                 <TableCell className="p-2" minWidth="5rem">
                   {renderPriorityButton(item)}

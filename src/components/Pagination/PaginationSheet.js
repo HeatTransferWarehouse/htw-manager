@@ -57,6 +57,22 @@ export function PaginationSheet({ props }) {
           }}>
           100
         </li>
+        {props.allowMax ? (
+          <li
+            className={twMerge(
+              "cursor-pointer hover:bg-secondary/10 py-2 px-3 hover:text-secondary",
+              props.rowsPerPage === 250 ? "bg-secondary/10 text-secondary" : ""
+            )}
+            onClick={() => {
+              props.setRowsPerPage(250);
+              props.setPage(0);
+              props.setRowsPerPageOpen(false);
+            }}>
+            250
+          </li>
+        ) : (
+          ""
+        )}
       </ul>
     </div>
   );

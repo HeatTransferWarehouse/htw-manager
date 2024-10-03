@@ -96,6 +96,7 @@ export function Pagination({ props }) {
                 buttonRight,
                 buttonWidth,
                 setRowsPerPageOpen,
+                allowMax: props.allowMax,
               }}
             />
           )}

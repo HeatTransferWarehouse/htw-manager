@@ -4,10 +4,7 @@ import { connect } from "react-redux";
 import LoginPage from "../LoginPage/LoginPage";
 
 const ProtectedRoute = (props) => {
-  // Using destructuring, this takes ComponentToProtect from component
-  // prop and grabs all other props to pass them along to Route
   const {
-    // Alias prop 'component' as 'ComponentToProtect'
     component: ComponentToProtect,
     user,
     loginMode,
@@ -17,24 +14,31 @@ const ProtectedRoute = (props) => {
   let ComponentToShow;
 
   if (user.id) {
-    // if the user is logged in (only logged in users have ids)
-    // show the component that is protected
+    // User is logged in, show the protected component
     ComponentToShow = ComponentToProtect;
   } else if (loginMode === "login") {
-    // if they are not logged in, check the loginMode on Redux State
-    // if the mode is 'login', show the LoginPage
+    // User is not logged in, show the LoginPage
     ComponentToShow = LoginPage;
   } else {
-    // if they are not logged in, check the loginMode on Redux State
-    // if the mode is 'login', show the LoginPage
+    // Default to showing LoginPage
     ComponentToShow = LoginPage;
   }
+
   return (
     <Route
-      // all props like 'exact' and 'path' that were passed in
-      // are now passed along to the 'Route' Component
       {...otherProps}
-      component={ComponentToShow}
+      render={(routeProps) => {
+        // Extract the dynamic part of the URL (e.g., someId)
+        const id = routeProps.match.params.id;
+
+        // Create a dynamic ID based on the extracted value
+        const dynamicId = `promotions/${id}`;
+
+        // Pass the dynamic ID to the component
+        return (
+          <ComponentToShow {...routeProps} {...otherProps} id={dynamicId} />
+        );
+      }}
     />
   );
 };

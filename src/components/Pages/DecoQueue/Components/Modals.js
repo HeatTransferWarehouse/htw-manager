@@ -315,7 +315,7 @@ function AdvancedSearchModal({ props }) {
       ref={bgRef}
       handleClick={handleOutsideClick}
       open={props.open}>
-      <Modal open={props.open}>
+      <Modal width="md" open={props.open}>
         <ModalCloseMobile ref={closeRef} bind={bind} />
         <ModalCloseDesktop
           handleClick={() => props.setShowAdvancedSearchModal(false)}

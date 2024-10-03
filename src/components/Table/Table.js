@@ -26,6 +26,10 @@ const TableHeader = ({ className, children, tableFor }) => {
           ? "grid-cols-clothing"
           : tableFor === "supacolor"
           ? "grid-cols-supacolor"
+          : tableFor === "promos"
+          ? "grid-cols-promos"
+          : tableFor === "sff"
+          ? "grid-cols-sff"
           : "grid-cols-queue",
         className
       )}>
@@ -44,6 +48,10 @@ const TableRow = ({ className, children, isMobile, tableFor }) => {
           ? "grid-cols-clothing"
           : tableFor === "supacolor"
           ? "grid-cols-supacolor"
+          : tableFor === "promos"
+          ? "grid-cols-promos"
+          : tableFor === "sff"
+          ? "grid-cols-sff"
           : "grid-cols-queue",
         "w-full grid relative",
         className

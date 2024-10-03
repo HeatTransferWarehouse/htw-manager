@@ -9,6 +9,7 @@
   },
   "proxy": "http://localhost:8000",
   "dependencies": {
+    "@babel/traverse": "^7.25.6",
     "@date-io/date-fns": "^2.13.1",
     "@date-io/luxon": "^2.13.1",
     "@date-io/moment": "^2.13.1",
@@ -82,6 +83,7 @@
     "redux": "^4.0.1",
     "redux-logger": "^3.0.6",
     "redux-saga": "^1.0.2",
+    "shell-quote": "^1.8.1",
     "stream": "0.0.2",
     "sweetalert": "^2.1.2",
     "tailwind-merge": "^2.3.0",

@@ -31,16 +31,38 @@ const queueRouter = require("./routes/queueRouter");
 const lookupRouter = require("./routes/orderLookUp");
 const clothingQueueRouter = require("./routes/clothingQueue");
 const adminRouter = require("./routes/admin");
+const promoTracker = require("./routes/promo-tracking");
+const htwRouter = require("./routes/htwRequests");
 
 app.use(sessionMiddleware);
 app.use(passport.initialize());
 app.use(passport.session());
 
+const allowedOrigins = [
+  // "http://localhost:3000",
+  // "http://localhost:5005", // Allow localhost for development
+  "https://www.heattransferwarehouse.com",
+  "https://heat-transfer-warehouse-sandbox.mybigcommerce.com",
+];
+
+// CORS Middleware (allow both localhost and production)
 app.use(
   cors({
-    origin: ["https://www.heattransferwarehouse.com"],
+    origin: function (origin, callback) {
+      if (!origin || allowedOrigins.indexOf(origin) !== -1) {
+        callback(null, true);
+      } else {
+        callback(new Error("Not allowed by CORS"));
+      }
+    },
+    methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"], // Allow these HTTP methods
+    credentials: true, // Allow cookies and credentials to be sent
+    optionsSuccessStatus: 200, // Some legacy browsers choke on 204
   })
 );
+
+// Manually handle the preflight requests (OPTIONS) to ensure proper CORS
+app.options("*", cors()); // Allow pre-flight requests from any origin
 
 //change this to push update 2
 
@@ -48,6 +70,8 @@ app.use("/api/user", userRouter);
 app.use("/api/bp-api", captureRouter);
 app.use("/supacolor-api", supacolorRouter);
 app.use("/api/lookup", lookupRouter);
+app.use("/api/promotions", promoTracker);
+app.use("/api/htw", htwRouter);
 
 // Queue Routers
 

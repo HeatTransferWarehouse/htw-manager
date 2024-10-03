@@ -15,6 +15,7 @@ function Nav() {
   const [supacolor, setSupacolor] = useState(false);
   const [sffQueue, setSffQueue] = useState(false);
   const [clothingQueue, setClothingQueue] = useState(false);
+  const [promotions, setPromotions] = useState(false);
   const dispatch = useDispatch();
   const user = useSelector((store) => store.user.userReducer);
   const [pagePath, setPagePath] = useState(window.location.hash.split("#")[1]);
@@ -49,26 +50,32 @@ function Nav() {
         disableAll();
         setHome(true);
         break;
+
       case "/resources":
         disableAll();
         setResources(true);
         break;
+
       case "/decoqueue":
         disableAll();
         setDecoQueue(true);
         break;
+
       case "/admin":
         disableAll();
         setAdmin(true);
         break;
+
       case "/supacolor":
         disableAll();
         setSupacolor(true);
         break;
+
       case "/sff-queue":
         disableAll();
         setSffQueue(true);
         break;
+
       case "/queue/clothing":
         disableAll();
         setClothingQueue(true);
@@ -215,6 +222,7 @@ function Nav() {
                 } p-2 hover:border-secondary hover:text-secondary border-b-[3px] border-solid`}>
                 Clothing Queue
               </NavLink>
+
               {user.access_level === "5" && (
                 <NavLink
                   to="/admin"

@@ -37,7 +37,7 @@ export function TableContent({ props }) {
   }, []);
 
   const renderLoadingRow = (index) => (
-    <TableRow className="loading-row" key={index}>
+    <TableRow tableFor={"sff"} className="loading-row" key={index}>
       {props.isMobile ? (
         <>
           <TableCell>
@@ -169,7 +169,7 @@ export function TableContent({ props }) {
         .map((item, index) => {
           if (props.isMobile) {
             return (
-              <TableRow isMobile={props.isMobile} key={index}>
+              <TableRow tableFor={"sff"} isMobile={props.isMobile} key={index}>
                 <TableCell isMobile={index === 0 && props.isMobile}>
                   <span className="checkbox-container">
                     <input

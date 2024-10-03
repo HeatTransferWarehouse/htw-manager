@@ -19,6 +19,8 @@ import SFFQueue from "../Pages/SffQueue/SFFQueue";
 import ClothingQueue from "../Pages/ClothingQueue/page";
 import "./App.css";
 import { useDispatch, useSelector } from "react-redux";
+import Promotions from "../Pages/Promos";
+import PromoDetails from "../Pages/Promos/individualIndex";
 
 function App() {
   const dispatch = useDispatch();
@@ -84,6 +86,12 @@ function App() {
           <ProtectedRoute exact path="/resources" component={Resources} />
           <ProtectedRoute exact path="/decoqueue" component={DecoQueue} />
           <ProtectedRoute exact path="/supacolor" component={Supacolor} />
+          <ProtectedRoute exact path="/promotions" component={Promotions} />
+          <ProtectedRoute
+            exact
+            path="/promotions/:id"
+            component={PromoDetails}
+          />
           <ProtectedRoute
             exact
             path="/queue/clothing"

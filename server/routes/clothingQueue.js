@@ -90,6 +90,7 @@ const getOrderProducts = async (orderId) => {
         const color = product.product_options.find(
           (option) => option.display_name === "Color"
         )?.display_value;
+
         const foundProduct = await getProductById(product.product_id);
         const swatchInfo = await getProductSwatchImage(
           foundProduct.data.id,

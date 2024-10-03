@@ -176,7 +176,6 @@ export function TableComponent({ props }) {
             <TableHeadCell minWidth="15rem">
               {renderSortButton("description", "Product Name")}
             </TableHeadCell>
-            <TableHeadCell minWidth="15rem">Product Length</TableHeadCell>
             <TableHeadCell>{renderSortButton("qty", "Qty")}</TableHeadCell>
             <TableHeadCell minWidth="5rem">
               {renderSortButton("priority", "Priority")}
