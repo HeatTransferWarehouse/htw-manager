@@ -26,8 +26,8 @@ router.post("/update-item-price", async (req, res) => {
       hash = process.env.SANDBOX_HASH;
       apiKey = process.env.SANDBOX_API_KEY;
     } else if (requestOrigin === "https://www.heattransferwarehouse.com") {
-      hash = process.env.BG_AUTH_TOKEN;
-      apiKey = process.env.STORE_HASH;
+      hash = process.env.STORE_HASH;
+      apiKey = process.env.BG_AUTH_TOKEN;
     } else {
       throw new Error("Invalid origin");
     }
@@ -58,10 +58,9 @@ router.post("/update-item-price", async (req, res) => {
     const updateResponse = await fetch(updateUrl, updateOptions);
 
     if (!updateResponse.ok) {
-      const errorMessage = `Failed to update item price. Status: ${updateResponse}`;
-      console.error(errorMessage);
+      console.error("Failed to update item price", updateResponse);
       return res.status(updateResponse.status).json({
-        message: errorMessage,
+        message: updateResponse,
         success: false,
       });
     }
@@ -95,8 +94,8 @@ router.post("/cart-transfer-price", async (req, res) => {
       hash = process.env.SANDBOX_HASH;
       apiKey = process.env.SANDBOX_API_KEY;
     } else if (requestOrigin === "https://www.heattransferwarehouse.com") {
-      hash = process.env.BG_AUTH_TOKEN;
-      apiKey = process.env.STORE_HASH;
+      hash = process.env.STORE_HASH;
+      apiKey = process.env.BG_AUTH_TOKEN;
     } else {
       throw new Error("Invalid origin");
     }
