@@ -2,7 +2,6 @@ require("dotenv").config();
 const express = require("express");
 const fetch = require("node-fetch");
 const router = express.Router();
-const sharp = require("sharp");
 const fs = require("fs");
 const multer = require("multer");
 
@@ -82,44 +81,6 @@ router.post("/update-item-price", async (req, res) => {
     });
   }
 });
-
-router.post(
-  "/design-tool-image-upload",
-  upload.single("image"),
-  async (req, res) => {
-    try {
-      const filePath = req.file.path;
-      let widthInInches, heightInInches;
-
-      // Process the uploaded image with sharp
-      const metadata = await sharp(filePath).metadata();
-
-      const aspectRatio = metadata.width / metadata.height;
-      if (metadata.density) {
-        widthInInches = metadata.width / metadata.density;
-        heightInInches = metadata.height / metadata.density;
-      }
-
-      // Send back metadata like dimensions, DPI, etc.
-      res.json({
-        success: true,
-        width: metadata.width,
-        height: metadata.height,
-        aspectRatio: aspectRatio,
-        widthInInches: widthInInches || null,
-        heightInInches: heightInInches || null,
-      });
-
-      // Optionally delete the file after processing if you don't need it stored
-      // fs.unlinkSync(filePath); // Uncomment if you want to delete the file after processing
-    } catch (error) {
-      console.error("Error uploading or processing image:", error);
-      res
-        .status(500)
-        .json({ success: false, message: "Failed to upload image." });
-    }
-  }
-);
 
 router.post("/cart-transfer-price", async (req, res) => {
   try {
