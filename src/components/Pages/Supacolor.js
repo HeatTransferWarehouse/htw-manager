@@ -2,11 +2,13 @@ import React, { useState, useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import "./css/Main.css";
 import "./css/Supacolor.css";
-import Table from "@material-ui/core/Table";
-import TableBody from "@material-ui/core/TableBody";
-import TableContainer from "@material-ui/core/TableContainer";
-import Paper from "@material-ui/core/Paper";
-import TablePagination from "@material-ui/core/TablePagination";
+import {
+  Table,
+  TableBody,
+  TableContainer,
+  Paper,
+  TablePagination,
+} from "@mui/material";
 import DetailsModal from "../Supacolor/DetailsModal";
 import SCTableHead from "../Supacolor/SCTableHead";
 import SCTableHeader from "../Supacolor/SCPaperHeader";

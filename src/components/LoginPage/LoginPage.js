@@ -1,12 +1,16 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
+import { useNavigate } from "react-router-dom"; // import useNavigate for redirection
 import { twMerge } from "tailwind-merge";
 
 export default function LoginPage() {
   const dispatch = useDispatch();
+  const navigate = useNavigate(); // Initialize navigate
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const logInStatus = useSelector((store) => store.error.loginMessage);
+  const user = useSelector((store) => store.user.userReducer); // Get user data from Redux store
+
   const loginEvent = (event) => {
     event.preventDefault();
     dispatch({
@@ -17,6 +21,13 @@ export default function LoginPage() {
       },
     });
   };
+
+  // Effect to handle redirection after successful login
+  useEffect(() => {
+    if (user.id) {
+      navigate("/"); // Redirect to main page if user is logged in
+    }
+  }, [user, navigate]); // Trigger redirection when user state changes
 
   return (
     <div className="flex fixed top-0 left-0 w-full justify-center items-center h-full z-[99999] bg-black">
@@ -33,7 +44,6 @@ export default function LoginPage() {
         </div>
         <div className="w-full mt-8 flex flex-col gap-4">
           <div>
-            {/* enter email address here */}
             <label
               className="text-white font-medium mb-2 text-left flex w-full"
               htmlFor="username">

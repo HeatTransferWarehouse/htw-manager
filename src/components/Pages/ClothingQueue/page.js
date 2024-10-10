@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { TableComponent } from "./components/table";
-import { useLocation } from "react-router-dom/cjs/react-router-dom.min";
+import { useLocation } from "react-router-dom";
 import AdvancedSearchModal from "./components/advanced-search-modal";
 import DeleteModal from "../../modals/deleteModal";
 

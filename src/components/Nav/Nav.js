@@ -1,5 +1,5 @@
 import React, { useContext, useEffect, useState } from "react";
-import { HashRouter as Router, NavLink } from "react-router-dom";
+import { NavLink } from "react-router-dom"; // Remove HashRouter, just import NavLink
 import { useDispatch, useSelector } from "react-redux";
 import { MobileNav } from "./MoblieNav";
 import { RxHamburgerMenu } from "react-icons/rx";
@@ -7,7 +7,6 @@ import { BreakpointsContext } from "../../context/BreakpointsContext";
 
 function Nav() {
   const breakPoint = useContext(BreakpointsContext);
-
   const [home, setHome] = useState(false);
   const [resources, setResources] = useState(false);
   const [decoQueue, setDecoQueue] = useState(false);
@@ -26,7 +25,6 @@ function Nav() {
 
   const [isOpen, setIsOpen] = useState(false);
 
-  // Function to handle the menu toggle
   const toggleMenu = (e) => {
     e.preventDefault();
     e.stopPropagation();
@@ -50,32 +48,26 @@ function Nav() {
         disableAll();
         setHome(true);
         break;
-
       case "/resources":
         disableAll();
         setResources(true);
         break;
-
       case "/decoqueue":
         disableAll();
         setDecoQueue(true);
         break;
-
       case "/admin":
         disableAll();
         setAdmin(true);
         break;
-
       case "/supacolor":
         disableAll();
         setSupacolor(true);
         break;
-
       case "/sff-queue":
         disableAll();
         setSffQueue(true);
         break;
-
       case "/queue/clothing":
         disableAll();
         setClothingQueue(true);
@@ -85,7 +77,6 @@ function Nav() {
     }
   }, [pagePath]);
 
-  // This unactivates all nav destinations
   const disableAll = () => {
     setHome(false);
     setResources(false);
@@ -123,9 +114,7 @@ function Nav() {
   };
 
   const renderNav = () => {
-    if (breakPoint === "tablet") {
-      return <MobileNav {...props} />;
-    } else if (breakPoint === "mobile") {
+    if (breakPoint === "tablet" || breakPoint === "mobile") {
       return <MobileNav {...props} />;
     }
     return null;
@@ -143,116 +132,112 @@ function Nav() {
             />
           </a>
           <nav className="flex gap-4 items-center">
-            <Router>
+            <NavLink
+              to="/"
+              onClick={() => {
+                disableAll();
+                setHome(true);
+              }}
+              className={`${
+                home
+                  ? "text-secondary border-secondary"
+                  : "text-dark border-white"
+              } p-2 hover:border-secondary hover:text-secondary border-b-[3px] border-solid`}>
+              Home
+            </NavLink>
+            <NavLink
+              to="/resources"
+              onClick={() => {
+                disableAll();
+                setResources(true);
+              }}
+              className={`${
+                resources
+                  ? "text-secondary border-secondary"
+                  : "text-dark border-white"
+              } p-2 hover:border-secondary hover:text-secondary border-b-[3px] border-solid`}>
+              Resources
+            </NavLink>
+            <NavLink
+              to="/supacolor"
+              onClick={() => {
+                disableAll();
+                setSupacolor(true);
+              }}
+              className={`${
+                supacolor
+                  ? "text-secondary border-secondary"
+                  : "text-dark border-white"
+              } p-2 hover:border-secondary hover:text-secondary border-b-[3px] border-solid`}>
+              Supacolor
+            </NavLink>
+            <NavLink
+              to="/decoqueue"
+              onClick={() => {
+                disableAll();
+                setDecoQueue(true);
+              }}
+              className={`${
+                decoQueue
+                  ? "text-secondary border-secondary"
+                  : "text-dark border-white"
+              } p-2 hover:border-secondary hover:text-secondary border-b-[3px] border-solid`}>
+              DecoQueue
+            </NavLink>
+            <NavLink
+              to="/sff-queue"
+              onClick={() => {
+                disableAll();
+                setSffQueue(true);
+              }}
+              className={`${
+                sffQueue
+                  ? "text-secondary border-secondary"
+                  : "text-dark border-white"
+              } p-2 hover:border-secondary hover:text-secondary border-b-[3px] border-solid`}>
+              SFF Queue
+            </NavLink>
+            <NavLink
+              to="/queue/clothing"
+              onClick={() => {
+                disableAll();
+                setClothingQueue(true);
+              }}
+              className={`${
+                clothingQueue
+                  ? "text-secondary border-secondary"
+                  : "text-dark border-white"
+              } p-2 hover:border-secondary hover:text-secondary border-b-[3px] border-solid`}>
+              Clothing Queue
+            </NavLink>
+
+            {user.access_level === "5" && (
+              <NavLink
+                to="/admin"
+                onClick={() => {
+                  disableAll();
+                  setAdmin(true);
+                }}
+                className={`${
+                  admin
+                    ? "text-secondary border-secondary"
+                    : "text-dark border-white"
+                } p-2 hover:border-secondary hover:text-secondary border-b-[3px] border-solid`}>
+                Admin
+              </NavLink>
+            )}
+          </nav>
+          <div>
+            {user.id && (
               <NavLink
                 to="/"
                 onClick={() => {
-                  disableAll();
-                  setHome(true);
+                  dispatch({ type: "LOGOUT" });
                 }}
-                className={`${
-                  home
-                    ? "text-secondary border-secondary"
-                    : "text-dark border-white"
-                } p-2 hover:border-secondary hover:text-secondary border-b-[3px] border-solid`}>
-                Home
+                className="p-2 hover:text-secondary">
+                Log Out
               </NavLink>
-              <NavLink
-                to="/resources"
-                onClick={() => {
-                  disableAll();
-                  setResources(true);
-                }}
-                className={`${
-                  resources
-                    ? "text-secondary border-secondary"
-                    : "text-dark border-white"
-                } p-2 hover:border-secondary hover:text-secondary border-b-[3px] border-solid`}>
-                Resources
-              </NavLink>
-              <NavLink
-                to="/supacolor"
-                onClick={() => {
-                  disableAll();
-                  setSupacolor(true);
-                }}
-                className={`${
-                  supacolor
-                    ? "text-secondary border-secondary"
-                    : "text-dark border-white"
-                } p-2 hover:border-secondary hover:text-secondary border-b-[3px] border-solid`}>
-                Supacolor
-              </NavLink>
-              <NavLink
-                to="/decoqueue"
-                onClick={() => {
-                  disableAll();
-                  setDecoQueue(true);
-                }}
-                className={`${
-                  decoQueue
-                    ? "text-secondary border-secondary"
-                    : "text-dark border-white"
-                } p-2 hover:border-secondary hover:text-secondary border-b-[3px] border-solid`}>
-                DecoQueue
-              </NavLink>
-              <NavLink
-                to="/sff-queue"
-                onClick={() => {
-                  disableAll();
-                  setSffQueue(true);
-                }}
-                className={`${
-                  sffQueue
-                    ? "text-secondary border-secondary"
-                    : "text-dark border-white"
-                } p-2 hover:border-secondary hover:text-secondary border-b-[3px] border-solid`}>
-                SFF Queue
-              </NavLink>
-              <NavLink
-                to="/queue/clothing"
-                onClick={() => {
-                  disableAll();
-                  setClothingQueue(true);
-                }}
-                className={`${
-                  clothingQueue
-                    ? "text-secondary border-secondary"
-                    : "text-dark border-white"
-                } p-2 hover:border-secondary hover:text-secondary border-b-[3px] border-solid`}>
-                Clothing Queue
-              </NavLink>
-
-              {user.access_level === "5" && (
-                <NavLink
-                  to="/admin"
-                  onClick={() => {
-                    disableAll();
-                    setAdmin(true);
-                  }}
-                  className={`${
-                    admin
-                      ? "text-secondary border-secondary"
-                      : "text-dark border-white"
-                  } p-2 hover:border-secondary hover:text-secondary border-b-[3px] border-solid`}>
-                  Admin
-                </NavLink>
-              )}
-            </Router>
-          </nav>
-          <div>
-            <Router>
-              {user.id && (
-                <NavLink
-                  to="/"
-                  onClick={() => {
-                    dispatch({ type: "LOGOUT" });
-                  }}
-                  className="p-2 hover:text-secondary">
-                  Log Out
-                </NavLink>
-              )}
-            </Router>
+            )}
           </div>
         </div>
         <div className="lg:hidden w-full flex items-center justify-between">
@@ -272,6 +257,5 @@ function Nav() {
     </>
   );
 }
-//grab the count of all of the queues
 
 export default Nav;

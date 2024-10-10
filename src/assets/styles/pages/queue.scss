@@ -43,9 +43,6 @@
     position: relative;
 
     span {
-      @media (max-width: 1024px) {
-        display: none;
-      }
       position: absolute;
       color: gray;
       right: 0.5rem;
@@ -56,6 +53,10 @@
       align-items: center;
       top: 50%;
       transform: translateY(-50%);
+
+      @media (max-width: 1024px) {
+        display: none;
+      }
     }
   }
   .search-input {

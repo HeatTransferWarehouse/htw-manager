@@ -111,10 +111,14 @@ router.post("/login", userStrategy.authenticate("local"), (req, res) => {
   });
 });
 
-router.post("/logout", (req, res) => {
+router.post("/logout", (req, res, next) => {
   // Use passport's built-in method to log out the user
-  req.logout();
-  res.sendStatus(200);
+  req.logout(function (err) {
+    if (err) {
+      return next(err); // Passes the error to the next middleware
+    }
+    res.sendStatus(200); // Success
+  });
 });
 
 router.delete("/:id", (req, res) => {

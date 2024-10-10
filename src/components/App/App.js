@@ -1,7 +1,7 @@
 import React, { useCallback, useEffect, useRef } from "react";
 import "../../../src/output.css";
 import "../../assets/styles/main.scss";
-import { HashRouter as Router, Route, Switch } from "react-router-dom";
+import { HashRouter as Router, Route, Routes } from "react-router-dom";
 import Nav from "../Nav/Nav";
 import Register from "../RegisterForm/RegisterForm";
 import Main from "../Home/Main";
@@ -76,45 +76,50 @@ function App() {
     <Router>
       {user.id && <Nav />}
       <main className="main-container">
-        <Switch>
-          <Route exact path="/login" component={Login} />
-          <Route exact path="/orderlookup" component={OrderLookup} />
-          <Route exact path="/orderlookupold" component={OrderLookupOLD} />
-          <Route exact path="/accountlookup" component={OrderLookup} />
-          <ProtectedRoute exact path="/" component={Main} />
-          <ProtectedRoute exact path="/sff-queue" component={SFFQueue} />
-          <ProtectedRoute exact path="/resources" component={Resources} />
-          <ProtectedRoute exact path="/decoqueue" component={DecoQueue} />
-          <ProtectedRoute exact path="/supacolor" component={Supacolor} />
-          <ProtectedRoute exact path="/promotions" component={Promotions} />
-          <ProtectedRoute
-            exact
-            path="/promotions/:id"
-            component={PromoDetails}
-          />
-          <ProtectedRoute
-            exact
-            path="/queue/clothing"
-            component={ClothingQueue}
-          />
-          <AdminRoute exact path="/wallyb" component={WallyB} />
-          <AdminRoute exact path="/register" component={Register} />
-          <AdminRoute exact path="/admin" component={Admin} />
-          {/* If none of the other routes matched, we will show a 404. */}
+        <Routes>
+          <Route path="/login" element={<Login />} />
+
+          {/* Protected Routes */}
+          <Route path="/" element={<ProtectedRoute element={<Main />} />} />
           <Route
-            render={() => (
+            path="/sff-queue"
+            element={<ProtectedRoute element={<SFFQueue />} />}
+          />
+          <Route
+            path="/resources"
+            element={<ProtectedRoute element={<Resources />} />}
+          />
+          <Route
+            path="/decoqueue"
+            element={<ProtectedRoute element={<DecoQueue />} />}
+          />
+          <Route
+            path="/supacolor"
+            element={<ProtectedRoute element={<Supacolor />} />}
+          />
+          <Route
+            path="/queue/clothing"
+            element={<ProtectedRoute element={<ClothingQueue />} />}
+          />
+
+          {/* Admin Routes */}
+          <Route path="/wallyb" element={<AdminRoute element={<WallyB />} />} />
+          <Route
+            path="/register"
+            element={<AdminRoute element={<Register />} />}
+          />
+          <Route path="/admin" element={<AdminRoute element={<Admin />} />} />
+
+          {/* Catch-all 404 route */}
+          <Route
+            path="*"
+            element={
               <>
-                <br />
-                <br />
-                <br />
-                <br />
-                <br />
-                <br />
                 <h1 className="fourfour">404</h1>
               </>
-            )}
+            }
           />
-        </Switch>
+        </Routes>
       </main>
     </Router>
   );
