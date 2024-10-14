@@ -101,6 +101,10 @@ function App() {
             path="/queue/clothing"
             element={<ProtectedRoute element={<ClothingQueue />} />}
           />
+          <Route
+            path="/orderlookupold"
+            element={<ProtectedRoute element={<OrderLookupOLD />} />}
+          />
 
           {/* Admin Routes */}
           <Route path="/wallyb" element={<AdminRoute element={<WallyB />} />} />
