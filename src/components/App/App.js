@@ -13,7 +13,6 @@ import Admin from "../Pages/Admin/Admin";
 import Login from "../LoginPage/LoginPage";
 import Supacolor from "../Pages/Supacolor";
 import DecoQueue from "../Pages/DecoQueue/DecoQueue";
-import OrderLookup from "../Pages/OrderLookup";
 import OrderLookupOLD from "../Pages/OrderLookupOLD";
 import SFFQueue from "../Pages/SffQueue/SFFQueue";
 import ClothingQueue from "../Pages/ClothingQueue/page";
