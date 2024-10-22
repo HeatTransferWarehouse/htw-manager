@@ -37,6 +37,7 @@ app.use(passport.session());
 
 const allowedOrigins = [
   "http://localhost:3000",
+  "http://localhost:3005",
   "http://localhost:8000",
   "https://www.heattransferwarehouse.com",
   "https://heat-transfer-warehouse-sandbox.mybigcommerce.com",
