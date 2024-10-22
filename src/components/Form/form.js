@@ -62,6 +62,53 @@ const Input = ({
   );
 };
 
+const TextField = ({
+  required,
+  readOnly,
+  htmlFor,
+  id,
+  label,
+  value,
+  onChange,
+  className,
+}) => {
+  const [focus, setFocus] = useState(false);
+  console.log(value);
+
+  return (
+    <div className="relative">
+      <fieldset
+        className={twMerge(
+          "absolute left-2 top-1/2 transition-transform text-base duration-200",
+          focus
+            ? "-translate-y-10 -translate-x-4 scale-75"
+            : value
+            ? " -translate-y-10 -translate-x-4 scale-75"
+            : "-translate-y-1/2 scale-100"
+        )}>
+        <legend className="bg-black px-2 text-white">
+          <span>{label}</span>
+        </legend>
+      </fieldset>
+      <input
+        className={twMerge(
+          className,
+          "text-white m-0 py-2 p-4  focus:border-white focus:outline-none bg-black border w-full border-white rounded-md"
+        )}
+        type="text"
+        value={value}
+        id={id}
+        onChange={onChange}
+        readOnly={readOnly}
+        required={required}
+        htmlFor={htmlFor}
+        onBlur={() => setFocus(false)}
+        onFocus={() => setFocus(true)}
+      />
+    </div>
+  );
+};
+
 const Select = ({
   value,
   onChange,
@@ -215,4 +262,5 @@ export {
   OptionSheet,
   RadioGroup,
   RadioButton,
+  TextField,
 };

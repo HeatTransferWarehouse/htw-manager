@@ -4,7 +4,7 @@ const axios = require("axios");
 const router = express.Router();
 const pool = require("../modules/pool");
 const moment = require("moment-timezone");
-const Jimp = require("jimp");
+const sharp = require("sharp");
 
 const clothingCategoryIds = [
   468, 498, 556, 910, 911, 912, 913, 909, 527, 555, 508, 509, 507, 510, 597,
@@ -112,6 +112,14 @@ const getOrderProducts = async (orderId) => {
             )?.display_value,
             date: currentDate,
           };
+
+          if (
+            productObject.color.includes("Black") ||
+            productObject.color.includes("black")
+          ) {
+            productObject.textColor = "white";
+          }
+
           searchedProducts.push(productObject);
         }
       }
@@ -217,23 +225,40 @@ const getProductSwatchImage = async (productId, name) => {
 
 const determineTextColor = async (imageUrl) => {
   try {
+    // Fetch image data
     const { data } = await axios({
       url: imageUrl,
       responseType: "arraybuffer",
     });
 
-    const image = await Jimp.read(data);
+    // Read and process the image using Sharp
+    const image = sharp(data);
+
+    // Get image metadata to find width and height
+    const metadata = await image.metadata();
+
+    // Get raw pixel data
+    const rawImageData = await image.raw().ensureAlpha().toBuffer();
 
     let colorSum = 0;
-    for (let x = 0; x < image.bitmap.width; x++) {
-      for (let y = 0; y < image.bitmap.height; y++) {
-        const pixelColor = Jimp.intToRGBA(image.getPixelColor(x, y));
-        const brightness = (pixelColor.r + pixelColor.g + pixelColor.b) / 3;
-        colorSum += brightness;
-      }
+    let pixelCount = 0;
+
+    // Loop through each pixel (raw data is an array of RGBA values)
+    for (let i = 0; i < rawImageData.length; i += 4) {
+      const r = rawImageData[i];
+      const g = rawImageData[i + 1];
+      const b = rawImageData[i + 2];
+
+      // Calculate brightness
+      const brightness = (r + g + b) / 3;
+      colorSum += brightness;
+      pixelCount++;
     }
 
-    const avgBrightness = colorSum / (image.bitmap.width * image.bitmap.height);
+    // Calculate average brightness
+    const avgBrightness = colorSum / pixelCount;
+
+    // Return black or white text color based on brightness
     return avgBrightness > 127.5 ? "black" : "white";
   } catch (error) {
     console.error("Error determining text color:", error);
