@@ -113,11 +113,18 @@ const getOrderProducts = async (orderId) => {
             date: currentDate,
           };
 
+          const blackKeywords = ["black", "dark", "coal", "onyx", "jet"];
+
+          // Check if the color contains any of the black keywords (case-insensitive)
           if (
-            productObject.color.includes("Black") ||
-            productObject.color.includes("black")
+            productObject.color &&
+            blackKeywords.some((keyword) =>
+              productObject.color.toLowerCase().includes(keyword)
+            )
           ) {
             productObject.textColor = "white";
+          } else {
+            productObject.textColor = "black";
           }
 
           searchedProducts.push(productObject);

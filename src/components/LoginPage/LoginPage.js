@@ -44,13 +44,7 @@ export default function LoginPage() {
           <h2 className="text-white font-bold text-3xl">HTW Admin Login</h2>
         </div>
         <div className="w-full mt-8 flex flex-col gap-4">
-          <TextField
-            required={true}
-            onChange={(e) => setUsername(e.target.value)}
-            value={username}
-            label="Username/Email"
-          />
-          {/* <div>
+          <div>
             <label
               className="text-white font-medium mb-2 text-left flex w-full"
               htmlFor="username">
@@ -67,7 +61,7 @@ export default function LoginPage() {
               required
               onChange={(event) => setUsername(event.target.value)}
             />
-          </div> */}
+          </div>
           <div>
             <label
               className="text-white font-medium mb-2 text-left flex w-full"
