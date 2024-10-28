@@ -24,21 +24,6 @@ body {
   }
 }
 
-/* Chrome, Safari, Edge autofill background and text color styling */
-input:-webkit-autofill {
-  background-color: black !important;
-  -webkit-text-fill-color: white !important;
-  border-color: white !important;
-  transition: background-color 5000s ease-in-out 0s; /* Force the background color to persist */
-}
-
-/* Firefox autofill styling */
-input:-moz-autofill {
-  background-color: black !important;
-  color: white !important;
-  border-color: white !important;
-}
-
 /* styles.css or a similar stylesheet */
 .smooth-transition {
   transition: margin-top 0.5s ease;
