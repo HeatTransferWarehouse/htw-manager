@@ -1,12 +1,17 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import "./LoginPage.css";
+import { useNavigate } from "react-router-dom"; // import useNavigate for redirection
+import { twMerge } from "tailwind-merge";
+import { Form, TextField } from "../Form/form";
 
 export default function LoginPage() {
   const dispatch = useDispatch();
-  const [username, setUsername] = useState("");
-  const [password, setPassword] = useState("");
+  const navigate = useNavigate(); // Initialize navigate
+  const [username, setUsername] = useState(null);
+  const [password, setPassword] = useState(null);
   const logInStatus = useSelector((store) => store.error.loginMessage);
+  const user = useSelector((store) => store.user.userReducer); // Get user data from Redux store
+
   const loginEvent = (event) => {
     event.preventDefault();
     dispatch({
@@ -18,21 +23,38 @@ export default function LoginPage() {
     });
   };
 
+  // Effect to handle redirection after successful login
+  useEffect(() => {
+    if (user.id) {
+      navigate("/"); // Redirect to main page if user is logged in
+    }
+  }, [user, navigate]); // Trigger redirection when user state changes
+
   return (
-    <div className="login">
-      <img
-        src="https://res.cloudinary.com/heattransferwarehouse/image/upload/c_scale,q_35,w_600/v1701704613/HTW%20Home/HTW_logo_2023.avif"
-        alt=""
-        className="htw-logo"
-      />
-      <form onSubmit={loginEvent} className="login-container">
-        <h2>HTW Admin Login</h2>
-        <div className="login-inputs">
-          <div className="login-input">
-            {/* enter email address here */}
-            <label htmlFor="username">EMAIL / USERNAME</label>
+    <div className="flex fixed top-0 left-0 w-full justify-center items-center h-full z-[99999] bg-black">
+      <form
+        onSubmit={loginEvent}
+        className="flex flex-col justify-center items-center w-full max-w-[325px]">
+        <div className="flex items-center justify-center flex-col">
+          <img
+            src="https://cdn11.bigcommerce.com/s-et4qthkygq/images/stencil/original/image-manager/htw-admin-favicon-purple.png?t=1685116764"
+            alt=""
+            className="w-[100px]"
+          />
+          <h2 className="text-white font-bold text-3xl">HTW Admin Login</h2>
+        </div>
+        <div className="w-full mt-8 flex flex-col gap-4">
+          <div>
+            <label
+              className="text-white font-medium mb-2 text-left flex w-full"
+              htmlFor="username">
+              EMAIL / USERNAME
+            </label>
             <input
-              className={logInStatus ? "login-error" : ""}
+              className={twMerge(
+                logInStatus ? "border-red-600" : "border-white",
+                "bg-white m-0 text-base text-black border-2 border-solid p-2 w-full rounded-md"
+              )}
               type="text"
               name="username"
               value={username}
@@ -40,10 +62,17 @@ export default function LoginPage() {
               onChange={(event) => setUsername(event.target.value)}
             />
           </div>
-          <div className="login-input">
-            <label htmlFor="password">PASSWORD</label>
+          <div>
+            <label
+              className="text-white font-medium mb-2 text-left flex w-full"
+              htmlFor="password">
+              PASSWORD
+            </label>
             <input
-              className={logInStatus ? "login-error" : ""}
+              className={twMerge(
+                logInStatus ? "border-red-600" : "border-white",
+                "bg-white border-2 border-solid text-base border-white text-black m-0 p-2 w-full rounded-md"
+              )}
               type="password"
               name="password"
               value={password}
@@ -52,8 +81,10 @@ export default function LoginPage() {
             />
           </div>
         </div>
-        {logInStatus && <p className="error-message">{logInStatus}</p>}
-        <button className="log-in" type="submit">
+        {logInStatus && <p className="text-red-600">{logInStatus}</p>}
+        <button
+          className="bg-gradient-to-r mt-8 transition duration-200 bg-secondary rounded-md  w-full py-3 text-white flex items-center justify-center "
+          type="submit">
           Login
         </button>
       </form>

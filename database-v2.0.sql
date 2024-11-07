@@ -163,9 +163,15 @@ CREATE TABLE "supacolor_jobs"
 	"id" serial PRIMARY KEY NOT NULL,
 	"job_id" integer UNIQUE NOT NULL,
 	"order_id" INTEGER UNIQUE NOT NULL,
+	"customer_name" VARCHAR(320) NOT NULL,
 	"date_due" VARCHAR(320) NOT NULL,
 	"job_cost" NUMERIC(16,4) NOT NULL,
-	"expecting_artwork" BOOLEAN NOT NULL
+	"expecting_artwork" BOOLEAN NOT NULL,
+	"fake_deleted" BOOLEAN DEFAULT FALSE,
+	"canceled" BOOLEAN DEFAULT FALSE,
+	"perm_delete" BOOLEAN DEFAULT FALSE,
+	"active" BOOLEAN DEFAULT TRUE,
+	"complete" BOOLEAN DEFAULT FALSE
 );
 
 CREATE TABLE "job_line_details" 
@@ -194,4 +200,27 @@ CREATE TABLE "artwork_uploads"
 	"message" VARCHAR(320) NOT NULL,
 	"job_id" INT,
 	FOREIGN KEY("job_id") REFERENCES "artwork_upload_response"("job_id")
+);
+
+-- Shirts From Fargo Queue
+
+CREATE TABLE "sff_item_queue"
+(
+	"id" serial NOT NULL PRIMARY KEY,
+	"order_number" varchar(255) NOT NULL,
+	"sku" varchar(255) NOT NULL,
+	"qty" DECIMAL,
+	"created_at" TIMESTAMP,
+	"description" TEXT,
+	"priority" VARCHAR(5) DEFAULT 'low',
+	"in_progress" BOOLEAN DEFAULT FALSE,
+	"completed" BOOLEAN DEFAULT FALSE,
+);
+
+CREATE TABLE "product_options"
+(
+	"id" serial NOT NULL PRIMARY KEY,
+	"option_name" varchar(255) NOT NULL,
+	"option_value" varchar(255) NOT NULL,
+	"item_queue_id" INT NOT NULL REFERENCES sff_item_queue(id) ON DELETE CASCADE
 );

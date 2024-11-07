@@ -97,7 +97,7 @@ const getBPOrderData = async (data) => {
   const orderData = await brightpearlAPI(options)
     .then((r) => r.data)
     .catch((err) => {
-      console.log("Error Getting BP Order Data", err);
+      console.log("Error Getting BP Order Data for BP Shipments", err);
       return [];
     });
   // We pass the order data to getBPOrderNotes so we can get the note that contains the tracking reference from Bright Pearl
@@ -139,8 +139,7 @@ const buildBCShipmentData = async (data) => {
     const trackingReferenceNumber = trackingNote.text.split(":")[1].trim();
     const trackingProviderString = trackingNote.text.split("by")[1].trim();
     const trackingProviderCode = trackingProviderString.split(" ")[0].trim();
-    // If the tracking reference is "Curbside" we don't want to create a shipment in BigCommerce
-    if (!trackingReferenceNumber.toLowerCase() === "curbside") {
+    if (trackingReferenceNumber.toLowerCase() !== "curbside") {
       let trackingReferenceLink;
       //   Tracking link is not provided in any data so we look at the carrier and create a link based on that by inserting the tracking number into the link
       if (trackingProviderCode.toLowerCase() === "ups") {
@@ -195,7 +194,6 @@ const createBcShipmentOnOrder = async (data) => {
     const url = `https://api.bigcommerce.com/stores/${process.env.STORE_HASH}/v2/orders/${data.id}/shipments`;
 
     await axios.post(url, data.shipmentData, { headers });
-    console.log(`Shipping Info Created for Order ${data.id}`);
   } catch (error) {
     console.log("Error getting Creating BigCommerce Shipment", error);
   }

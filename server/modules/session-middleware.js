@@ -1,39 +1,28 @@
-//Brought in as part of the project template
-// No changes should be required in this file
-
-const cookieSession = require('cookie-session');
-const warnings = require('../constants/warnings');
+const session = require("express-session");
+const warnings = require("../constants/warnings");
 
 const { Logtail } = require("@logtail/node");
 
 const logtail = new Logtail("KQi4An7q1YZVwaTWzM72Ct5r");
 
-/*
-  The cookie session makes it so a user can enters their username and password one time,
-  and then we can keep them logged in. We do this by giving them a really long random string
-  that the browser will pass back to us with every single request. The long random string is
-  something the server can confirm, and then we know that we have the right user.
-
-  You can see this string that gets passed back and forth in the
-  `application` ->  `storage` -> `cookies` section of the chrome debugger
-*/
-
 const serverSessionSecret = () => {
-  if (!process.env.SERVER_SESSION_SECRET || //check to see if this exists
-      process.env.SERVER_SESSION_SECRET.length < 8 || //want secret to be a ceetain length (longer = more secure)
-      process.env.SERVER_SESSION_SECRET === warnings.exampleBadSecret) {
-    // Warning if user doesn't have a good secret
+  if (
+    !process.env.SERVER_SESSION_SECRET ||
+    process.env.SERVER_SESSION_SECRET.length < 8 ||
+    process.env.SERVER_SESSION_SECRET === warnings.exampleBadSecret
+  ) {
     logtail.info(warnings.badSecret);
   }
 
   return process.env.SERVER_SESSION_SECRET;
 };
 
-module.exports = cookieSession({
+module.exports = session({
   secret: serverSessionSecret() || "secret", // please set this in your .env file
-  key: "user", // this is the name of the req.variable. 'user' is convention, but not required
-  resave: "true",
-  saveUninitialized: true,
-  maxAge: 24 * 60 * 60 * 1000 * 10000, // Set session for an extremely long time
-  secure: false,
+  resave: false, // Do not save session if unmodified
+  saveUninitialized: false, // Do not create session until something is stored
+  cookie: {
+    maxAge: 24 * 60 * 60 * 1000, // 24 hours
+    secure: false, // Set to true if using https
+  },
 });

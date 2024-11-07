@@ -1,10 +1,6 @@
 import React from "react";
 import { useDispatch } from "react-redux";
 import "./css/Main.css";
-import "./css/bootstrap.min.css";
-import "./css/font-awesome.css";
-import "./css/flex-slider.css";
-import "./css/templatemo-softy-pinko.css";
 import Button from "react-bootstrap/Button";
 import Box from "@material-ui/core/Box";
 import FormLabel from "@material-ui/core/FormLabel";

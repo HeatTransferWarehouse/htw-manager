@@ -1,16 +1,65 @@
 /*A number of these stylings were brought in from the projetc template*/
+@import url("https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,400;0,500;0,700;1,300;1,400;1,500;1,700&display=swap");
+
 body {
-  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+  font-family: "Roboto", sans-serif;
   margin: 0px;
   height: 100%;
-  min-height: 100vh;
+  min-height: 100svh;
+  overflow: hidden;
+}
+
+/* Otherwise, use `::-webkit-scrollbar-*` pseudo-elements */
+
+.main-container {
+  display: flex;
+  flex-direction: column;
+  height: calc((var(--vh, 1vh) * 100) - 86px);
+  overflow-y: scroll;
+  position: relative;
+  scrollbar-color: rgb(155, 155, 155) transparent;
+
+  &.no-pointer-events {
+    pointer-events: none;
+  }
+}
+
+/* styles.css or a similar stylesheet */
+.smooth-transition {
+  transition: margin-top 0.5s ease;
+}
+
+.sr-only {
+  border: 0;
+  clip: rect(0, 0, 0, 0);
+  height: 1px;
+  margin: -1px;
+  overflow: hidden;
+  padding: 0;
+  position: absolute;
+  width: 1px;
 }
 
 #react-root {
   height: 100%;
-  min-height: 100vh;
-  position: relative;
-  padding-bottom: 10rem;
+  max-height: 100vh;
+  overflow: hidden;
+  background-color: rgb(229 231 235);
+}
+
+.animate-in {
+  animation: animateIn 0.3s ease 0.15s both;
+}
+
+@keyframes animateIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 .alert {
@@ -116,8 +165,8 @@ input {
 
 /*sticks the navigation bar at the top*/
 #Nav {
-  position: fixed;
   width: 100%;
+  position: sticky;
   top: 0;
   z-index: 99998;
 }

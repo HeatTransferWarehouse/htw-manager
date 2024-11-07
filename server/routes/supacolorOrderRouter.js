@@ -9,7 +9,6 @@ const multer = require("multer");
 const upload = multer();
 
 const { Logtail } = require("@logtail/node");
-const { log } = require("async");
 const logtail = new Logtail("KQi4An7q1YZVwaTWzM72Ct5r");
 
 // This router handles Supacolor products that are ordered on the Heat Transfer Store and places them in to Supacolor's system.
@@ -33,10 +32,7 @@ async function getWebHooks() {
   try {
     const response = await axios.get(url, { headers });
     response.data.data.forEach(async (hook) => {
-      if (hook.is_active) {
-        console.log(`${hook.scope} is active`);
-      } else {
-        console.log(`${hook.scope} is not active...Activating now`);
+      if (!hook.is_active) {
         await updateWebHooks(hook.id);
       }
     });
@@ -53,20 +49,64 @@ async function updateWebHooks(id) {
   };
 
   // This is the object that will be used to update the webhooks
-  const webHookObject = {
-    scope: "store/order/created",
-    destination:
-      "https://admin.heattransferwarehouse.com/supacolor-api/create-order",
-    is_active: true,
-    events_history_enabled: true,
-    headers: {
-      custom: "string",
-    },
-  };
+  let webHookObject;
+  if (id === 27305616) {
+    webHookObject = {
+      scope: "store/order/created",
+      destination:
+        "https://admin.heattransferwarehouse.com/supacolor-api/create-order",
+      is_active: true,
+      events_history_enabled: true,
+      headers: {
+        custom: "string",
+      },
+    };
+  }
+  if (id === 28123505) {
+    webHookObject = {
+      scope: "store/order/statusUpdated",
+      destination:
+        "https://admin.heattransferwarehouse.com/api/bp-api/bp-tracking",
+      is_active: true,
+      events_history_enabled: true,
+      headers: {
+        property1: "string",
+        property2: "string",
+      },
+    };
+  }
+  if (id === 28259671) {
+    webHookObject = {
+      scope: "store/order/created",
+      destination:
+        "https://admin.heattransferwarehouse.com/api/sff-queue/create-order",
+      is_active: true,
+      events_history_enabled: true,
+      headers: null,
+    };
+  }
+  if (id === 28268539) {
+    webHookObject = {
+      scope: "store/order/created",
+      destination:
+        "https://admin.heattransferwarehouse.com/api/queue/create-order",
+      is_active: true,
+      events_history_enabled: true,
+      headers: null,
+    };
+  }
+  if (id === 28329990) {
+    webHookObject = {
+      scope: "store/order/created",
+      destination:
+        "https://admin.heattransferwarehouse.com/api/clothing-queue/order-webhook",
+      is_active: true,
+      events_history_enabled: true,
+      headers: null,
+    };
+  }
   try {
-    // This will update the webhooks
     await axios.put(url, webHookObject, { headers });
-    console.log("Webhooks updated");
   } catch (error) {
     console.log("Error updating webhooks", error);
   }
@@ -360,10 +400,8 @@ async function sendOrderToSupacolor(supacolorPayload, supacolorProducts) {
 
   if (isOrderIdInDatabase) {
     // If the order is already in the database, we don't want to send it to Supacolor again
-    console.log(`Order Id ${orderId} is already in DB`);
     return null;
   } else {
-    console.log("Sending Order to Supacolor");
     // check if we have an access token
     if (!accessToken) {
       console.log("Failed to get access token");
@@ -381,7 +419,6 @@ async function sendOrderToSupacolor(supacolorPayload, supacolorProducts) {
 
       if (response.status === 201) {
         // If the status is 200, the job was successfully created
-        console.log("Job Successfully Created");
         // this creates a duplicate of the response and sends it to our Digital Ocean database
         const supacolourJob = {
           jobNumber: response.data.jobNumber,
@@ -488,7 +525,6 @@ router.post("/upload-artwork/:jobId", upload.any(), async (req, res) => {
         },
       }
     );
-    console.log("Artwork Upload Response", response.data);
     if (response.status === 200) {
       // If the status is 200, the artwork was successfully uploaded and we will send the response to our Digital Ocean database
       const uploadedArtwork = {
@@ -554,7 +590,6 @@ router.put("/update-needs-artwork/:id", (req, res) => {
 
 router.post("/artwork", async (req, res) => {
   const uploadedArtwork = req.body;
-  console.log("Posting Artwork Upload to DB");
   const client = await pool.connect();
 
   try {
@@ -602,7 +637,6 @@ router.post("/artwork", async (req, res) => {
 
 router.post("/new-job", async (req, res) => {
   const supacolorJob = req.body;
-  console.log("Posting Job to DB");
   const client = await pool.connect();
   const text1 = `
         INSERT INTO "supacolor_jobs" ("job_id", "order_id", "date_due", "job_cost", "expecting_artwork", "customer_name")
@@ -638,7 +672,6 @@ router.post("/new-job", async (req, res) => {
 
     await client.query("COMMIT;");
 
-    console.log("Job Successfully Made in DB");
     res.sendStatus(200);
   } catch (err) {
     await client.query("ROLLBACK;");
@@ -712,7 +745,7 @@ GROUP BY
   pool
     .query(query)
     .then((results) => res.send(results.rows))
-    .catch((error) => console.log("Error Getting Jobs", err));
+    .catch((error) => console.log("Error Getting Jobs", error));
 });
 
 router.put("/mark-job-canceled/:id", (req, res) => {

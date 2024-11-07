@@ -1,27 +1,26 @@
 import React, { useEffect } from "react";
-import { useSelector, useDispatch } from 'react-redux';
+import { useSelector, useDispatch } from "react-redux";
 import { TextField, Button } from "@material-ui/core";
 import Form from "react-bootstrap/Form";
 import QueueIcon from "@material-ui/icons/Queue";
 import Paper from "@material-ui/core/Paper";
 
 function OrderLookupPage() {
-
-  const details = useSelector(store => store.queue.detailslist);
-  const orders = useSelector(store => store.queue.orderlist);
-  const shipping = useSelector(store => store.queue.shippinglist);
-  const products = useSelector(store => store.queue.productlist);
+  const details = useSelector((store) => store.queue.detailslist);
+  const orders = useSelector((store) => store.queue.orderlist);
+  const shipping = useSelector((store) => store.queue.shippinglist);
+  const products = useSelector((store) => store.queue.productlist);
 
   const dispatch = useDispatch();
-  const [order_number, setOrderNumber] = React.useState('');
+  const [order_number, setOrderNumber] = React.useState("");
   const [weight, setWeight] = React.useState(0);
-  const [ship_from, setShipFrom] = React.useState('');
+  const [ship_from, setShipFrom] = React.useState("");
 
   useEffect(() => {
     dispatch({
       type: "CLEAR_PRODUCT",
     });
-  }, [dispatch])
+  }, [dispatch]);
 
   const getInfo = () => {
     dispatch({
@@ -60,35 +59,25 @@ function OrderLookupPage() {
           let newNewWeight = weight + newWeight;
           setWeight(newNewWeight);
         }
-      }
+      };
     });
-  }
+  };
 
   let itemid = orders.id;
   let status = orders.status;
   let items_total = orders.items_total;
   let items_shipped = orders.items_shipped;
   let payment_status = orders.payment_status;
-  let shipping_first_name =
-    shipping[0] && shipping[0].first_name;
-  let shipping_last_name =
-    shipping[0] && shipping[0].last_name;
-  let shipping_street_1 =
-    shipping[0] && shipping[0].street_1;
-  let shipping_street_2 =
-    shipping[0] && shipping[0].street_2;
-  let shipping_city =
-    shipping[0] && shipping[0].city;
-  let shipping_state =
-    shipping[0] && shipping[0].state;
-  let shipping_zip =
-    shipping[0] && shipping[0].zip;
-  let shipping_country =
-    shipping[0] && shipping[0].country;
-  let shipping_phone =
-    shipping[0] && shipping[0].phone;
-  let shipping_email =
-    shipping[0] && shipping[0].email;
+  let shipping_first_name = shipping[0] && shipping[0].first_name;
+  let shipping_last_name = shipping[0] && shipping[0].last_name;
+  let shipping_street_1 = shipping[0] && shipping[0].street_1;
+  let shipping_street_2 = shipping[0] && shipping[0].street_2;
+  let shipping_city = shipping[0] && shipping[0].city;
+  let shipping_state = shipping[0] && shipping[0].state;
+  let shipping_zip = shipping[0] && shipping[0].zip;
+  let shipping_country = shipping[0] && shipping[0].country;
+  let shipping_phone = shipping[0] && shipping[0].phone;
+  let shipping_email = shipping[0] && shipping[0].email;
   if (shipping_state === "Alabama" || shipping_state === "alabama") {
     shipping_state = "AL";
   } else if (shipping_state === "Alaska" || shipping_state === "alaska") {
@@ -134,10 +123,7 @@ function OrderLookupPage() {
     shipping_state = "KS";
   } else if (shipping_state === "Kentucky" || shipping_state === "kentucky") {
     shipping_state = "KY";
-  } else if (
-    shipping_state === "Louisiana" ||
-    shipping_state === "louisiana"
-  ) {
+  } else if (shipping_state === "Louisiana" || shipping_state === "louisiana") {
     shipping_state = "LA";
   } else if (shipping_state === "Maine" || shipping_state === "maine") {
     shipping_state = "ME";
@@ -150,10 +136,7 @@ function OrderLookupPage() {
     shipping_state = "MA";
   } else if (shipping_state === "Michigan" || shipping_state === "michigan") {
     shipping_state = "MI";
-  } else if (
-    shipping_state === "Minnesota" ||
-    shipping_state === "minnesota"
-  ) {
+  } else if (shipping_state === "Minnesota" || shipping_state === "minnesota") {
     shipping_state = "MN";
   } else if (
     shipping_state === "Mississippi" ||
@@ -219,10 +202,7 @@ function OrderLookupPage() {
     shipping_state === "south dakota"
   ) {
     shipping_state = "SD";
-  } else if (
-    shipping_state === "Tennessee" ||
-    shipping_state === "tennessee"
-  ) {
+  } else if (shipping_state === "Tennessee" || shipping_state === "tennessee") {
     shipping_state = "TN";
   } else if (shipping_state === "Texas" || shipping_state === "texas") {
     shipping_state = "TX";
@@ -242,28 +222,15 @@ function OrderLookupPage() {
     shipping_state === "west virginia"
   ) {
     shipping_state = "WV";
-  } else if (
-    shipping_state === "Wisconsin" ||
-    shipping_state === "wisconsin"
-  ) {
+  } else if (shipping_state === "Wisconsin" || shipping_state === "wisconsin") {
     shipping_state = "WI";
   } else if (shipping_state === "Wyoming" || shipping_state === "wyoming") {
     shipping_state = "WY";
   }
 
-
-
   return (
     <div>
       <>
-        <br />
-        <br />
-        <br />
-        <br />
-        <br />
-        <br />
-        <br />
-        <br />
         <Paper
           elevation={5}
           style={{
@@ -271,9 +238,8 @@ function OrderLookupPage() {
             marginLeft: "5%",
             marginRight: "5%",
             marginBottom: "5%",
-            overflowX: "hidden"
-          }}
-        >
+            overflowX: "hidden",
+          }}>
           <center>
             <p>Type the order number in below</p>
             <TextField
@@ -289,22 +255,17 @@ function OrderLookupPage() {
               type="text"
               maxLength={1000}
               //onChange of input values set local state
-              onChange={(event) =>
-                setOrderNumber(event.target.value)
-              } //onChange of input values set local state
+              onChange={(event) => setOrderNumber(event.target.value)} //onChange of input values set local state
             />
           </center>
           <center>
-            <p>
-              Select your ship from warehouse NOTE: Warehouse use only
-            </p>
+            <p>Select your ship from warehouse NOTE: Warehouse use only</p>
             <Form.Control
               style={{ width: "300px" }}
               as="select"
               onChange={(event) =>
                 setShipFrom({ ship_from: event.target.value })
-              }
-            >
+              }>
               {" "}
               <option value="Fargo">Fargo </option>{" "}
               <option value="Cincinnati">Cincinnati </option>{" "}
@@ -314,6 +275,7 @@ function OrderLookupPage() {
           </center>
           <center>
             <Button
+              id="check_order"
               style={{
                 //note that it only goes through if it passes all validation
                 marginTop: "3%",
@@ -326,8 +288,9 @@ function OrderLookupPage() {
               type="submit"
               color="primary"
               className="button"
-              onClick={getInfo}
-            ><QueueIcon /> CheckOrder</Button>
+              onClick={getInfo}>
+              <QueueIcon /> CheckOrder
+            </Button>
           </center>
           <table
             style={{
@@ -335,8 +298,7 @@ function OrderLookupPage() {
               marginRight: "auto",
               marginTop: "20px",
               width: "100%",
-            }}
-          >
+            }}>
             <tr>
               <td
                 style={{
@@ -344,9 +306,8 @@ function OrderLookupPage() {
                   padding: "10px",
                   width: "25%",
                 }}
-                className="order_number"
-              >
-                <b>Order Number:</b> <i>{itemid}</i>
+                className="order_number">
+                <b>Order Number:</b> <span id="order_id">{itemid}</span>
               </td>
             </tr>
             <tr>
@@ -356,9 +317,8 @@ function OrderLookupPage() {
                   padding: "10px",
                   width: "25%",
                 }}
-                className="status"
-              >
-                <b>Status:</b> <i>{status}</i>
+                className="status">
+                <b>Status:</b> <span id="status">{status}</span>
               </td>
             </tr>
             <tr>
@@ -368,9 +328,8 @@ function OrderLookupPage() {
                   padding: "10px",
                   width: "25%",
                 }}
-                className="total_items"
-              >
-                <b>Total Items:</b> <i>{items_total}</i>
+                className="total_items">
+                <b>Total Items:</b> <span id="total_items">{items_total}</span>
               </td>
             </tr>
             <tr>
@@ -380,9 +339,9 @@ function OrderLookupPage() {
                   padding: "10px",
                   width: "25%",
                 }}
-                className="total_items_shipped"
-              >
-                <b>Total Items Shipped:</b> <i>{items_shipped}</i>
+                className="total_items_shipped">
+                <b>Total Items Shipped:</b>{" "}
+                <span id="items_shipped">{items_shipped}</span>
               </td>
             </tr>
             <tr>
@@ -392,9 +351,9 @@ function OrderLookupPage() {
                   padding: "10px",
                   width: "25%",
                 }}
-                className="payment_status"
-              >
-                <b>Payment Status:</b> <i>{payment_status}</i>
+                className="payment_status">
+                <b>Payment Status:</b>{" "}
+                <span id="payment_status">{payment_status}</span>
               </td>
             </tr>
             <br />
@@ -404,8 +363,7 @@ function OrderLookupPage() {
                   marginLeft: "3%",
                   padding: "10px",
                   width: "25%",
-                }}
-              >
+                }}>
                 <b>Shipping Address</b>
               </td>
             </tr>
@@ -416,12 +374,11 @@ function OrderLookupPage() {
                   padding: "10px",
                   width: "25%",
                 }}
-                className="shipping_first_name"
-              >
+                className="shipping_first_name">
                 <b>Name:</b>{" "}
-                <i>
+                <span id="customer_name">
                   {shipping_first_name} {shipping_last_name}
-                </i>
+                </span>
               </td>
             </tr>
             <tr>
@@ -431,9 +388,8 @@ function OrderLookupPage() {
                   padding: "10px",
                   width: "25%",
                 }}
-                className="shipping_street_1"
-              >
-                <b>Street:</b> <i>{shipping_street_1}</i>
+                className="shipping_street_1">
+                <b>Street:</b> <span id="street">{shipping_street_1}</span>
               </td>
             </tr>
             <tr>
@@ -443,9 +399,8 @@ function OrderLookupPage() {
                   padding: "10px",
                   width: "25%",
                 }}
-                className="shipping_street_2"
-              >
-                <b>Street 2:</b> <i>{shipping_street_2}</i>
+                className="shipping_street_2">
+                <b>Street 2:</b> <span id="street_2">{shipping_street_2}</span>
               </td>
             </tr>
             <tr>
@@ -455,12 +410,10 @@ function OrderLookupPage() {
                   padding: "10px",
                   width: "25%",
                 }}
-                className="shipping_city_state"
-              >
-                <b>City, State and Zip:</b>{" "}
-                <i>
-                  {shipping_city} {shipping_state} {shipping_zip}
-                </i>
+                className="shipping_city_state">
+                <b>City, State and Zip:</b> {shipping_city}
+                {shipping_state}
+                <span id="zip">{shipping_zip}</span>
               </td>
             </tr>
             <tr>
@@ -470,9 +423,8 @@ function OrderLookupPage() {
                   padding: "10px",
                   width: "25%",
                 }}
-                className="shipping_zip"
-              >
-                <b>Zip:</b> <i>{shipping_zip}</i>
+                className="shipping_country">
+                <b>Country:</b> <span id="country">{shipping_country}</span>
               </td>
             </tr>
             <tr>
@@ -482,9 +434,8 @@ function OrderLookupPage() {
                   padding: "10px",
                   width: "25%",
                 }}
-                className="shipping_country"
-              >
-                <b>Country:</b> <i>{shipping_country}</i>
+                className="shipping_phone">
+                <b>Phone:</b> <span id="phone">{shipping_phone}</span>
               </td>
             </tr>
             <tr>
@@ -494,9 +445,8 @@ function OrderLookupPage() {
                   padding: "10px",
                   width: "25%",
                 }}
-                className="shipping_phone"
-              >
-                <b>Phone:</b> <i>{shipping_phone}</i>
+                className="shipping_email">
+                <b>Email:</b> <span id="email">{shipping_email}</span>
               </td>
             </tr>
             <tr>
@@ -506,9 +456,8 @@ function OrderLookupPage() {
                   padding: "10px",
                   width: "25%",
                 }}
-                className="shipping_email"
-              >
-                <b>Email:</b> <i>{shipping_email}</i>
+                className="shipping_city">
+                <b>City</b> <span id="city">{shipping_city}</span>
               </td>
             </tr>
             <tr>
@@ -518,9 +467,8 @@ function OrderLookupPage() {
                   padding: "10px",
                   width: "25%",
                 }}
-                className="shipping_city"
-              >
-                <b>City</b> <i>{shipping_city}</i>
+                className="shipping_state">
+                <b>State:</b> <span id="state">{shipping_state}</span>
               </td>
             </tr>
             <tr>
@@ -530,21 +478,8 @@ function OrderLookupPage() {
                   padding: "10px",
                   width: "25%",
                 }}
-                className="shipping_state"
-              >
-                <b>State:</b> <i>{shipping_state}</i>
-              </td>
-            </tr>
-            <tr>
-              <td
-                style={{
-                  marginLeft: "3%",
-                  padding: "10px",
-                  width: "25%",
-                }}
-                className="weight"
-              >
-                <b>Weight:</b> <i>{weight}</i>
+                className="weight">
+                <b>Weight:</b> <span id="weight">{weight}</span>
               </td>
             </tr>
             <br />
@@ -561,9 +496,8 @@ function OrderLookupPage() {
                       padding: "10px",
                       width: "25%",
                     }}
-                    className="ship_from_address_1"
-                  >
-                    <b>Address 1:</b> <i>1445 Jamike Ave</i>
+                    className="ship_from_address_1">
+                    <b>Address 1:</b> <span id="street">1445 Jamike Ave</span>
                   </td>
                 </tr>
                 <tr>
@@ -573,9 +507,8 @@ function OrderLookupPage() {
                       padding: "10px",
                       width: "25%",
                     }}
-                    className="ship_from_address_2"
-                  >
-                    <b>Address 2:</b> <i>Suite 200</i>
+                    className="ship_from_address_2">
+                    <b>Address 2:</b> <span id="street_2">Suite 200</span>
                   </td>
                 </tr>
                 <tr>
@@ -585,9 +518,8 @@ function OrderLookupPage() {
                       padding: "10px",
                       width: "25%",
                     }}
-                    className="ship_from_zip"
-                  >
-                    <b>Zip:</b> <i>41018</i>
+                    className="ship_from_zip">
+                    <b>Zip:</b> <span id="zip">41018</span>
                   </td>
                 </tr>
                 <tr>
@@ -597,9 +529,8 @@ function OrderLookupPage() {
                       padding: "10px",
                       width: "25%",
                     }}
-                    className="ship_from_city"
-                  >
-                    <b>City:</b> <i>Erlanger</i>
+                    className="ship_from_city">
+                    <b>City:</b> <span id="city">Erlanger</span>
                   </td>
                 </tr>
                 <tr>
@@ -609,147 +540,15 @@ function OrderLookupPage() {
                       padding: "10px",
                       width: "25%",
                     }}
-                    className="ship_from_state"
-                  >
-                    <b>State:</b> <i>KY</i>
+                    className="ship_from_state">
+                    <b>State:</b> <span id="state">KY</span>
                   </td>
                 </tr>
               </>
             ) : (
               <span></span>
             )}
-            {ship_from === "Vegas" ? (
-              <>
-                <tr>
-                  <td
-                    style={{
-                      marginLeft: "3%",
-                      padding: "10px",
-                      width: "25%",
-                    }}
-                    className="ship_from_address_1"
-                  >
-                    <b>Address 1:</b> <i>7585 Commercial way</i>
-                  </td>
-                </tr>
-                <tr>
-                  <td
-                    style={{
-                      marginLeft: "3%",
-                      padding: "10px",
-                      width: "25%",
-                    }}
-                    className="ship_from_address_2"
-                  >
-                    <b>Address 2:</b> <i>Suite B</i>
-                  </td>
-                </tr>
-                <tr>
-                  <td
-                    style={{
-                      marginLeft: "3%",
-                      padding: "10px",
-                      width: "25%",
-                    }}
-                    className="ship_from_zip"
-                  >
-                    <b>Zip:</b> <i>89011</i>
-                  </td>
-                </tr>
-                <tr>
-                  <td
-                    style={{
-                      marginLeft: "3%",
-                      padding: "10px",
-                      width: "25%",
-                    }}
-                    className="ship_from_city"
-                  >
-                    <b>City:</b> <i>Henderson</i>
-                  </td>
-                </tr>
-                <tr>
-                  <td
-                    style={{
-                      marginLeft: "3%",
-                      padding: "10px",
-                      width: "25%",
-                    }}
-                    className="ship_from_state"
-                  >
-                    <b>State:</b> <i>NV</i>
-                  </td>
-                </tr>
-              </>
-            ) : (
-              <span></span>
-            )}
-            {ship_from === "Jacksonville" ? (
-              <>
-                <tr>
-                  <td
-                    style={{
-                      marginLeft: "3%",
-                      padding: "10px",
-                      width: "25%",
-                    }}
-                    className="ship_from_address_1"
-                  >
-                    <b>Address 1:</b> <i>13291 Vantage Way</i>
-                  </td>
-                </tr>
-                <tr>
-                  <td
-                    style={{
-                      marginLeft: "3%",
-                      padding: "10px",
-                      width: "25%",
-                    }}
-                    className="ship_from_address_2"
-                  >
-                    <b>Address 2:</b> <i>Suite 104</i>
-                  </td>
-                </tr>
-                <tr>
-                  <td
-                    style={{
-                      marginLeft: "3%",
-                      padding: "10px",
-                      width: "25%",
-                    }}
-                    className="ship_from_zip"
-                  >
-                    <b>Zip:</b> <i>32218</i>
-                  </td>
-                </tr>
-                <tr>
-                  <td
-                    style={{
-                      marginLeft: "3%",
-                      padding: "10px",
-                      width: "25%",
-                    }}
-                    className="ship_from_city"
-                  >
-                    <b>City:</b> <i>Jacksonville</i>
-                  </td>
-                </tr>
-                <tr>
-                  <td
-                    style={{
-                      marginLeft: "3%",
-                      padding: "10px",
-                      width: "25%",
-                    }}
-                    className="ship_from_state"
-                  >
-                    <b>State:</b> <i>FL</i>
-                  </td>
-                </tr>
-              </>
-            ) : (
-              <span></span>
-            )}
+
             {ship_from === "Fargo" ? (
               <>
                 <tr>
@@ -759,9 +558,8 @@ function OrderLookupPage() {
                       padding: "10px",
                       width: "25%",
                     }}
-                    className="ship_from_address_1"
-                  >
-                    <b>Address 1:</b> <i>1501 21st Ave N</i>
+                    className="ship_from_address_1">
+                    <b>Address 1:</b> <span id="street">1501 21st Ave N</span>
                   </td>
                 </tr>
                 <tr>
@@ -771,9 +569,8 @@ function OrderLookupPage() {
                       padding: "10px",
                       width: "25%",
                     }}
-                    className="ship_from_address_2"
-                  >
-                    <b>Address 2:</b> <i>Suite B</i>
+                    className="ship_from_address_2">
+                    <b>Address 2:</b> <span id="street_2">Suite B</span>
                   </td>
                 </tr>
                 <tr>
@@ -783,9 +580,8 @@ function OrderLookupPage() {
                       padding: "10px",
                       width: "25%",
                     }}
-                    className="ship_from_zip"
-                  >
-                    <b>Zip:</b> <i>58102</i>
+                    className="ship_from_zip">
+                    <b>Zip:</b> <span id="zip">58102</span>
                   </td>
                 </tr>
                 <tr>
@@ -795,9 +591,8 @@ function OrderLookupPage() {
                       padding: "10px",
                       width: "25%",
                     }}
-                    className="ship_from_city"
-                  >
-                    <b>City:</b> <i>Fargo</i>
+                    className="ship_from_city">
+                    <b>City:</b> <span id="state">Fargo</span>
                   </td>
                 </tr>
                 <tr>
@@ -807,9 +602,8 @@ function OrderLookupPage() {
                       padding: "10px",
                       width: "25%",
                     }}
-                    className="ship_from_state"
-                  >
-                    <b>State:</b> <i>ND</i>
+                    className="ship_from_state">
+                    <b>State:</b> <span id="state">ND</span>
                   </td>
                 </tr>
               </>
@@ -823,52 +617,55 @@ function OrderLookupPage() {
                 <b>Products</b>
               </td>
             </tr>
-            {products === false
-              ?
-              <><h3><strong>Enter an order # first!</strong></h3></>
-              :
+            {products === false ? (
+              <>
+                <h3>
+                  <strong>Enter an order # first!</strong>
+                </h3>
+              </>
+            ) : (
               products.map((item, index) => [
                 item.sku.slice(0, 5) === "BL_A3" ||
-                  item.sku.slice(0, 5) === "BL_A4" ||
-                  item.sku.slice(0, 5) === "BL_A5" ||
-                  item.sku.slice(0, 5) === "BL_LC" ||
-                  item.sku.slice(0, 5) === "BL_XS" ||
-                  item.sku.slice(0, 5) === "BL_SM" ||
-                  item.sku.slice(0, 6) === "HW_CAP" ||
-                  item.sku.slice(0, 6) === "PR_BAG" ||
-                  item.sku.slice(0, 6) === "PR_UM_" ||
-                  item.sku.slice(0, 5) === "SB_A5" ||
-                  item.sku.slice(0, 5) === "SB_A4" ||
-                  item.sku.slice(0, 5) === "SB_A3" ||
-                  item.sku.slice(0, 5) === "SB_LC" ||
-                  item.sku.slice(0, 5) === "SB_SM" ||
-                  item.sku.slice(0, 5) === "SB_LS" ||
-                  item.sku.slice(0, 5) === "WE_SM" ||
-                  item.sku.slice(0, 5) === "WE_LC" ||
-                  item.sku.slice(0, 5) === "WE_A5" ||
-                  item.sku.slice(0, 5) === "WE_A4" ||
-                  item.sku.slice(0, 5) === "WE_A3" ||
-                  item.sku.slice(0, 5) === "WE_SQ" ||
-                  item.sku.slice(0, 5) === "WE_SU" ||
-                  item.sku.slice(0, 5) === "BL_SU" ||
-                  item.sku.slice(0, 5) === "SB_SU" ||
-                  item.sku.slice(0, 5) === "WE_XS" ||
-                  item.sku.slice(0, 8) === "SUEDE_HW" ||
-                  item.sku.slice(0, 8) === "SUEDE_PR" ||
-                  item.sku.slice(0, 8) === "SUEDE_NA" ||
-                  item.sku.slice(0, 8) === "SUEDE_AP" ||
-                  item.sku.slice(0, 14) === "LEATHERETTE_HW" ||
-                  item.sku.slice(0, 14) === "LEATHERETTE_PR" ||
-                  item.sku.slice(0, 14) === "LEATHERETTE_NA" ||
-                  item.sku.slice(0, 14) === "LEATHERETTE_AP" ||
-                  item.sku.slice(0, 8) === "TWILL_HW" ||
-                  item.sku.slice(0, 8) === "TWILL_PR" ||
-                  item.sku.slice(0, 8) === "TWILL_NA" ||
-                  item.sku.slice(0, 8) === "TWILL_AP" ||
-                  item.sku.slice(0, 11) === "SIMWOVEN_HW" ||
-                  item.sku.slice(0, 11) === "SIMWOVEN_PR" ||
-                  item.sku.slice(0, 11) === "SIMWOVEN_NA" ||
-                  item.sku.slice(0, 11) === "SIMWOVEN_AP" ? (
+                item.sku.slice(0, 5) === "BL_A4" ||
+                item.sku.slice(0, 5) === "BL_A5" ||
+                item.sku.slice(0, 5) === "BL_LC" ||
+                item.sku.slice(0, 5) === "BL_XS" ||
+                item.sku.slice(0, 5) === "BL_SM" ||
+                item.sku.slice(0, 6) === "HW_CAP" ||
+                item.sku.slice(0, 6) === "PR_BAG" ||
+                item.sku.slice(0, 6) === "PR_UM_" ||
+                item.sku.slice(0, 5) === "SB_A5" ||
+                item.sku.slice(0, 5) === "SB_A4" ||
+                item.sku.slice(0, 5) === "SB_A3" ||
+                item.sku.slice(0, 5) === "SB_LC" ||
+                item.sku.slice(0, 5) === "SB_SM" ||
+                item.sku.slice(0, 5) === "SB_LS" ||
+                item.sku.slice(0, 5) === "WE_SM" ||
+                item.sku.slice(0, 5) === "WE_LC" ||
+                item.sku.slice(0, 5) === "WE_A5" ||
+                item.sku.slice(0, 5) === "WE_A4" ||
+                item.sku.slice(0, 5) === "WE_A3" ||
+                item.sku.slice(0, 5) === "WE_SQ" ||
+                item.sku.slice(0, 5) === "WE_SU" ||
+                item.sku.slice(0, 5) === "BL_SU" ||
+                item.sku.slice(0, 5) === "SB_SU" ||
+                item.sku.slice(0, 5) === "WE_XS" ||
+                item.sku.slice(0, 8) === "SUEDE_HW" ||
+                item.sku.slice(0, 8) === "SUEDE_PR" ||
+                item.sku.slice(0, 8) === "SUEDE_NA" ||
+                item.sku.slice(0, 8) === "SUEDE_AP" ||
+                item.sku.slice(0, 14) === "LEATHERETTE_HW" ||
+                item.sku.slice(0, 14) === "LEATHERETTE_PR" ||
+                item.sku.slice(0, 14) === "LEATHERETTE_NA" ||
+                item.sku.slice(0, 14) === "LEATHERETTE_AP" ||
+                item.sku.slice(0, 8) === "TWILL_HW" ||
+                item.sku.slice(0, 8) === "TWILL_PR" ||
+                item.sku.slice(0, 8) === "TWILL_NA" ||
+                item.sku.slice(0, 8) === "TWILL_AP" ||
+                item.sku.slice(0, 11) === "SIMWOVEN_HW" ||
+                item.sku.slice(0, 11) === "SIMWOVEN_PR" ||
+                item.sku.slice(0, 11) === "SIMWOVEN_NA" ||
+                item.sku.slice(0, 11) === "SIMWOVEN_AP" ? (
                   <>
                     <tr>
                       <td
@@ -877,166 +674,164 @@ function OrderLookupPage() {
                           padding: "10px",
                           width: "25%",
                         }}
-                        className={"sku" + index}
-                      >
+                        className={"sku" + index}>
                         <b>SKU:</b>{" "}
-                        <i>
+                        <span id={`sku_${index + 1}`}>
                           {" "}
                           {item.sku.slice(0, 5) === "BL_A3"
-                            ? ("BL_A3")
+                            ? "BL_A3"
                             : item.sku === "SUB-BLOCKER-8"
-                              ? ("BL_A3")
-                              : item.sku.slice(0, 7) === "BL_A4-1"
-                                ? ('BL_A4:SubBlock-A4 16.5" 5.85"')
-                                : item.sku === "SUB-BLOCKER-6"
-                                  ? ('BL_A4 16.5')
-                                  : item.sku.slice(0, 7) === "BL_A4-8"
-                                    ? ('BL_A4:SubBlock-A4 8.3" 11.7"')
-                                    : item.sku === "SUB-BLOCKER-5"
-                                      ? ('BL_A4 8.3')
-                                      : item.sku.slice(0, 7) === "BL_A5-1"
-                                        ? ('BL_A5:SubBlock-A5 11.7" 4.25"')
-                                        : item.sku === "SUB-BLOCKER-4"
-                                          ? ('BL_A5 11.7')
-                                          : item.sku.slice(0, 7) === "BL_A5-5"
-                                            ? ('BL_A5:SubBlock-A5 5.8" 8.3"')
-                                            : item.sku === "SUB-BLOCKER-3"
-                                              ? ('BL_A5 5.8')
-                                              : item.sku.slice(0, 5) === "BL_LC"
-                                                ? ("BL_LC")
-                                                : item.sku === "SUB-BLOCKER-2"
-                                                  ? ("BL_LC")
-                                                  : item.sku === "SUB-BLOCKER-9"
-                                                    ? ("BL_XS")
-                                                    : item.sku.slice(0, 5) === "BL_SM"
-                                                      ? ("BL_SM")
-                                                      : item.sku === "SUB-BLOCKER-7"
-                                                        ? ("BL_SQ")
-                                                        : item.sku === "SUB-BLOCKER-1"
-                                                          ? ("BL_SM")
-                                                          : item.sku.slice(0, 8) === "HW_CAP_L"
-                                                            ? ("HW_CAP_L")
-                                                            : item.sku === "HEAD-2"
-                                                              ? ("HW_CAP_L")
-                                                              : item.sku.slice(0, 8) === "HW_CAP_S"
-                                                                ? ("HW_CAP_S")
-                                                                : item.sku === "HEAD-1"
-                                                                  ? ("HW_CAP_S")
-                                                                  : item.sku.slice(0, 11) === "PR_BAG_A4-1"
-                                                                    ? ("PR_BAG_A4:BAG-A4 16.5")
-                                                                    : item.sku === "PROMO-5"
-                                                                      ? ("PR_BAG_A4:BAG-A4 16.5")
-                                                                      : item.sku.slice(0, 11) === "PR_BAG_A4-8"
-                                                                        ? ("PR_BAG_A4:BAG-A4 8.3")
-                                                                        : item.sku === "PROMO-4"
-                                                                          ? ("PR_BAG_A4:BAG-A4 8.3")
-                                                                          : item.sku === "PROMO-6"
-                                                                            ? ("PR_BAG_A3:Bag-A3 11.7")
-                                                                            : item.sku.slice(0, 11) === "PR_BAG_A5-1"
-                                                                              ? ("PR_BAG_A5:Bag-A5 11.7")
-                                                                              : item.sku === "PROMO-3"
-                                                                                ? ("PR_BAG_A5:Bag-A5 11.7")
-                                                                                : item.sku.slice(0, 11) === "PR_BAG_A5-5"
-                                                                                  ? ("PR_BAG_A5:Bag-A5 5.8")
-                                                                                  : item.sku === "PROMO-2"
-                                                                                    ? ("PR_BAG_A5:Bag-A5 5.8")
-                                                                                    : item.sku.slice(0, 11) === "PR_BAG_A6-4"
-                                                                                      ? ("PR_BAG_A6:Bag-A6 4.1")
-                                                                                      : item.sku === "PROMO-1"
-                                                                                        ? ("PR_BAG_A6:Bag-A6 4.1")
-                                                                                        : item.sku.slice(0, 8) === "PR_UM_A3"
-                                                                                          ? ("PR_UM_A3")
-                                                                                          : item.sku.slice(0, 11) === "PR_UM_A4-11"
-                                                                                            ? ("PR_UM_A4 11.7")
-                                                                                            : item.sku.slice(0, 11) === "PR_UM_A4-16"
-                                                                                              ? ("PR_UM_A4 16.5")
-                                                                                              : item.sku.slice(0, 11) === "PR_UM_A5-11"
-                                                                                                ? ("PR_UM_A5 11.7")
-                                                                                                : item.sku.slice(0, 10) === "PR_UM_A5-5"
-                                                                                                  ? ("PR_UM_A5 5.8")
-                                                                                                  : item.sku.slice(0, 5) === "SB_A3"
-                                                                                                    ? ("SB_A3")
-                                                                                                    : item.sku === "SOFT-SHELL-8"
-                                                                                                      ? ("SB_A3")
-                                                                                                      : item.sku.slice(0, 7) === "SB_A4-1"
-                                                                                                        ? ("SB_A4 16.5")
-                                                                                                        : item.sku === "SOFT-SHELL-6"
-                                                                                                          ? ("SB_A4 16.5")
-                                                                                                          : item.sku.slice(0, 7) === "SB_A4-8"
-                                                                                                            ? ("SB_A4 8.3")
-                                                                                                            : item.sku === "SOFT-SHELL-5"
-                                                                                                              ? ("SB_A4 8.3")
-                                                                                                              : item.sku.slice(0, 8) === "SB_A5-11"
-                                                                                                                ? ("SB_A5 11.7")
-                                                                                                                : item.sku === "SOFT-SHELL-4"
-                                                                                                                  ? ("SB_A5 11.7")
-                                                                                                                  : item.sku.slice(0, 7) === "SB_A5-5"
-                                                                                                                    ? ("SB_A5 5.8")
-                                                                                                                    : item.sku === "SOFT-SHELL-3"
-                                                                                                                      ? ("SB_A5 5.8")
-                                                                                                                      : item.sku.slice(0, 5) === "SB_LC"
-                                                                                                                        ? ("SB_LC")
-                                                                                                                        : item.sku === "SOFT-SHELL-2"
-                                                                                                                          ? ("SB_LC")
-                                                                                                                          : item.sku.slice(0, 5) === "SB_SM"
-                                                                                                                            ? ("SB_SM")
-                                                                                                                            : item.sku === "SOFT-SHELL-1"
-                                                                                                                              ? ("SB_SM")
-                                                                                                                              : item.sku === "SOFT-SHELL-9"
-                                                                                                                                ? ("SB_XS")
-                                                                                                                                : item.sku === "SOFT-SHELL-7"
-                                                                                                                                  ? ("SB_SQ")
-                                                                                                                                  : item.sku.slice(0, 5) === "WE_A3"
-                                                                                                                                    ? ("WE_A3")
-                                                                                                                                    : item.sku === "WEARABLES-9"
-                                                                                                                                      ? ("WE_A3")
-                                                                                                                                      : item.sku.slice(0, 8) === "WE_A4-16"
-                                                                                                                                        ? ("WE_A4 16.5")
-                                                                                                                                        : item.sku === "WEARABLES-7"
-                                                                                                                                          ? ("WE_A4 16.5")
-                                                                                                                                          : item.sku.slice(0, 7) === "WE_A4-8"
-                                                                                                                                            ? ("WE_A4 8.3")
-                                                                                                                                            : item.sku === "WEARABLES-6"
-                                                                                                                                              ? ("WE_A4 8.3")
-                                                                                                                                              : item.sku.slice(0, 8) === "WE_A5-11"
-                                                                                                                                                ? ("WE_A5 11.7")
-                                                                                                                                                : item.sku === "WEARABLES-5"
-                                                                                                                                                  ? ("WE_A5 11.7")
-                                                                                                                                                  : item.sku.slice(0, 7) === "WE_A5-5"
-                                                                                                                                                    ? ("WE_A5 5.8")
-                                                                                                                                                    : item.sku === "WEARABLES-4"
-                                                                                                                                                      ? ("WE_A5 5.8")
-                                                                                                                                                      : item.sku.slice(0, 5) === "WE_LC"
-                                                                                                                                                        ? ("WE_LC")
-                                                                                                                                                        : item.sku === "WEARABLES-3"
-                                                                                                                                                          ? ("WE_LC")
-                                                                                                                                                          : item.sku.slice(0, 5) === "WE_SM"
-                                                                                                                                                            ? ("WE_SM")
-                                                                                                                                                            : item.sku === "WEARABLES-2"
-                                                                                                                                                              ? ("WE_SM")
-                                                                                                                                                              : item.sku.slice(0, 5) === "WE_SQ"
-                                                                                                                                                                ? ("WE_SQ")
-                                                                                                                                                                : item.sku === "WEARABLES-8"
-                                                                                                                                                                  ? ("WE_SQ")
-                                                                                                                                                                  : item.sku.slice(0, 5) === "WE_XS"
-                                                                                                                                                                    ? ("WE_XS")
-                                                                                                                                                                    : item.sku === "WEARABLES-1"
-                                                                                                                                                                      ? ("WE_XS")
-                                                                                                                                                                      : item.sku.slice(0, 11) === "WE_SUPAGANG"
-                                                                                                                                                                        ? ("WE_SUPAGANG")
-                                                                                                                                                                        : item.sku === "WEARABLES-10"
-                                                                                                                                                                          ? ("WE_SUPAGANG")
-                                                                                                                                                                          : item.sku.slice(0, 11) === "BL_SUPAGANG"
-                                                                                                                                                                            ? ("BL_SUPAGANG")
-                                                                                                                                                                            : item.sku === "SUB-BLOCKER-10"
-                                                                                                                                                                              ? ("BL_SUPAGANG")
-                                                                                                                                                                              : item.sku.slice(0, 11) === "SB_SUPAGANG"
-                                                                                                                                                                                ? ("SB_SUPAGANG")
-                                                                                                                                                                                : item.sku === "SOFT-SHELL-10"
-                                                                                                                                                                                  ? ("SB_SUPAGANG")
-                                                                                                                                                                                  : (item.sku)
-                          }
-                        </i>
+                            ? "BL_A3"
+                            : item.sku.slice(0, 7) === "BL_A4-1"
+                            ? 'BL_A4:SubBlock-A4 16.5" 5.85"'
+                            : item.sku === "SUB-BLOCKER-6"
+                            ? "BL_A4 16.5"
+                            : item.sku.slice(0, 7) === "BL_A4-8"
+                            ? 'BL_A4:SubBlock-A4 8.3" 11.7"'
+                            : item.sku === "SUB-BLOCKER-5"
+                            ? "BL_A4 8.3"
+                            : item.sku.slice(0, 7) === "BL_A5-1"
+                            ? 'BL_A5:SubBlock-A5 11.7" 4.25"'
+                            : item.sku === "SUB-BLOCKER-4"
+                            ? "BL_A5 11.7"
+                            : item.sku.slice(0, 7) === "BL_A5-5"
+                            ? 'BL_A5:SubBlock-A5 5.8" 8.3"'
+                            : item.sku === "SUB-BLOCKER-3"
+                            ? "BL_A5 5.8"
+                            : item.sku.slice(0, 5) === "BL_LC"
+                            ? "BL_LC"
+                            : item.sku === "SUB-BLOCKER-2"
+                            ? "BL_LC"
+                            : item.sku === "SUB-BLOCKER-9"
+                            ? "BL_XS"
+                            : item.sku.slice(0, 5) === "BL_SM"
+                            ? "BL_SM"
+                            : item.sku === "SUB-BLOCKER-7"
+                            ? "BL_SQ"
+                            : item.sku === "SUB-BLOCKER-1"
+                            ? "BL_SM"
+                            : item.sku.slice(0, 8) === "HW_CAP_L"
+                            ? "HW_CAP_L"
+                            : item.sku === "HEAD-2"
+                            ? "HW_CAP_L"
+                            : item.sku.slice(0, 8) === "HW_CAP_S"
+                            ? "HW_CAP_S"
+                            : item.sku === "HEAD-1"
+                            ? "HW_CAP_S"
+                            : item.sku.slice(0, 11) === "PR_BAG_A4-1"
+                            ? "PR_BAG_A4:BAG-A4 16.5"
+                            : item.sku === "PROMO-5"
+                            ? "PR_BAG_A4:BAG-A4 16.5"
+                            : item.sku.slice(0, 11) === "PR_BAG_A4-8"
+                            ? "PR_BAG_A4:BAG-A4 8.3"
+                            : item.sku === "PROMO-4"
+                            ? "PR_BAG_A4:BAG-A4 8.3"
+                            : item.sku === "PROMO-6"
+                            ? "PR_BAG_A3:Bag-A3 11.7"
+                            : item.sku.slice(0, 11) === "PR_BAG_A5-1"
+                            ? "PR_BAG_A5:Bag-A5 11.7"
+                            : item.sku === "PROMO-3"
+                            ? "PR_BAG_A5:Bag-A5 11.7"
+                            : item.sku.slice(0, 11) === "PR_BAG_A5-5"
+                            ? "PR_BAG_A5:Bag-A5 5.8"
+                            : item.sku === "PROMO-2"
+                            ? "PR_BAG_A5:Bag-A5 5.8"
+                            : item.sku.slice(0, 11) === "PR_BAG_A6-4"
+                            ? "PR_BAG_A6:Bag-A6 4.1"
+                            : item.sku === "PROMO-1"
+                            ? "PR_BAG_A6:Bag-A6 4.1"
+                            : item.sku.slice(0, 8) === "PR_UM_A3"
+                            ? "PR_UM_A3"
+                            : item.sku.slice(0, 11) === "PR_UM_A4-11"
+                            ? "PR_UM_A4 11.7"
+                            : item.sku.slice(0, 11) === "PR_UM_A4-16"
+                            ? "PR_UM_A4 16.5"
+                            : item.sku.slice(0, 11) === "PR_UM_A5-11"
+                            ? "PR_UM_A5 11.7"
+                            : item.sku.slice(0, 10) === "PR_UM_A5-5"
+                            ? "PR_UM_A5 5.8"
+                            : item.sku.slice(0, 5) === "SB_A3"
+                            ? "SB_A3"
+                            : item.sku === "SOFT-SHELL-8"
+                            ? "SB_A3"
+                            : item.sku.slice(0, 7) === "SB_A4-1"
+                            ? "SB_A4 16.5"
+                            : item.sku === "SOFT-SHELL-6"
+                            ? "SB_A4 16.5"
+                            : item.sku.slice(0, 7) === "SB_A4-8"
+                            ? "SB_A4 8.3"
+                            : item.sku === "SOFT-SHELL-5"
+                            ? "SB_A4 8.3"
+                            : item.sku.slice(0, 8) === "SB_A5-11"
+                            ? "SB_A5 11.7"
+                            : item.sku === "SOFT-SHELL-4"
+                            ? "SB_A5 11.7"
+                            : item.sku.slice(0, 7) === "SB_A5-5"
+                            ? "SB_A5 5.8"
+                            : item.sku === "SOFT-SHELL-3"
+                            ? "SB_A5 5.8"
+                            : item.sku.slice(0, 5) === "SB_LC"
+                            ? "SB_LC"
+                            : item.sku === "SOFT-SHELL-2"
+                            ? "SB_LC"
+                            : item.sku.slice(0, 5) === "SB_SM"
+                            ? "SB_SM"
+                            : item.sku === "SOFT-SHELL-1"
+                            ? "SB_SM"
+                            : item.sku === "SOFT-SHELL-9"
+                            ? "SB_XS"
+                            : item.sku === "SOFT-SHELL-7"
+                            ? "SB_SQ"
+                            : item.sku.slice(0, 5) === "WE_A3"
+                            ? "WE_A3"
+                            : item.sku === "WEARABLES-9"
+                            ? "WE_A3"
+                            : item.sku.slice(0, 8) === "WE_A4-16"
+                            ? "WE_A4 16.5"
+                            : item.sku === "WEARABLES-7"
+                            ? "WE_A4 16.5"
+                            : item.sku.slice(0, 7) === "WE_A4-8"
+                            ? "WE_A4 8.3"
+                            : item.sku === "WEARABLES-6"
+                            ? "WE_A4 8.3"
+                            : item.sku.slice(0, 8) === "WE_A5-11"
+                            ? "WE_A5 11.7"
+                            : item.sku === "WEARABLES-5"
+                            ? "WE_A5 11.7"
+                            : item.sku.slice(0, 7) === "WE_A5-5"
+                            ? "WE_A5 5.8"
+                            : item.sku === "WEARABLES-4"
+                            ? "WE_A5 5.8"
+                            : item.sku.slice(0, 5) === "WE_LC"
+                            ? "WE_LC"
+                            : item.sku === "WEARABLES-3"
+                            ? "WE_LC"
+                            : item.sku.slice(0, 5) === "WE_SM"
+                            ? "WE_SM"
+                            : item.sku === "WEARABLES-2"
+                            ? "WE_SM"
+                            : item.sku.slice(0, 5) === "WE_SQ"
+                            ? "WE_SQ"
+                            : item.sku === "WEARABLES-8"
+                            ? "WE_SQ"
+                            : item.sku.slice(0, 5) === "WE_XS"
+                            ? "WE_XS"
+                            : item.sku === "WEARABLES-1"
+                            ? "WE_XS"
+                            : item.sku.slice(0, 11) === "WE_SUPAGANG"
+                            ? "WE_SUPAGANG"
+                            : item.sku === "WEARABLES-10"
+                            ? "WE_SUPAGANG"
+                            : item.sku.slice(0, 11) === "BL_SUPAGANG"
+                            ? "BL_SUPAGANG"
+                            : item.sku === "SUB-BLOCKER-10"
+                            ? "BL_SUPAGANG"
+                            : item.sku.slice(0, 11) === "SB_SUPAGANG"
+                            ? "SB_SUPAGANG"
+                            : item.sku === "SOFT-SHELL-10"
+                            ? "SB_SUPAGANG"
+                            : item.sku}
+                        </span>
                       </td>
                     </tr>
                     <tr>
@@ -1046,9 +841,9 @@ function OrderLookupPage() {
                           padding: "10px",
                           width: "25%",
                         }}
-                        className={"qty" + index}
-                      >
-                        <b>QTY:</b> <i>{item.quantity}</i>
+                        className={"qty" + index}>
+                        <b>QTY:</b>{" "}
+                        <span id={`qty_${index + 1}`}>{item.quantity}</span>
                       </td>
                     </tr>
                     <tr>
@@ -1058,49 +853,130 @@ function OrderLookupPage() {
                           padding: "10px",
                           width: "25%",
                         }}
-                        className={"qty" + index}
-                      >
+                        className={"qty" + index}>
                         <b>Transfer Type:</b>{" "}
-                        <i>
-                          {console.log('item', item)}
-                          {console.log('item-lower-case', item.sku.toLowerCase())}
-                          {item.name.includes("Wearables") ? "Wearable Transfers" : item.sku.includes("BL_") ? "Blocker Transfers" : item.sku.includes("SB_") ? "Soft Shell Blocker" : item.name.includes("Headwear") ? "Headwear Transfers" : item.name.includes("Promotional") ? "Promo Transfers" : "N/a"}
-                        </i>
-                        <br /><b>Sheet Type:</b>{" "}
-                        <i>
-                          {item.sku.includes("SUPAGANG") ? "Supagang" : "Single Image"}
-                        </i>
-                        <br /><b>Transfer Size:</b>{" "}
-                        <i>
-                          {item.sku.toLowerCase().includes("1.5x1.5") ? `1.5" x 1.5"` : item.sku.toLowerCase().includes("2.5x2.5") ? `2.5" x 2.5"` : item.sku.toLowerCase().includes("4.7x2.8") ? `4.7" x 2.8"` : item.sku.toLowerCase().includes("4x4") ? `4" x 4"` :
-                            item.sku.toLowerCase().includes("5.8x8.3") ? `A5 5.8" x 8.3"` : item.sku.toLowerCase().includes("8.3x11.7") ? `A4 8.3" x 11.7"` : item.sku.toLowerCase().includes("11.7x16.5") ? `A3 11.7" x 16.5"` :
-                              item.sku.toLowerCase().includes("11.7x16.5") ? `A3 11.7" x 16.5"` : item.sku.toLowerCase().includes("11.7x4.25") ? `A5 11.7" x 4.25"` : item.sku.toLowerCase().includes("16.5x5.85") ? `A5 16.5" x 5.85"` :
-                                item.sku.toLowerCase().includes("11.7x11.7") ? `11.7" x 11.7"` : "N/a"}
-                        </i>
-                        <br /><b>Design Size:</b>{" "}
-                        <i>
+                        <span id={`transfer_type_${index + 1}`}>
+                          {console.log("item", item)}
+                          {console.log(
+                            "item-lower-case",
+                            item.sku.toLowerCase()
+                          )}
+                          {item.name.includes("Wearables")
+                            ? "Wearable Transfers"
+                            : item.sku.includes("BL_")
+                            ? "Blocker Transfers"
+                            : item.sku.includes("SB_")
+                            ? "Soft Shell Blocker"
+                            : item.name.includes("Headwear")
+                            ? "Headwear Transfers"
+                            : item.name.includes("Promotional")
+                            ? "Promo Transfers"
+                            : "N/a"}
+                        </span>
+                        <br />
+                        <b>Sheet Type:</b>{" "}
+                        <span id={`sheet_type_${index + 1}`}>
+                          {item.sku.includes("SUPAGANG")
+                            ? "Supagang"
+                            : "Single Image"}
+                        </span>
+                        <br />
+                        <b>Transfer Size:</b>{" "}
+                        <span id={`transfer_size_${index + 1}`}>
+                          {item.sku.toLowerCase().includes("1.5x1.5")
+                            ? `1.5" x 1.5"`
+                            : item.sku.toLowerCase().includes("2.5x2.5")
+                            ? `2.5" x 2.5"`
+                            : item.sku.toLowerCase().includes("4.7x2.8")
+                            ? `4.7" x 2.8"`
+                            : item.sku.toLowerCase().includes("4x4")
+                            ? `4" x 4"`
+                            : item.sku.toLowerCase().includes("5.8x8.3")
+                            ? `A5 5.8" x 8.3"`
+                            : item.sku.toLowerCase().includes("8.3x11.7")
+                            ? `A4 8.3" x 11.7"`
+                            : item.sku.toLowerCase().includes("11.7x16.5")
+                            ? `A3 11.7" x 16.5"`
+                            : item.sku.toLowerCase().includes("11.7x16.5")
+                            ? `A3 11.7" x 16.5"`
+                            : item.sku.toLowerCase().includes("11.7x4.25")
+                            ? `A5 11.7" x 4.25"`
+                            : item.sku.toLowerCase().includes("16.5x5.85")
+                            ? `A5 16.5" x 5.85"`
+                            : item.sku.toLowerCase().includes("11.7x11.7")
+                            ? `11.7" x 11.7"`
+                            : "N/a"}
+                        </span>
+                        <br />
+                        <b>Design Size:</b>{" "}
+                        <span id={`design_size_${index + 1}`}>
                           {item.product_options[4]?.display_value}
-                        </i>
-                        <br /><b>Material:</b>{" "}
-                        <i>
+                        </span>
+                        <br />
+                        <b>Material:</b>{" "}
+                        <span id={`material_${index + 1}`}>
                           {item.product_options[5]?.display_value}
-                        </i>
-                        <br /><b>Adhesive:</b>
-                        <i>
-                          {item.sku.includes("_HW") ? "Headwear Patches" : item.sku.includes("_PR") ? "Promo Patches" : item.sku.includes("_AP") ? "Apparel Patches" : item.sku.includes("_NA") ? "No Adhesive" : "N/a"}
-                        </i>
-                        <br /><b>Branding Type:</b>
-                        <i>
-                          {item.sku.includes("SUEDE") ? "DecoSuede" : item.sku.includes("LEATHERETTE") ? "DecoLeather" : item.sku.includes("TWILL") ? "DecoTwill" : item.sku.includes("SIMWOVEN") ? "SimWoven" : "N/a"}
-                        </i>
-                        <br /><b>DecoPress Size:</b>
-                        <i>
-                          {item.sku.toLowerCase().includes("1.5x1.5") ? `1.5 x 1.5` : item.sku.toLowerCase().includes("2.5x2.5") ? `2.5 x 2.5` : item.sku.toLowerCase().includes("3x3") ? `3 x 3` :
-                            item.sku.toLowerCase().includes("4x2.5") ? `4 x 2.5` : item.sku.toLowerCase().includes("4x4") ? `4 x 4` : item.sku.toLowerCase().includes("5.8x8.3") ? `A5 5.8 x 8.3` : item.sku.toLowerCase().includes("8.3x11.7") ? `A4 8.3 x 11.7` :
-                              item.sku.toLowerCase().includes("11.7x16.5") ? `A3 11.7 x 16.5` : item.sku.toLowerCase().includes("11.7x4.25") ? `A5 11.7 x 4.25` : item.sku.toLowerCase().includes("16.5x5.85") ? `A4 16.5 x 5.85` :
-                                item.sku.toLowerCase().includes("11.7x11.7") ? `SQ 11.7 x 11.7` : "N/a"}
-                          {item.sku.includes("SUEDE") ? " " + item.product_options[3].display_value.toUpperCase() : item.sku.includes("LEATHERETTE") ? " " + item.product_options[3].display_value.toUpperCase() : ""}
-                        </i>
+                        </span>
+                        <br />
+                        <b>Adhesive:</b>
+                        <span id={`adhesive_${index + 1}`}>
+                          {item.sku.includes("_HW")
+                            ? "Headwear Patches"
+                            : item.sku.includes("_PR")
+                            ? "Promo Patches"
+                            : item.sku.includes("_AP")
+                            ? "Apparel Patches"
+                            : item.sku.includes("_NA")
+                            ? "No Adhesive"
+                            : "N/a"}
+                        </span>
+                        <br />
+                        <b>Branding Type:</b>
+                        <span id={`branding_type_${index + 1}`}>
+                          {item.sku.includes("SUEDE")
+                            ? "DecoSuede"
+                            : item.sku.includes("LEATHERETTE")
+                            ? "DecoLeather"
+                            : item.sku.includes("TWILL")
+                            ? "DecoTwill"
+                            : item.sku.includes("SIMWOVEN")
+                            ? "SimWoven"
+                            : "N/a"}
+                        </span>
+                        <br />
+                        <b>DecoPress Size:</b>
+                        <span id={`deco_size_${index + 1}`}>
+                          {item.sku.toLowerCase().includes("1.5x1.5")
+                            ? `1.5 x 1.5`
+                            : item.sku.toLowerCase().includes("2.5x2.5")
+                            ? `2.5 x 2.5`
+                            : item.sku.toLowerCase().includes("3x3")
+                            ? `3 x 3`
+                            : item.sku.toLowerCase().includes("4x2.5")
+                            ? `4 x 2.5`
+                            : item.sku.toLowerCase().includes("4x4")
+                            ? `4 x 4`
+                            : item.sku.toLowerCase().includes("5.8x8.3")
+                            ? `A5 5.8 x 8.3`
+                            : item.sku.toLowerCase().includes("8.3x11.7")
+                            ? `A4 8.3 x 11.7`
+                            : item.sku.toLowerCase().includes("11.7x16.5")
+                            ? `A3 11.7 x 16.5`
+                            : item.sku.toLowerCase().includes("11.7x4.25")
+                            ? `A5 11.7 x 4.25`
+                            : item.sku.toLowerCase().includes("16.5x5.85")
+                            ? `A4 16.5 x 5.85`
+                            : item.sku.toLowerCase().includes("11.7x11.7")
+                            ? `SQ 11.7 x 11.7`
+                            : "N/a"}
+                          {item.sku.includes("SUEDE")
+                            ? " " +
+                              item.product_options[3].display_value.toUpperCase()
+                            : item.sku.includes("LEATHERETTE")
+                            ? " " +
+                              item.product_options[3].display_value.toUpperCase()
+                            : ""}
+                        </span>
                       </td>
                     </tr>
                     <hr style={{ borderColor: "black" }} />
@@ -1109,7 +985,7 @@ function OrderLookupPage() {
                   <span></span>
                 ),
               ])
-            }
+            )}
           </table>
         </Paper>
         <br />{" "}

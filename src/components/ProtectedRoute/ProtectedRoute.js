@@ -1,49 +1,23 @@
 import React from "react";
-import { Route } from "react-router-dom";
+import { Navigate } from "react-router-dom";
 import { connect } from "react-redux";
-import LoginPage from "../LoginPage/LoginPage";
 
-const ProtectedRoute = (props) => {
-  // Using destructuring, this takes ComponentToProtect from component
-  // prop and grabs all other props to pass them along to Route
-  const {
-    // Alias prop 'component' as 'ComponentToProtect'
-    component: ComponentToProtect,
-    user,
-    loginMode,
-    ...otherProps
-  } = props;
-
-  let ComponentToShow;
-
+const ProtectedRoute = ({
+  element: ComponentToProtect,
+  user,
+  ...otherProps
+}) => {
   if (user.id) {
-    // if the user is logged in (only logged in users have ids)
-    // show the component that is protected
-    ComponentToShow = ComponentToProtect;
-  } else if (loginMode === "login") {
-    // if they are not logged in, check the loginMode on Redux State
-    // if the mode is 'login', show the LoginPage
-    ComponentToShow = LoginPage;
+    // User is logged in, show the protected component
+    return ComponentToProtect;
   } else {
-    // if they are not logged in, check the loginMode on Redux State
-    // if the mode is 'login', show the LoginPage
-    ComponentToShow = LoginPage;
+    // If the user is not logged in, redirect to the login page
+    return <Navigate to="/login" />;
   }
-  return (
-    <Route
-      // all props like 'exact' and 'path' that were passed in
-      // are now passed along to the 'Route' Component
-      {...otherProps}
-      component={ComponentToShow}
-    />
-  );
 };
 
-const mapStateToProps = (state) => {
-  return {
-    user: state.user.userReducer,
-    loginMode: state.loginMode,
-  };
-};
+const mapStateToProps = (state) => ({
+  user: state.user.userReducer,
+});
 
 export default connect(mapStateToProps)(ProtectedRoute);

@@ -11,7 +11,7 @@ function* captureOrders(action) {
 
 function* getitemlist(action) {
   try {
-    const response = yield axios.get(`/api/item/getitems`);
+    const response = yield axios.get(`/api/lookup/getitems`);
     yield put({
       type: "SET_ITEM",
       payload: response.data,
@@ -23,7 +23,7 @@ function* getitemlist(action) {
 
 function* getsanmarlist(action) {
   try {
-    const response = yield axios.get(`/api/item/getsanmar`);
+    const response = yield axios.get(`/api/lookup/getsanmar`);
     yield put({
       type: "SET_SANMAR_ITEMS",
       payload: response.data,
@@ -35,8 +35,8 @@ function* getsanmarlist(action) {
 
 function* addItem(action) {
   try {
-    yield axios.post(`/api/item/items`, action.payload);
-    const response = yield axios.get(`/api/item/getitems`);
+    yield axios.post(`/api/lookup/items`, action.payload);
+    const response = yield axios.get(`/api/lookup/getitems`);
     yield put({
       type: "SET_ITEM",
       payload: response.data,
@@ -48,8 +48,8 @@ function* addItem(action) {
 
 function* deleteItem(action) {
   try {
-    yield axios.delete(`/api/item/items:${action.payload.id}`);
-    const response = yield axios.get(`/api/item/getitems`);
+    yield axios.delete(`/api/lookup/items:${action.payload.id}`);
+    const response = yield axios.get(`/api/lookup/getitems`);
     yield put({
       type: "SET_ITEM",
       payload: response.data,
@@ -61,8 +61,8 @@ function* deleteItem(action) {
 
 function* resetData(action) {
   try {
-    yield axios.delete(`/api/item/all`);
-    const response = yield axios.get(`/api/item/getitems`);
+    yield axios.delete(`/api/lookup/all`);
+    const response = yield axios.get(`/api/lookup/getitems`);
     yield put({
       type: "SET_ITEM",
       payload: response.data,
@@ -74,7 +74,7 @@ function* resetData(action) {
 
 function* updatePrices(action) {
   try {
-    yield axios.put(`/api/item/updatePrices`, action.payload);
+    yield axios.put(`/api/lookup/updatePrices`, action.payload);
   } catch (error) {
     console.log("Error with updating prices:", error);
   }
@@ -82,7 +82,7 @@ function* updatePrices(action) {
 
 function* connectFtp(action) {
   try {
-    const response = yield axios.put(`/api/item/ftp`, action.payload);
+    const response = yield axios.put(`/api/lookup/ftp`, action.payload);
     if (response.data.status === 500) {
       yield put({
         type: "SET_SANMAR",
@@ -101,12 +101,12 @@ function* connectFtp(action) {
 
 function* sendEmail(action) {
   try {
-    const response = yield axios.post(`/api/item/addOrder`, action.payload);
+    const response = yield axios.post(`/api/lookup/addOrder`, action.payload);
     yield put({
       type: "SET_SANMAR_ITEMS",
       payload: response.data,
     });
-    yield axios.put(`/api/item/email`, action.payload);
+    yield axios.put(`/api/lookup/email`, action.payload);
   } catch (error) {
     console.log("Error with sending email:", error);
   }
@@ -114,7 +114,7 @@ function* sendEmail(action) {
 
 function* addSent(action) {
   try {
-    const response = yield axios.post(`/api/item/addOrder`, action.payload);
+    const response = yield axios.post(`/api/lookup/addOrder`, action.payload);
     yield put({
       type: "SET_SANMAR_ITEMS",
       payload: response.data,
@@ -126,8 +126,8 @@ function* addSent(action) {
 
 function* refreshBC() {
   try {
-    yield axios.get(`/api/item/refreshBC`);
-    const response = yield axios.get(`/api/item/getBC`);
+    yield axios.get(`/api/lookup/refreshBC`);
+    const response = yield axios.get(`/api/lookup/getBC`);
     yield put({
       type: "SET_BC_CLOTHING",
       payload: response.data,
@@ -139,8 +139,8 @@ function* refreshBC() {
 
 function* refreshSanmar(action) {
   try {
-    yield axios.post(`/api/item/sanmarDB`, action.payload);
-    const response = yield axios.get(`/api/item/getSanmarPrices`);
+    yield axios.post(`/api/lookup/sanmarDB`, action.payload);
+    const response = yield axios.get(`/api/lookup/getSanmarPrices`);
     yield put({
       type: "SET_SANMAR_CLOTHING",
       payload: response.data,
@@ -152,7 +152,7 @@ function* refreshSanmar(action) {
 
 function* getBcPrices() {
   try {
-    const response = yield axios.get(`/api/item/getBC`);
+    const response = yield axios.get(`/api/lookup/getBC`);
     yield put({
       type: "SET_BC_CLOTHING",
       payload: response.data,
@@ -164,7 +164,7 @@ function* getBcPrices() {
 
 function* getSanmarPrices() {
   try {
-    const response = yield axios.get(`/api/item/getSanmarPrices`);
+    const response = yield axios.get(`/api/lookup/getSanmarPrices`);
     yield put({
       type: "SET_SANMAR_CLOTHING",
       payload: response.data,

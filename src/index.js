@@ -1,45 +1,41 @@
-import React from 'react';
-import ReactDOM from 'react-dom';
-import { createStore, applyMiddleware, compose } from 'redux';
-import { Provider } from 'react-redux';
-import createSagaMiddleware from 'redux-saga';
-import logger from 'redux-logger';
+import React from "react";
+import { createRoot } from "react-dom/client";
+import { createStore, applyMiddleware, compose } from "redux";
+import { Provider } from "react-redux";
+import createSagaMiddleware from "redux-saga";
+import logger from "redux-logger";
+import { BreakpointsProvider } from "./context/BreakpointsContext";
 
-import rootReducer from './redux/reducers'; // imports ./redux/reducers/index.js
-import rootSaga from './redux/sagas'; // imports ./redux/sagas/index.js
+import rootReducer from "./redux/reducers"; // imports ./redux/reducers/index.js
+import rootSaga from "./redux/sagas"; // imports ./redux/sagas/index.js
 
-import App from './components/App/App';
+import App from "./components/App/App";
 
-//Much of this file was brought in from the project template
-
+// Create saga middleware
 const sagaMiddleware = createSagaMiddleware();
 
-// this line creates an array of all of redux middleware you want to use
-// we don't want a whole ton of console logs in our production code
-// logger will only be added to your project if your in development mode
-const middlewareList = process.env.NODE_ENV === 'development' ?
-  [sagaMiddleware, logger] :
-  [sagaMiddleware];
+const middlewareList =
+  process.env.NODE_ENV === "development"
+    ? [sagaMiddleware, logger]
+    : [sagaMiddleware];
 
 const store = createStore(
-  // tells the saga middleware to use the rootReducer
-  // rootSaga contains all of our other reducers
   rootReducer,
-  // adds all middleware to our project including saga and logger
-  compose(
-    applyMiddleware(...middlewareList)
-    // window.__REDUX_DEVTOOLS_EXTENSION__ && window.__REDUX_DEVTOOLS_EXTENSION__()
-    //    ^--------Redux tools removed for production builds (error on mobile and Safari)
-  )
+  compose(applyMiddleware(...middlewareList))
 );
 
-// tells the saga middleware to use the rootSaga
-// rootSaga contains all of our other sagas
+// Run the rootSaga
 sagaMiddleware.run(rootSaga);
 
-ReactDOM.render(// need to bring App itself in
+// Get the root element where the React app will be rendered
+const container = document.getElementById("react-root");
+
+// Create a root and render the app
+const root = createRoot(container);
+root.render(
   <Provider store={store}>
-    <App /> 
-  </Provider>,
-  document.getElementById('react-root'),
+    <BreakpointsProvider>
+      <App />
+    </BreakpointsProvider>
+  </Provider>
 );

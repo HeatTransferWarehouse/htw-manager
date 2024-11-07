@@ -4,6 +4,11 @@ import LoginSaga from "./loginSaga";
 import RegisterSaga from "./registrationSaga";
 import UserSaga from "./userSaga";
 import QueueItemSaga from "./QueueItemSaga";
+import SffQueueSaga from "./sffQueueSaga";
+import DecoQueueSaga from "./queueSaga";
+import ClothingSaga from "./clothingSaga";
+import AdminSaga from "./adminSaga";
+import PromotionsSaga from "./promotionsSaga";
 
 // rootSaga is the primary saga.
 // It bundles up all of the other sagas so our project can use them.
@@ -15,5 +20,10 @@ export default function* rootSaga() {
     RegisterSaga(),
     UserSaga(),
     QueueItemSaga(),
+    SffQueueSaga(),
+    DecoQueueSaga(),
+    ClothingSaga(),
+    AdminSaga(),
+    PromotionsSaga(),
   ]);
 }

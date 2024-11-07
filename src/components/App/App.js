@@ -1,28 +1,26 @@
 import React, { useCallback, useEffect, useRef } from "react";
-import "bootstrap/dist/css/bootstrap.min.css";
-import { HashRouter as Router, Route, Switch } from "react-router-dom";
+import "../../../src/output.css";
+import "../../assets/styles/main.scss";
+import { HashRouter as Router, Route, Routes } from "react-router-dom";
 import Nav from "../Nav/Nav";
-import Footer from "../Footer/Footer";
 import Register from "../RegisterForm/RegisterForm";
 import Main from "../Home/Main";
-import Sanmar from "../Pages/Sanmar";
-import Brightpearl from "../Pages/Brightpearl";
 import Resources from "../Pages/Resources";
-// import NoStock from "../Pages/NoStock";
-// import Affilates from "../Pages/Affiliates";
 import ProtectedRoute from "../ProtectedRoute/ProtectedRoute";
 import AdminRoute from "../ProtectedRoute/AdminRoute";
 import WallyB from "../Pages/WallyB";
-import Admin from "../Pages/Admin";
+import Admin from "../Pages/Admin/Admin";
 import Login from "../LoginPage/LoginPage";
 import Supacolor from "../Pages/Supacolor";
-import DecoQueue from "../Pages/DecoQueue";
-import Progress from "../Pages/Progress";
-import Complete from "../Pages/Complete";
-import OrderLookup from "../Pages/OrderLookup";
+import DecoQueue from "../Pages/DecoQueue/DecoQueue";
 import OrderLookupOLD from "../Pages/OrderLookupOLD";
+import SFFQueue from "../Pages/SffQueue/SFFQueue";
+import ClothingQueue from "../Pages/ClothingQueue/page";
 import "./App.css";
 import { useDispatch, useSelector } from "react-redux";
+import Promotions from "../Pages/Promos";
+import PromoDetails from "../Pages/Promos/individualIndex";
+import HeroBannerCodeGenerator from "../Pages/HeroCodeGenerator/HeroBannerCodeGenerator";
 
 function App() {
   const dispatch = useDispatch();
@@ -42,8 +40,18 @@ function App() {
     // Initially fetch the user
     dispatch({ type: "FETCH_USER" });
 
-    // Set up the initial timeout
+    // Function to set the --vh custom property
+    const setVhProperty = () => {
+      const vh = window.innerHeight * 0.01;
+      document.documentElement.style.setProperty("--vh", `${vh}px`);
+    };
 
+    // Initial calculation
+    setVhProperty();
+
+    window.addEventListener("resize", setVhProperty);
+
+    // Set up the initial timeout
     // Set up event listeners for various user activity
     window.addEventListener("mousemove", resetTimer);
     window.addEventListener("mousedown", resetTimer);
@@ -63,72 +71,63 @@ function App() {
       }
     };
   }, [dispatch, resetTimer]);
+
   return (
     <Router>
-      {user.id && (
-        <div id="Nav">
-          <Nav />
-        </div>
-      )}
-      <Switch>
-        <Route exact path="/login" component={Login} />
+      {user.id && <Nav />}
+      <main className="main-container">
+        <Routes>
+          <Route path="/login" element={<Login />} />
 
-        <Route exact path="/orderlookup" component={OrderLookup} />
+          {/* Protected Routes */}
+          <Route path="/" element={<ProtectedRoute element={<Main />} />} />
+          <Route
+            path="/sff-queue"
+            element={<ProtectedRoute element={<SFFQueue />} />}
+          />
+          <Route
+            path="/resources"
+            element={<ProtectedRoute element={<Resources />} />}
+          />
+          <Route
+            path="/decoqueue"
+            element={<ProtectedRoute element={<DecoQueue />} />}
+          />
+          <Route
+            path="/supacolor"
+            element={<ProtectedRoute element={<Supacolor />} />}
+          />
+          <Route
+            path="/hero-code-generator"
+            element={<ProtectedRoute element={<HeroBannerCodeGenerator />} />}
+          />
+          <Route
+            path="/queue/clothing"
+            element={<ProtectedRoute element={<ClothingQueue />} />}
+          />
+          <Route path="/orderlookupold" element={<OrderLookupOLD />} />
 
-        <Route exact path="/orderlookupold" component={OrderLookupOLD} />
+          {/* Admin Routes */}
+          <Route path="/wallyb" element={<AdminRoute element={<WallyB />} />} />
+          <Route
+            path="/register"
+            element={<AdminRoute element={<Register />} />}
+          />
+          <Route path="/admin" element={<AdminRoute element={<Admin />} />} />
 
-        <Route exact path="/accountlookup" component={OrderLookup} />
-
-        <ProtectedRoute exact path="/" component={Main} />
-
-        <ProtectedRoute exact path="/sanmar" component={Sanmar} />
-
-        <ProtectedRoute exact path="/brightpearl" component={Brightpearl} />
-
-        {/* <ProtectedRoute exact path="/nostock" component={NoStock} /> */}
-
-        {/* <ProtectedRoute exact path="/affiliates" component={Affilates} /> */}
-
-        <ProtectedRoute exact path="/resources" component={Resources} />
-
-        <ProtectedRoute exact path="/decoqueue" component={DecoQueue} />
-
-        <ProtectedRoute exact path="/progress" component={Progress} />
-
-        <ProtectedRoute exact path="/complete" component={Complete} />
-
-        <ProtectedRoute exact path="/supacolor" component={Supacolor} />
-
-        <AdminRoute exact path="/wallyb" component={WallyB} />
-
-        <AdminRoute exact path="/register" component={Register} />
-
-        <AdminRoute exact path="/admin" component={Admin} />
-
-        {/* If none of the other routes matched, we will show a 404. */}
-        <Route
-          render={() => (
-            <>
-              <br />
-              <br />
-              <br />
-              <br />
-              <br />
-              <br />
-              <h1 className="fourfour">404</h1>
-            </>
-          )}
-        />
-      </Switch>
-      <Footer />
+          {/* Catch-all 404 route */}
+          <Route
+            path="*"
+            element={
+              <>
+                <h1 className="fourfour">404</h1>
+              </>
+            }
+          />
+        </Routes>
+      </main>
     </Router>
   );
 }
-
-// const mapStateToProps = (state) => ({
-//   user: state.user,
-// });
-
-// this allows us to use <App /> in index.js **
 
 export default App;
