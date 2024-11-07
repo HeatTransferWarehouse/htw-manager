@@ -20,6 +20,7 @@ import "./App.css";
 import { useDispatch, useSelector } from "react-redux";
 import Promotions from "../Pages/Promos";
 import PromoDetails from "../Pages/Promos/individualIndex";
+import HeroBannerCodeGenerator from "../Pages/HeroCodeGenerator/HeroBannerCodeGenerator";
 
 function App() {
   const dispatch = useDispatch();
@@ -95,6 +96,10 @@ function App() {
           <Route
             path="/supacolor"
             element={<ProtectedRoute element={<Supacolor />} />}
+          />
+          <Route
+            path="/hero-code-generator"
+            element={<ProtectedRoute element={<HeroBannerCodeGenerator />} />}
           />
           <Route
             path="/queue/clothing"
