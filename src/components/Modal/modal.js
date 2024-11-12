@@ -37,7 +37,7 @@ const Modal = ({ children, open, className, width, style }) => {
     <div
       className={twMerge(
         open ? "translate-y-0" : "translate-y-[100%] md:translate-y-[200%]",
-        "bg-white relative overflow-hidden max-md:rounded-t-xl duration-200 transition max-md:rounded-b-none flex flex-col max-md:max-h-[80%] z-[9999] p-4 w-full rounded-md shadow-default",
+        "bg-white dark:bg-darkBg relative overflow-hidden max-md:rounded-t-xl duration-200 transition max-md:rounded-b-none flex flex-col max-md:max-h-[80%] z-[9999] p-4 w-full rounded-md shadow-default dark:shadow-defaultDark",
         size[width],
         className,
         breakpoint === "mobile" && "max-w-full"

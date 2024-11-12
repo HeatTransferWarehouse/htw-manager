@@ -58,6 +58,7 @@ const getBCProductsOnOrder = async (data) => {
     const products = [];
     // Creating our order item info for creating a shipment
     response.data.map((product) => {
+      if (!product.id) return;
       const item = {
         order_product_id: product.id,
         quantity: product.quantity,

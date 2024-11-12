@@ -1,0 +1,132 @@
+.rdw-editor-toolbar {
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.5rem;
+  border-bottom: 1px solid #ccc;
+}
+
+.rdw-inline-wrapper,
+.rdw-block-wrapper,
+.rdw-list-wrapper,
+.rdw-link-wrapper {
+  display: flex;
+  align-items: center;
+  font-size: 1rem;
+  gap: 0.5rem;
+}
+
+.rdw-option-wrapper {
+  width: 1.5rem;
+  height: 1.5rem;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+ol,
+ul {
+  padding-left: 1.5rem;
+}
+
+ol {
+  list-style: decimal;
+}
+
+ul {
+  list-style: disc;
+}
+
+.rdw-option-wrapper:hover {
+  background: #6240d030;
+}
+
+.rdw-option-active {
+  background: #6240d070 !important;
+}
+
+.rdw-editor-main {
+  height: 200px;
+  padding: 0.5rem;
+  overflow-y: auto;
+}
+
+.rdw-link-modal {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background-color: white;
+  padding: 1rem;
+  box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.5);
+  border-radius: 5px;
+  display: flex;
+  gap: 0.25rem;
+  flex-direction: column;
+  width: 300px;
+  z-index: 999999;
+}
+
+.rdw-link-modal input {
+  padding: 0.25rem;
+  margin: 0 0 0.5rem 0;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+}
+
+.rdw-link-modal-target-option {
+  display: flex;
+  gap: 0.5rem;
+  align-items: center;
+}
+
+.rdw-link-modal-target-option input {
+  margin: 0;
+}
+
+.rdw-link-modal-buttonsection {
+  display: grid;
+  gap: 0.5rem;
+  grid-template-columns: 1fr 1fr;
+  margin-top: 0.5rem;
+}
+
+.rdw-link-modal-btn {
+  padding: 0.5rem;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  background-color: #6240d0;
+  color: white;
+}
+
+.rdw-link-modal-buttonsection button:last-child {
+  background-color: red;
+}
+
+.rdw-link-modal-buttonsection button:disabled {
+  background-color: #ccc;
+  cursor: not-allowed;
+}
+
+.rdw-link-decorator-wrapper {
+  color: #6240d0;
+  text-decoration: underline;
+}
+
+.rdw-link-decorator-icon {
+  display: none;
+}
+
+li > div {
+  margin: 0.25rem 0 !important;
+}
+
+#generated-code-block [aria-label="Copy Code"] {
+  position: absolute;
+  top: 1rem;
+  right: 1rem;
+}

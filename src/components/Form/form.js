@@ -42,12 +42,13 @@ const Input = ({
   required,
   accept,
   readOnly,
+  disabled,
 }) => {
   return (
     <input
       accept={accept}
       className={twMerge(
-        "inline-flex peer m-0 focus-visible:ring-secondary/20 w-full rounded-md border border-gray-300 py-2.5 px-2 text-base placeholder:text-gray-500 focus-visible:border-secondary focus-visible:outline-none focus-visible:ring-4 hover:border-secondary disabled:bg-gray-100 disabled:hover:border-gray-300",
+        "inline-flex peer m-0 focus-visible:ring-secondary/20 w-full rounded-md border border-gray-300 p-2 text-base placeholder:text-gray-500 focus-visible:border-secondary focus-visible:outline-none focus-visible:ring-4 hover:border-secondary disabled:text-gray-500 disabled:bg-gray-200 disabled:hover:border-gray-300",
         className
       )}
       id={id}
@@ -58,6 +59,7 @@ const Input = ({
       type={type}
       value={value || ""}
       required={required}
+      disabled={disabled}
     />
   );
 };
@@ -120,6 +122,7 @@ const Select = ({
   setOpen,
   open,
   required,
+  selectedLabel,
 }) => {
   useEffect(() => {
     window.addEventListener("click", (e) => {
@@ -142,7 +145,7 @@ const Select = ({
           open && "outline-none border-secondary ring-4 ring-secondary/20",
           "flex items-center justify-between gap-4 focus-visible:ring-secondary/20 w-full border border-gray-300 p-2 rounded-md text-base focus-visible:border-secondary focus-visible:outline-none focus-visible:ring-4 hover:border-secondary disabled:bg-gray-100 disabled:hover:border-gray-300 "
         )}>
-        {value}
+        {selectedLabel}
         {open ? (
           <FaChevronUp className="fill-secondary h-4 w-4" />
         ) : (

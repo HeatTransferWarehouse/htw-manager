@@ -148,4 +148,20 @@ router.post("/register", (req, res) => {
     });
 });
 
+router.put("/update/preferences/:id", (req, res) => {
+  const id = Number(req.params.id);
+  const { path } = req.body;
+
+  console.log("path", path);
+
+  const queryText = `UPDATE "user" SET default_page = $1 WHERE id = $2`;
+  pool
+    .query(queryText, [path, id])
+    .then(() => res.sendStatus(200))
+    .catch((err) => {
+      logtail.info("Error updating user", err);
+      res.sendStatus(500);
+    });
+});
+
 module.exports = router;

@@ -371,4 +371,46 @@ const buildRelatedProductElement = (product) => {
   `;
 };
 
+router.post("/get-customer-group-info/:id", async (req, res) => {
+  try {
+    const customerId = req.params.id;
+
+    const url = `https://api.bigcommerce.com/stores/${process.env.STORE_HASH}/v2/customer_groups/${customerId}`;
+
+    const options = {
+      method: "GET",
+      headers: {
+        Accept: "application/json",
+        "Content-Type": "application/json",
+        "X-Auth-Token": process.env.BG_AUTH_TOKEN,
+      },
+    };
+
+    const response = await fetch(url, options);
+
+    if (!response.ok) {
+      const errorMessage = `Failed to transfer cart item. Status: ${response}`;
+      console.error(errorMessage);
+      return res.status(response.status).json({
+        message: errorMessage,
+        success: false,
+      });
+    }
+
+    const jsonResponse = await response.json();
+
+    res.json({
+      message: "Customer Group Info successfully retrieved",
+      data: jsonResponse,
+      success: true,
+    });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({
+      message: "Server error while processing cart data",
+      error: err.message || err,
+    });
+  }
+});
+
 module.exports = router;

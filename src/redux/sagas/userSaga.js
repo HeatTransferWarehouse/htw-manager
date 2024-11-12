@@ -51,11 +51,23 @@ function* updateUser(action) {
   }
 }
 
+function* updateUserPreferences(action) {
+  try {
+    yield axios.put(
+      `/api/user/update/preferences/${action.payload.id}`,
+      action.payload
+    );
+  } catch (error) {
+    console.log("User update preferences request failed", error);
+  }
+}
+
 function* userSaga() {
   yield takeLatest("FETCH_USER", fetchUser);
   yield takeLatest("FETCH_ALL_USERS", fetchAllUsers);
   yield takeLatest("DELETE_USER", deleteUser);
   yield takeLatest("UPDATE_USER", updateUser);
+  yield takeLatest("UPDATE_USER_PREFERENCES", updateUserPreferences);
 }
 
 export default userSaga;

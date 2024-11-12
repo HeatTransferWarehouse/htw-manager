@@ -367,18 +367,18 @@ function createSupacolorPayload(
         description: "",
         garment:
           item.product_options.filter((opt) =>
-            opt.display_name_customer.includes("Garment Color")
+            opt.display_name_customer?.includes("Garment Color")
           )[0].display_value_customer +
           " - " +
           item.product_options.filter((opt) =>
-            opt.display_name_customer.includes("Garment Type")
+            opt.display_name_customer?.includes("Garment Type")
           )[0].display_value_customer,
         colors: "CMYK",
         size: "SIZED ON SHEET",
         ...(priceCodes[index].includes("Headwear")
           ? {
               "Cap Type": item.product_options.filter((opt) =>
-                opt.display_name_customer.includes("Headwear")
+                opt.display_name_customer?.includes("Headwear")
               )[0].display_value_customer,
             }
           : {}),

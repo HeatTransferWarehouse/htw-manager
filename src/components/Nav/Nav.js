@@ -4,6 +4,13 @@ import { useDispatch, useSelector } from "react-redux";
 import { MobileNav } from "./MoblieNav";
 import { RxHamburgerMenu } from "react-icons/rx";
 import { BreakpointsContext } from "../../context/BreakpointsContext";
+import {
+  DropDownContainer,
+  DropDownContent,
+  DropDownItem,
+  DropDownTrigger,
+} from "../ui/dropdown";
+import { FaUserCircle } from "react-icons/fa";
 
 function Nav() {
   const breakPoint = useContext(BreakpointsContext);
@@ -227,18 +234,31 @@ function Nav() {
               </NavLink>
             )}
           </nav>
-          <div>
-            {user.id && (
-              <NavLink
-                to="/"
-                onClick={() => {
-                  dispatch({ type: "LOGOUT" });
-                }}
-                className="p-2 hover:text-secondary">
-                Log Out
-              </NavLink>
-            )}
-          </div>
+          {user.id && (
+            <DropDownContainer>
+              <DropDownTrigger>
+                <FaUserCircle className="w-6 h-6" />
+                {user.email}
+              </DropDownTrigger>
+              <DropDownContent>
+                <DropDownItem>
+                  <NavLink to="/account" className="p-2 hover:text-secondary">
+                    Account
+                  </NavLink>
+                </DropDownItem>
+                <DropDownItem>
+                  <NavLink
+                    to="/"
+                    onClick={() => {
+                      dispatch({ type: "LOGOUT" });
+                    }}
+                    className="p-2 hover:text-secondary">
+                    Log Out
+                  </NavLink>
+                </DropDownItem>
+              </DropDownContent>
+            </DropDownContainer>
+          )}
         </div>
         <div className="lg:hidden w-full flex items-center justify-between">
           <a href="https://www.heattransferwarehouse.com/">

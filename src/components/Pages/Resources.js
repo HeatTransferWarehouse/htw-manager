@@ -200,6 +200,20 @@ function Resources() {
                 Open
               </a>
             </div>
+            <div className="shadow-default p-4 text-gray-700 justify-between rounded-md flex flex-col gap-2 bg-white">
+              <div>
+                <p className="font-semibold">FAQ Code Generator</p>
+                <p>
+                  Generate code to create a faq section for categories, faq
+                  pages, or product pages.
+                </p>
+              </div>
+              <a
+                href={`${host}/#/faq-code-generator`}
+                className="px-6 py-2 w-fit mt-2 flex bg-secondary rounded-md text-white">
+                Open
+              </a>
+            </div>
           </div>
         </section>
 

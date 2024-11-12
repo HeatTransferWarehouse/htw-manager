@@ -9,7 +9,7 @@ export function OptionsList({ props }) {
     sendBackProgressQueueItem,
   } = useQueueActions();
   return (
-    <ul>
+    <ul className="list-none m-0 p-0">
       {props.view === "new" ? (
         <>
           <li

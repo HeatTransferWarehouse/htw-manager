@@ -5,8 +5,12 @@ module.exports = {
     extend: {
       colors: {
         primary: "#a759d1",
-        secondary: "#6240D0",
+        primaryLight: "#ca9be3",
+        secondary: "#ab61d3",
+        secondaryLight: "#ab61d3",
         dark: "#1d1d1d",
+        darkBg: "white",
+        neutral: "#666666",
       },
       backgroundColor: {
         grad: "linear-gradient(90deg, #a759d1 0%, #6240D0 29%, #ff1362, 67%, #fc4242 80%, #a759d1 100%)",
@@ -30,6 +34,7 @@ module.exports = {
       },
       boxShadow: {
         default: "0 1px 2px 0 rgba(0, 0, 0, .5);",
+        defaultDark: "0 1px 2px 0 rgba(255, 255, 255, .5);",
         defaultInverse: "0px -1px 2px 0px rgba(0,0,0,0.25);",
       },
       width: {
