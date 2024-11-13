@@ -86,7 +86,7 @@ export const routeConfig = [
     path: "/orderlookupold",
     name: "Order Lookup OLD",
     element: <OrderLookupOLD />,
-    protected: true,
+    protected: false,
     page_title: "Order Lookup OLD",
   },
   {
