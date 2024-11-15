@@ -1,10 +1,16 @@
 import React, { useState } from "react";
 import { FaCheck } from "react-icons/fa";
-import { Pagination } from "../../../Pagination/Pagination";
 import { MdOutlineChecklistRtl } from "react-icons/md";
 import { CgTrash } from "react-icons/cg";
 import { twMerge } from "tailwind-merge";
 import { useQueueActions } from "../functions/actions";
+import {
+  PaginationControls,
+  PaginationOption,
+  PaginationSheet,
+  PaginationTrigger,
+  Pagination,
+} from "../../../ui/pagination";
 
 export function Header({ props }) {
   const [allSelected, setAllSelected] = useState(false);
@@ -158,14 +164,21 @@ export function Header({ props }) {
       {!props.isMobile && (
         <Pagination
           props={{
-            view: props.view,
             items: props.items,
             rowsPerPage: props.rowsPerPage,
             setRowsPerPage: props.setRowsPerPage,
             page: props.page,
             setPage: props.setPage,
-          }}
-        />
+          }}>
+          <PaginationTrigger />
+          <PaginationControls />
+          <PaginationSheet sheetPosition={"top"}>
+            <PaginationOption value={10}>10</PaginationOption>
+            <PaginationOption value={25}>25</PaginationOption>
+            <PaginationOption value={50}>50</PaginationOption>
+            <PaginationOption value={100}>100</PaginationOption>
+          </PaginationSheet>
+        </Pagination>
       )}
     </div>
   );

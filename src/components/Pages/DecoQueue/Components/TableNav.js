@@ -1,6 +1,7 @@
 import React from "react";
 import { Link, useLocation } from "react-router-dom";
 import { twMerge } from "tailwind-merge";
+import { TableNavLink } from "../../../ui/link";
 
 export function TableNav({ count, props }) {
   const location = useLocation();
@@ -10,11 +11,8 @@ export function TableNav({ count, props }) {
 
   return (
     <div className="flex justify-center items-center w-full p-4 gap-2">
-      <Link
-        className={twMerge(
-          "max-sm:w-1/3 max-sm:flex max-sm:flex-col rounded-md font-medium p-2 text-secondary dark:text-secondaryLight hover:text-white dark:hover:text-white hover:bg-secondary ",
-          view === "new" && "bg-secondary  text-white dark:text-white"
-        )}
+      <TableNavLink
+        active={view === "new"}
         onClick={() => {
           props.setPage(0);
           props.setRowsPerPage(25);
@@ -22,12 +20,9 @@ export function TableNav({ count, props }) {
         }}
         to={`${pathname}?view=new`}>
         New <span>({count.newCount})</span>
-      </Link>
-      <Link
-        className={twMerge(
-          "max-sm:w-1/3 max-sm:flex max-sm:flex-col rounded-md font-medium p-2 text-secondary dark:text-secondaryLight   hover:text-white dark:hover:text-white hover:bg-secondary ",
-          view === "progress" && "bg-secondary  text-white dark:text-white"
-        )}
+      </TableNavLink>
+      <TableNavLink
+        active={view === "progress"}
         onClick={() => {
           props.setPage(0);
           props.setRowsPerPage(25);
@@ -35,12 +30,9 @@ export function TableNav({ count, props }) {
         }}
         to={`${pathname}?view=progress`}>
         In Progress <span>({count.inProgressCount})</span>
-      </Link>
-      <Link
-        className={twMerge(
-          "max-sm:w-1/3 max-sm:flex max-sm:flex-col rounded-md font-medium p-2 text-secondary dark:text-secondaryLight   hover:text-white dark:hover:text-white hover:bg-secondary ",
-          view === "completed" && "bg-secondary  text-white dark:text-white"
-        )}
+      </TableNavLink>
+      <TableNavLink
+        active={view === "completed"}
         onClick={() => {
           props.setPage(0);
           props.setRowsPerPage(25);
@@ -48,7 +40,7 @@ export function TableNav({ count, props }) {
         }}
         to={`${pathname}?view=completed`}>
         Completed <span>({count.completedCount})</span>
-      </Link>
+      </TableNavLink>
     </div>
   );
 }

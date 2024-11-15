@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { forwardRef, useEffect, useRef, useState } from "react";
 import { twMerge } from "tailwind-merge";
 import { FaCheck } from "react-icons/fa6";
 import { FaChevronUp, FaChevronDown } from "react-icons/fa6";
@@ -130,6 +130,9 @@ const Select = ({
     });
   }, [setOpen]);
 
+  const optionSheetRef = useRef(null);
+  const optionSheetWidth = optionSheetRef.current?.offsetWidth;
+
   return (
     <div className={twMerge("relative ml-1 w-fit flex flex-col", className)}>
       <select
@@ -140,6 +143,9 @@ const Select = ({
         required={required}
         value={value}></select>
       <button
+        style={{
+          width: optionSheetWidth + "px",
+        }}
         onClick={onClick}
         className={twMerge(
           open && "outline-none border-secondary ring-4 ring-secondary/20",
@@ -152,15 +158,21 @@ const Select = ({
           <FaChevronDown className="fill-black group-hover/select:fill-secondary h-4 w-4" />
         )}
       </button>
-      {children}
+      {React.Children.map(children, (child) => {
+        return React.cloneElement(child, {
+          ref: optionSheetRef,
+          width: optionSheetWidth,
+        });
+      })}
     </div>
   );
 };
 
-const OptionSheet = ({ children, className, open, width }) => {
+const OptionSheet = forwardRef(({ children, className, open, width }, ref) => {
   const [childrenCount, setChildrenCount] = useState(0);
 
   useEffect(() => {
+    // Recursively count all child elements
     const countNestedChildren = (children) => {
       let count = 0;
       React.Children.forEach(children, (child) => {
@@ -179,26 +191,30 @@ const OptionSheet = ({ children, className, open, width }) => {
 
   return (
     <div
+      ref={ref}
       className={twMerge(
         open ? "shadow-default" : "h-0",
-        "absolute w-full rounded-md top-0 overflow-y-auto left-0 mt-12 bg-white",
+        "absolute w-full rounded-md top-0 z-[99999] overflow-y-auto left-0 mt-12 bg-white",
         className
       )}
       style={{
         height: open ? `${childrenCount * 2}rem` : "0px",
         maxHeight: "15rem",
         transition: "height 300ms",
-        width: width ? width : "fit-content",
+        width: width || "fit-content",
       }}>
       {children}
     </div>
   );
-};
+});
 
-const Option = ({ value, children, onClick, selectedValue }) => {
+export default OptionSheet;
+
+const Option = ({ className, value, children, onClick, selectedValue }) => {
   return (
     <span
       className={twMerge(
+        className,
         value === selectedValue ? "bg-secondary/10 text-secondary" : "",
         "h-4 hover:bg-secondary/10 hover:text-secondary cursor-pointer flex justify-between gap-2 p-4 items-center min-w-fit"
       )}

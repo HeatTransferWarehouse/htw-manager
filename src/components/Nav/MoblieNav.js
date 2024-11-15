@@ -57,110 +57,102 @@ export function MobileNav({
             <FaXmark className="w-6 h-6" />
           </button>
           <div className="flex pt-12 flex-col">
-            <Router>
+            <NavLink
+              onClick={() => {
+                setIsOpen(false);
+                disableAll();
+                setHome(true);
+              }}
+              to="/"
+              className={twMerge("p-4", home && "bg-secondary text-white")}>
+              Home
+            </NavLink>
+            <NavLink
+              onClick={() => {
+                setIsOpen(false);
+                disableAll();
+                setResources(true);
+              }}
+              to="/resources"
+              className={twMerge(
+                "p-4",
+                resources && "bg-secondary text-white"
+              )}>
+              Resources
+            </NavLink>
+            <NavLink
+              onClick={() => {
+                setIsOpen(false);
+                disableAll();
+                setSupacolor(true);
+              }}
+              to="/supacolor"
+              className={twMerge(
+                "p-4",
+                supacolor && "bg-secondary text-white"
+              )}>
+              Supacolor
+            </NavLink>
+            <NavLink
+              onClick={() => {
+                setIsOpen(false);
+                disableAll();
+                setDecoQueue(true);
+              }}
+              to="/decoqueue"
+              className={twMerge(
+                "p-4",
+                decoQueue && "bg-secondary text-white"
+              )}>
+              DecoQueue
+            </NavLink>
+            <NavLink
+              onClick={() => {
+                setIsOpen(false);
+                disableAll();
+                setSffQueue(true);
+              }}
+              to="/sff-queue"
+              className={twMerge("p-4", sffQueue && "bg-secondary text-white")}>
+              SFF Queue
+            </NavLink>
+            <NavLink
+              onClick={() => {
+                setIsOpen(false);
+                disableAll();
+                setClothingQueue(true);
+              }}
+              to="/queue/clothing"
+              className={twMerge(
+                "p-4",
+                clothingQueue && "bg-secondary text-white"
+              )}>
+              Clothing Queue
+            </NavLink>
+            {user.access_level === "5" && (
               <NavLink
                 onClick={() => {
                   setIsOpen(false);
                   disableAll();
-                  setHome(true);
+                  setAdmin(true);
                 }}
+                to="/admin"
+                className={twMerge("p-4", admin && "bg-secondary text-white")}>
+                Admin
+              </NavLink>
+            )}
+            {user.id && (
+              <NavLink
                 to="/"
-                className={twMerge("p-4", home && "bg-secondary text-white")}>
-                Home
-              </NavLink>
-              <NavLink
                 onClick={() => {
                   setIsOpen(false);
                   disableAll();
-                  setResources(true);
+                  dispatch({ type: "LOGOUT" });
                 }}
-                to="/resources"
-                className={twMerge(
-                  "p-4",
-                  resources && "bg-secondary text-white"
-                )}>
-                Resources
+                className={twMerge("p-4")}>
+                Log Out
               </NavLink>
-              <NavLink
-                onClick={() => {
-                  setIsOpen(false);
-                  disableAll();
-                  setSupacolor(true);
-                }}
-                to="/supacolor"
-                className={twMerge(
-                  "p-4",
-                  supacolor && "bg-secondary text-white"
-                )}>
-                Supacolor
-              </NavLink>
-              <NavLink
-                onClick={() => {
-                  setIsOpen(false);
-                  disableAll();
-                  setDecoQueue(true);
-                }}
-                to="/decoqueue"
-                className={twMerge(
-                  "p-4",
-                  decoQueue && "bg-secondary text-white"
-                )}>
-                DecoQueue
-              </NavLink>
-              <NavLink
-                onClick={() => {
-                  setIsOpen(false);
-                  disableAll();
-                  setSffQueue(true);
-                }}
-                to="/sff-queue"
-                className={twMerge(
-                  "p-4",
-                  sffQueue && "bg-secondary text-white"
-                )}>
-                SFF Queue
-              </NavLink>
-              <NavLink
-                onClick={() => {
-                  setIsOpen(false);
-                  disableAll();
-                  setClothingQueue(true);
-                }}
-                to="/queue/clothing"
-                className={twMerge(
-                  "p-4",
-                  clothingQueue && "bg-secondary text-white"
-                )}>
-                Clothing Queue
-              </NavLink>
-              {user.access_level === "5" && (
-                <NavLink
-                  onClick={() => {
-                    setIsOpen(false);
-                    disableAll();
-                    setAdmin(true);
-                  }}
-                  to="/admin"
-                  className={twMerge(
-                    "p-4",
-                    admin && "bg-secondary text-white"
-                  )}>
-                  Admin
-                </NavLink>
-              )}
-              {user.id && (
-                <NavLink
-                  to="/"
-                  onClick={() => {
-                    setIsOpen(false);
-                    disableAll();
-                    dispatch({ type: "LOGOUT" });
-                  }}
-                  className={twMerge("p-4")}>
-                  Log Out
-                </NavLink>
-              )}
-            </Router>
+            )}
           </div>
         </nav>
       </div>

@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from "react";
 import { TableContent } from "./TableContent";
-import { Pagination } from "../../../Pagination/Pagination";
 import { TableNav } from "./TableNav";
 import { useQueueActions } from "../Functions/queue-actions";
 import {
@@ -15,6 +14,13 @@ import {
   TableHeader,
 } from "../../../Table/Table";
 import { TableHeaderContainer } from "./TableHeader";
+import {
+  PaginationControls,
+  PaginationOption,
+  PaginationSheet,
+  PaginationTrigger,
+  Pagination,
+} from "../../../ui/pagination";
 
 export function TableComponent({ props }) {
   const { getQueueItems } = useQueueActions();
@@ -151,15 +157,21 @@ export function TableComponent({ props }) {
       </TableContainer>
       <Pagination
         props={{
-          view: props.view,
           items: filteredItems,
           rowsPerPage,
           setRowsPerPage,
           page,
-          position: "bottom",
           setPage,
-        }}
-      />
+        }}>
+        <PaginationTrigger />
+        <PaginationControls />
+        <PaginationSheet sheetPosition={"bottom"}>
+          <PaginationOption value={10}>10</PaginationOption>
+          <PaginationOption value={25}>25</PaginationOption>
+          <PaginationOption value={50}>50</PaginationOption>
+          <PaginationOption value={100}>100</PaginationOption>
+        </PaginationSheet>
+      </Pagination>
     </Table>
   );
 }

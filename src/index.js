@@ -1,17 +1,16 @@
 import React from "react";
 import { createRoot } from "react-dom/client";
+import { BrowserRouter as Router } from "react-router-dom";
 import { createStore, applyMiddleware, compose } from "redux";
 import { Provider } from "react-redux";
 import createSagaMiddleware from "redux-saga";
 import logger from "redux-logger";
-import { BreakpointsProvider } from "./context/BreakpointsContext";
-
-import rootReducer from "./redux/reducers"; // imports ./redux/reducers/index.js
-import rootSaga from "./redux/sagas"; // imports ./redux/sagas/index.js
-
+import rootReducer from "./redux/reducers";
+import rootSaga from "./redux/sagas";
 import App from "./components/App/App";
+import { BreakpointsProvider } from "./context/BreakpointsContext";
+import { DropDownManagerProvider } from "./context/dropdownContext";
 
-// Create saga middleware
 const sagaMiddleware = createSagaMiddleware();
 
 const middlewareList =
@@ -19,23 +18,34 @@ const middlewareList =
     ? [sagaMiddleware, logger]
     : [sagaMiddleware];
 
+const composeEnhancers =
+  process.env.NODE_ENV === "development" &&
+  window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__
+    ? window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__
+    : compose;
+
 const store = createStore(
   rootReducer,
-  compose(applyMiddleware(...middlewareList))
+  composeEnhancers(applyMiddleware(...middlewareList))
 );
 
-// Run the rootSaga
 sagaMiddleware.run(rootSaga);
 
-// Get the root element where the React app will be rendered
 const container = document.getElementById("react-root");
-
-// Create a root and render the app
 const root = createRoot(container);
+
 root.render(
-  <Provider store={store}>
-    <BreakpointsProvider>
-      <App />
-    </BreakpointsProvider>
-  </Provider>
+  <React.StrictMode>
+    <Provider store={store}>
+      <BreakpointsProvider>
+        <DropDownManagerProvider>
+          {" "}
+          {/* Wrap Dropdown Manager */}
+          <Router>
+            <App />
+          </Router>
+        </DropDownManagerProvider>
+      </BreakpointsProvider>
+    </Provider>
+  </React.StrictMode>
 );

@@ -8,22 +8,20 @@ const detectOS = () => {
   return platform.includes("mac") ? "mac" : "pc";
 };
 
-const Search = ({ onSearch, className }) => {
-  const [query, setQuery] = useState("");
+const Search = ({ props, className }) => {
   const os = detectOS(); // Detect OS when component mounts
   const inputRef = useRef(null);
   const [showClearInput, setShowClearInput] = useState(false);
+  const { productSearchQuery, setProductSearchQuery } = props;
 
   const handleInputClear = (bool) => {
     setShowClearInput(bool);
-    setQuery("");
-    onSearch("");
+    setProductSearchQuery("");
     inputRef.current.focus();
   };
 
   const handleInputChange = (e) => {
-    setQuery(e.target.value);
-    onSearch(e.target.value);
+    setProductSearchQuery(e.target.value);
     if (e.target.value.length > 1) {
       setShowClearInput(true);
     } else {
@@ -48,14 +46,14 @@ const Search = ({ onSearch, className }) => {
   }, []);
 
   return (
-    <div className={twMerge("w-full max-w-[500px] px-4 mb-4", className)}>
+    <div className={twMerge("w-full max-w-[500px] mb-4", className)}>
       <span className="relative w-full max-w-[500px] flex items-center">
         <input
           type="text"
           placeholder="Search"
-          value={query}
+          value={productSearchQuery}
           onChange={handleInputChange}
-          className="w-full m-0 p-2 shadow-default border border-solid border-transparent rounded-md focus:outline-none placeholder:text-gray-600 focus:ring-2 focus:border-secondary focus:ring-secondary/10  hover:border-secondary"
+          className="w-full m-0 p-2 shadow-default border border-solid border-transparent rounded-md focus:outline-none placeholder:text-gray-600 focus:ring-4 focus:border-secondary focus:ring-secondary/15 hover:border-secondary"
           ref={inputRef}
         />
         <span className="absolute text-gray-600 right-2 h-5 w-fit flex items-center ">

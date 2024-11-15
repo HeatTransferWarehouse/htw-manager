@@ -7,6 +7,7 @@ import {
   Route,
   Routes,
   Navigate,
+  useLocation,
 } from "react-router-dom";
 import Nav from "../Nav/Nav";
 import Register from "../RegisterForm/RegisterForm";
@@ -22,12 +23,11 @@ import DecoQueue from "../Pages/DecoQueue/DecoQueue";
 import OrderLookupOLD from "../Pages/OrderLookupOLD";
 import SFFQueue from "../Pages/SffQueue/SFFQueue";
 import ClothingQueue from "../Pages/ClothingQueue/page";
-import Promotions from "../Pages/Promos";
-import PromoDetails from "../Pages/Promos/individualIndex";
 import HeroBannerCodeGenerator from "../Pages/HeroCodeGenerator/HeroBannerCodeGenerator";
 import FaqCodeGenerator from "../Pages/FaqCodeGenerator/page";
 import Account from "../Pages/Account/account";
 import { useDispatch, useSelector } from "react-redux";
+import ProductsWithNoDesc from "../Pages/ProductsWithNoDescription";
 
 // App.js
 export const routeConfig = [
@@ -86,7 +86,7 @@ export const routeConfig = [
     path: "/orderlookupold",
     name: "Order Lookup OLD",
     element: <OrderLookupOLD />,
-    protected: true,
+    protected: false,
     page_title: "Order Lookup OLD",
   },
   {
@@ -117,6 +117,13 @@ export const routeConfig = [
     protected: "admin",
     page_title: "Admin",
   },
+  {
+    path: "/products-with-no-description",
+    name: "Products With No Descriptions",
+    element: <ProductsWithNoDesc />,
+    protected: true,
+    page_title: "Products With No Descriptions",
+  },
 ];
 
 function App() {
@@ -124,6 +131,7 @@ function App() {
   const logoutTimerRef = useRef(null);
   const user = useSelector((store) => store.user.userReducer);
   const defaultUserPath = user.default_page || "/";
+  const location = useLocation();
 
   const resetTimer = useCallback(() => {
     if (logoutTimerRef.current) {
@@ -163,8 +171,12 @@ function App() {
     };
   }, [dispatch, resetTimer]);
 
+  useEffect(() => {
+    document.querySelector(".main-container").scrollTo(0, 0);
+  }, [location]);
+
   return (
-    <Router>
+    <>
       {user.id && <Nav />}
       <main className="main-container">
         <Routes>
@@ -217,7 +229,7 @@ function App() {
           />
         </Routes>
       </main>
-    </Router>
+    </>
   );
 }
 

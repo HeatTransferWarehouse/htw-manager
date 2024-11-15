@@ -7,8 +7,8 @@ import { Form, TextField } from "../Form/form";
 export default function LoginPage() {
   const dispatch = useDispatch();
   const navigate = useNavigate(); // Initialize navigate
-  const [username, setUsername] = useState(null);
-  const [password, setPassword] = useState(null);
+  const [username, setUsername] = useState("");
+  const [password, setPassword] = useState("");
   const logInStatus = useSelector((store) => store.error.loginMessage);
   const user = useSelector((store) => store.user.userReducer); // Get user data from Redux store
 

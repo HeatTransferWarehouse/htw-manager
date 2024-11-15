@@ -1,10 +1,9 @@
 import React from "react";
 import "./css/Main.css";
+import { NavLink } from "react-router-dom";
+import { CustomLink } from "../ui/link";
 
 function Resources() {
-  const host = window.location.origin;
-
-  //defines the dataselector to know which items to preform actions on
   return (
     <>
       <div className="bg-gray-200">
@@ -52,13 +51,14 @@ function Resources() {
                 <li className="text-gray-500">Adhesives</li>
                 <li className="text-gray-500">Sublimation</li>
               </ul>
-              <a
+              <CustomLink
+                className="mx-auto"
+                style="button"
                 href="https://heattransferwarehouse.com"
                 target="_blank"
-                className="px-6 py-2 w-fit mx-auto flex bg-secondary rounded-md text-white"
                 rel="noopener noreferrer">
                 Go to Site
-              </a>
+              </CustomLink>
             </div>
             <div className="shadow-default p-4 rounded-md bg-white">
               <h3 className="text-xl font-bold text-center mb-4">Sandbox</h3>
@@ -79,13 +79,14 @@ function Resources() {
                 <li className="text-gray-500">launch on</li>
                 <li className="text-gray-500">a live site!</li>
               </ul>
-              <a
+              <CustomLink
+                className="mx-auto"
+                style="button"
                 href="https://heattransferwarehouse.com"
                 target="_blank"
-                className="px-6 py-2 w-fit mx-auto flex bg-primary rounded-md text-white"
                 rel="noopener noreferrer">
                 Go to Site
-              </a>
+              </CustomLink>
             </div>
           </div>
         </section>
@@ -101,13 +102,13 @@ function Resources() {
                 <p className="font-semibold">Web/Dev Logins and API</p>
                 <p>Information and Login Credentials for the Webs and Devs.</p>
               </div>
-              <a
+              <CustomLink
+                style="button"
                 href="https://docs.google.com/spreadsheets/d/1Ebf_nSvXy3PFdRMtbBuyksvZwnET6vtX0sCEZV6kG2M/"
                 target="_blank"
-                className="px-6 py-2 w-fit mt-2 flex bg-secondary rounded-md text-white"
                 rel="noopener noreferrer">
                 Open
-              </a>
+              </CustomLink>
             </div>
             <div className="shadow-default p-4 text-gray-700 justify-between rounded-md flex flex-col gap-2 bg-white">
               <div>
@@ -117,13 +118,13 @@ function Resources() {
                   customers based on the product.
                 </p>
               </div>
-              <a
+              <CustomLink
+                style="button"
                 href="https://www.heattransferwarehouse.com/csr-vinyl-calculator/"
                 target="_blank"
-                className="px-6 py-2 w-fit mt-2 flex bg-secondary rounded-md text-white"
                 rel="noopener noreferrer">
                 Open
-              </a>
+              </CustomLink>
             </div>
             <div className="shadow-default p-4 text-gray-700 justify-between rounded-md flex flex-col gap-2 bg-white">
               <div>
@@ -133,13 +134,13 @@ function Resources() {
                   based on the type and proportions wanted.
                 </p>
               </div>
-              <a
+              <CustomLink
+                style="button"
                 href="https://www.heattransferwarehouse.com/supacolor-calculator/"
                 target="_blank"
-                className="px-6 py-2 w-fit mt-2 flex bg-secondary rounded-md text-white"
                 rel="noopener noreferrer">
                 Open
-              </a>
+              </CustomLink>
             </div>
             <div className="shadow-default p-4 text-gray-700 justify-between rounded-md flex flex-col gap-2 bg-white">
               <div>
@@ -149,13 +150,13 @@ function Resources() {
                   off the size of the HTV being purchased.
                 </p>
               </div>
-              <a
+              <CustomLink
+                style="button"
                 href="https://www.heattransferwarehouse.com/htv-calculator/"
                 target="_blank"
-                className="px-6 py-2 w-fit mt-2 flex bg-secondary rounded-md text-white"
                 rel="noopener noreferrer">
                 Open
-              </a>
+              </CustomLink>
             </div>
             <div className="shadow-default p-4 text-gray-700 justify-between rounded-md flex flex-col gap-2 bg-white">
               <div>
@@ -165,13 +166,13 @@ function Resources() {
                   size and stone colors.
                 </p>
               </div>
-              <a
+              <CustomLink
+                style="button"
                 href="https://www.heattransferwarehouse.com/rhinestone-calculator/"
                 target="_blank"
-                className="px-6 py-2 w-fit mt-2 flex bg-secondary rounded-md text-white"
                 rel="noopener noreferrer">
                 Open
-              </a>
+              </CustomLink>
             </div>
             <div className="shadow-default p-4 text-gray-700 justify-between rounded-md flex flex-col gap-2 bg-white">
               <div>
@@ -181,24 +182,25 @@ function Resources() {
                   categorized by department
                 </p>
               </div>
-              <a
+              <CustomLink
+                style="button"
                 href="https://docs.google.com/document/d/1YoZOUH5K1CC3kAakhIAjxUxKXfMATjcjF3ozZn_JAgA/"
                 target="_blank"
-                className="px-6 py-2 w-fit mt-2 flex bg-secondary rounded-md text-white"
                 rel="noopener noreferrer">
                 Open
-              </a>
+              </CustomLink>
             </div>
             <div className="shadow-default p-4 text-gray-700 justify-between rounded-md flex flex-col gap-2 bg-white">
               <div>
                 <p className="font-semibold">Hero Banner Code Generator</p>
                 <p>Generate code to create a new Hero Banner in big commerce</p>
               </div>
-              <a
-                href={`${host}/#/hero-code-generator`}
-                className="px-6 py-2 w-fit mt-2 flex bg-secondary rounded-md text-white">
+              <CustomLink
+                style="button"
+                type="router"
+                href="/hero-code-generator">
                 Open
-              </a>
+              </CustomLink>
             </div>
             <div className="shadow-default p-4 text-gray-700 justify-between rounded-md flex flex-col gap-2 bg-white">
               <div>
@@ -208,11 +210,29 @@ function Resources() {
                   pages, or product pages.
                 </p>
               </div>
-              <a
-                href={`${host}/#/faq-code-generator`}
-                className="px-6 py-2 w-fit mt-2 flex bg-secondary rounded-md text-white">
+              <CustomLink
+                style="button"
+                type="router"
+                href="/faq-code-generator">
                 Open
-              </a>
+              </CustomLink>
+            </div>
+            <div className="shadow-default p-4 text-gray-700 justify-between rounded-md flex flex-col gap-2 bg-white">
+              <div>
+                <p className="font-semibold">
+                  List of products w/out a description
+                </p>
+                <p>
+                  Find a list of all products that are missing a description for
+                  Heat Transfer Warehouse & Shirts From Fargo.
+                </p>
+              </div>
+              <CustomLink
+                style="button"
+                type="router"
+                href="/products-with-no-description">
+                Open
+              </CustomLink>
             </div>
           </div>
         </section>
@@ -234,13 +254,13 @@ function Resources() {
                   redeploy, and manage our servers and data.
                 </p>
               </div>
-              <a
+              <CustomLink
+                style="button"
                 href="https://docs.digitalocean.com/support/"
                 target="_blank"
-                className="px-6 py-2 w-fit mt-2 flex bg-secondary rounded-md text-white"
                 rel="noopener noreferrer">
                 Support Docs
-              </a>
+              </CustomLink>
             </div>
             <div className="p-4 flex flex-col justify-between gap-4 bg-white shadow-default rounded-md text-gray-700">
               <div>
@@ -250,13 +270,13 @@ function Resources() {
                   SanMar, OSIAffiliate, etc.
                 </p>
               </div>
-              <a
+              <CustomLink
+                style="button"
                 href="https://support.sendgrid.com/hc/en-us"
                 target="_blank"
-                className="px-6 py-2 w-fit mt-2 flex bg-secondary rounded-md text-white"
                 rel="noopener noreferrer">
                 Support Docs
-              </a>
+              </CustomLink>
             </div>
             <div className="p-4 flex flex-col justify-between gap-4 bg-white shadow-default rounded-md text-gray-700">
               <div>
@@ -266,13 +286,13 @@ function Resources() {
                   and refer our products.
                 </p>
               </div>
-              <a
+              <CustomLink
+                style="button"
                 href="https://support.osiaffiliate.com/support/home"
                 target="_blank"
-                className="px-6 py-2 w-fit mt-2 flex bg-secondary rounded-md text-white"
                 rel="noopener noreferrer">
                 Support Docs
-              </a>
+              </CustomLink>
             </div>
             <div className="p-4 flex flex-col justify-between gap-4 bg-white shadow-default rounded-md text-gray-700">
               <div>
@@ -282,13 +302,13 @@ function Resources() {
                   offer support.
                 </p>
               </div>
-              <a
+              <CustomLink
+                style="button"
                 href="https://support.zendesk.com/hc/en-us/categories/4405298745370-Support"
                 target="_blank"
-                className="px-6 py-2 w-fit mt-2 flex bg-secondary rounded-md text-white"
                 rel="noopener noreferrer">
                 Support Docs
-              </a>
+              </CustomLink>
             </div>
             <div className="p-4 flex flex-col justify-between gap-4 bg-white shadow-default rounded-md text-gray-700">
               <div>
@@ -298,13 +318,13 @@ function Resources() {
                   bill over 4 weeks.
                 </p>
               </div>
-              <a
+              <CustomLink
+                style="button"
                 href="https://help.afterpay.com/hc/en-us/categories/900000234146-I-M-A-MERCHANT"
                 target="_blank"
-                className="px-6 py-2 w-fit mt-2 flex bg-secondary rounded-md text-white"
                 rel="noopener noreferrer">
                 Support Docs
-              </a>
+              </CustomLink>
             </div>
             <div className="p-4 flex flex-col justify-between gap-4 bg-white shadow-default rounded-md text-gray-700">
               <div>
@@ -314,13 +334,13 @@ function Resources() {
                   weeks or via Financing.
                 </p>
               </div>
-              <a
+              <CustomLink
+                style="button"
                 href="https://www.klarna.com/us/customer-service/"
                 target="_blank"
-                className="px-6 py-2 w-fit mt-2 flex bg-secondary rounded-md text-white"
                 rel="noopener noreferrer">
                 Support Docs
-              </a>
+              </CustomLink>
             </div>
             <div className="p-4 flex flex-col justify-between gap-4 bg-white shadow-default rounded-md text-gray-700">
               <div>
@@ -330,13 +350,13 @@ function Resources() {
                   checkout/login.
                 </p>
               </div>
-              <a
+              <CustomLink
+                style="button"
                 href="https://support.bolt.com/hc/en-us"
                 target="_blank"
-                className="px-6 py-2 w-fit mt-2 flex bg-secondary rounded-md text-white"
                 rel="noopener noreferrer">
                 Support Docs
-              </a>
+              </CustomLink>
             </div>
             <div className="p-4 flex flex-col justify-between gap-4 bg-white shadow-default rounded-md text-gray-700">
               <div>
@@ -346,13 +366,13 @@ function Resources() {
                   campaigns.
                 </p>
               </div>
-              <a
+              <CustomLink
+                style="button"
                 href="https://help.klaviyo.com/hc/en-us"
                 target="_blank"
-                className="px-6 py-2 w-fit mt-2 flex bg-secondary rounded-md text-white"
                 rel="noopener noreferrer">
                 Support Docs
-              </a>
+              </CustomLink>
             </div>
             <div className="p-4 flex flex-col justify-between gap-4 bg-white shadow-default rounded-md text-gray-700">
               <div>
@@ -362,13 +382,13 @@ function Resources() {
                   sales.
                 </p>
               </div>
-              <a
+              <CustomLink
+                style="button"
                 href="https://support.bigcommerce.com/s/?language=en_US"
                 target="_blank"
-                className="px-6 py-2 w-fit mt-2 flex bg-secondary rounded-md text-white"
                 rel="noopener noreferrer">
                 Support Docs
-              </a>
+              </CustomLink>
             </div>
             <div className="p-4 flex flex-col justify-between gap-4 bg-white shadow-default rounded-md text-gray-700">
               <div>
@@ -378,13 +398,13 @@ function Resources() {
                   more in one place.
                 </p>
               </div>
-              <a
+              <CustomLink
+                style="button"
                 href="https://www.brightpearl.com/contact-support"
                 target="_blank"
-                className="px-6 py-2 w-fit mt-2 flex bg-secondary rounded-md text-white"
                 rel="noopener noreferrer">
                 Support Docs
-              </a>
+              </CustomLink>
             </div>
             <div className="p-4 flex flex-col justify-between gap-4 bg-white shadow-default rounded-md text-gray-700">
               <div>
@@ -394,26 +414,26 @@ function Resources() {
                   manage Shipping.
                 </p>
               </div>
-              <a
+              <CustomLink
+                style="button"
                 href="https://help.shipstation.com/hc/en-us"
                 target="_blank"
-                className="px-6 py-2 w-fit mt-2 flex bg-secondary rounded-md text-white"
                 rel="noopener noreferrer">
                 Support Docs
-              </a>
+              </CustomLink>
             </div>
             <div className="p-4 flex flex-col justify-between gap-4 bg-white shadow-default rounded-md text-gray-700">
               <div>
                 <p className="font-semibold">ShipperHQ</p>
                 <p>Manage Shipping Quotes and Methods to show at checkout.</p>
               </div>
-              <a
+              <CustomLink
+                style="button"
                 href="https://docs.shipperhq.com"
                 target="_blank"
-                className="px-6 py-2 w-fit mt-2 flex bg-secondary rounded-md text-white"
                 rel="noopener noreferrer">
                 Support Docs
-              </a>
+              </CustomLink>
             </div>
             <div className="p-4 flex flex-col justify-between gap-4 bg-white shadow-default rounded-md text-gray-700">
               <div>
@@ -422,13 +442,13 @@ function Resources() {
                   Setup and Manage our Domains, manage DNS Settings, and more.
                 </p>
               </div>
-              <a
+              <CustomLink
+                style="button"
                 href="https://www.godaddy.com/contact-us"
                 target="_blank"
-                className="px-6 py-2 w-fit mt-2 flex bg-secondary rounded-md text-white"
                 rel="noopener noreferrer">
                 Support Docs
-              </a>
+              </CustomLink>
             </div>
           </div>
         </section>

@@ -30,6 +30,8 @@ const TableHeader = ({ className, children, tableFor }) => {
           ? "grid-cols-promos"
           : tableFor === "sff"
           ? "grid-cols-sff"
+          : tableFor === "productsList"
+          ? "grid-cols-productsList"
           : "grid-cols-queue",
         className
       )}>
@@ -52,6 +54,8 @@ const TableRow = ({ className, children, isMobile, tableFor }) => {
           ? "grid-cols-promos"
           : tableFor === "sff"
           ? "grid-cols-sff"
+          : tableFor === "productsList"
+          ? "grid-cols-productsList"
           : "grid-cols-queue",
         "w-full grid relative",
         className

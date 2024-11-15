@@ -6,8 +6,8 @@ module.exports = {
       colors: {
         primary: "#a759d1",
         primaryLight: "#ca9be3",
-        secondary: "#ab61d3",
-        secondaryLight: "#ab61d3",
+        secondary: "#6240D0",
+        secondaryLight: "#7a5dd7",
         dark: "#1d1d1d",
         darkBg: "white",
         neutral: "#666666",
@@ -31,6 +31,8 @@ module.exports = {
         supacolor: "3rem 2fr 2fr 2fr 1.5fr 1.5fr 9rem",
         promos: "5rem 4fr 1.5fr 1.5fr 1.5fr 7rem",
         sff: "3rem 3fr 3fr 8fr 4fr 2fr 2fr 3fr 3rem",
+        productsList: "2fr 4fr 1fr",
+        productsListMobile: "3rem 1fr 3rem",
       },
       boxShadow: {
         default: "0 1px 2px 0 rgba(0, 0, 0, .5);",

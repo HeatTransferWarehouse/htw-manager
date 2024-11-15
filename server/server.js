@@ -1,4 +1,5 @@
 require("dotenv").config();
+require("./cron-jobs/product-sync");
 const express = require("express");
 const bodyParser = require("body-parser");
 const app = express();
@@ -36,6 +37,9 @@ app.use(passport.initialize());
 app.use(passport.session());
 
 const allowedOrigins = [
+  "http://localhost:3000",
+  "http://localhost:5006",
+  "http://localhost:8000",
   "https://www.heattransferwarehouse.com",
   "https://heat-transfer-warehouse-sandbox.mybigcommerce.com",
   "https://admin.heattransferwarehouse.com",
@@ -72,6 +76,7 @@ const clothingQueueRouter = require("./routes/clothingQueue");
 const adminRouter = require("./routes/admin");
 const promoTracker = require("./routes/promo-tracking");
 const htwRouter = require("./routes/htwRequests");
+const bcProducts = require("./routes/bcProducts");
 
 app.use("/api/user", userRouter);
 app.use("/api/bp-api", captureRouter);
@@ -79,6 +84,7 @@ app.use("/supacolor-api", supacolorRouter);
 app.use("/api/lookup", lookupRouter);
 app.use("/api/promotions", promoTracker);
 app.use("/api/htw", htwRouter);
+app.use("/api/products", bcProducts);
 
 // Queue Routers
 app.use("/api/sff-queue", sffQueueRouter);

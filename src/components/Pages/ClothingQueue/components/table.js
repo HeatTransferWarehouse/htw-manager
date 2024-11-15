@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from "react";
-import { Pagination } from "../../../Pagination/Pagination";
 import {
   HiOutlineArrowNarrowUp,
   HiOutlineArrowNarrowDown,
@@ -16,6 +15,13 @@ import { Header } from "./header";
 import { TableContent } from "./table-body";
 import { useQueueActions } from "../functions/actions";
 import { IoMdInformationCircle } from "react-icons/io";
+import {
+  PaginationControls,
+  PaginationOption,
+  PaginationSheet,
+  PaginationTrigger,
+  Pagination,
+} from "../../../ui/pagination";
 
 export function TableComponent({ props }) {
   const { getQueueItems } = useQueueActions();
@@ -198,15 +204,21 @@ export function TableComponent({ props }) {
       </TableContainer>
       <Pagination
         props={{
-          view: props.view,
           items: filteredItems,
           rowsPerPage,
           setRowsPerPage,
           page,
-          position: "bottom",
           setPage,
-        }}
-      />
+        }}>
+        <PaginationTrigger />
+        <PaginationControls />
+        <PaginationSheet sheetPosition={"bottom"}>
+          <PaginationOption value={10}>10</PaginationOption>
+          <PaginationOption value={25}>25</PaginationOption>
+          <PaginationOption value={50}>50</PaginationOption>
+          <PaginationOption value={100}>100</PaginationOption>
+        </PaginationSheet>
+      </Pagination>
     </Table>
   );
 }

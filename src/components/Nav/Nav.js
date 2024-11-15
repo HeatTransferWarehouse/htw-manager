@@ -1,5 +1,5 @@
 import React, { useContext, useEffect, useState } from "react";
-import { NavLink } from "react-router-dom"; // Remove HashRouter, just import NavLink
+import { NavLink, useLocation } from "react-router-dom"; // Remove HashRouter, just import NavLink
 import { useDispatch, useSelector } from "react-redux";
 import { MobileNav } from "./MoblieNav";
 import { RxHamburgerMenu } from "react-icons/rx";
@@ -14,6 +14,7 @@ import { FaUserCircle } from "react-icons/fa";
 
 function Nav() {
   const breakPoint = useContext(BreakpointsContext);
+  const location = useLocation();
   const [home, setHome] = useState(false);
   const [resources, setResources] = useState(false);
   const [decoQueue, setDecoQueue] = useState(false);
@@ -24,11 +25,7 @@ function Nav() {
   const [promotions, setPromotions] = useState(false);
   const dispatch = useDispatch();
   const user = useSelector((store) => store.user.userReducer);
-  const [pagePath, setPagePath] = useState(window.location.hash.split("#")[1]);
-
-  if (pagePath.includes("?")) {
-    setPagePath(pagePath.split("?")[0]);
-  }
+  const pagePath = location.pathname;
 
   const [isOpen, setIsOpen] = useState(false);
 
@@ -50,6 +47,7 @@ function Nav() {
   }, [isOpen]);
 
   useEffect(() => {
+    disableAll();
     switch (pagePath) {
       case "/":
         disableAll();
@@ -235,7 +233,7 @@ function Nav() {
             )}
           </nav>
           {user.id && (
-            <DropDownContainer>
+            <DropDownContainer type="hover">
               <DropDownTrigger>
                 <FaUserCircle className="w-6 h-6" />
                 {user.email}

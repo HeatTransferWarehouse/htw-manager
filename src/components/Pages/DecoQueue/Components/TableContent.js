@@ -1,10 +1,14 @@
 import React, { useState, useEffect, useRef } from "react";
-import { BiDotsHorizontalRounded } from "react-icons/bi";
-import { FaChevronDown, FaChevronUp, FaCheck } from "react-icons/fa";
+import { FaCheck } from "react-icons/fa";
 import { useQueueActions } from "../Functions/queue-actions";
-import { OptionsList } from "./OptionsList";
+import OptionsButton from "./OptionsList";
 import { TableBody, TableCell, TableRow } from "../../../Table/Table";
-import { twMerge } from "tailwind-merge";
+import {
+  DropDownContainer,
+  DropDownTrigger,
+  DropDownContent,
+  DropDownItem,
+} from "../../../ui/dropdown";
 
 export function TableContent({ props }) {
   const { updateQueueItemPriority, getColor } = useQueueActions();
@@ -57,91 +61,41 @@ export function TableContent({ props }) {
     </TableRow>
   );
 
-  const renderOptionsButton = (itemId) => (
-    <div className="options-container" ref={optionsRef}>
-      <button
-        aria-label="Open Options"
-        className={twMerge(
-          "w-8 h-8 flex items-center justify-center border-none rounded-md transition duration-200 hover:bg-secondary/10 group/options",
-          activeItemId === itemId && "bg-secondary/10"
-        )}
-        onClick={(e) => {
-          e.stopPropagation();
-          e.preventDefault();
-          buttonClickedRef.current = true;
-          setActiveItemId(activeItemId === itemId ? null : itemId);
-          props.setSingleCheckedId(itemId);
-        }}>
-        <BiDotsHorizontalRounded
-          className={twMerge(
-            "group-hover/options:fill-secondary transition duration-200 w-6 h-6",
-            activeItemId === itemId ? "fill-secondary" : "fill-black"
-          )}
-        />
-      </button>
-      {activeItemId === itemId && (
-        <div className="absolute top-10 w-fit min-w-32 right-0 bg-white shadow-default overflow-hidden rounded-md z-[99999]">
-          <OptionsList
-            props={{
-              view: props.view,
-              id: itemId,
-              setDeleteModalActive: props.setDeleteModalActive,
-            }}
-          />
-        </div>
-      )}
-    </div>
-  );
-
-  const renderPriorityButton = (item) => (
-    <span className="w-full relative" ref={priorityRef}>
-      <button
-        aria-label="Open Options"
-        className={twMerge(
-          "w-full h-8 flex items-center px-2 justify-between border-none rounded-md transition duration-200 hover:bg-secondary/10 group/priority",
-          activeItemPriorityId === item.id && "bg-secondary/10 text-secondary"
-        )}
-        onClick={(e) => {
-          setActiveItemId(null);
-          setActiveItemPriorityId(
-            activeItemPriorityId === item.id ? null : item.id
-          );
-          buttonClickedRef.current = true;
-        }}>
-        {item.priority}
-        {activeItemPriorityId === item.id ? (
-          <FaChevronUp className="opacity-0 transition duration-200 group-hover/priority:opacity-100 fill-secondary" />
-        ) : (
-          <FaChevronDown className="opacity-0 transition duration-200 group-hover/priority:opacity-100 fill-secondary" />
-        )}
-      </button>
-      {activeItemPriorityId === item.id && (
-        <ul className="absolute top-10 w-full right-0 bg-white shadow-default overflow-hidden rounded-md z-[99999]">
-          <li
-            className="cursor-pointer hover:bg-secondary/10 py-2 px-3 hover:text-secondary"
+  const renderPriorityButton = (item) => {
+    return (
+      <DropDownContainer type="click">
+        <DropDownTrigger
+          onClick={(e) => {
+            setActiveItemId(null);
+            setActiveItemPriorityId(
+              activeItemPriorityId === item.id ? null : item.id
+            );
+          }}>
+          {item.priority}
+        </DropDownTrigger>
+        <DropDownContent>
+          <DropDownItem
             onClick={(e) => {
               updateQueueItemPriority(e, item.id, "low");
             }}>
             Low
-          </li>
-          <li
-            className="cursor-pointer hover:bg-secondary/10 py-2 px-3 hover:text-secondary"
+          </DropDownItem>
+          <DropDownItem
             onClick={(e) => {
               updateQueueItemPriority(e, item.id, "med");
             }}>
             Medium
-          </li>
-          <li
-            className="cursor-pointer hover:bg-secondary/10 py-2 px-3 hover:text-secondary"
+          </DropDownItem>
+          <DropDownItem
             onClick={(e) => {
               updateQueueItemPriority(e, item.id, "high");
             }}>
             High
-          </li>
-        </ul>
-      )}
-    </span>
-  );
+          </DropDownItem>
+        </DropDownContent>
+      </DropDownContainer>
+    );
+  };
 
   if (props.itemsLoading) {
     return (
@@ -226,7 +180,16 @@ export function TableContent({ props }) {
                 <TableCell
                   isMobile={index === 0 && props.isMobile}
                   className="p-0">
-                  {renderOptionsButton(item.id)}
+                  <OptionsButton
+                    props={{
+                      itemId: item.id,
+                      activeItemId,
+                      setActiveItemId,
+                      setDeleteModalActive: props.setDeleteModalActive,
+                      view: props.view,
+                      setSingleCheckedId: props.setSingleCheckedId,
+                    }}
+                  />
                 </TableCell>
               </TableRow>
             );
@@ -280,7 +243,16 @@ export function TableContent({ props }) {
                   {item.created_at.split(": ")[1].split(" T")[0]}
                 </TableCell>
                 <TableCell className="p-0">
-                  {renderOptionsButton(item.id)}
+                  <OptionsButton
+                    props={{
+                      itemId: item.id,
+                      activeItemId,
+                      setActiveItemId,
+                      setDeleteModalActive: props.setDeleteModalActive,
+                      view: props.view,
+                      setSingleCheckedId: props.setSingleCheckedId,
+                    }}
+                  />
                 </TableCell>
               </TableRow>
             );

@@ -1,12 +1,18 @@
 import React, { useState } from "react";
 import { useQueueActions } from "../Functions/queue-actions";
 import { FaCheck } from "react-icons/fa";
-import { Pagination } from "../../../Pagination/Pagination";
 import { PiPlayBold } from "react-icons/pi";
 import { MdOutlineChecklistRtl } from "react-icons/md";
 import { CgTrash } from "react-icons/cg";
 import { BiReset } from "react-icons/bi";
 import { twMerge } from "tailwind-merge";
+import {
+  Pagination,
+  PaginationOption,
+  PaginationTrigger,
+  PaginationControls,
+  PaginationSheet,
+} from "../../../ui/pagination";
 
 export function TableHeaderContainer({ props }) {
   const [allSelected, setAllSelected] = useState(false);
@@ -221,14 +227,21 @@ export function TableHeaderContainer({ props }) {
       {!props.isMobile && (
         <Pagination
           props={{
-            view: props.view,
             items: props.items,
             rowsPerPage: props.rowsPerPage,
-            setRowsPerPage: props.setRowsPerPage,
             page: props.page,
             setPage: props.setPage,
-          }}
-        />
+            setRowsPerPage: props.setRowsPerPage,
+          }}>
+          <PaginationTrigger />
+          <PaginationControls />
+          <PaginationSheet sheetPosition={"top"}>
+            <PaginationOption value={10}>10</PaginationOption>
+            <PaginationOption value={25}>25</PaginationOption>
+            <PaginationOption value={50}>50</PaginationOption>
+            <PaginationOption value={100}>100</PaginationOption>
+          </PaginationSheet>
+        </Pagination>
       )}
     </div>
   );

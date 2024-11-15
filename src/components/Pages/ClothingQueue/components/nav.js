@@ -1,6 +1,7 @@
 import React from "react";
 import { Link, useLocation } from "react-router-dom";
 import { twMerge } from "tailwind-merge";
+import { TableNavLink } from "../../../ui/link";
 
 export function Nav({ count, props }) {
   const location = useLocation();
@@ -10,11 +11,8 @@ export function Nav({ count, props }) {
 
   return (
     <div className="flex justify-center items-center w-full p-4 gap-2">
-      <Link
-        className={twMerge(
-          "max-sm:w-1/3 max-sm:flex max-sm:flex-col rounded-md font-medium p-2 text-secondary   hover:text-white hover:bg-secondary ",
-          view === "new" && "bg-secondary  text-white"
-        )}
+      <TableNavLink
+        active={view === "new"}
         onClick={() => {
           props.setPage(0);
           props.setRowsPerPage(10);
@@ -22,12 +20,9 @@ export function Nav({ count, props }) {
         }}
         to={`${pathname}?view=new`}>
         New <span>({count.newCount})</span>
-      </Link>
-      <Link
-        className={twMerge(
-          "max-sm:w-1/3 max-sm:flex max-sm:flex-col rounded-md font-medium p-2 text-secondary   hover:text-white hover:bg-secondary ",
-          view === "ordered" && "bg-secondary  text-white"
-        )}
+      </TableNavLink>
+      <TableNavLink
+        active={view === "ordered"}
         onClick={() => {
           props.setPage(0);
           props.setRowsPerPage(10);
@@ -35,7 +30,7 @@ export function Nav({ count, props }) {
         }}
         to={`${pathname}?view=ordered`}>
         Ordered <span>({count.orderedCount})</span>
-      </Link>
+      </TableNavLink>
     </div>
   );
 }
