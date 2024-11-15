@@ -247,7 +247,9 @@ const RadioButton = ({
   required,
 }) => {
   return (
-    <Label htmlFor={id} className="cursor-pointer flex items-center gap-2">
+    <Label
+      htmlFor={id}
+      className="cursor-pointer font-normal flex items-center gap-2">
       <input
         className="peer sr-only"
         type="radio"

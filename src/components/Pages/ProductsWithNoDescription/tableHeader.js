@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { Button } from "../../ui/button";
 import { twMerge } from "tailwind-merge";
 import { Sheet, SheetContent, SheetHeader, SheetTrigger } from "../../ui/sheet";
-import { Input, RadioButton, RadioGroup } from "../../Form/form";
+import { Input, Label, RadioButton, RadioGroup } from "../../Form/form";
 import { FaFilter } from "react-icons/fa6";
 import { IoClose } from "react-icons/io5";
 import Search from "./searchProductsInput";
@@ -36,6 +36,8 @@ export default function TableHeaderContainer({ props }) {
     handleCategoryFilterChange,
     isMobile,
     activeSyncStatus,
+    setDescriptionFilter,
+    descriptionFilter,
   } = props;
   const [sync, setSync] = useState("No sync data available");
   const [sheetOpen, setSheetOpen] = useState(false);
@@ -136,7 +138,7 @@ export default function TableHeaderContainer({ props }) {
                 "flex items-center justify-center gap-2 group hover:text-secondary transition"
               }
               setOpen={setSheetOpen}>
-              Filters{" "}
+              Filters
               <FaFilter className="w-4 h-4 fill-black group-hover:fill-secondary transition" />
             </SheetTrigger>
           )}
@@ -174,6 +176,35 @@ export default function TableHeaderContainer({ props }) {
             animate={true}>
             <SheetContent>
               <SheetHeader title="Filters" setOpen={setSheetOpen}>
+                <div className="flex flex-col mb-8 gap-3">
+                  <span className="text-base font-semibold text-black">
+                    Status
+                  </span>
+                  <RadioGroup>
+                    <RadioButton
+                      value="All"
+                      defaultChecked
+                      onChange={() => setDescriptionFilter("all")}
+                      checked={descriptionFilter === "all"}
+                    />
+                  </RadioGroup>
+                  <RadioGroup>
+                    <RadioButton
+                      value="No Description"
+                      checked={descriptionFilter === "withoutDescription"}
+                      onChange={() =>
+                        setDescriptionFilter("withoutDescription")
+                      }
+                    />
+                  </RadioGroup>
+                  <RadioGroup>
+                    <RadioButton
+                      value="No Heading Tags"
+                      onChange={() => setDescriptionFilter("withDescription")}
+                      checked={descriptionFilter === "withDescription"}
+                    />
+                  </RadioGroup>
+                </div>
                 {selectedCategoryFilters.length > 0 && (
                   <>
                     <span

@@ -61,8 +61,7 @@ const getProducts = async () => {
         if (
           !product.description ||
           product.description.trim().length === 0 ||
-          (!product.description.includes("<h2") &&
-            !product.description.includes("<h1"))
+          !/<\/h[1-6]>/i.test(product.description)
         ) {
           const categoryNames = await Promise.all(
             product.categories.map((categoryId) => getCategoryName(categoryId))
@@ -273,8 +272,7 @@ const getSffProducts = async () => {
         if (
           !product.description ||
           product.description.trim().length === 0 ||
-          (!product.description.includes("</h2>") &&
-            !product.description.includes("</h1>"))
+          !/<\/h[1-6]>/i.test(product.description)
         ) {
           const categoryNames = await Promise.all(
             product.categories.map((categoryId) =>

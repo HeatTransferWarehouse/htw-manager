@@ -48,6 +48,7 @@ export default function ProductsWithNoDesc() {
   const [productSearchQuery, setProductSearchQuery] = useState("");
   const [searchQuery, setSearchQuery] = useState("");
   const [isMobile, setIsMobile] = useState(false);
+  const [descriptionFilter, setDescriptionFilter] = useState("all");
 
   // Fetch products and sync status on mount
   useEffect(() => {
@@ -99,18 +100,36 @@ export default function ProductsWithNoDesc() {
   // Filter products based on search and category filters
   const filteredProducts = useMemo(() => {
     if (!activeProducts) return [];
+
     return activeProducts.filter((product) => {
       const matchesSearchQuery = product.name
         ?.toLowerCase()
         .includes(productSearchQuery.toLowerCase());
+
       const matchesCategoryFilters =
         selectedCategoryFilters.length === 0 ||
         selectedCategoryFilters.some((filter) =>
           product.categories?.includes(filter)
         );
-      return matchesSearchQuery && matchesCategoryFilters;
+
+      const matchesDescriptionFilter =
+        descriptionFilter === "all" ||
+        (descriptionFilter === "withDescription" &&
+          product.description &&
+          product.description.trim().length > 0) ||
+        (descriptionFilter === "withoutDescription" &&
+          (!product.description || product.description.trim().length === 0));
+
+      return (
+        matchesSearchQuery && matchesCategoryFilters && matchesDescriptionFilter
+      );
     });
-  }, [activeProducts, productSearchQuery, selectedCategoryFilters]);
+  }, [
+    activeProducts,
+    productSearchQuery,
+    selectedCategoryFilters,
+    descriptionFilter,
+  ]);
 
   // Filter categories based on search input
   const filteredCategories = useMemo(() => {
@@ -165,6 +184,8 @@ export default function ProductsWithNoDesc() {
     productSearchQuery,
     isMobile,
     activeSyncStatus,
+    setDescriptionFilter,
+    descriptionFilter,
   };
 
   return (
@@ -216,7 +237,11 @@ export default function ProductsWithNoDesc() {
                           className="hover:text-secondary underline"
                           target="_blank"
                           rel="noopener noreferrer"
-                          href={`https://store-et4qthkygq.mybigcommerce.com/manage/products/edit/${product.product_id}`}>
+                          href={`https://store-${
+                            view === "sff" ? "q6y5gcujza" : "et4qthkygq"
+                          }.mybigcommerce.com/manage/products/edit/${
+                            product.product_id
+                          }`}>
                           {product.name}
                         </a>
                       </span>
@@ -249,7 +274,11 @@ export default function ProductsWithNoDesc() {
                           className="hover:text-secondary underline"
                           target="_blank"
                           rel="noopener noreferrer"
-                          href={`https://store-et4qthkygq.mybigcommerce.com/manage/products/edit/${product.product_id}`}>
+                          href={`https://store-${
+                            view === "sff" ? "q6y5gcujza" : "et4qthkygq"
+                          }.mybigcommerce.com/manage/products/edit/${
+                            product.product_id
+                          }`}>
                           {product.name}
                         </a>
                       </TableCell>
