@@ -5,7 +5,7 @@ function* syncProducts() {
   try {
     yield put({ type: "SYNC_PRODUCTS_LOADING" });
     yield call(axios.post, "/api/products/empty-descriptions/sync");
-    yield call(axios.post, "/api/products/populate-sync-data");
+    yield call(axios.post, "/api/products/syncs/populate");
     yield put({ type: "SYNC_PRODUCTS_FINISHED" });
     yield put({ type: "FETCH_PRODUCTS_NO_DESC" });
     yield put({ type: "FETCH_LAST_SYNC" });
@@ -50,7 +50,7 @@ function* syncSffProducts() {
   try {
     yield put({ type: "SYNC_PRODUCTS_LOADING" });
     yield call(axios.post, "/api/products/sff/empty-descriptions/sync");
-    yield call(axios.post, "/api/products/sff/populate-sync-data");
+    yield call(axios.post, "/api/products/sff/syncs/populate");
     yield put({ type: "SYNC_PRODUCTS_FINISHED" });
     yield put({ type: "FETCH_SFF_PRODUCTS_NO_DESC" });
     yield put({ type: "FETCH_SFF_LAST_SYNC" });

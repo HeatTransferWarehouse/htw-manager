@@ -152,7 +152,7 @@ router.post("/empty-descriptions/sync", async (req, res) => {
   }
 });
 
-router.post("/populate-sync-data", async (req, res) => {
+router.post("/syncs/populate", async (req, res) => {
   try {
     const updateQuery = `
         UPDATE last_product_sync
@@ -163,7 +163,6 @@ router.post("/populate-sync-data", async (req, res) => {
     const insertQuery = `
     INSERT INTO last_product_sync (date, is_last_sync)
     VALUES (NOW(), true)
-    RETURNING date, is_last_sync
 `;
     const result = await pool.query(insertQuery);
 
@@ -193,7 +192,7 @@ router.get("/syncs/all", async (req, res) => {
   try {
     const query = `
       SELECT date
-      FROM last_product_sync_sff
+      FROM last_product_sync
       ORDER BY date DESC
     `;
     const result = await pool.query(query);
@@ -363,7 +362,7 @@ router.post("/sff/empty-descriptions/sync", async (req, res) => {
   }
 });
 
-router.post("/sff/populate-sync-data", async (req, res) => {
+router.post("/sff/syncs/populate", async (req, res) => {
   try {
     const updateQuery = `
         UPDATE last_product_sync_sff
