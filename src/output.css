@@ -1574,6 +1574,10 @@ video {
   background-color: rgb(220 38 38 / 0.1);
 }
 
+.bg-red-600\/30 {
+  background-color: rgb(220 38 38 / 0.3);
+}
+
 .bg-secondary {
   --tw-bg-opacity: 1;
   background-color: rgb(98 64 208 / var(--tw-bg-opacity));
@@ -1581,6 +1585,10 @@ video {
 
 .bg-secondary\/10 {
   background-color: rgb(98 64 208 / 0.1);
+}
+
+.bg-secondary\/30 {
+  background-color: rgb(98 64 208 / 0.3);
 }
 
 .bg-transparent {
@@ -1595,18 +1603,6 @@ video {
 .bg-yellow-600 {
   --tw-bg-opacity: 1;
   background-color: rgb(202 138 4 / var(--tw-bg-opacity));
-}
-
-.bg-secondary\/50 {
-  background-color: rgb(98 64 208 / 0.5);
-}
-
-.bg-secondary\/30 {
-  background-color: rgb(98 64 208 / 0.3);
-}
-
-.bg-red-600\/30 {
-  background-color: rgb(220 38 38 / 0.3);
 }
 
 .bg-opacity-50 {
@@ -1802,10 +1798,6 @@ video {
 
 .pt-4 {
   padding-top: 1rem;
-}
-
-.pr-2 {
-  padding-right: 0.5rem;
 }
 
 .text-left {
