@@ -3,12 +3,13 @@ import "../../../src/output.css";
 import "../../assets/styles/main.scss";
 import "./App.css";
 import {
-  HashRouter as Router,
+  BrowserRouter as Router,
   Route,
   Routes,
   Navigate,
   useLocation,
 } from "react-router-dom";
+
 import Nav from "../Nav/Nav";
 import Register from "../RegisterForm/RegisterForm";
 import Main from "../Home/Main";

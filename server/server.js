@@ -2,11 +2,18 @@ require("dotenv").config();
 require("./cron-jobs/product-sync");
 const express = require("express");
 const bodyParser = require("body-parser");
+const path = require("path");
 const app = express();
 const cors = require("cors");
-const session = require("express-session"); // Use express-session instead of cookie-session
+const session = require("express-session");
 const passport = require("./strategies/user.strategy");
 
+const { Logtail } = require("@logtail/node");
+const logtail = new Logtail("KQi4An7q1YZVwaTWzM72Ct5r");
+
+logtail.info("Logtail ready!");
+
+// Middleware configurations
 app.use(bodyParser.json({ limit: "200mb" }));
 app.use(
   bodyParser.urlencoded({
@@ -15,17 +22,12 @@ app.use(
     parameterLimit: 50000,
   })
 );
-app.use(express.static("build"));
-
-const { Logtail } = require("@logtail/node");
-const logtail = new Logtail("KQi4An7q1YZVwaTWzM72Ct5r");
-
-logtail.info("Logtail ready!");
+app.use(express.static(path.join(__dirname, "build")));
 
 // Session Middleware
 app.use(
   session({
-    secret: process.env.SERVER_SESSION_SECRET || "your-secret", // Ensure this is securely stored
+    secret: process.env.SERVER_SESSION_SECRET || "your-secret",
     resave: false,
     saveUninitialized: false,
     cookie: { secure: false, maxAge: 24 * 60 * 60 * 1000 }, // 1 day
@@ -36,6 +38,7 @@ app.use(
 app.use(passport.initialize());
 app.use(passport.session());
 
+// CORS Middleware
 const allowedOrigins = [
   "http://localhost:3000",
   "http://localhost:5006",
@@ -46,7 +49,6 @@ const allowedOrigins = [
   "https://manager.heattransferwarehouse.com",
 ];
 
-// CORS Middleware
 app.use(
   cors({
     origin: function (origin, callback) {
@@ -56,14 +58,13 @@ app.use(
         callback(new Error("Not allowed by CORS"));
       }
     },
-    methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"], // Allow these HTTP methods
-    credentials: true, // Allow cookies and credentials to be sent
+    methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+    credentials: true,
     optionsSuccessStatus: 200,
   })
 );
 
-// Manually handle preflight OPTIONS requests
-app.options("*", cors());
+app.options("*", cors()); // Handle preflight OPTIONS requests
 
 // Route includes
 const userRouter = require("./routes/userrouter");
@@ -98,9 +99,13 @@ app.get("/healthcheck", (req, res) => {
   res.sendStatus(200);
 });
 
-app.use(express.static("build"));
+// Catch-all route to handle client-side routing
+app.get("*", (req, res) => {
+  res.sendFile(path.resolve(__dirname, "build", "index.html"));
+});
 
+// Start the server
 const PORT = process.env.PORT || 8000;
 app.listen(PORT, () => {
-  logtail.info("server running on: ", PORT);
+  logtail.info(`Server running on port: ${PORT}`);
 });
