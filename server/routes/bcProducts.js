@@ -13,29 +13,8 @@ let sffSyncStatus = {
   message: false,
 };
 
-// Function to fetch category name
-const getCategoryName = async (categoryId) => {
-  const url = `https://api.bigcommerce.com/stores/${process.env.STORE_HASH}/v3/catalog/categories/${categoryId}?include_fields=name`;
+const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 
-  const options = {
-    method: "GET",
-    headers: {
-      Accept: "application/json",
-      "Content-Type": "application/json",
-      "X-Auth-Token": process.env.BG_AUTH_TOKEN,
-    },
-  };
-  try {
-    const response = await fetch(url, options);
-    const data = await response.json();
-    return data.data.name;
-  } catch (error) {
-    console.error(`Error fetching category for ID ${categoryId}:`, error);
-    return null;
-  }
-};
-
-// Function to fetch products with no description
 const getProducts = async () => {
   const url = `https://api.bigcommerce.com/stores/${process.env.STORE_HASH}/v3/catalog/products?include_fields=description,name,categories&limit=100&is_visible=true`;
 
@@ -49,6 +28,67 @@ const getProducts = async () => {
   };
 
   const productsWithNoDescription = [];
+
+  try {
+    // Fetch the first page to determine total pages
+    const firstResponse = await fetch(url, options);
+    const firstData = await firstResponse.json();
+    const totalPages = firstData.meta.pagination.total_pages;
+
+    for (let i = 1; i <= totalPages; i++) {
+      const pageUrl = `${url}&page=${i}`;
+      const response = await fetch(pageUrl, options);
+      const data = await response.json();
+
+      data.data.forEach((product) => {
+        if (
+          !product.description ||
+          product.description.trim().length === 0 ||
+          !/<\/h[1-6]>/i.test(product.description)
+        ) {
+          productsWithNoDescription.push({
+            productId: product.id,
+            name: product.name,
+            description: product.description,
+            categories: product.categories || [],
+          });
+        }
+      });
+
+      // Wait for 200 milliseconds before fetching the next page
+      await sleep(200);
+    }
+
+    // Fetch category names for all category IDs
+    const categoryMap = await fetchAllCategories();
+
+    // Replace category IDs with category names
+    productsWithNoDescription.forEach((product) => {
+      product.categories = product.categories.map(
+        (categoryId) => categoryMap[categoryId] || "Unknown Category"
+      );
+    });
+
+    return productsWithNoDescription;
+  } catch (error) {
+    console.error("Error fetching products:", error);
+    return [];
+  }
+};
+
+// Helper function to fetch all categories and return a mapping of category IDs to names
+const fetchAllCategories = async () => {
+  const url = `https://api.bigcommerce.com/stores/${process.env.STORE_HASH}/v3/catalog/categories?limit=100`;
+  const options = {
+    method: "GET",
+    headers: {
+      Accept: "application/json",
+      "Content-Type": "application/json",
+      "X-Auth-Token": process.env.BG_AUTH_TOKEN,
+    },
+  };
+
+  const categoryMap = {};
   let currentPage = 1;
   let totalPages;
 
@@ -57,33 +97,19 @@ const getProducts = async () => {
       const response = await fetch(`${url}&page=${currentPage}`, options);
       const data = await response.json();
 
-      for (const product of data.data) {
-        if (
-          !product.description ||
-          product.description.trim().length === 0 ||
-          !/<\/h[1-6]>/i.test(product.description)
-        ) {
-          const categoryNames = await Promise.all(
-            product.categories.map((categoryId) => getCategoryName(categoryId))
-          );
-
-          productsWithNoDescription.push({
-            productId: product.id,
-            name: product.name,
-            description: product.description,
-            categories: categoryNames.filter(Boolean),
-          });
-        }
-      }
+      // Populate the object with category IDs as keys and names as values
+      data.data.forEach((category) => {
+        categoryMap[category.id] = category.name;
+      });
 
       totalPages = data.meta.pagination.total_pages;
       currentPage++;
     } while (currentPage <= totalPages);
 
-    return productsWithNoDescription;
+    return categoryMap; // Returns an object where keys are category IDs and values are category names
   } catch (error) {
-    console.error("Error fetching products:", error);
-    return [];
+    console.error("Error fetching categories:", error);
+    return categoryMap; // Return partial data if an error occurs
   }
 };
 
@@ -109,8 +135,10 @@ router.post("/empty-descriptions/sync", async (req, res) => {
         count: 0,
       });
     }
+
     await pool.query("BEGIN");
 
+    // Delete previous entries before inserting new data
     await pool.query("DELETE FROM products_missing_descriptions");
 
     const insertQuery = `
@@ -225,9 +253,8 @@ router.get("/sync/status", (req, res) => {
 
 /* ----------------- SFF Routes ----------------- */
 
-const getSffCategoryName = async (categoryId) => {
-  const url = `https://api.bigcommerce.com/stores/${process.env.SFF_STORE_HASH}/v3/catalog/categories/${categoryId}?include_fields=name`;
-
+const fetchAllSffCategories = async () => {
+  const url = `https://api.bigcommerce.com/stores/${process.env.SFF_STORE_HASH}/v3/catalog/categories?limit=100`;
   const options = {
     method: "GET",
     headers: {
@@ -236,13 +263,28 @@ const getSffCategoryName = async (categoryId) => {
       "X-Auth-Token": process.env.SFF_AUTH_TOKEN,
     },
   };
+
+  const categoryMap = new Map();
+  let currentPage = 1;
+  let totalPages;
+
   try {
-    const response = await fetch(url, options);
-    const data = await response.json();
-    return data.data.name;
+    do {
+      const response = await fetch(`${url}&page=${currentPage}`, options);
+      const data = await response.json();
+
+      data.data.forEach((category) => {
+        categoryMap.set(category.id, category.name);
+      });
+
+      totalPages = data.meta.pagination.total_pages;
+      currentPage++;
+    } while (currentPage <= totalPages);
+
+    return categoryMap;
   } catch (error) {
-    console.error(`Error fetching category for ID ${categoryId}:`, error);
-    return null;
+    console.error("Error fetching SFF categories:", error);
+    return categoryMap;
   }
 };
 
@@ -259,42 +301,47 @@ const getSffProducts = async () => {
   };
 
   const productsWithNoDescription = [];
-  let currentPage = 1;
-  let totalPages;
 
   try {
-    do {
-      const response = await fetch(`${url}&page=${currentPage}`, options);
+    // Fetch all categories once
+    const categoryMap = await fetchAllSffCategories();
+
+    // Fetch the first page to determine total pages
+    const firstResponse = await fetch(url, options);
+    const firstData = await firstResponse.json();
+    const totalPages = firstData.meta.pagination.total_pages;
+
+    for (let i = 1; i <= totalPages; i++) {
+      const pageUrl = `${url}&page=${i}`;
+      const response = await fetch(pageUrl, options);
       const data = await response.json();
 
-      for (const product of data.data) {
+      data.data.forEach((product) => {
         if (
           !product.description ||
           product.description.trim().length === 0 ||
           !/<\/h[1-6]>/i.test(product.description)
         ) {
-          const categoryNames = await Promise.all(
-            product.categories.map((categoryId) =>
-              getSffCategoryName(categoryId)
-            )
+          const categoryNames = (product.categories || []).map(
+            (categoryId) => categoryMap.get(categoryId) || "Unknown Category"
           );
 
           productsWithNoDescription.push({
             productId: product.id,
             name: product.name,
             description: product.description,
-            categories: categoryNames.filter(Boolean),
+            categories: categoryNames,
           });
         }
-      }
+      });
 
-      totalPages = data.meta.pagination.total_pages;
-      currentPage++;
-    } while (currentPage <= totalPages);
+      // Add delay between requests to avoid rate limits
+      await sleep(200);
+    }
 
     return productsWithNoDescription;
   } catch (error) {
-    console.error("Error fetching products:", error);
+    console.error("Error fetching SFF products:", error);
     return [];
   }
 };
