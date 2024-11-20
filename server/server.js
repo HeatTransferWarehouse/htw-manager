@@ -76,7 +76,8 @@ const clothingQueueRouter = require("./routes/clothingQueue");
 const adminRouter = require("./routes/admin");
 const promoTracker = require("./routes/promo-tracking");
 const htwRouter = require("./routes/htwRequests");
-const bcProducts = require("./routes/bcProducts");
+const htwRoutes = require("./routes/product-issues/htw");
+const sffProductRoutes = require("./routes/product-issues/sff");
 
 app.use("/api/user", userRouter);
 app.use("/api/bp-api", captureRouter);
@@ -84,7 +85,8 @@ app.use("/supacolor-api", supacolorRouter);
 app.use("/api/lookup", lookupRouter);
 app.use("/api/promotions", promoTracker);
 app.use("/api/htw", htwRouter);
-app.use("/api/products", bcProducts);
+app.use("/api/products/htw", htwRoutes);
+app.use("/api/products/sff", sffProductRoutes);
 
 // Queue Routers
 app.use("/api/sff-queue", sffQueueRouter);

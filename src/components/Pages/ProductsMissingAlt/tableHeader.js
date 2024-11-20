@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { Button } from "../../ui/button";
 import { twMerge } from "tailwind-merge";
 import { Sheet, SheetContent, SheetHeader, SheetTrigger } from "../../ui/sheet";
-import { Input, Label, RadioButton, RadioGroup } from "../../Form/form";
+import { Input } from "../../Form/form";
 import { FaFilter } from "react-icons/fa6";
 import { IoClose } from "react-icons/io5";
 import Search from "./searchProductsInput";
@@ -36,8 +36,6 @@ export default function TableHeaderContainer({ props }) {
     handleCategoryFilterChange,
     isMobile,
     activeSyncStatus,
-    setDescriptionFilter,
-    descriptionFilter,
   } = props;
   const [sync, setSync] = useState("No sync data available");
   const [sheetOpen, setSheetOpen] = useState(false);
@@ -76,10 +74,11 @@ export default function TableHeaderContainer({ props }) {
         />
         <div className="w-full max-md:col-span-1 flex flex-col gap-2 items-start">
           <Button
+            className={"w-[130px]"}
             variant={"secondary"}
             disabled={activeSyncStatus.data}
             onClick={syncCatalog}>
-            Sync Catalog
+            {activeSyncStatus.data ? "Syncing..." : "Sync Catalog"}
           </Button>
           {!activeSyncStatus.data ? (
             <span className="text-xs flex mt-2 text-gray-500">
@@ -176,39 +175,10 @@ export default function TableHeaderContainer({ props }) {
             animate={true}>
             <SheetContent>
               <SheetHeader title="Filters" setOpen={setSheetOpen}>
-                <div className="flex flex-col mb-8 gap-3">
-                  <span className="text-base font-semibold text-black">
-                    Status
-                  </span>
-                  <RadioGroup>
-                    <RadioButton
-                      value="All"
-                      defaultChecked
-                      onChange={() => setDescriptionFilter("all")}
-                      checked={descriptionFilter === "all"}
-                    />
-                  </RadioGroup>
-                  <RadioGroup>
-                    <RadioButton
-                      value="No Description"
-                      checked={descriptionFilter === "withoutDescription"}
-                      onChange={() =>
-                        setDescriptionFilter("withoutDescription")
-                      }
-                    />
-                  </RadioGroup>
-                  <RadioGroup>
-                    <RadioButton
-                      value="No Heading Tags"
-                      onChange={() => setDescriptionFilter("withDescription")}
-                      checked={descriptionFilter === "withDescription"}
-                    />
-                  </RadioGroup>
-                </div>
                 {selectedCategoryFilters.length > 0 && (
                   <>
                     <span
-                      className="hover:underline hover:text-secondary"
+                      className="hover:underline hover:cursor-pointer hover:text-secondary"
                       onClick={handleAllClearFilters}>
                       Clear all
                     </span>
@@ -248,8 +218,11 @@ export default function TableHeaderContainer({ props }) {
                 />
               </SheetHeader>
               {filteredCategories.map((category) => (
-                <label key={category.name} className="block mb-2">
+                <label
+                  key={category.name}
+                  className="block hover:cursor-pointer mb-2">
                   <input
+                    className="hover:cursor-pointer"
                     type="checkbox"
                     checked={selectedCategoryFilters.includes(category.name)}
                     onChange={() => handleCategoryFilterChange(category.name)}

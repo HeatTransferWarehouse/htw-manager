@@ -28,6 +28,8 @@ import FaqCodeGenerator from "../Pages/FaqCodeGenerator/page";
 import Account from "../Pages/Account/account";
 import { useDispatch, useSelector } from "react-redux";
 import ProductsWithNoDesc from "../Pages/ProductsWithNoDescription";
+import ProductsMissingAlts from "../Pages/ProductsMissingAlt";
+import ProductTools from "../Pages/ProductTools";
 
 // App.js
 export const routeConfig = [
@@ -39,6 +41,13 @@ export const routeConfig = [
     element: <SFFQueue />,
     protected: true,
     page_title: "SFF Queue",
+  },
+  {
+    path: "/products/missing-alts",
+    name: "Products Missing Alt Tags",
+    element: <ProductsMissingAlts />,
+    protected: true,
+    page_title: "Products Missing Alt Tags",
   },
   {
     path: "/resources",
@@ -74,6 +83,13 @@ export const routeConfig = [
     element: <FaqCodeGenerator />,
     protected: true,
     page_title: "FAQ Code Generator",
+  },
+  {
+    path: "/product-tools",
+    name: "Product Tools",
+    element: <ProductTools />,
+    protected: true,
+    page_title: "Product Tools",
   },
   {
     path: "/queue/clothing",
@@ -118,7 +134,7 @@ export const routeConfig = [
     page_title: "Admin",
   },
   {
-    path: "/products-with-no-description",
+    path: "/products/no-description",
     name: "Products With No Descriptions",
     element: <ProductsWithNoDesc />,
     protected: true,

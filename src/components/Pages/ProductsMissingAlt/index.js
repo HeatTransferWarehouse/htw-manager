@@ -1,17 +1,17 @@
-import React, { useEffect, useState, useMemo } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import LoadingOverlay from "../../LoadingOverlay";
 import {
   Table,
-  TableBody,
-  TableCell,
   TableContainer,
-  TableHeadCell,
   TableHeader,
+  TableHeadCell,
+  TableBody,
   TableRow,
+  TableCell,
 } from "../../Table/Table";
-import TableHeaderContainer from "./tableHeader";
 import { twMerge } from "tailwind-merge";
+import TableHeaderContainer from "./tableHeader";
+import Image from "./image";
 import {
   Pagination,
   PaginationControls,
@@ -19,62 +19,85 @@ import {
   PaginationSheet,
   PaginationTrigger,
 } from "../../ui/pagination";
+import {
+  DropDownContainer,
+  DropDownContent,
+  DropDownItem,
+  DropDownTrigger,
+} from "../../ui/dropdown";
+import { BiDotsHorizontalRounded } from "react-icons/bi";
+import DeleteModal from "../../modals/deleteModal";
 
-export default function ProductsWithNoDesc() {
+export default function ProductsMissingAlts() {
   const dispatch = useDispatch();
 
   const [view, setView] = useState("htw");
 
   useEffect(() => {
-    dispatch({ type: "FETCH_HTW_DESCRIPTION_PRODUCTS" });
+    dispatch({ type: "FETCH_HTW_IMAGE_PRODUCTS" });
     dispatch({
-      type: "FETCH_HTW_DESCRIPTION_SYNC_DATA",
+      type: "FETCH_HTW_IMAGE_SYNC_DATA",
       payload: {
         query: true,
       },
     });
-    dispatch({ type: "FETCH_HTW_DESCRIPTIONS_SYNC_STATUS" });
-    dispatch({ type: "FETCH_SFF_DESCRIPTION_PRODUCTS" });
+    dispatch({ type: "FETCH_HTW_IMAGES_SYNC_STATUS" });
+    dispatch({ type: "FETCH_SFF_IMAGE_PRODUCTS" });
     dispatch({
-      type: "FETCH_SFF_DESCRIPTION_SYNC_DATA",
+      type: "FETCH_SFF_IMAGE_SYNC_DATA",
       payload: {
         query: true,
       },
     });
-    dispatch({ type: "FETCH_SFF_DESCRIPTIONS_SYNC_STATUS" });
+    dispatch({ type: "FETCH_SFF_IMAGES_SYNC_STATUS" });
   }, [dispatch, view]);
 
-  // Redux state
   const storage = useSelector((store) => store.productsReducer);
 
   const { htw, sff } = storage;
 
-  const sffCount = sff.descriptionProducts.count;
-  const htwCount = htw.descriptionProducts.count;
+  const htwCount = htw.imageProducts.count;
+  const sffCount = sff.imageProducts.count;
 
-  const { descriptionProducts, descriptionSyncData, descriptionsSyncStatus } =
-    view === "htw" ? htw : sff;
+  const { imageProducts, imageSyncData, imagesSyncStatus } = storage[view];
 
-  // // Component states
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(25);
   const [selectedCategoryFilters, setSelectedCategoryFilters] = useState([]);
   const [productSearchQuery, setProductSearchQuery] = useState("");
   const [searchQuery, setSearchQuery] = useState("");
   const [isMobile, setIsMobile] = useState(false);
-  const [descriptionFilter, setDescriptionFilter] = useState("all");
+  const [activeItemId, setActiveItemId] = useState(null);
+  const [deleteModalActive, setDeleteModalActive] = useState(false);
 
   const setViewPath = (view) => {
     setView(view);
   };
 
-  // // Unique categories for filtering
+  const filteredProducts = useMemo(() => {
+    if (!imageProducts.data) return [];
+
+    return imageProducts.data.filter((product) => {
+      const matchesSearchQuery = product.product_name
+        ?.toLowerCase()
+        .includes(productSearchQuery.toLowerCase());
+
+      const matchesCategoryFilters =
+        selectedCategoryFilters.length === 0 ||
+        selectedCategoryFilters.some((filter) =>
+          product.categories?.includes(filter)
+        );
+
+      return matchesSearchQuery && matchesCategoryFilters;
+    });
+  }, [imageProducts, productSearchQuery, selectedCategoryFilters]);
+
   const uniqueCategories = useMemo(() => {
-    if (!descriptionProducts.data) return [];
+    if (!imageProducts.data) return [];
 
     const counts = {};
 
-    descriptionProducts.data.forEach((product) => {
+    imageProducts.data.forEach((product) => {
       const categories = product.categories || [];
       categories.forEach((category) => {
         counts[category] = (counts[category] || 0) + 1;
@@ -82,7 +105,20 @@ export default function ProductsWithNoDesc() {
     });
 
     return Object.entries(counts).map(([name, count]) => ({ name, count }));
-  }, [descriptionProducts]);
+  }, [imageProducts]);
+
+  const filteredCategories = useMemo(() => {
+    return uniqueCategories.filter(({ name }) =>
+      name.toLowerCase().includes(searchQuery.toLowerCase())
+    );
+  }, [uniqueCategories, searchQuery]);
+
+  // // Pagination for filtered products
+  const paginatedProducts = useMemo(() => {
+    const start = page * rowsPerPage;
+    const end = start + rowsPerPage;
+    return filteredProducts.slice(start, end);
+  }, [filteredProducts, page, rowsPerPage]);
 
   useEffect(() => {
     const handleResize = () => {
@@ -101,62 +137,13 @@ export default function ProductsWithNoDesc() {
     };
   }, []);
 
-  // // Filter products based on search and category filters
-  const filteredProducts = useMemo(() => {
-    if (!descriptionProducts.data) return [];
-
-    return descriptionProducts.data.filter((product) => {
-      const matchesSearchQuery = product.name
-        ?.toLowerCase()
-        .includes(productSearchQuery.toLowerCase());
-
-      const matchesCategoryFilters =
-        selectedCategoryFilters.length === 0 ||
-        selectedCategoryFilters.some((filter) =>
-          product.categories?.includes(filter)
-        );
-
-      const matchesDescriptionFilter =
-        descriptionFilter === "all" ||
-        (descriptionFilter === "withDescription" &&
-          product.description &&
-          product.description.trim().length > 0) ||
-        (descriptionFilter === "withoutDescription" &&
-          (!product.description || product.description.trim().length === 0));
-
-      return (
-        matchesSearchQuery && matchesCategoryFilters && matchesDescriptionFilter
-      );
-    });
-  }, [
-    descriptionProducts,
-    productSearchQuery,
-    selectedCategoryFilters,
-    descriptionFilter,
-  ]);
-
-  // // Filter categories based on search input
-  const filteredCategories = useMemo(() => {
-    return uniqueCategories.filter(({ name }) =>
-      name.toLowerCase().includes(searchQuery.toLowerCase())
-    );
-  }, [uniqueCategories, searchQuery]);
-
-  // // Pagination for filtered products
-  const paginatedProducts = useMemo(() => {
-    const start = page * rowsPerPage;
-    const end = start + rowsPerPage;
-    return filteredProducts.slice(start, end);
-  }, [filteredProducts, page, rowsPerPage]);
-
-  // // Sync catalog function
   const syncCatalog = () => {
     if (view === "sff") {
-      dispatch({ type: "SYNC_SFF_DESCRIPTION_PRODUCTS" });
-      dispatch({ type: "FETCH_SFF_DESCRIPTIONS_SYNC_STATUS" });
+      dispatch({ type: "SYNC_SFF_IMAGE_PRODUCTS" });
+      dispatch({ type: "FETCH_SFF_IMAGES_SYNC_STATUS" });
     } else {
-      dispatch({ type: "SYNC_HTW_DESCRIPTION_PRODUCTS" });
-      dispatch({ type: "FETCH_HTW_DESCRIPTIONS_SYNC_STATUS" });
+      dispatch({ type: "SYNC_HTW_IMAGE_PRODUCTS" });
+      dispatch({ type: "FETCH_HTW_IMAGES_SYNC_STATUS" });
     }
   };
 
@@ -168,10 +155,16 @@ export default function ProductsWithNoDesc() {
     );
   };
 
-  // // Props for TableHeaderContainer
+  const handleDelete = (e) => {
+    e.preventDefault();
+    dispatch({ type: "DELETE_HTW_IMAGE_PRODUCT", payload: activeItemId });
+    setDeleteModalActive(false);
+    setActiveItemId(null);
+  };
+
   const headerProps = {
     syncCatalog,
-    lastSync: descriptionSyncData,
+    lastSync: imageSyncData,
     filteredProducts,
     rowsPerPage,
     setRowsPerPage,
@@ -184,17 +177,15 @@ export default function ProductsWithNoDesc() {
     filteredCategories,
     searchQuery,
     setSearchQuery,
-    setProductSearchQuery,
     productSearchQuery,
+    setProductSearchQuery,
     isMobile,
-    activeSyncStatus: descriptionsSyncStatus,
-    setDescriptionFilter,
-    descriptionFilter,
+    activeSyncStatus: imagesSyncStatus,
   };
 
   return (
     <>
-      <h1>Products Missing a Description or Heading Tag</h1>
+      <h1>Products Missing Alt Tags on Images</h1>
       <Table>
         <div className="flex py-4 items-center justify-center gap-4">
           <button
@@ -229,7 +220,9 @@ export default function ProductsWithNoDesc() {
               <div>
                 {paginatedProducts.map((product) => {
                   return (
-                    <div className="border-b p-2 grid grid-cols-productsListMobile gap-x-4 border-solid border-gray-200">
+                    <div
+                      key={product.id}
+                      className="border-b p-2 grid grid-cols-productsListMobile gap-x-4 border-solid border-gray-200">
                       <span className="py-1 col-span-1 col-start-1 row-start-1 font-semibold">
                         Name:
                       </span>
@@ -246,7 +239,7 @@ export default function ProductsWithNoDesc() {
                           }.mybigcommerce.com/manage/products/edit/${
                             product.product_id
                           }`}>
-                          {product.name}
+                          {product.product_name}
                         </a>
                       </span>
                       <span className="py-1 col-span-1 col-start-2 row-start-2">
@@ -262,18 +255,20 @@ export default function ProductsWithNoDesc() {
               </div>
             ) : (
               <TableContainer>
-                <TableHeader className={"pl-2 py-2"} tableFor={"productsList"}>
+                <TableHeader
+                  className={"pl-2 py-2"}
+                  tableFor={"productsListImages"}>
                   <TableHeadCell>Product Name</TableHeadCell>
                   <TableHeadCell>Categories</TableHeadCell>
-                  <TableHeadCell>Status</TableHeadCell>
+                  <TableHeadCell>Images</TableHeadCell>
                 </TableHeader>
                 <TableBody>
                   {paginatedProducts.map((product) => (
                     <TableRow
                       className={"last:border-b"}
-                      tableFor={"productsList"}
-                      key={product.id}>
-                      <TableCell className={"py-4"}>
+                      tableFor={"productsListImages"}
+                      key={product.product_id}>
+                      <TableCell>
                         <a
                           className="hover:text-secondary underline"
                           target="_blank"
@@ -283,22 +278,19 @@ export default function ProductsWithNoDesc() {
                           }.mybigcommerce.com/manage/products/edit/${
                             product.product_id
                           }`}>
-                          {product.name}
+                          {product.product_name}
                         </a>
                       </TableCell>
                       <TableCell>
                         {(product.categories || []).join(", ")}
                       </TableCell>
-                      <TableCell className={"pr-4"}>
-                        {product.description ? (
-                          <span className="bg-secondary/30 w-full p-2 rounded-md">
-                            No Heading Tags
-                          </span>
-                        ) : (
-                          <span className="bg-red-600/30 w-full p-2 rounded-md">
-                            No Description
-                          </span>
-                        )}
+                      <TableCell className={"pr-4 grid grid-cols-5 gap-1"}>
+                        {product.images.map((image, index) => (
+                          <Image
+                            key={`${image.id}-${index}`}
+                            url={image.image_url}
+                          />
+                        ))}
                       </TableCell>
                     </TableRow>
                   ))}
@@ -325,6 +317,13 @@ export default function ProductsWithNoDesc() {
           </>
         )}
       </Table>
+      <DeleteModal
+        props={{
+          open: deleteModalActive,
+          setOpen: setDeleteModalActive,
+          deleteFunction: handleDelete,
+        }}
+      />
     </>
   );
 }

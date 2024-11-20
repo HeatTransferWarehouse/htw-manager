@@ -230,7 +230,22 @@ function Resources() {
               <CustomLink
                 style="button"
                 type="router"
-                href="/products-with-no-description">
+                href="/products/no-description">
+                Open
+              </CustomLink>
+            </div>
+            <div className="shadow-default p-4 text-gray-700 justify-between rounded-md flex flex-col gap-2 bg-white">
+              <div>
+                <p className="font-semibold">List of products w/out alt tags</p>
+                <p>
+                  Find a list of all products that are missing an alt tag on
+                  images for Heat Transfer Warehouse & Shirts From Fargo.
+                </p>
+              </div>
+              <CustomLink
+                style="button"
+                type="router"
+                href="/products/missing-alts">
                 Open
               </CustomLink>
             </div>

@@ -22,7 +22,7 @@ function Nav() {
   const [supacolor, setSupacolor] = useState(false);
   const [sffQueue, setSffQueue] = useState(false);
   const [clothingQueue, setClothingQueue] = useState(false);
-  const [promotions, setPromotions] = useState(false);
+  const [productTools, setProductTools] = useState(false);
   const dispatch = useDispatch();
   const user = useSelector((store) => store.user.userReducer);
   const pagePath = location.pathname;
@@ -73,6 +73,10 @@ function Nav() {
         disableAll();
         setSffQueue(true);
         break;
+      case "/product-tools":
+        disableAll();
+        setProductTools(true);
+        break;
       case "/queue/clothing":
         disableAll();
         setClothingQueue(true);
@@ -90,6 +94,7 @@ function Nav() {
     setSupacolor(false);
     setSffQueue(false);
     setClothingQueue(false);
+    setProductTools(false);
   };
 
   useEffect(() => {
@@ -116,6 +121,8 @@ function Nav() {
     toggleMenu: toggleMenu,
     clothingQueue: clothingQueue,
     setClothingQueue: setClothingQueue,
+    productTools: productTools,
+    setProductTools: setProductTools,
   };
 
   const renderNav = () => {
@@ -215,6 +222,19 @@ function Nav() {
               } p-2 hover:border-secondary hover:text-secondary border-b-[3px] border-solid`}>
               Clothing Queue
             </NavLink>
+            {/* <NavLink
+              to="/product-tools"
+              onClick={() => {
+                disableAll();
+                setProductTools(true);
+              }}
+              className={`${
+                productTools
+                  ? "text-secondary border-secondary"
+                  : "text-dark border-white"
+              } p-2 hover:border-secondary hover:text-secondary border-b-[3px] border-solid`}>
+              Product Tools
+            </NavLink> */}
 
             {user.access_level === "5" && (
               <NavLink

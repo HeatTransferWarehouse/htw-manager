@@ -911,6 +911,10 @@ video {
   display: none;
 }
 
+.aspect-square {
+  aspect-ratio: 1 / 1;
+}
+
 .h-0 {
   height: 0px;
 }
@@ -1065,6 +1069,10 @@ video {
 
 .w-\[125px\] {
   width: 125px;
+}
+
+.w-\[130px\] {
+  width: 130px;
 }
 
 .w-\[300px\] {
@@ -1298,6 +1306,10 @@ video {
   grid-template-columns: repeat(3, minmax(0, 1fr));
 }
 
+.grid-cols-5 {
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+}
+
 .grid-cols-adminUserTable {
   grid-template-columns: 8fr 3fr 3fr 4rem 4rem;
 }
@@ -1308,6 +1320,10 @@ video {
 
 .grid-cols-productsList {
   grid-template-columns: 2fr 4fr 1fr;
+}
+
+.grid-cols-productsListImages {
+  grid-template-columns: 2fr 4fr 2fr;
 }
 
 .grid-cols-productsListMobile {
@@ -1378,8 +1394,16 @@ video {
   gap: 0.25rem;
 }
 
+.gap-12 {
+  gap: 3rem;
+}
+
 .gap-2 {
   gap: 0.5rem;
+}
+
+.gap-3 {
+  gap: 0.75rem;
 }
 
 .gap-4 {
@@ -1392,10 +1416,6 @@ video {
 
 .gap-8 {
   gap: 2rem;
-}
-
-.gap-3 {
-  gap: 0.75rem;
 }
 
 .gap-x-4 {
@@ -1669,6 +1689,10 @@ video {
 
 .fill-white {
   fill: #fff;
+}
+
+.object-cover {
+  object-fit: cover;
 }
 
 .\!p-0 {
@@ -2002,6 +2026,12 @@ video {
   transition-duration: 150ms;
 }
 
+.transition-opacity {
+  transition-property: opacity;
+  transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+  transition-duration: 150ms;
+}
+
 .transition-transform {
   transition-property: transform;
   transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
@@ -2044,6 +2074,10 @@ video {
 
 .last-of-type\:border-b:last-of-type {
   border-bottom-width: 1px;
+}
+
+.hover\:cursor-pointer:hover {
+  cursor: pointer;
 }
 
 .hover\:border-secondary:hover {
@@ -2224,6 +2258,16 @@ video {
 .disabled\:bg-gray-300:disabled {
   --tw-bg-opacity: 1;
   background-color: rgb(209 213 219 / var(--tw-bg-opacity));
+}
+
+.disabled\:bg-neutral:disabled {
+  --tw-bg-opacity: 1;
+  background-color: rgb(102 102 102 / var(--tw-bg-opacity));
+}
+
+.disabled\:text-gray-200:disabled {
+  --tw-text-opacity: 1;
+  color: rgb(229 231 235 / var(--tw-text-opacity));
 }
 
 .disabled\:text-gray-500:disabled {
