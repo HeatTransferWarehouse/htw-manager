@@ -222,20 +222,25 @@ function Nav() {
               } p-2 hover:border-secondary hover:text-secondary border-b-[3px] border-solid`}>
               Clothing Queue
             </NavLink>
-            {/* <NavLink
-              to="/product-tools"
-              onClick={() => {
-                disableAll();
-                setProductTools(true);
-              }}
-              className={`${
-                productTools
-                  ? "text-secondary border-secondary"
-                  : "text-dark border-white"
-              } p-2 hover:border-secondary hover:text-secondary border-b-[3px] border-solid`}>
-              Product Tools
-            </NavLink> */}
-
+            <DropDownContainer type="hover">
+              <DropDownTrigger>Product Tools</DropDownTrigger>
+              <DropDownContent>
+                <DropDownItem>
+                  <NavLink
+                    to={"/products/missing-alts"}
+                    className="p-2 hover:text-secondary whitespace-nowrap">
+                    Missing Alt Tags
+                  </NavLink>
+                </DropDownItem>
+                <DropDownItem>
+                  <NavLink
+                    to={"/products/no-description"}
+                    className="p-2 hover:text-secondary whitespace-nowrap">
+                    Missing Description Tags
+                  </NavLink>
+                </DropDownItem>
+              </DropDownContent>
+            </DropDownContainer>
             {user.access_level === "5" && (
               <NavLink
                 to="/admin"

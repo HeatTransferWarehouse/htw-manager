@@ -126,7 +126,7 @@ const DropDownTrigger = forwardRef(
         className={twMerge(
           className,
           isOpen ? "bg-secondary/10" : "",
-          "cursor-pointer p-2 rounded-md transition hover:bg-secondary/10 flex items-center justify-start gap-2"
+          "cursor-pointer p-2 rounded-md transition hover:bg-secondary/10 flex items-center justify-start gap-4"
         )}
         onClick={(e) => {
           onClick && onClick(e);
@@ -135,7 +135,7 @@ const DropDownTrigger = forwardRef(
         {...props}>
         {children}
         {type !== "popover" && (
-          <span className="ml-4 pointer-events-none flex items-center justify-center">
+          <span className="pointer-events-none flex items-center justify-center">
             {isOpen ? <FaChevronUp /> : <FaChevronDown />}
           </span>
         )}
@@ -173,7 +173,10 @@ const DropDownContent = ({ children, className }) => {
       }
 
       setIsPositioned({
-        width: buttonWidth,
+        width:
+          buttonWidth < contentRef.current?.scrollWidth
+            ? contentRef.current?.scrollWidth
+            : buttonWidth,
         left: isRight ? "unset" : left,
         right: isRight ? viewportWidth - positionX - buttonWidth : "unset",
         top: isBottom ? "unset" : top,
