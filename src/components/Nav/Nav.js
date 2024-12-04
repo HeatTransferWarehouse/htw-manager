@@ -229,14 +229,14 @@ function Nav() {
                   <NavLink
                     to={"/products/missing-alts"}
                     className="p-2 hover:text-secondary whitespace-nowrap">
-                    Missing Alt Tags
+                    Alt Tag Issues
                   </NavLink>
                 </DropDownItem>
                 <DropDownItem>
                   <NavLink
                     to={"/products/no-description"}
                     className="p-2 hover:text-secondary whitespace-nowrap">
-                    Missing Description Tags
+                    Description Issues
                   </NavLink>
                 </DropDownItem>
               </DropDownContent>

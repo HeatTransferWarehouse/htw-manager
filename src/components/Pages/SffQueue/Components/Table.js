@@ -115,9 +115,9 @@ export function TableComponent({ props }) {
           isMobile: props.isMobile,
         }}
       />
-      <TableContainer>
+      <TableContainer tableFor={"sff"}>
         {!props.isMobile && (
-          <TableHeader tableFor={"sff"}>
+          <TableHeader>
             <TableHeadCell />
             <TableHeadCell minWidth={"7rem"}>
               {renderSortButton("order_number", "Order Number")}

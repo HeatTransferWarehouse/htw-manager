@@ -72,7 +72,7 @@ const Sheet = ({
             })}
           </div>
         </div>,
-        document.body
+        document.querySelector("#react-root")
       )
     : null;
 };

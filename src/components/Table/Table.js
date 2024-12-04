@@ -1,5 +1,21 @@
-import React from "react";
+import React, { createContext, useContext } from "react";
 import { twMerge } from "tailwind-merge";
+
+const TableContext = createContext();
+
+// Utility function for getting the table grid class
+const getTableGridClass = (tableFor, isMobile = false) => {
+  const tableGridClasses = {
+    clothing: "grid-cols-clothing",
+    supacolor: "grid-cols-supacolor",
+    promos: "grid-cols-promos",
+    sff: "grid-cols-sff",
+    productsListImages: "grid-cols-productsListImages",
+    productsList: "grid-cols-productsList",
+    queue: isMobile ? "grid-cols-queueMobile" : "grid-cols-queue",
+  };
+  return tableGridClasses[tableFor] || "";
+};
 
 const Table = ({ className, children }) => {
   return (
@@ -13,57 +29,29 @@ const Table = ({ className, children }) => {
   );
 };
 
-const TableContainer = ({ className, children }) => {
-  return <div className={twMerge(className, "w-full")}>{children}</div>;
-};
-
-const TableHeader = ({ className, children, tableFor }) => {
+const TableContainer = ({ className, children, tableFor }) => {
   return (
-    <div
-      className={twMerge(
-        "grid",
-        tableFor === "clothing"
-          ? "grid-cols-clothing"
-          : tableFor === "supacolor"
-          ? "grid-cols-supacolor"
-          : tableFor === "promos"
-          ? "grid-cols-promos"
-          : tableFor === "sff"
-          ? "grid-cols-sff"
-          : tableFor === "productsListImages"
-          ? "grid-cols-productsListImages"
-          : tableFor === "productsList"
-          ? "grid-cols-productsList"
-          : "grid-cols-queue",
-        className
-      )}>
-      {children}
-    </div>
+    <TableContext.Provider value={{ tableFor }}>
+      <div className={twMerge("w-full", className)}>{children}</div>
+    </TableContext.Provider>
   );
 };
 
-const TableRow = ({ className, children, isMobile, tableFor }) => {
+// TableHeader
+const TableHeader = ({ className, children }) => {
+  const { tableFor } = useContext(TableContext);
+  const tableGridClass = getTableGridClass(tableFor);
   return (
-    <div
-      className={twMerge(
-        isMobile
-          ? "grid-cols-queueMobile"
-          : tableFor === "clothing"
-          ? "grid-cols-clothing"
-          : tableFor === "supacolor"
-          ? "grid-cols-supacolor"
-          : tableFor === "promos"
-          ? "grid-cols-promos"
-          : tableFor === "sff"
-          ? "grid-cols-sff"
-          : tableFor === "productsListImages"
-          ? "grid-cols-productsListImages"
-          : tableFor === "productsList"
-          ? "grid-cols-productsList"
-          : "grid-cols-queue",
-        "w-full grid relative",
-        className
-      )}>
+    <div className={twMerge("grid", tableGridClass, className)}>{children}</div>
+  );
+};
+
+// TableRow Component
+const TableRow = ({ className, children, isMobile }) => {
+  const { tableFor } = useContext(TableContext);
+  const tableGridClass = getTableGridClass(tableFor, isMobile);
+  return (
+    <div className={twMerge("w-full grid relative", tableGridClass, className)}>
       {children}
     </div>
   );

@@ -160,9 +160,9 @@ export function TableComponent({ props }) {
           setFiltersActive: props.setFiltersActive,
         }}
       />
-      <TableContainer>
+      <TableContainer tableFor={"clothing"}>
         {!props.isMobile && (
-          <TableHeader tableFor={"clothing"}>
+          <TableHeader>
             <TableHeadCell />
             <TableHeadCell minWidth={"7rem"}>
               {renderSortButton("order_id", "Order Number")}

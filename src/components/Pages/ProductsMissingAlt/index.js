@@ -196,7 +196,7 @@ export default function ProductsMissingAlts() {
 
   return (
     <>
-      <h1>Products Missing Alt Tags on Images</h1>
+      <h1>Product Image Alt Issues</h1>
       <Table>
         <div className="flex py-4 items-center justify-center gap-4">
           <button
@@ -265,10 +265,8 @@ export default function ProductsMissingAlts() {
                 })}
               </div>
             ) : (
-              <TableContainer>
-                <TableHeader
-                  className={"pl-2 py-2"}
-                  tableFor={"productsListImages"}>
+              <TableContainer tableFor={"productsListImages"}>
+                <TableHeader className={"pl-2 py-2"}>
                   <TableHeadCell>Product Name</TableHeadCell>
                   <TableHeadCell>Categories</TableHeadCell>
                   <TableHeadCell>Images</TableHeadCell>
@@ -278,7 +276,6 @@ export default function ProductsMissingAlts() {
                   {paginatedProducts.map((product) => (
                     <TableRow
                       className={"last:border-b"}
-                      tableFor={"productsListImages"}
                       key={product.product_id}>
                       <TableCell>
                         <a

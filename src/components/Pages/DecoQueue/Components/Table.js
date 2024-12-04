@@ -169,7 +169,7 @@ export function TableComponent({ props }) {
           setFiltersActive: props.setFiltersActive,
         }}
       />
-      <TableContainer>
+      <TableContainer tableFor={"queue"}>
         {!props.isMobile && (
           <TableHeader>
             <TableHeadCell />

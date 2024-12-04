@@ -34,6 +34,7 @@
     "basic-ftp": "^5.0.5",
     "bcryptjs": "^2.4.3",
     "bootstrap": "^5.3.3",
+    "class-variance-authority": "^0.7.1",
     "color-name-list": "^10.28.0",
     "cookie-session": "^2.1.0",
     "cors": "^2.8.5",

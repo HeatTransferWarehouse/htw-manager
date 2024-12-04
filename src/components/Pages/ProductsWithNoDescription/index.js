@@ -261,18 +261,15 @@ export default function ProductsWithNoDesc() {
                 })}
               </div>
             ) : (
-              <TableContainer>
-                <TableHeader className={"pl-2 py-2"} tableFor={"productsList"}>
+              <TableContainer tableFor={"productsList"}>
+                <TableHeader className={"pl-2 py-2"}>
                   <TableHeadCell>Product Name</TableHeadCell>
                   <TableHeadCell>Categories</TableHeadCell>
                   <TableHeadCell>Status</TableHeadCell>
                 </TableHeader>
                 <TableBody>
                   {paginatedProducts.map((product) => (
-                    <TableRow
-                      className={"last:border-b"}
-                      tableFor={"productsList"}
-                      key={product.id}>
+                    <TableRow className={"last:border-b"} key={product.id}>
                       <TableCell className={"py-4"}>
                         <a
                           className="hover:text-secondary underline"

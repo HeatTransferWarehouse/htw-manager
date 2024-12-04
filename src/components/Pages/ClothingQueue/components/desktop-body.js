@@ -4,7 +4,7 @@ import React from "react";
 
 export const DesktopBody = ({ props }) => {
   return (
-    <TableRow tableFor={"clothing"}>
+    <TableRow>
       <TableCell>
         <span className="checkbox-container">
           <input
