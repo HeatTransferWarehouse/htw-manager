@@ -32,7 +32,7 @@ module.exports = {
         promos: "5rem 4fr 1.5fr 1.5fr 1.5fr 7rem",
         sff: "3rem 3fr 3fr 8fr 4fr 2fr 2fr 3fr 3rem",
         productsList: "2fr 4fr 1fr",
-        productsListImages: "2fr 4fr 2fr",
+        productsListImages: "2fr 4fr 2fr 1fr",
         productsListMobile: "3rem 1fr 3rem",
       },
       boxShadow: {

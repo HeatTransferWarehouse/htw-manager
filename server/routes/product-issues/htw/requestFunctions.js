@@ -132,28 +132,71 @@ const getProductsWithImages = async () => {
       products.forEach((product) => {
         const productImages = product.node.images.edges;
         const productCategories = product.node.categories.edges;
-        const imagesMissingAltTags = [];
+        const imagesWithIssues = [];
+        const altTextOccurrences = {};
         const categories = [];
+        let productIssues = [];
 
+        // Track occurrences of altText
         productImages.forEach((image) => {
-          if (!image.node.altText || image.node.altText === "") {
-            imagesMissingAltTags.push({
+          const altText = image.node.altText;
+
+          if (!altText || altText === "") {
+            // Track missing alt tags
+            imagesWithIssues.push({
               imageUrl: image.node.url,
-              altText: image.node.altText,
+              altText,
+            });
+          } else {
+            // Track occurrences for duplicate detection
+            if (!altTextOccurrences[altText]) {
+              altTextOccurrences[altText] = [];
+            }
+            altTextOccurrences[altText].push(image.node.url);
+          }
+        });
+
+        // Check for duplicate alt texts and add them to imagesWithIssues
+        Object.keys(altTextOccurrences).forEach((altText) => {
+          if (altTextOccurrences[altText].length > 1) {
+            altTextOccurrences[altText].forEach((imageUrl) => {
+              imagesWithIssues.push({
+                imageUrl,
+                altText,
+              });
             });
           }
         });
 
+        // Determine product-level issues
+        if (
+          imagesWithIssues.some(
+            (image) => !image.altText || image.altText === ""
+          )
+        ) {
+          productIssues.push("Missing Alt");
+        }
+        if (
+          Object.values(altTextOccurrences).some(
+            (occurrences) => occurrences.length > 1
+          )
+        ) {
+          productIssues.push("Duplicate Alt");
+        }
+
+        // Collect categories
         productCategories.forEach((category) => {
           categories.push(category.node.name);
         });
 
-        if (imagesMissingAltTags.length > 0) {
+        // Add product to the results if any issues are found
+        if (productIssues.length > 0) {
           productsWithoutImageAltTags.push({
             productId: product.node.entityId,
             name: product.node.name,
-            images: imagesMissingAltTags,
+            images: imagesWithIssues, // Only image URL and altText
             categories,
+            issue: productIssues[0], // Combine issues as a comma-separated string
           });
         }
       });

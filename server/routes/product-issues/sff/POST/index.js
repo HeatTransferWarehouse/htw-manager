@@ -125,10 +125,13 @@ router.post("/images", async (req, res) => {
     const mainTableInsertValues = [];
     const imagesTableInsertValues = [];
     const mainTableInsertQuery = `
-        INSERT INTO products_without_alt_sff (product_id, name, categories)
+        INSERT INTO products_without_alt_sff (product_id, name, categories, issue)
         VALUES ${products
           .map(
-            (_, idx) => `($${idx * 3 + 1}, $${idx * 3 + 2}, $${idx * 3 + 3})`
+            (_, idx) =>
+              `($${idx * 4 + 1}, $${idx * 4 + 2}, $${idx * 4 + 3}, $${
+                idx * 4 + 4
+              })`
           )
           .join(", ")}
         RETURNING id
@@ -138,7 +141,8 @@ router.post("/images", async (req, res) => {
       mainTableInsertValues.push(
         product.productId,
         product.name,
-        product.categories
+        product.categories,
+        product.issue
       );
     }
 

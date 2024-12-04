@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { Button } from "../../ui/button";
 import { twMerge } from "tailwind-merge";
 import { Sheet, SheetContent, SheetHeader, SheetTrigger } from "../../ui/sheet";
-import { Input } from "../../Form/form";
+import { Input, RadioButton, RadioGroup } from "../../Form/form";
 import { FaFilter } from "react-icons/fa6";
 import { IoClose } from "react-icons/io5";
 import Search from "./searchProductsInput";
@@ -36,6 +36,9 @@ export default function TableHeaderContainer({ props }) {
     handleCategoryFilterChange,
     isMobile,
     activeSyncStatus,
+    issueFilter,
+    setIssueFilter,
+    allProducts,
   } = props;
   const [sync, setSync] = useState("No sync data available");
   const [sheetOpen, setSheetOpen] = useState(false);
@@ -175,6 +178,41 @@ export default function TableHeaderContainer({ props }) {
             animate={true}>
             <SheetContent>
               <SheetHeader title="Filters" setOpen={setSheetOpen}>
+                <div className="flex flex-col mb-8 gap-3">
+                  <span className="text-base font-semibold text-black">
+                    Issue
+                  </span>
+                  <RadioGroup>
+                    <RadioButton
+                      value={`All (${allProducts?.length})`}
+                      defaultChecked
+                      onChange={() => setIssueFilter("all")}
+                      checked={issueFilter === "all"}
+                    />
+                  </RadioGroup>
+                  <RadioGroup>
+                    <RadioButton
+                      value={`Missing Alt (${
+                        allProducts?.filter(
+                          (product) => product.issue === "Missing Alt"
+                        ).length
+                      })`}
+                      checked={issueFilter === "missing"}
+                      onChange={() => setIssueFilter("missing")}
+                    />
+                  </RadioGroup>
+                  <RadioGroup>
+                    <RadioButton
+                      value={`Duplicate (${
+                        allProducts?.filter(
+                          (product) => product.issue === "Duplicate Alt"
+                        ).length
+                      })`}
+                      onChange={() => setIssueFilter("duplicate")}
+                      checked={issueFilter === "duplicate"}
+                    />
+                  </RadioGroup>
+                </div>
                 {selectedCategoryFilters.length > 0 && (
                   <>
                     <span
@@ -208,7 +246,9 @@ export default function TableHeaderContainer({ props }) {
                     </div>
                   </>
                 )}
-                <h2 className="font-semibold text-base">Categories</h2>
+                <h2 className="font-semibold text-base">
+                  Categories ({filteredCategories.length})
+                </h2>
                 <Input
                   type="text"
                   placeholder="Search categories"

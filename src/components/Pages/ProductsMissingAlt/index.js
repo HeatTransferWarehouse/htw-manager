@@ -69,6 +69,7 @@ export default function ProductsMissingAlts() {
   const [isMobile, setIsMobile] = useState(false);
   const [activeItemId, setActiveItemId] = useState(null);
   const [deleteModalActive, setDeleteModalActive] = useState(false);
+  const [issueFilter, setIssueFilter] = useState("all");
 
   const setViewPath = (view) => {
     setView(view);
@@ -88,9 +89,16 @@ export default function ProductsMissingAlts() {
           product.categories?.includes(filter)
         );
 
-      return matchesSearchQuery && matchesCategoryFilters;
+      const matchesIssueFilter =
+        issueFilter === "all" ||
+        (issueFilter === "missing" &&
+          product.issue.toLowerCase().includes("missing")) ||
+        (issueFilter === "duplicate" &&
+          product.issue.toLowerCase().includes("duplicate"));
+
+      return matchesSearchQuery && matchesCategoryFilters && matchesIssueFilter;
     });
-  }, [imageProducts, productSearchQuery, selectedCategoryFilters]);
+  }, [imageProducts, productSearchQuery, selectedCategoryFilters, issueFilter]);
 
   const uniqueCategories = useMemo(() => {
     if (!imageProducts.data) return [];
@@ -181,6 +189,9 @@ export default function ProductsMissingAlts() {
     setProductSearchQuery,
     isMobile,
     activeSyncStatus: imagesSyncStatus,
+    setIssueFilter,
+    issueFilter,
+    allProducts: imageProducts.data,
   };
 
   return (
@@ -261,6 +272,7 @@ export default function ProductsMissingAlts() {
                   <TableHeadCell>Product Name</TableHeadCell>
                   <TableHeadCell>Categories</TableHeadCell>
                   <TableHeadCell>Images</TableHeadCell>
+                  <TableHeadCell>Issue</TableHeadCell>
                 </TableHeader>
                 <TableBody>
                   {paginatedProducts.map((product) => (
@@ -284,13 +296,24 @@ export default function ProductsMissingAlts() {
                       <TableCell>
                         {(product.categories || []).join(", ")}
                       </TableCell>
-                      <TableCell className={"pr-4 grid grid-cols-5 gap-1"}>
+                      <TableCell className={"pr-4 pl-2 grid grid-cols-5 gap-1"}>
                         {product.images.map((image, index) => (
                           <Image
                             key={`${image.id}-${index}`}
                             url={image.image_url}
                           />
                         ))}
+                      </TableCell>
+                      <TableCell className={"!p-2"}>
+                        <span
+                          className={twMerge(
+                            product.issue === "Missing Alt"
+                              ? "bg-red-200"
+                              : "bg-blue-200",
+                            "text-black rounded-md px-4 py-2 font-medium"
+                          )}>
+                          {product.issue}
+                        </span>
                       </TableCell>
                     </TableRow>
                   ))}

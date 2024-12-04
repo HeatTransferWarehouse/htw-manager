@@ -101,6 +101,7 @@ router.get("/images", async (req, res) => {
             pwa.product_id AS product_id,
             pwa.name AS product_name,
             pwa.categories AS categories,
+            pwa.issue AS issue,
             COALESCE(
               json_agg(
                 json_build_object(
