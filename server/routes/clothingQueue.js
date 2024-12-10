@@ -96,6 +96,7 @@ const getOrderProducts = async (orderId) => {
           foundProduct.data.id,
           color
         );
+
         if (foundProduct) {
           const productObject = {
             orderId: orderId,
@@ -123,8 +124,6 @@ const getOrderProducts = async (orderId) => {
             )
           ) {
             productObject.textColor = "white";
-          } else {
-            productObject.textColor = "black";
           }
 
           searchedProducts.push(productObject);
