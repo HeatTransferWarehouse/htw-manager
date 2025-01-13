@@ -1,6 +1,5 @@
 import React from "react";
 import { Link, useLocation } from "react-router-dom";
-import { twMerge } from "tailwind-merge";
 import { TableNavLink } from "../../../ui/link";
 
 export function Nav({ count, props }) {

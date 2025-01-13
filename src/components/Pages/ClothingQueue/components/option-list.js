@@ -3,6 +3,8 @@ import { useQueueActions } from "../functions/actions";
 
 export function OptionsList({ props }) {
   const { updateQueueOrderedStatus, holdQueueItem } = useQueueActions();
+  console.log(props.view);
+
   return (
     <ul className=" list-none m-0 p-0">
       {props.view === "new" ? (
@@ -15,7 +17,7 @@ export function OptionsList({ props }) {
           <li
             className="cursor-pointer whitespace-nowrap hover:bg-green-600/10 py-2 px-3 hover:text-green-600"
             onClick={() => holdQueueItem(props.id, true)}>
-            Hold
+            Mark Hold
           </li>
           <li
             className="cursor-pointer whitespace-nowrap hover:bg-red-600/10 py-2 px-3 hover:text-red-600"
@@ -28,7 +30,12 @@ export function OptionsList({ props }) {
           <li
             className="cursor-pointer whitespace-nowrap hover:bg-secondary/10 py-2 px-3 hover:text-secondary"
             onClick={() => updateQueueOrderedStatus(props.id, false)}>
-            Un-Mark Hold
+            Mark New
+          </li>
+          <li
+            className="cursor-pointer whitespace-nowrap hover:bg-green-600/10 py-2 px-3 hover:text-green-600"
+            onClick={() => updateQueueOrderedStatus(props.id, true)}>
+            Mark Ordered
           </li>
           <li
             className="cursor-pointer whitespace-nowrap hover:bg-red-600/10 py-2 px-3 hover:text-red-600"
@@ -41,7 +48,12 @@ export function OptionsList({ props }) {
           <li
             className="cursor-pointer whitespace-nowrap hover:bg-secondary/10 py-2 px-3 hover:text-secondary"
             onClick={() => updateQueueOrderedStatus(props.id, false)}>
-            Un-Mark Ordered
+            Mark New
+          </li>
+          <li
+            className="cursor-pointer whitespace-nowrap hover:bg-green-600/10 py-2 px-3 hover:text-green-600"
+            onClick={() => holdQueueItem(props.id, true)}>
+            Mark Hold
           </li>
           <li
             className="cursor-pointer whitespace-nowrap hover:bg-red-600/10 py-2 px-3 hover:text-red-600"

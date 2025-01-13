@@ -486,21 +486,21 @@ router.put("/items/update/ordered", async (req, res) => {
   }
 });
 
-router.put("/items/hold/:id", async (req, res) => {
-  const { id } = req.params;
+router.put("/items/hold", async (req, res) => {
+  const { idArray } = req.body;
 
   const client = await pool.connect();
 
   try {
     await client.query("BEGIN");
+    const updatePromises = idArray.map((id) =>
+      client.query(
+        `UPDATE clothing_queue SET on_hold = TRUE, is_ordered = FALSE WHERE id = $1`,
+        [Number(id)]
+      )
+    );
 
-    const updateQuery = `
-            UPDATE clothing_queue
-            SET on_hold = TRUE, is_ordered = FALSE
-            WHERE id = $1
-        `;
-
-    await client.query(updateQuery, [id]);
+    await Promise.all(updatePromises);
 
     await client.query("COMMIT");
     res.send({

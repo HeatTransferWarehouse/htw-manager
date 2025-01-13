@@ -13,6 +13,7 @@ import {
   PaginationSheet,
   PaginationTrigger,
 } from "../../../ui/pagination";
+import { Pause } from "@material-ui/icons";
 
 export function TableHeaderContainer({ props }) {
   const [allSelected, setAllSelected] = useState(false);
@@ -21,6 +22,7 @@ export function TableHeaderContainer({ props }) {
     completeQueueItem,
     sendBackCompletedQueueItem,
     sendBackProgressQueueItem,
+    holdQueueItem,
   } = useQueueActions();
 
   const handleSelectAll = () => {
@@ -136,6 +138,16 @@ export function TableHeaderContainer({ props }) {
                   <MdOutlineChecklistRtl className="fill-secondary w-6 h-6" />
                 </button>
                 <button
+                  className="w-fit min-w-fit flex items-center gap-2 whitespace-nowrap border border-solid text-secondary hover:bg-secondary/10 border-secondary rounded-md p-2"
+                  onClick={(e) => {
+                    holdQueueItem(e, props.checkedIds);
+                    setAllSelected(false);
+                    props.setCheckedIds([]);
+                  }}>
+                  Hold
+                  <Pause className="w-6 h-6 fill-secondary" />
+                </button>
+                <button
                   className="w-fit min-w-fit flex items-center gap-2 whitespace-nowrap border border-solid text-red-600 hover:bg-red-600/10 border-red-600 rounded-md p-2"
                   onClick={(e) => {
                     props.setDeleteModalActive(props.checkedIds);
@@ -168,6 +180,58 @@ export function TableHeaderContainer({ props }) {
                   <BiReset className="w-6 h-6 fill-secondary" />
                 </button>
                 <button
+                  className="w-fit min-w-fit flex items-center gap-2 whitespace-nowrap border border-solid text-secondary hover:bg-secondary/10 border-secondary rounded-md p-2"
+                  onClick={(e) => {
+                    holdQueueItem(e, props.checkedIds);
+                    setAllSelected(false);
+                    props.setCheckedIds([]);
+                  }}>
+                  Hold
+                  <Pause className="w-6 h-6 fill-secondary" />
+                </button>
+                <button
+                  className="w-fit min-w-fit flex items-center gap-2 whitespace-nowrap border border-solid text-red-600 hover:bg-red-600/10 border-red-600 rounded-md p-2"
+                  onClick={(e) => {
+                    props.setDeleteModalActive(props.checkedIds);
+                    setAllSelected(false);
+                  }}>
+                  Delete
+                  <CgTrash className="w-5 h-5 fill-red-600" />
+                </button>
+              </div>
+            ) : props.view === "hold" ? (
+              <div className="flex items-center ml-2 max-md:pb-2 justify-center md:justify-start gap-2 grow snap-x overflow-x-auto">
+                <button
+                  className="w-fit min-w-fit flex items-center gap-2 whitespace-nowrap border border-solid text-secondary hover:bg-secondary/10 border-secondary rounded-md p-2"
+                  onClick={(e) => {
+                    sendBackCompletedQueueItem(e, props.checkedIds);
+                    setAllSelected(false);
+                    props.setCheckedIds([]);
+                  }}>
+                  Send to Progress
+                  <BiReset className="w-6 h-6 fill-secondary" />
+                </button>
+                <button
+                  className="w-fit min-w-fit flex items-center gap-2 whitespace-nowrap border border-solid text-secondary hover:bg-secondary/10 border-secondary rounded-md p-2"
+                  onClick={(e) => {
+                    sendBackProgressQueueItem(e, props.checkedIds);
+                    setAllSelected(false);
+                    props.setCheckedIds([]);
+                  }}>
+                  Send to New
+                  <BiReset className="w-6 h-6 fill-secondary" />
+                </button>
+                <button
+                  className="w-fit min-w-fit flex items-center gap-2 whitespace-nowrap border border-solid text-secondary hover:bg-secondary/10 border-secondary rounded-md p-2"
+                  onClick={(e) => {
+                    completeQueueItem(e, props.checkedIds);
+                    setAllSelected(false);
+                    props.setCheckedIds([]);
+                  }}>
+                  Complete
+                  <MdOutlineChecklistRtl className="fill-secondary w-6 h-6" />
+                </button>
+                <button
                   className="w-fit min-w-fit flex items-center gap-2 whitespace-nowrap border border-solid text-red-600 hover:bg-red-600/10 border-red-600 rounded-md p-2"
                   onClick={(e) => {
                     props.setDeleteModalActive(props.checkedIds);
@@ -198,6 +262,16 @@ export function TableHeaderContainer({ props }) {
                   }}>
                   Send to New
                   <BiReset className="w-6 h-6 fill-secondary" />
+                </button>
+                <button
+                  className="w-fit min-w-fit flex items-center gap-2 whitespace-nowrap border border-solid text-secondary hover:bg-secondary/10 border-secondary rounded-md p-2"
+                  onClick={(e) => {
+                    holdQueueItem(e, props.checkedIds);
+                    setAllSelected(false);
+                    props.setCheckedIds([]);
+                  }}>
+                  Send to Hold
+                  <Pause className="w-6 h-6 fill-secondary" />
                 </button>
                 <button
                   className="w-fit min-w-fit flex items-center gap-2 whitespace-nowrap border border-solid text-red-600 hover:bg-red-600/10 border-red-600 rounded-md p-2"

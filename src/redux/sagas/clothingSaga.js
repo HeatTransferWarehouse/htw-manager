@@ -35,8 +35,6 @@ function* updateClothingOrderedStatus(action) {
         bool: boolean,
       })
     );
-
-    yield put({ type: "GET_CLOTHING_QUEUE_ITEMS" });
   } catch (error) {
     console.error("Error updating Ordered status", error);
     yield put({
@@ -44,6 +42,7 @@ function* updateClothingOrderedStatus(action) {
       payload: { errorMessage: "Error updating Ordered status", error },
     });
   } finally {
+    yield put({ type: "GET_CLOTHING_QUEUE_ITEMS" });
     yield put({ type: "STOP_CLOTHING_QUEUE_LOADING" });
   }
 }
@@ -73,16 +72,20 @@ function* deleteClothingQueueItem(action) {
 }
 
 function* holdClothingQueueItem(action) {
-  const ids = Array.isArray(action.payload) ? action.payload : [action.payload];
+  const idArray = Array.isArray(action.payload)
+    ? action.payload
+    : [action.payload];
 
   try {
     yield put({ type: "START_CLOTHING_QUEUE_LOADING" });
-    axios.put(`/api/clothing-queue/items/hold/${ids}`);
-    yield put({ type: "GET_CLOTHING_QUEUE_ITEMS" });
+    yield call(() => {
+      axios.put(`/api/clothing-queue/items/hold`, { idArray });
+    });
   } catch (error) {
     console.error("Error holding queue item", error);
   } finally {
     yield put({ type: "STOP_CLOTHING_QUEUE_LOADING" });
+    yield put({ type: "GET_CLOTHING_QUEUE_ITEMS" });
   }
 }
 
