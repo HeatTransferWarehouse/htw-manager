@@ -46,6 +46,12 @@ export const useQueueActions = () => {
     dispatch({ type: "UPDATE_QUEUE_ITEM_PRIORITY", payload: { id, priority } });
   };
 
+  const holdQueueItem = (e, idArray) => {
+    e.stopPropagation();
+    e.preventDefault();
+    dispatch({ type: "HOLD_QUEUE_ITEM", payload: idArray });
+  };
+
   return {
     startQueueItem,
     completeQueueItem,
@@ -54,5 +60,6 @@ export const useQueueActions = () => {
     deleteQueueItem,
     updateQueueItemPriority,
     getQueueItems,
+    holdQueueItem,
   };
 };

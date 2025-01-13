@@ -347,7 +347,7 @@ router.put("/item-queue/send-back/progress/:id", async (req, res) => {
     await client.query("BEGIN");
     const updateItemQuery = `
         UPDATE sff_item_queue
-        SET in_progress = FALSE, is_complete = FALSE
+        SET in_progress = FALSE, is_complete = FALSE, on_hold = FALSE
         WHERE id = $1
       `;
 
@@ -371,7 +371,7 @@ router.put("/item-queue/complete/:id", async (req, res) => {
     await client.query("BEGIN");
     const updateItemQuery = `
       UPDATE sff_item_queue
-      SET is_complete = TRUE, in_progress = FALSE
+      SET is_complete = TRUE, in_progress = FALSE, on_hold = FALSE
       WHERE id = $1
     `;
 
@@ -414,6 +414,32 @@ router.put("/item-queue/update/priority/:id", async (req, res) => {
   }
 });
 
+router.put("/item-queue/hold/:id", async (req, res) => {
+  const client = await pool.connect();
+  const { id } = req.params;
+
+  try {
+    await client.query("BEGIN");
+    const updateItemQuery = `
+      UPDATE sff_item_queue
+      SET in_progress = FALSE, is_complete = FALSE, on_hold = TRUE
+      WHERE id = $1
+    `;
+
+    await client.query(updateItemQuery, [id]);
+    await client.query("COMMIT");
+    res.send({ success: true, message: "Item successfully put on hold." });
+  } catch (error) {
+    await client.query("ROLLBACK");
+    console.log("Error Putting Queue Item on Hold", error);
+    res
+      .status(500)
+      .send({ success: false, message: "Error putting item on hold." });
+  } finally {
+    client.release();
+  }
+});
+
 router.put("/item-queue/send-back/complete/:id", async (req, res) => {
   const client = await pool.connect();
   const { id } = req.params;
@@ -422,7 +448,7 @@ router.put("/item-queue/send-back/complete/:id", async (req, res) => {
     await client.query("BEGIN");
     const updateItemQuery = `
       UPDATE sff_item_queue
-      SET is_complete = FALSE, in_progress = True
+      SET is_complete = FALSE, in_progress = True, on_hold = FALSE
       WHERE id = $1
     `;
 

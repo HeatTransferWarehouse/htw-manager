@@ -31,6 +31,16 @@ export function TableNav({ count, props }) {
         In Progress <span>({count.inProgressCount})</span>
       </TableNavLink>
       <TableNavLink
+        active={view === "hold"}
+        onClick={() => {
+          props.setPage(0);
+          props.setRowsPerPage(10);
+          props.setCheckedIds([]);
+        }}
+        to={`${pathname}?view=hold`}>
+        On Hold <span>({count.onHoldCount})</span>
+      </TableNavLink>
+      <TableNavLink
         active={view === "completed"}
         onClick={() => {
           props.setPage(0);

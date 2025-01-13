@@ -13,15 +13,13 @@ function* getClothingQueueItems(action) {
     );
     yield put({ type: "SET_CLOTHING_QUEUE_ITEMS", payload: response.data });
     yield put({ type: "SET_CLOTHING_QUEUE_SORT", payload: { sort_by, order } });
-    if (response.status === 200) {
-      yield put({ type: "STOP_CLOTHING_QUEUE_LOADING" });
-    }
   } catch (error) {
-    yield put({ type: "STOP_CLOTHING_QUEUE_LOADING" });
     yield put({
       type: "SET_CLOTHING_QUEUE_ERROR",
       payload: { errorMessage: "Error getting clothing queue items", error },
     });
+  } finally {
+    yield put({ type: "STOP_CLOTHING_QUEUE_LOADING" });
   }
 }
 
@@ -41,11 +39,12 @@ function* updateClothingOrderedStatus(action) {
     yield put({ type: "GET_CLOTHING_QUEUE_ITEMS" });
   } catch (error) {
     console.error("Error updating Ordered status", error);
-    yield put({ type: "STOP_CLOTHING_QUEUE_LOADING" });
     yield put({
       type: "SET_CLOTHING_QUEUE_ERROR",
       payload: { errorMessage: "Error updating Ordered status", error },
     });
+  } finally {
+    yield put({ type: "STOP_CLOTHING_QUEUE_LOADING" });
   }
 }
 
@@ -63,13 +62,27 @@ function* deleteClothingQueueItem(action) {
     yield Promise.all(promises);
 
     yield put({ type: "GET_CLOTHING_QUEUE_ITEMS" });
-    yield put({ type: "STOP_CLOTHING_QUEUE_LOADING" });
   } catch (error) {
-    yield put({ type: "STOP_CLOTHING_QUEUE_LOADING" });
     yield put({
       type: "SET_CLOTHING_QUEUE_ERROR",
       payload: { errorMessage: "Error deleting queue item", error },
     });
+  } finally {
+    yield put({ type: "STOP_CLOTHING_QUEUE_LOADING" });
+  }
+}
+
+function* holdClothingQueueItem(action) {
+  const ids = Array.isArray(action.payload) ? action.payload : [action.payload];
+
+  try {
+    yield put({ type: "START_CLOTHING_QUEUE_LOADING" });
+    axios.put(`/api/clothing-queue/items/hold/${ids}`);
+    yield put({ type: "GET_CLOTHING_QUEUE_ITEMS" });
+  } catch (error) {
+    console.error("Error holding queue item", error);
+  } finally {
+    yield put({ type: "STOP_CLOTHING_QUEUE_LOADING" });
   }
 }
 
@@ -80,6 +93,7 @@ function* decoQueueSaga() {
     updateClothingOrderedStatus
   );
   yield takeLatest("DELETE_CLOTHING_QUEUE_ITEM", deleteClothingQueueItem);
+  yield takeLatest("HOLD_CLOTHING_QUEUE_ITEM", holdClothingQueueItem);
 }
 
 export default decoQueueSaga;

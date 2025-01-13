@@ -15,6 +15,7 @@ const OptionsButton = ({ props }) => {
     completeQueueItem,
     sendBackCompletedQueueItem,
     sendBackProgressQueueItem,
+    holdQueueItem,
   } = useQueueActions();
 
   const {
@@ -66,6 +67,11 @@ const OptionsButton = ({ props }) => {
               onClick={() => setDeleteModalActive(true)}>
               Delete
             </DropDownItem>
+            <DropDownItem
+              className="cursor-pointer hover:bg-red-600/10 py-2 px-3 hover:text-red-600"
+              onClick={(e) => holdQueueItem(e, itemId)}>
+              Hold
+            </DropDownItem>
           </>
         ) : view === "progress" ? (
           <>
@@ -85,6 +91,11 @@ const OptionsButton = ({ props }) => {
               className="cursor-pointer hover:bg-red-600/10 py-2 px-3 hover:text-red-600"
               onClick={() => setDeleteModalActive(true)}>
               Delete
+            </DropDownItem>
+            <DropDownItem
+              className="cursor-pointer hover:bg-red-600/10 py-2 px-3 hover:text-red-600"
+              onClick={(e) => holdQueueItem(e, itemId)}>
+              Hold
             </DropDownItem>
           </>
         ) : (

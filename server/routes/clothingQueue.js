@@ -155,7 +155,8 @@ const getOrderProducts = async (orderId) => {
             dbItem.product_id === filteredProduct.productId &&
             dbItem.qty === filteredProduct.quantity &&
             dbItem.sku === filteredProduct.sku &&
-            dbItem.name === filteredProduct.name
+            dbItem.name === filteredProduct.name &&
+            dbItem.date === filteredProduct.date
           );
         });
 
@@ -460,10 +461,10 @@ router.put("/items/update/ordered", async (req, res) => {
     await client.query("BEGIN");
 
     const updatePromises = idArray.map((id) =>
-      client.query(`UPDATE clothing_queue SET is_ordered = $1 WHERE id = $2`, [
-        bool,
-        Number(id),
-      ])
+      client.query(
+        `UPDATE clothing_queue SET is_ordered = $1, on_hold = FALSE WHERE id = $2`,
+        [bool, Number(id)]
+      )
     );
 
     await Promise.all(updatePromises);
@@ -479,6 +480,39 @@ router.put("/items/update/ordered", async (req, res) => {
     res.status(500).send({
       success: false,
       message: "Error updating items.",
+    });
+  } finally {
+    client.release();
+  }
+});
+
+router.put("/items/hold/:id", async (req, res) => {
+  const { id } = req.params;
+
+  const client = await pool.connect();
+
+  try {
+    await client.query("BEGIN");
+
+    const updateQuery = `
+            UPDATE clothing_queue
+            SET on_hold = TRUE, is_ordered = FALSE
+            WHERE id = $1
+        `;
+
+    await client.query(updateQuery, [id]);
+
+    await client.query("COMMIT");
+    res.send({
+      success: true,
+      message: "Item successfully put on hold.",
+    });
+  } catch (error) {
+    await client.query("ROLLBACK");
+    console.error("Error updating item:", error);
+    res.status(500).send({
+      success: false,
+      message: "Error putting item on hold.",
     });
   } finally {
     client.release();

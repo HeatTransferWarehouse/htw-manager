@@ -28,6 +28,7 @@ export default function SFFQueue() {
   const [isMobile, setIsMobile] = useState(false);
   const [inProgressItems, setInProgressItems] = useState([]);
   const [newItems, setNewItems] = useState([]);
+  const [onHoldItems, setOnHoldItems] = useState([]);
   const [showFilters, setShowFilters] = useState(false);
   const [singleCheckedId, setSingleCheckedId] = useState(null);
   const [deleteModalActive, setDeleteModalActive] = useState(false);
@@ -59,12 +60,15 @@ export default function SFFQueue() {
     const newCompletedItems = [];
     const newInProgressItems = [];
     const newNewItems = [];
+    const newOnHoldItems = [];
 
     queueItems.forEach((item) => {
       if (item.in_progress) {
         newInProgressItems.push(item);
       } else if (item.is_complete) {
         newCompletedItems.push(item);
+      } else if (item.on_hold) {
+        newOnHoldItems.push(item);
       } else {
         newNewItems.push(item);
       }
@@ -73,6 +77,7 @@ export default function SFFQueue() {
     setInProgressItems(newInProgressItems);
     setCompletedItems(newCompletedItems);
     setNewItems(newNewItems);
+    setOnHoldItems(newOnHoldItems);
     !loading && setItemsLoading(false);
   }, [queueItems, loading]);
 
@@ -100,6 +105,7 @@ export default function SFFQueue() {
             completedItems,
             inProgressItems,
             newItems,
+            onHoldItems,
           },
           itemsLoading,
           isMobile,

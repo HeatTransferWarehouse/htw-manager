@@ -28,6 +28,7 @@ export function TableComponent({ props }) {
     newItems: props.items.newItems,
     inProgressItems: props.items.inProgressItems,
     completedItems: props.items.completedItems,
+    onHoldItems: props.items.onHoldItems,
   });
   const [rowsPerPage, setRowsPerPage] = useState(10);
   const [page, setPage] = useState(0);
@@ -38,6 +39,7 @@ export function TableComponent({ props }) {
       newItems: props.items.newItems,
       inProgressItems: props.items.inProgressItems,
       completedItems: props.items.completedItems,
+      onHoldItems: props.items.onHoldItems,
     });
   }, [props.items]);
 
@@ -74,6 +76,8 @@ export function TableComponent({ props }) {
       ? items.newItems
       : props.view === "progress"
       ? items.inProgressItems
+      : props.view === "hold"
+      ? items.onHoldItems
       : items.completedItems;
 
   // Filter items based on search query
@@ -91,6 +95,7 @@ export function TableComponent({ props }) {
           completedCount: items.completedItems.length,
           inProgressCount: items.inProgressItems.length,
           newCount: items.newItems.length,
+          onHoldCount: items.onHoldItems.length,
         }}
         props={{
           setRowsPerPage,

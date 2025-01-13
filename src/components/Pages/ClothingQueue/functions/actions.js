@@ -30,9 +30,14 @@ export const useQueueActions = () => {
     dispatch({ type: "DELETE_CLOTHING_QUEUE_ITEM", payload: idArray });
   };
 
+  const holdQueueItem = (idArray) => {
+    dispatch({ type: "HOLD_CLOTHING_QUEUE_ITEM", payload: idArray });
+  };
+
   return {
     deleteQueueItem,
     updateQueueOrderedStatus,
     getQueueItems,
+    holdQueueItem,
   };
 };

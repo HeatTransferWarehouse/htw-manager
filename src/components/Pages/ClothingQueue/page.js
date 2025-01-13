@@ -13,11 +13,11 @@ export default function ClothingQueue() {
   const view = searchParams.get("view") || "new"; // Default to 'new' if no parameter is
   const items = useSelector((store) => store.clothingReducer.items);
   const sort = useSelector((store) => store.clothingReducer.sort);
-  //   const error = useSelector((store) => store.clothingReducer.error);
   const loading = useSelector((store) => store.clothingReducer.loading);
 
   const [newItems, setNewItems] = useState([]);
   const [orderedItems, setOrderedItems] = useState([]);
+  const [onHoldItems, setOnHoldItems] = useState([]);
 
   const [isMobile, setIsMobile] = useState(false);
   const [showAdvancedSearchModal, setShowAdvancedSearchModal] = useState(false);
@@ -51,10 +51,13 @@ export default function ClothingQueue() {
   useEffect(() => {
     const newNewItems = [];
     const newOrderedItems = [];
+    const newOnHoldItems = [];
 
     items.forEach((item) => {
       if (item.is_ordered) {
         newOrderedItems.push(item);
+      } else if (item.on_hold) {
+        newOnHoldItems.push(item);
       } else {
         newNewItems.push(item);
       }
@@ -62,6 +65,7 @@ export default function ClothingQueue() {
 
     setOrderedItems(newOrderedItems);
     setNewItems(newNewItems);
+    setOnHoldItems(newOnHoldItems);
     !loading && setItemsLoading(false);
   }, [items, loading]);
 
@@ -90,6 +94,7 @@ export default function ClothingQueue() {
           items: {
             orderedItems,
             newItems,
+            onHoldItems,
           },
           itemsLoading,
           isMobile,

@@ -37,6 +37,28 @@ export function* startQueueItem(action) {
     yield put({ type: "GET_QUEUE_ITEMS" });
   } catch (error) {
     console.error("Error with starting queue item:", error);
+  } finally {
+    yield put({ type: "STOP_LOADING" });
+  }
+}
+
+export function* holdQueueItem(action) {
+  const ids = Array.isArray(action.payload) ? action.payload : [action.payload];
+  try {
+    yield put({ type: "START_LOADING" });
+
+    const promises = ids.map((id) => {
+      return axios.put(`/api/sff-queue/item-queue/hold/${id}`);
+    });
+
+    // Resolve all promises
+    yield Promise.all(promises);
+
+    yield put({ type: "GET_QUEUE_ITEMS" });
+  } catch (error) {
+    console.error("Error putting queue item on hold:", error);
+  } finally {
+    yield put({ type: "STOP_LOADING" });
   }
 }
 
@@ -56,6 +78,8 @@ function* sendBackProgressQueueItem(action) {
     yield put({ type: "GET_QUEUE_ITEMS" });
   } catch (error) {
     console.error("Error with starting queue item:", error);
+  } finally {
+    yield put({ type: "STOP_LOADING" });
   }
 }
 
@@ -94,6 +118,8 @@ function* sendBackCompletedQueueItem(action) {
     yield put({ type: "GET_QUEUE_ITEMS" });
   } catch (error) {
     console.error("Error with starting queue item:", error);
+  } finally {
+    yield put({ type: "STOP_LOADING" });
   }
 }
 
@@ -113,6 +139,8 @@ function* deleteQueueItem(action) {
     yield put({ type: "GET_QUEUE_ITEMS" });
   } catch (error) {
     console.error("Error with starting queue item:", error);
+  } finally {
+    yield put({ type: "STOP_LOADING" });
   }
 }
 
@@ -141,6 +169,7 @@ function* queueItemSaga() {
   yield takeLatest("COMPLETE_QUEUE_ITEM", completeQueueItem);
   yield takeLatest("DELETE_QUEUE_ITEM", deleteQueueItem);
   yield takeLatest("UPDATE_QUEUE_ITEM_PRIORITY", updateQueueItemPriority);
+  yield takeLatest("HOLD_QUEUE_ITEM", holdQueueItem);
 }
 
 export default queueItemSaga;

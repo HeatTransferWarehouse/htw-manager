@@ -28,6 +28,7 @@ export function TableComponent({ props }) {
   const [items, setItems] = useState({
     newItems: props.items.newItems,
     orderedItems: props.items.orderedItems,
+    onHoldItems: props.items.onHoldItems,
   });
   const [rowsPerPage, setRowsPerPage] = useState(10);
   const [page, setPage] = useState(0);
@@ -37,6 +38,7 @@ export function TableComponent({ props }) {
     setItems({
       newItems: props.items.newItems,
       orderedItems: props.items.orderedItems,
+      onHoldItems: props.items.onHoldItems,
     });
   }, [props.items]);
 
@@ -67,7 +69,11 @@ export function TableComponent({ props }) {
   );
 
   const currentViewItems =
-    props.view === "new" ? items.newItems : items.orderedItems;
+    props.view === "new"
+      ? items.newItems
+      : props.view === "hold"
+      ? items.onHoldItems
+      : items.orderedItems;
 
   // Filter items based on search query and date
   const filteredItems = currentViewItems.filter((item) => {
@@ -129,6 +135,7 @@ export function TableComponent({ props }) {
         count={{
           newCount: items.newItems.length,
           orderedCount: items.orderedItems.length,
+          onHoldCount: items.onHoldItems.length,
         }}
         props={{
           setRowsPerPage,
