@@ -157,7 +157,8 @@ const getOrderProducts = async (orderId) => {
             dbItem.sku === filteredProduct.sku &&
             dbItem.name === filteredProduct.name &&
             dbItem.date === filteredProduct.date &&
-            dbItem.size === filteredProduct.size
+            dbItem.size === filteredProduct.size &&
+            dbItem.color === filteredProduct.color
           );
         });
 
@@ -189,6 +190,8 @@ const getOrderProducts = async (orderId) => {
     console.log("Error getting order products", error);
   }
 };
+
+getOrderProducts(3578506);
 
 const getProductSwatchImage = async (productId, name) => {
   try {
