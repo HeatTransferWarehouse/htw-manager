@@ -156,7 +156,8 @@ const getOrderProducts = async (orderId) => {
             dbItem.qty === filteredProduct.quantity &&
             dbItem.sku === filteredProduct.sku &&
             dbItem.name === filteredProduct.name &&
-            dbItem.date === filteredProduct.date
+            dbItem.date === filteredProduct.date &&
+            dbItem.size === filteredProduct.size
           );
         });
 
