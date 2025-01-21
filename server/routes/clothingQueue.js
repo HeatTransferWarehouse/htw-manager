@@ -151,14 +151,16 @@ const getOrderProducts = async (orderId) => {
       for (const filteredProduct of filteredProducts) {
         const match = dbItems.data.find((dbItem) => {
           return (
-            dbItem.order_id === filteredProduct.orderId &&
-            dbItem.product_id === filteredProduct.productId &&
+            dbItem.order_id === String(filteredProduct.orderId) &&
+            dbItem.product_id === String(filteredProduct.productId) &&
             dbItem.qty === filteredProduct.quantity &&
-            dbItem.sku === filteredProduct.sku &&
-            dbItem.name === filteredProduct.name &&
+            dbItem.sku.toLowerCase() === filteredProduct.sku.toLowerCase() &&
+            dbItem.name.toLowerCase() === filteredProduct.name.toLowerCase() &&
             dbItem.date === filteredProduct.date &&
-            dbItem.size === filteredProduct.size &&
-            dbItem.color === filteredProduct.color
+            dbItem.size?.toLowerCase() ===
+              (filteredProduct.size || "").toLowerCase() &&
+            dbItem.color?.toLowerCase() ===
+              (filteredProduct.color || "").toLowerCase()
           );
         });
 
@@ -190,8 +192,6 @@ const getOrderProducts = async (orderId) => {
     console.log("Error getting order products", error);
   }
 };
-
-getOrderProducts(3578506);
 
 const getProductSwatchImage = async (productId, name) => {
   try {
