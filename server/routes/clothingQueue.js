@@ -27,9 +27,7 @@ router.post("/order-webhook", function (req, res) {
 });
 
 const getOrderProducts = async (orderId) => {
-  // Will Be implemented later
-
-  const date = moment().tz("America/Chicago"); // CST is 'America/Chicago' in IANA time zone database
+  const date = moment().tz("America/Chicago");
   const days = [
     "Sunday",
     "Monday",
@@ -116,7 +114,6 @@ const getOrderProducts = async (orderId) => {
 
           const blackKeywords = ["black", "dark", "coal", "onyx", "jet"];
 
-          // Check if the color contains any of the black keywords (case-insensitive)
           if (
             productObject.color &&
             blackKeywords.some((keyword) =>
@@ -131,16 +128,12 @@ const getOrderProducts = async (orderId) => {
       }
     }
 
-    // const dbItems = await axios.get(
-    //   "http://localhost:3000/api/clothing-queue/items/get"
-    // );
     const dbItems = await axios.get(
       "https://admin.heattransferwarehouse.com/api/clothing-queue/items/get"
     );
 
     if (searchedProducts.length > 0) {
       const filteredProducts = searchedProducts.filter((product) => {
-        // Check if product categories include any of the clothing category IDs
         return product.categories.some((categoryId) =>
           clothingCategoryIds.includes(categoryId)
         );
@@ -151,16 +144,14 @@ const getOrderProducts = async (orderId) => {
       for (const filteredProduct of filteredProducts) {
         const match = dbItems.data.find((dbItem) => {
           return (
-            dbItem.order_id === String(filteredProduct.orderId) &&
-            dbItem.product_id === String(filteredProduct.productId) &&
+            dbItem.order_id === filteredProduct.orderId &&
+            dbItem.product_id === filteredProduct.productId &&
             dbItem.qty === filteredProduct.quantity &&
-            dbItem.sku.toLowerCase() === filteredProduct.sku.toLowerCase() &&
-            dbItem.name.toLowerCase() === filteredProduct.name.toLowerCase() &&
+            dbItem.sku === filteredProduct.sku &&
+            dbItem.name === filteredProduct.name &&
             dbItem.date === filteredProduct.date &&
-            dbItem.size?.toLowerCase() ===
-              (filteredProduct.size || "").toLowerCase() &&
-            dbItem.color?.toLowerCase() ===
-              (filteredProduct.color || "").toLowerCase()
+            dbItem.size === filteredProduct.size &&
+            dbItem.color === filteredProduct.color
           );
         });
 
@@ -171,12 +162,6 @@ const getOrderProducts = async (orderId) => {
 
       if (productsToAdd.length > 0) {
         try {
-          // await axios.post(
-          //   `http://localhost:3000/api/clothing-queue/item/add`,
-          //   {
-          //     items: productsToAdd,
-          //   }
-          // );
           await axios.post(
             `https://admin.heattransferwarehouse.com/api/clothing-queue/item/add`,
             {
@@ -184,7 +169,11 @@ const getOrderProducts = async (orderId) => {
             }
           );
         } catch (error) {
-          console.log("Error posting to add-queue-items:", error.message);
+          if (error.response?.status === 409) {
+            console.log("Duplicate entry detected.");
+          } else {
+            console.log("Error posting to add-queue-items:", error.message);
+          }
         }
       }
     }
