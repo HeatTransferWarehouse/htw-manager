@@ -133,11 +133,19 @@ const getOrderProducts = async (orderId) => {
     );
 
     if (searchedProducts.length > 0) {
-      const filteredProducts = searchedProducts.filter((product) => {
-        return product.categories.some((categoryId) =>
-          clothingCategoryIds.includes(categoryId)
-        );
-      });
+      const filteredProducts = searchedProducts
+        .filter((product) => {
+          return product.categories.some((categoryId) =>
+            clothingCategoryIds.includes(categoryId)
+          );
+        })
+        .map((product) => {
+          return {
+            ...product,
+            size: product.size === undefined ? "NA" : product.size,
+            color: product.color === undefined ? "NA" : product.color,
+          };
+        });
 
       const productsToAdd = [];
 
@@ -146,12 +154,9 @@ const getOrderProducts = async (orderId) => {
           return (
             dbItem.order_id === filteredProduct.orderId &&
             dbItem.product_id === filteredProduct.productId &&
-            dbItem.qty === filteredProduct.quantity &&
-            dbItem.sku === filteredProduct.sku &&
-            dbItem.name === filteredProduct.name &&
-            dbItem.date === filteredProduct.date &&
+            dbItem.color === filteredProduct.color &&
             dbItem.size === filteredProduct.size &&
-            dbItem.color === filteredProduct.color
+            dbItem.qty === filteredProduct.quantity
           );
         });
 
