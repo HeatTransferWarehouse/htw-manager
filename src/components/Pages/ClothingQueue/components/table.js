@@ -22,6 +22,7 @@ import {
   PaginationTrigger,
   Pagination,
 } from "../../../ui/pagination";
+import ManuallyEnterOrder from "./manually-add-order";
 
 export function TableComponent({ props }) {
   const { getQueueItems } = useQueueActions();
@@ -143,7 +144,7 @@ export function TableComponent({ props }) {
           setCheckedIds: props.setCheckedIds,
         }}
       />
-      <div className="flex px-4 mt-6 relative items-start md:items-center flex-col md:flex-row justify-start gap-4 mb-4">
+      <div className="flex px-4 mt-6 relative items-center justify-between gap-4 mb-4">
         <span
           className="z-50 flex gap-2 items-center absolute hover:text-secondary cursor-pointer group/searchInfo left-4 -top-8"
           onClick={props.setShowAdvancedSearchModal}>
@@ -151,6 +152,7 @@ export function TableComponent({ props }) {
           <p>Learn about Advanced Searching</p>
         </span>
         <Search onSearch={handleSearch} className={"!m-0 !p-0"} />
+        <ManuallyEnterOrder />
       </div>
       <Header
         props={{

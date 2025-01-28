@@ -38,9 +38,26 @@ function clothingQueueErrors(state = [], action) {
   }
 }
 
+const responseInitialState = {
+  success: false,
+  message: null,
+};
+
+function clothingQueueResponse(state = responseInitialState, action) {
+  switch (action.type) {
+    case "SET_CLOTHING_QUEUE_RESPONSE":
+      return action.payload;
+    case "CLEAR_CLOTHING_QUEUE_RESPONSE":
+      return responseInitialState;
+    default:
+      return state;
+  }
+}
+
 export default combineReducers({
   items: clothingQueueItems,
   sort: clothingQueueSort,
   loading: clothingQueueLoading,
   error: clothingQueueErrors,
+  response: clothingQueueResponse,
 });

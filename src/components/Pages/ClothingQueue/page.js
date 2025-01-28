@@ -4,6 +4,8 @@ import { TableComponent } from "./components/table";
 import { useLocation } from "react-router-dom";
 import AdvancedSearchModal from "./components/advanced-search-modal";
 import DeleteModal from "../../modals/deleteModal";
+import { CgSpinnerAlt } from "react-icons/cg";
+import Toast from "../../ui/toast";
 
 export default function ClothingQueue() {
   const location = useLocation();
@@ -14,7 +16,7 @@ export default function ClothingQueue() {
   const items = useSelector((store) => store.clothingReducer.items);
   const sort = useSelector((store) => store.clothingReducer.sort);
   const loading = useSelector((store) => store.clothingReducer.loading);
-
+  const response = useSelector((store) => store.clothingReducer.response);
   const [newItems, setNewItems] = useState([]);
   const [orderedItems, setOrderedItems] = useState([]);
   const [onHoldItems, setOnHoldItems] = useState([]);
@@ -119,6 +121,23 @@ export default function ClothingQueue() {
           }}
         />
       </div>
+      {loading && (
+        <div className="w-screen h-screen bg-black/50 fixed top-0 left-0 flex items-center justify-center z-50">
+          <CgSpinnerAlt className="animate-spin text-white w-12 h-12" />
+        </div>
+      )}
+      <Toast
+        onClose={() => dispatch({ type: "CLEAR_CLOTHING_QUEUE_RESPONSE" })}
+        isOpen={response.message !== null}
+        title={response.message}
+        variant={
+          response.status >= 200 && response.status < 204
+            ? "success"
+            : response.status >= 400 && response.status <= 500
+            ? "error"
+            : "default"
+        }
+      />
     </>
   );
 }

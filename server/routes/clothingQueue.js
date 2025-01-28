@@ -27,6 +27,77 @@ router.post("/order-webhook", function (req, res) {
 });
 
 const getOrderProducts = async (orderId) => {
+  try {
+    const currentDate = getCurrentDate();
+    console.log("Current Date:", currentDate);
+    console.log("Order ID:", orderId);
+
+    const response = await axios.get(
+      `https://api.bigcommerce.com/stores/${process.env.STORE_HASH}/v2/orders/${orderId}/products`,
+      {
+        headers: {
+          "Content-Type": "application/json",
+          "X-Auth-Token": process.env.BG_AUTH_TOKEN,
+        },
+      }
+    );
+
+    const products = response.data;
+
+    const searchedProducts = await extractOrderProducts(
+      products,
+      currentDate,
+      orderId
+    );
+
+    const dbItems = await axios.get(
+      "https://admin.heattransferwarehouse.com/api/clothing-queue/items"
+    );
+
+    if (searchedProducts.length === 0)
+      return {
+        status: 304,
+        message: "No products found on order.",
+      };
+
+    const filteredProducts = filterProducts(searchedProducts);
+
+    const productsToAdd = await getProductsToAdd(filteredProducts, dbItems);
+
+    if (productsToAdd.length === 0)
+      return {
+        status: 204,
+        message: "No new products to add.",
+      };
+
+    try {
+      await axios.post(
+        `https://admin.heattransferwarehouse.com/api/clothing-queue/items`,
+        {
+          items: productsToAdd,
+        }
+      );
+      return {
+        status: 201,
+        message: "Products added successfully!",
+      };
+    } catch (error) {
+      if (error.response?.status === 409) {
+        console.log("Duplicate entry detected.");
+      } else {
+        console.log("Error posting to add-queue-items:", error.message);
+      }
+    }
+  } catch (error) {
+    console.log("Error getting order products", error);
+    return {
+      status: 500,
+      message: `Error getting order products. ${error.message}`,
+    };
+  }
+};
+
+const getCurrentDate = () => {
   const date = moment().tz("America/Chicago");
   const days = [
     "Sunday",
@@ -66,125 +137,93 @@ const getOrderProducts = async (orderId) => {
     day = (parseInt(day) + 1).toString().padStart(2, "0");
   }
 
-  const currentDate = `${month}/${day}/${year} or ${dayName}, ${monthName} ${day}, ${year}`;
+  return `${month}/${day}/${year} or ${dayName}, ${monthName} ${day}, ${year}`;
+};
 
-  try {
-    const response = await axios.get(
-      `https://api.bigcommerce.com/stores/${process.env.STORE_HASH}/v2/orders/${orderId}/products`,
-      {
-        headers: {
-          "Content-Type": "application/json",
-          "X-Auth-Token": process.env.BG_AUTH_TOKEN,
-        },
-      }
-    );
+const extractOrderProducts = async (products, currentDate, orderId) => {
+  const searchedProducts = [];
+  for (const product of products) {
+    if (product.product_id !== 0) {
+      const color = product.product_options.find(
+        (option) => option.display_name === "Color"
+      )?.display_value;
 
-    const searchedProducts = [];
+      const foundProduct = await getProductById(product.product_id);
+      const swatchInfo = await getProductSwatchImage(
+        foundProduct.data.id,
+        color
+      );
 
-    const products = response.data;
+      if (foundProduct) {
+        const productObject = {
+          orderId: orderId,
+          productId: foundProduct.data.id,
+          name: foundProduct.data.name,
+          sku: foundProduct.data.sku,
+          quantity: product.quantity,
+          categories: foundProduct.data.categories,
+          color,
+          swatchImage: swatchInfo.swatchImage,
+          textColor: swatchInfo.textColor,
+          size: product.product_options.find(
+            (option) => option.display_name === "Size"
+          )?.display_value,
+          date: currentDate,
+        };
 
-    for (const product of products) {
-      if (product.product_id !== 0) {
-        const color = product.product_options.find(
-          (option) => option.display_name === "Color"
-        )?.display_value;
+        const blackKeywords = ["black", "dark", "coal", "onyx", "jet"];
 
-        const foundProduct = await getProductById(product.product_id);
-        const swatchInfo = await getProductSwatchImage(
-          foundProduct.data.id,
-          color
-        );
-
-        if (foundProduct) {
-          const productObject = {
-            orderId: orderId,
-            productId: foundProduct.data.id,
-            name: foundProduct.data.name,
-            sku: foundProduct.data.sku,
-            quantity: product.quantity,
-            categories: foundProduct.data.categories,
-            color,
-            swatchImage: swatchInfo.swatchImage,
-            textColor: swatchInfo.textColor,
-            size: product.product_options.find(
-              (option) => option.display_name === "Size"
-            )?.display_value,
-            date: currentDate,
-          };
-
-          const blackKeywords = ["black", "dark", "coal", "onyx", "jet"];
-
-          if (
-            productObject.color &&
-            blackKeywords.some((keyword) =>
-              productObject.color.toLowerCase().includes(keyword)
-            )
-          ) {
-            productObject.textColor = "white";
-          }
-
-          searchedProducts.push(productObject);
+        if (
+          productObject.color &&
+          blackKeywords.some((keyword) =>
+            productObject.color.toLowerCase().includes(keyword)
+          )
+        ) {
+          productObject.textColor = "white";
         }
+
+        searchedProducts.push(productObject);
       }
     }
-
-    const dbItems = await axios.get(
-      "https://admin.heattransferwarehouse.com/api/clothing-queue/items/get"
-    );
-
-    if (searchedProducts.length > 0) {
-      const filteredProducts = searchedProducts
-        .filter((product) => {
-          return product.categories.some((categoryId) =>
-            clothingCategoryIds.includes(categoryId)
-          );
-        })
-        .map((product) => {
-          return {
-            ...product,
-            size: product.size === undefined ? "NA" : product.size,
-            color: product.color === undefined ? "NA" : product.color,
-          };
-        });
-
-      const productsToAdd = [];
-
-      for (const filteredProduct of filteredProducts) {
-        const match = dbItems.data.find((dbItem) => {
-          return (
-            dbItem.order_id === filteredProduct.orderId &&
-            dbItem.product_id === filteredProduct.productId &&
-            dbItem.color === filteredProduct.color &&
-            dbItem.size === filteredProduct.size &&
-            dbItem.qty === filteredProduct.quantity
-          );
-        });
-
-        if (!match) {
-          productsToAdd.push(filteredProduct);
-        }
-      }
-
-      if (productsToAdd.length > 0) {
-        try {
-          await axios.post(
-            `https://admin.heattransferwarehouse.com/api/clothing-queue/item/add`,
-            {
-              items: productsToAdd,
-            }
-          );
-        } catch (error) {
-          if (error.response?.status === 409) {
-            console.log("Duplicate entry detected.");
-          } else {
-            console.log("Error posting to add-queue-items:", error.message);
-          }
-        }
-      }
-    }
-  } catch (error) {
-    console.log("Error getting order products", error);
   }
+  return searchedProducts;
+};
+
+const filterProducts = (products) => {
+  return products
+    .filter((product) => {
+      return product.categories.some((categoryId) =>
+        clothingCategoryIds.includes(categoryId)
+      );
+    })
+    .map((product) => {
+      return {
+        ...product,
+        size: product.size === undefined ? "NA" : product.size,
+        color: product.color === undefined ? "NA" : product.color,
+      };
+    });
+};
+
+const getProductsToAdd = async (filteredProducts, dbItems) => {
+  const productsToAdd = [];
+  for (const filteredProduct of filteredProducts) {
+    const match = dbItems.data.find((dbItem) => {
+      return (
+        dbItem.order_id === filteredProduct.orderId &&
+        dbItem.product_id === filteredProduct.productId &&
+        dbItem.color === filteredProduct.color &&
+        dbItem.size === filteredProduct.size &&
+        dbItem.qty === filteredProduct.quantity
+      );
+    });
+
+    if (!match) {
+      productsToAdd.push(filteredProduct);
+    }
+  }
+
+  return productsToAdd;
 };
 
 const getProductSwatchImage = async (productId, name) => {
@@ -288,7 +327,22 @@ const getProductById = async (id) => {
   }
 };
 
-router.get("/items/get", async (req, res) => {
+router.post("/items/missing", async (req, res) => {
+  try {
+    const { orderId } = req.body;
+    console.log("Order ID:", orderId);
+
+    const response = await getOrderProducts(Number(orderId));
+    res.send(response);
+  } catch (error) {
+    res.send({
+      success: 500,
+      message: `Error getting missing items. ${error.message}`,
+    });
+  }
+});
+
+router.get("/items", async (req, res) => {
   const client = await pool.connect();
 
   const { sort_by, order } = req.query;
@@ -331,7 +385,7 @@ router.get("/items/get", async (req, res) => {
   }
 });
 
-router.post("/item/add", async (req, res) => {
+router.post("/items", async (req, res) => {
   const { items } = req.body;
 
   const client = await pool.connect(); // Get a client from the pool
@@ -386,22 +440,21 @@ router.post("/item/add", async (req, res) => {
 
     await client.query("COMMIT"); // Commit the transaction
     res.send({
-      success: true,
-      message: "Items added successfully.",
+      status: 201,
+      message: "Item(s) added successfully.",
     });
   } catch (error) {
     await client.query("ROLLBACK"); // Rollback transaction on error
-    console.error("Error Adding Items:", error);
-    res.status(500).send({
-      success: false,
-      message: "Error adding items.",
+    res.send({
+      status: 500,
+      message: `Error adding items. ${error.message}`,
     });
   } finally {
     client.release(); // Release client back to the pool
   }
 });
 
-router.delete("/item/delete/:id", async (req, res) => {
+router.delete("/items/:id", async (req, res) => {
   const { id } = req.params;
 
   const client = await pool.connect();
@@ -418,37 +471,37 @@ router.delete("/item/delete/:id", async (req, res) => {
 
     await client.query("COMMIT");
     res.send({
-      success: true,
-      message: "Item deleted successfully.",
+      status: 204,
+      message: "Item(s) deleted successfully.",
     });
   } catch (error) {
     await client.query("ROLLBACK");
     console.error("Error Deleting Item:", error);
-    res.status(500).send({
-      success: false,
-      message: "Error deleting item.",
+    res.send({
+      status: 500,
+      message: `Error deleting item(s). ${error.message}`,
     });
   } finally {
     client.release();
   }
 });
 
-router.put("/items/update/ordered", async (req, res) => {
+router.put("/items/ordered", async (req, res) => {
   const { idArray, bool } = req.body;
 
   if (
     !Array.isArray(idArray) ||
     idArray.some((id) => !Number.isInteger(Number(id)))
   ) {
-    return res.status(400).send({
-      success: false,
+    return res.send({
+      status: 500,
       message: "Invalid ID format. ID must be an array of integers.",
     });
   }
 
   if (typeof bool !== "boolean") {
-    return res.status(400).send({
-      success: false,
+    return res.send({
+      status: 500,
       message: "Invalid boolean value for is_ordered.",
     });
   }
@@ -469,15 +522,15 @@ router.put("/items/update/ordered", async (req, res) => {
 
     await client.query("COMMIT");
     res.send({
-      success: true,
-      message: "Items updated successfully.",
+      status: 201,
+      message: "Item(s) updated successfully.",
     });
   } catch (error) {
     await client.query("ROLLBACK");
     console.error("Error updating items:", error);
-    res.status(500).send({
-      success: false,
-      message: "Error updating items.",
+    res.send({
+      status: 500,
+      message: `Error updating items. ${error.message}`,
     });
   } finally {
     client.release();
@@ -502,15 +555,15 @@ router.put("/items/hold", async (req, res) => {
 
     await client.query("COMMIT");
     res.send({
-      success: true,
-      message: "Item successfully put on hold.",
+      status: 200,
+      message: "Item(s) successfully put on hold.",
     });
   } catch (error) {
     await client.query("ROLLBACK");
     console.error("Error updating item:", error);
-    res.status(500).send({
-      success: false,
-      message: "Error putting item on hold.",
+    res.send({
+      status: 500,
+      message: `Error updating items. ${error.message}`,
     });
   } finally {
     client.release();
