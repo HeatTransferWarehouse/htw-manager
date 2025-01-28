@@ -57,7 +57,6 @@ function* updateClothingOrderedStatus(action) {
     }
     yield put({ type: "SET_CLOTHING_QUEUE_RESPONSE", payload: response.data });
   } catch (error) {
-    console.error("Error updating Ordered status", error);
     yield put({
       type: "SET_CLOTHING_QUEUE_ERROR",
       payload: { errorMessage: "Error updating Ordered status", error },
@@ -121,7 +120,6 @@ function* holdClothingQueueItem(action) {
 
     yield put({ type: "SET_CLOTHING_QUEUE_RESPONSE", payload: response.data });
   } catch (error) {
-    console.error("Error holding queue item", error);
   } finally {
     yield put({ type: "STOP_CLOTHING_QUEUE_LOADING" });
     yield put({ type: "GET_CLOTHING_QUEUE_ITEMS" });
@@ -140,7 +138,6 @@ function* enterMissingOrder(action) {
     );
     yield put({ type: "SET_CLOTHING_QUEUE_RESPONSE", payload: response.data });
   } catch (error) {
-    console.error("Error entering missing order", error);
     yield put({
       type: "SET_CLOTHING_QUEUE_RESPONSE",
       payload: {

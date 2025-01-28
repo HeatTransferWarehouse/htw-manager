@@ -29,9 +29,6 @@ router.post("/order-webhook", function (req, res) {
 const getOrderProducts = async (orderId) => {
   try {
     const currentDate = getCurrentDate();
-    console.log("Current Date:", currentDate);
-    console.log("Order ID:", orderId);
-
     const response = await axios.get(
       `https://api.bigcommerce.com/stores/${process.env.STORE_HASH}/v2/orders/${orderId}/products`,
       {
@@ -82,14 +79,12 @@ const getOrderProducts = async (orderId) => {
         message: "Products added successfully!",
       };
     } catch (error) {
-      if (error.response?.status === 409) {
-        console.log("Duplicate entry detected.");
-      } else {
-        console.log("Error posting to add-queue-items:", error.message);
-      }
+      return {
+        status: 500,
+        message: `Error adding products. ${error.message}`,
+      };
     }
   } catch (error) {
-    console.log("Error getting order products", error);
     return {
       status: 500,
       message: `Error getting order products. ${error.message}`,
