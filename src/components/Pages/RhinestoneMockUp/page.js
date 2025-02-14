@@ -187,7 +187,7 @@ function RhineStoneMockUp() {
           "fixed inset-0 bg-black bg-opacity-80 flex items-center justify-center z-50",
           isFullScreen ? "flex" : "hidden"
         )}>
-        <div className="relative w-[calc(100%-4rem)] h-[calc(100%-4rem)] rounded bg-white flex items-center justify-center">
+        <div className="relative w-full h-full bg-white flex items-center justify-center">
           <button
             className="absolute top-4 right-4 p-2 bg-red-600 text-white rounded-full"
             onClick={() => setIsFullScreen(false)}>
