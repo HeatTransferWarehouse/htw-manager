@@ -30,6 +30,8 @@ import { useDispatch, useSelector } from "react-redux";
 import ProductsWithNoDesc from "../Pages/ProductsWithNoDescription";
 import ProductsMissingAlts from "../Pages/ProductsMissingAlt";
 import ProductTools from "../Pages/ProductTools";
+import RhineStoneMockUp from "../Pages/RhinestoneMockUp/page";
+import { twMerge } from "tailwind-merge";
 
 // App.js
 export const routeConfig = [
@@ -41,6 +43,13 @@ export const routeConfig = [
     element: <SFFQueue />,
     protected: true,
     page_title: "SFF Queue",
+  },
+  {
+    path: "/rhinestone-mockup",
+    name: "Rhinestone Mockup",
+    element: <RhineStoneMockUp />,
+    protected: false,
+    page_title: "Rhinestone Mockup",
   },
   {
     path: "/products/missing-alts",
@@ -191,10 +200,20 @@ function App() {
     document.querySelector(".main-container").scrollTo(0, 0);
   }, [location]);
 
+  const currentPage = routeConfig.find(
+    (route) => route.path === location.pathname
+  );
+
+  console.log("currentPage", currentPage);
+
   return (
     <>
-      {user.id && <Nav />}
-      <main className="main-container">
+      {user.id && currentPage.path !== "/rhinestone-mockup" && <Nav />}
+      <main
+        className={twMerge(
+          "main-container",
+          currentPage.path === "/rhinestone-mockup" && "rhinestone-mockup"
+        )}>
         <Routes>
           {/* Redirect to user's default path if logged in and visiting "/login" */}
           <Route

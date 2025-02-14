@@ -29,6 +29,10 @@ body {
   }
 }
 
+.main-container.rhinestone-mockup {
+  height: 100vh;
+}
+
 /* styles.css or a similar stylesheet */
 .smooth-transition {
   transition: margin-top 0.5s ease;
