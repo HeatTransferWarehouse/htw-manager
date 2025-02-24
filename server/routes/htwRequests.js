@@ -146,7 +146,7 @@ router.post("/update-item-price", async (req, res) => {
     ) {
       hash = process.env.SANDBOX_HASH;
       apiKey = process.env.SANDBOX_API_KEY;
-    } else if (requestOrigin === "https://www.heattransferwarehouse.com") {
+    } else if (requestOrigin === "https://www.heattransferwarehouse.com" || requestOrigin === "https://www.heattransferwarehouse.biz") {
       hash = process.env.STORE_HASH;
       apiKey = process.env.BG_AUTH_TOKEN;
     } else {
@@ -214,7 +214,7 @@ router.post("/cart-transfer-price", async (req, res) => {
     ) {
       hash = process.env.SANDBOX_HASH;
       apiKey = process.env.SANDBOX_API_KEY;
-    } else if (requestOrigin === "https://www.heattransferwarehouse.com") {
+    } else if (requestOrigin === "https://www.heattransferwarehouse.com" || requestOrigin === "https://www.heattransferwarehouse.biz") {
       hash = process.env.STORE_HASH;
       apiKey = process.env.BG_AUTH_TOKEN;
     } else {
