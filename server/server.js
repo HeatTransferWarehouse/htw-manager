@@ -41,7 +41,7 @@ const allowedOrigins = [
   "https://heat-transfer-warehouse-sandbox.mybigcommerce.com",
   "https://admin.heattransferwarehouse.com",
   "https://manager.heattransferwarehouse.com",
-  "https://heattransferwarehouse.biz"
+  "https://www.heattransferwarehouse.biz"
 ];
 
 // CORS Middleware
