@@ -979,10 +979,6 @@ video {
   height: auto;
 }
 
-.h-\[calc\(100\%-4rem\)\] {
-  height: calc(100% - 4rem);
-}
-
 .h-auto {
   height: auto;
 }
@@ -1121,10 +1117,6 @@ video {
 
 .w-\[calc\(100\%-2rem\)\] {
   width: calc(100% - 2rem);
-}
-
-.w-\[calc\(100\%-4rem\)\] {
-  width: calc(100% - 4rem);
 }
 
 .w-auto {

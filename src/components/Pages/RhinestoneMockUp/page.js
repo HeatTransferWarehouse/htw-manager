@@ -48,7 +48,7 @@ function RhineStoneMockUp() {
         ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
 
         // Draw the image at normal size (fixes quarter-display issue)
-        ctx.drawImage(img, 0, 0, imgWidth / dpr, imgHeight / dpr);
+        ctx.drawImage(img, 0, 0, imgWidth / 2, imgHeight / 2);
 
         // Apply the rhinestone effect
         applyRhinestoneEffect(ctx, imgWidth, imgHeight, dpr);
@@ -66,68 +66,66 @@ function RhineStoneMockUp() {
     ctx.clearRect(0, 0, width, height);
     ctx.imageSmoothingEnabled = false;
 
-    const rhinestoneImage = new Image();
-    rhinestoneImage.src = "/images/rhinestone.png";
+    requestAnimationFrame(() => {
+      const baseGridSize = 4; // Base distance between dots
+      const maxStoneSize = 3.5; // Max dot size for high contrast (edges)
+      const minStoneSize = 3; // Min dot size for non-edge areas
 
-    rhinestoneImage.onload = () => {
-      requestAnimationFrame(() => {
-        const gridSize = 15; // Scale grid spacing
-        const stoneSize = 12; // Scale rhinestone size
+      for (let y = 0; y < height; y += baseGridSize) {
+        for (let x = 0; x < width; x += baseGridSize) {
+          const i = (y * width + x) * 4;
+          const r = data[i];
+          const g = data[i + 1];
+          const b = data[i + 2];
+          const a = data[i + 3];
 
-        for (let y = 0; y < height; y += gridSize) {
-          for (let x = 0; x < width; x += gridSize) {
-            const i = (y * width + x) * 4;
-            const r = data[i];
-            const g = data[i + 1];
-            const b = data[i + 2];
-            const a = data[i + 3];
+          if (a < 128) continue; // Ignore transparent pixels
 
-            if (a < 128) continue;
+          // Find adjacent pixels for edge detection (simple gradient)
+          const leftIndex = ((y - 1) * width + x) * 4;
+          const rightIndex = ((y + 1) * width + x) * 4;
+          const topIndex = (y * width + (x - 1)) * 4;
+          const bottomIndex = (y * width + (x + 1)) * 4;
 
-            // 🎯 **Scale placement to match high DPI correctly**
-            const halfSize = stoneSize / 2;
-            const centerX = x + gridSize / 2;
-            const centerY = y + gridSize / 2;
-
-            ctx.drawImage(
-              rhinestoneImage,
-              x + 1.5,
-              y + 1.5,
-              stoneSize,
-              stoneSize
-            );
-
-            // 🎨 **Enhance color vibrancy using `hard-light` instead of `overlay`**
-            ctx.globalCompositeOperation = "color-burn";
-            ctx.fillStyle = `rgba(${r}, ${g}, ${b}, 1)`;
-
-            ctx.beginPath();
-            ctx.arc(centerX, centerY, halfSize, 0, Math.PI * 2);
-            ctx.fill();
-
-            ctx.globalCompositeOperation = "source-over";
-
-            // 🎇 **Sharper Highlight Effect**
-            ctx.globalCompositeOperation = "screen";
-            ctx.fillStyle = "rgba(255, 255, 255, 0.8)";
-
-            ctx.beginPath();
-            ctx.moveTo(centerX - 4 * dpr, centerY - 4 * dpr);
-            ctx.lineTo(centerX, centerY - 5 * dpr);
-            ctx.lineTo(centerX - 5 * dpr, centerY);
-            ctx.closePath();
-            ctx.fill();
-
-            ctx.globalCompositeOperation = "source-over";
+          let edgeFactor = 1;
+          if (leftIndex >= 0 && rightIndex < data.length) {
+            const leftBrightness =
+              (data[leftIndex] + data[leftIndex + 1] + data[leftIndex + 2]) / 3;
+            const rightBrightness =
+              (data[rightIndex] + data[rightIndex + 1] + data[rightIndex + 2]) /
+              3;
+            edgeFactor += Math.abs(leftBrightness - rightBrightness);
           }
-        }
-        setLoading(false);
-      });
-    };
 
-    rhinestoneImage.onerror = () => {
-      console.error("Failed to load rhinestone image!");
-    };
+          if (topIndex >= 0 && bottomIndex < data.length) {
+            const topBrightness =
+              (data[topIndex] + data[topIndex + 1] + data[topIndex + 2]) / 3;
+            const bottomBrightness =
+              (data[bottomIndex] +
+                data[bottomIndex + 1] +
+                data[bottomIndex + 2]) /
+              3;
+            edgeFactor += Math.abs(topBrightness - bottomBrightness);
+          }
+
+          // Normalize edge factor and determine dot size dynamically
+          const normalizedEdge = Math.min(1, edgeFactor / 255); // Scale 0 to 1
+          const stoneSize =
+            minStoneSize + (maxStoneSize - minStoneSize) * normalizedEdge;
+
+          const centerX = x + baseGridSize / 2;
+          const centerY = y + baseGridSize / 2;
+
+          // 🎨 Draw the base rhinestone dot with dynamic size
+          ctx.globalCompositeOperation = "source-over";
+          ctx.fillStyle = `rgba(${r}, ${g}, ${b}, 1)`;
+          ctx.beginPath();
+          ctx.arc(centerX, centerY, stoneSize / 2, 0, Math.PI * 2);
+          ctx.fill();
+        }
+      }
+      setLoading(false);
+    });
   };
 
   const openFullScreen = () => {

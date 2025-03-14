@@ -15,83 +15,6 @@ const clothingCategoryIds = [
   573, 1319, 598, 583, 1354, 1355, 1356, 1357, 1358,
 ];
 
-router.post("/order-webhook", function (req, res) {
-  if (req.body.data && req.body.data.id) {
-    const orderId = req.body.data.id;
-    getOrderProducts(orderId);
-  } else {
-    // Handle error - ID was not found in request
-    console.log("Order ID was not found in request for Queue");
-    res.status(400).send("Order ID was not found");
-  }
-});
-
-const getOrderProducts = async (orderId) => {
-  try {
-    const currentDate = getCurrentDate();
-    const response = await axios.get(
-      `https://api.bigcommerce.com/stores/${process.env.STORE_HASH}/v2/orders/${orderId}/products`,
-      {
-        headers: {
-          "Content-Type": "application/json",
-          "X-Auth-Token": process.env.BG_AUTH_TOKEN,
-        },
-      }
-    );
-
-    const products = response.data;
-
-    const searchedProducts = await extractOrderProducts(
-      products,
-      currentDate,
-      orderId
-    );
-
-    const dbItems = await axios.get(
-      "https://admin.heattransferwarehouse.com/api/clothing-queue/items"
-    );
-
-    if (searchedProducts.length === 0)
-      return {
-        status: 304,
-        message: "No products found on order.",
-      };
-
-    const filteredProducts = filterProducts(searchedProducts);
-
-    const productsToAdd = await getProductsToAdd(filteredProducts, dbItems);
-
-    if (productsToAdd.length === 0)
-      return {
-        status: 204,
-        message: "No new products to add.",
-      };
-
-    try {
-      await axios.post(
-        `https://admin.heattransferwarehouse.com/api/clothing-queue/items`,
-        {
-          items: productsToAdd,
-        }
-      );
-      return {
-        status: 201,
-        message: "Products added successfully!",
-      };
-    } catch (error) {
-      return {
-        status: 500,
-        message: `Error adding products. ${error.message}`,
-      };
-    }
-  } catch (error) {
-    return {
-      status: 500,
-      message: `Error getting order products. ${error.message}`,
-    };
-  }
-};
-
 const getCurrentDate = () => {
   const date = moment().tz("America/Chicago");
   const days = [
@@ -133,6 +56,86 @@ const getCurrentDate = () => {
   }
 
   return `${month}/${day}/${year} or ${dayName}, ${monthName} ${day}, ${year}`;
+};
+
+router.post("/order-webhook", function (req, res) {
+  if (req.body.data && req.body.data.id) {
+    const orderId = req.body.data.id;
+    getOrderProducts(orderId);
+  } else {
+    // Handle error - ID was not found in request
+    console.log("Order ID was not found in request for Queue");
+    res.status(400).send("Order ID was not found");
+  }
+});
+
+const getOrderProducts = async (orderId) => {
+  try {
+    const currentDate = getCurrentDate();
+
+    const response = await axios.get(
+      `https://api.bigcommerce.com/stores/${process.env.STORE_HASH}/v2/orders/${orderId}/products`,
+      {
+        headers: {
+          "Content-Type": "application/json",
+          "X-Auth-Token": process.env.BG_AUTH_TOKEN,
+        },
+      }
+    );
+
+    const products = response.data;
+
+    const searchedProducts = await extractOrderProducts(
+      products,
+      currentDate,
+      orderId
+    );
+
+    const dbItems = await axios.get(
+      "https://admin.heattransferwarehouse.com/api/clothing-queue/items"
+    );
+
+    if (searchedProducts.length === 0) {
+      return {
+        status: 304,
+        message: "No products found on order.",
+      };
+    }
+
+    const filteredProducts = filterProducts(searchedProducts);
+
+    const productsToAdd = await getProductsToAdd(filteredProducts, dbItems);
+
+    if (productsToAdd.length === 0) {
+      return {
+        status: 204,
+        message: "No new products to add.",
+      };
+    }
+
+    try {
+      await axios.post(
+        `https://admin.heattransferwarehouse.com/api/clothing-queue/items`,
+        {
+          items: productsToAdd,
+        }
+      );
+      return {
+        status: 201,
+        message: "Products added successfully!",
+      };
+    } catch (error) {
+      return {
+        status: 500,
+        message: `Error adding products. ${error.message}`,
+      };
+    }
+  } catch (error) {
+    return {
+      status: 500,
+      message: `Error getting order products. ${error.message}`,
+    };
+  }
 };
 
 const extractOrderProducts = async (products, currentDate, orderId) => {

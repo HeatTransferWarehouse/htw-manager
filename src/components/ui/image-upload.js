@@ -4,6 +4,7 @@ import { twMerge } from "tailwind-merge";
 
 function CustomImageUpload({ handleImageChange, file, className }) {
   const inputRef = React.useRef();
+
   return (
     <div
       className={twMerge(
@@ -16,7 +17,6 @@ function CustomImageUpload({ handleImageChange, file, className }) {
           <p>Upload your file to get started</p>
           <button
             onClick={(e) => {
-              e.preventDefault();
               inputRef.current.click();
             }}
             className="w-fit px-6 py-3 bg-secondary flex items-center justify-center gap-2 rounded text-white font-semibold">
