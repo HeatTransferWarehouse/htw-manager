@@ -373,7 +373,6 @@ function createSupacolorPayload(
           item.product_options.filter((opt) =>
             opt.display_name_customer?.includes("Garment Type")
           )[0].display_value_customer,
-        colors: "CMYK",
         size: "SIZED ON SHEET",
         ...(priceCodes[index].includes("Headwear")
           ? {
