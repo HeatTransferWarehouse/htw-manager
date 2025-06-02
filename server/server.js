@@ -18,7 +18,7 @@ app.use(
 app.use(express.static("build"));
 
 const { Logtail } = require("@logtail/node");
-const logtail = new Logtail("KQi4An7q1YZVwaTWzM72Ct5r");
+const logtail = new Logtail(process.env.LOGTAIL_ID);
 
 logtail.info("Logtail ready!");
 
@@ -36,30 +36,32 @@ app.use(
 app.use(passport.initialize());
 app.use(passport.session());
 
-const allowedOrigins = [
-  "https://www.heattransferwarehouse.com",
-  "https://heat-transfer-warehouse-sandbox.mybigcommerce.com",
-  "https://admin.heattransferwarehouse.com",
-  "https://manager.heattransferwarehouse.com",
-  "https://heattransferwarehouse.biz/",
-];
+const allowedOrigins =
+  process.env.ALLOWED_ORIGINS?.split(",").map((o) => o.trim()) || [];
+const trustedDevIp = process.env.ALLOWED_CORS_IP || "";
 
-// CORS Middleware
-app.use(
-  cors({
-    origin: function (origin, callback) {
-      if (!origin || allowedOrigins.indexOf(origin) !== -1) {
-        callback(null, true);
-      } else {
-        callback(new Error("Not allowed by CORS"));
-      }
-    },
-    methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"], // Allow these HTTP methods
-    credentials: true, // Allow cookies and credentials to be sent
+const dynamicCors = (req, res, next) => {
+  const origin = req.headers.origin;
+  const clientIp =
+    req.headers["x-forwarded-for"]?.split(",")[0] || req.socket.remoteAddress;
+
+  const isWhitelistedOrigin = allowedOrigins.includes(origin);
+  const isLocalhostOrigin = /^http:\/\/localhost:\d+$/.test(origin);
+  const isTrustedIp = clientIp?.includes(trustedDevIp);
+
+  const allowOrigin = isWhitelistedOrigin || (isLocalhostOrigin && isTrustedIp);
+
+  const corsOptions = {
+    origin: allowOrigin ? origin : false,
+    credentials: true,
+    methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
     optionsSuccessStatus: 200,
-  })
-);
+  };
 
+  cors(corsOptions)(req, res, next);
+};
+
+app.use(dynamicCors);
 // Manually handle preflight OPTIONS requests
 app.options("*", cors());
 
