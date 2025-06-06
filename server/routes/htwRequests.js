@@ -17,40 +17,6 @@ const saveBufferToFile = (buffer, filename) => {
   return fs.writeFile(filePath, buffer).then(() => filePath);
 };
 
-const addDigitalProofItem = async (cartId, digitalProofID, apiKey, hash) => {
-  const url = `https://api.bigcommerce.com/stores/${hash}/v3/carts/${cartId}/items`;
-  const headers = {
-    "Content-Type": "application/json",
-    "X-Auth-Token": apiKey,
-  };
-  const body = {
-    line_items: [
-      {
-        product_id: digitalProofID,
-        quantity: 1,
-        variant_id: 157415,
-      },
-    ],
-  };
-  const options = {
-    method: "POST",
-    headers: headers,
-    body: JSON.stringify(body),
-  };
-
-  const response = await fetch(url, options);
-  if (!response.ok) {
-    if (response.status === 409 && response.statusText === "Conflict") {
-      return response.json(); // If the item already exists, return the response
-    }
-    console.error("Failed to add digital proof item", response);
-    throw new Error(`Failed to add digital proof item: ${response.statusText}`);
-  }
-
-  const jsonResponse = await response.json();
-  return jsonResponse;
-};
-
 router.post("/generate-preview", upload.single("file"), async (req, res) => {
   try {
     const file = req.file;
@@ -169,10 +135,14 @@ router.post("/update-item-price", async (req, res) => {
     const cartItemId = data.cartItemId;
     const cartId = data.cartId;
     const itemPrice = data.itemPrice;
+    const shouldAddDigitalProof = data.shouldAddDigitalProof;
+    const digitalProofID = parseInt(data.digitalProofID, 10);
 
     const requestOrigin = req.get("origin");
 
     let hash, apiKey;
+    hash = process.env.STORE_HASH;
+    apiKey = process.env.BG_AUTH_TOKEN;
 
     if (
       requestOrigin ===
@@ -180,7 +150,10 @@ router.post("/update-item-price", async (req, res) => {
     ) {
       hash = process.env.SANDBOX_HASH;
       apiKey = process.env.SANDBOX_API_KEY;
-    } else if (requestOrigin === "https://www.heattransferwarehouse.com" || requestOrigin === "https://www.heattransferwarehouse.biz") {
+    } else if (
+      requestOrigin === "https://www.heattransferwarehouse.com" ||
+      requestOrigin === "https://www.heattransferwarehouse.biz"
+    ) {
       hash = process.env.STORE_HASH;
       apiKey = process.env.BG_AUTH_TOKEN;
     } else {
@@ -195,6 +168,15 @@ router.post("/update-item-price", async (req, res) => {
       "X-Auth-Token": apiKey,
     };
 
+    const constructedCartItem = {
+      line_item: {
+        list_price: itemPrice,
+        quantity: cartItem.quantity,
+        variant_id: cartItem.variant_id,
+        product_id: cartItem.product_id,
+      },
+    };
+
     const updateOptions = {
       method: "PUT",
       headers: headers,
@@ -204,26 +186,35 @@ router.post("/update-item-price", async (req, res) => {
     const updateResponse = await fetch(updateUrl, updateOptions);
 
     if (!updateResponse.ok) {
-      const errorMessage = `Failed to transfer cart item. Status: ${updateResponse}`;
-      console.error(errorMessage);
+      console.error("Failed to update item price", updateResponse);
       return res.status(updateResponse.status).json({
-        message: errorMessage,
+        message: updateResponse,
         success: false,
       });
     }
 
     const jsonResponse = await updateResponse.json();
 
-    res.json({
-      message: "Item price successfully updated",
-      data: {
-        cart: jsonResponse,
-        cartItemId: cartItemId,
-        qty: cartItemQty,
-        cartItemPrice: cartItemPrice,
-      },
-      success: true,
-    });
+    if (shouldAddDigitalProof) {
+      await addDigitalProofItem(
+        jsonResponse.data.id,
+        digitalProofID,
+        apiKey,
+        hash
+      );
+
+      res.json({
+        message: "Item price and digital proof successfully updated",
+        data: jsonResponse,
+        success: true,
+      });
+    } else {
+      res.json({
+        message: "Item price successfully updated",
+        data: jsonResponse,
+        success: true,
+      });
+    }
   } catch (error) {
     console.error("Error processing cart data:", error);
     res.status(500).json({
@@ -233,12 +224,47 @@ router.post("/update-item-price", async (req, res) => {
   }
 });
 
+const addDigitalProofItem = async (cartId, digitalProofID, apiKey, hash) => {
+  const url = `https://api.bigcommerce.com/stores/${hash}/v3/carts/${cartId}/items`;
+  const headers = {
+    "Content-Type": "application/json",
+    "X-Auth-Token": apiKey,
+  };
+  const body = {
+    line_items: [
+      {
+        product_id: digitalProofID,
+        quantity: 1,
+        variant_id: 157415,
+      },
+    ],
+  };
+  const options = {
+    method: "POST",
+    headers: headers,
+    body: JSON.stringify(body),
+  };
+
+  const response = await fetch(url, options);
+  if (!response.ok) {
+    if (response.status === 409 && response.statusText === "Conflict") {
+      return response.json(); // If the item already exists, return the response
+    }
+    console.error("Failed to add digital proof item", response);
+    throw new Error(`Failed to add digital proof item: ${response.statusText}`);
+  }
+
+  const jsonResponse = await response.json();
+  return jsonResponse;
+};
+
 router.post("/cart-transfer-price", async (req, res) => {
   try {
     const requestOrigin = req.get("origin");
 
     let hash, apiKey;
-
+    hash = process.env.STORE_HASH;
+    apiKey = process.env.BG_AUTH_TOKEN;
     if (
       requestOrigin ===
       "https://heat-transfer-warehouse-sandbox.mybigcommerce.com"
