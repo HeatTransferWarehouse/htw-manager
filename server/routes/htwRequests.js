@@ -17,6 +17,40 @@ const saveBufferToFile = (buffer, filename) => {
   return fs.writeFile(filePath, buffer).then(() => filePath);
 };
 
+const addDigitalProofItem = async (cartId, digitalProofID, apiKey, hash) => {
+  const url = `https://api.bigcommerce.com/stores/${hash}/v3/carts/${cartId}/items`;
+  const headers = {
+    "Content-Type": "application/json",
+    "X-Auth-Token": apiKey,
+  };
+  const body = {
+    line_items: [
+      {
+        product_id: digitalProofID,
+        quantity: 1,
+        variant_id: 157415,
+      },
+    ],
+  };
+  const options = {
+    method: "POST",
+    headers: headers,
+    body: JSON.stringify(body),
+  };
+
+  const response = await fetch(url, options);
+  if (!response.ok) {
+    if (response.status === 409 && response.statusText === "Conflict") {
+      return response.json(); // If the item already exists, return the response
+    }
+    console.error("Failed to add digital proof item", response);
+    throw new Error(`Failed to add digital proof item: ${response.statusText}`);
+  }
+
+  const jsonResponse = await response.json();
+  return jsonResponse;
+};
+
 router.post("/generate-preview", upload.single("file"), async (req, res) => {
   try {
     const file = req.file;
@@ -161,15 +195,6 @@ router.post("/update-item-price", async (req, res) => {
       "X-Auth-Token": apiKey,
     };
 
-    const constructedCartItem = {
-      line_item: {
-        list_price: itemPrice,
-        quantity: cartItem.quantity,
-        variant_id: cartItem.variant_id,
-        product_id: cartItem.product_id,
-      },
-    };
-
     const updateOptions = {
       method: "PUT",
       headers: headers,
@@ -179,9 +204,10 @@ router.post("/update-item-price", async (req, res) => {
     const updateResponse = await fetch(updateUrl, updateOptions);
 
     if (!updateResponse.ok) {
-      console.error("Failed to update item price", updateResponse);
+      const errorMessage = `Failed to transfer cart item. Status: ${updateResponse}`;
+      console.error(errorMessage);
       return res.status(updateResponse.status).json({
-        message: updateResponse,
+        message: errorMessage,
         success: false,
       });
     }
@@ -190,7 +216,12 @@ router.post("/update-item-price", async (req, res) => {
 
     res.json({
       message: "Item price successfully updated",
-      data: jsonResponse,
+      data: {
+        cart: jsonResponse,
+        cartItemId: cartItemId,
+        qty: cartItemQty,
+        cartItemPrice: cartItemPrice,
+      },
       success: true,
     });
   } catch (error) {
