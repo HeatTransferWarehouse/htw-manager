@@ -62,8 +62,6 @@ const dynamicCors = (req, res, next) => {
 };
 
 app.use(dynamicCors);
-// Manually handle preflight OPTIONS requests
-app.options("*", cors());
 
 // Route includes
 const userRouter = require("./routes/userrouter");
