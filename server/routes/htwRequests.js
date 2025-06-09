@@ -152,7 +152,7 @@ router.post("/update-item-price", async (req, res) => {
       apiKey = process.env.SANDBOX_API_KEY;
     } else if (
       requestOrigin === "https://www.heattransferwarehouse.com" ||
-      requestOrigin === "https://www.heattransferwarehouse.biz"
+      requestOrigin === "https://heattransferwarehouse.biz"
     ) {
       hash = process.env.STORE_HASH;
       apiKey = process.env.BG_AUTH_TOKEN;
