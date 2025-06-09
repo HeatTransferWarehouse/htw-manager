@@ -144,6 +144,8 @@ router.post("/update-item-price", async (req, res) => {
     hash = process.env.STORE_HASH;
     apiKey = process.env.BG_AUTH_TOKEN;
 
+    console.log("Request Origin:", requestOrigin);
+
     if (
       requestOrigin ===
       "https://heat-transfer-warehouse-sandbox.mybigcommerce.com"
@@ -159,6 +161,13 @@ router.post("/update-item-price", async (req, res) => {
     } else {
       throw new Error("Invalid origin");
     }
+
+    console.log("Using Store Hash:", hash);
+    console.log("Using API Key:", apiKey);
+
+    console.log("Cart Item ID:", cartItemId);
+    console.log("Cart ID:", cartId);
+    console.log("Item Price:", itemPrice);
 
     // URL for adding the item to the cart
     const updateUrl = `https://api.bigcommerce.com/stores/${hash}/v3/carts/${cartId}/items/${cartItemId}`;
@@ -271,7 +280,10 @@ router.post("/cart-transfer-price", async (req, res) => {
     ) {
       hash = process.env.SANDBOX_HASH;
       apiKey = process.env.SANDBOX_API_KEY;
-    } else if (requestOrigin === "https://www.heattransferwarehouse.com" || requestOrigin === "https://www.heattransferwarehouse.biz") {
+    } else if (
+      requestOrigin === "https://www.heattransferwarehouse.com" ||
+      requestOrigin === "https://www.heattransferwarehouse.biz"
+    ) {
       hash = process.env.STORE_HASH;
       apiKey = process.env.BG_AUTH_TOKEN;
     } else {
