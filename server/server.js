@@ -78,6 +78,7 @@ const promoTracker = require("./routes/promo-tracking");
 const htwRouter = require("./routes/htwRequests");
 const htwRoutes = require("./routes/product-issues/htw");
 const sffProductRoutes = require("./routes/product-issues/sff");
+const JDS = require("./routes/JDS/index");
 
 app.use("/api/user", userRouter);
 app.use("/api/bp-api", captureRouter);
@@ -87,6 +88,7 @@ app.use("/api/promotions", promoTracker);
 app.use("/api/htw", htwRouter);
 app.use("/api/products/htw", htwRoutes);
 app.use("/api/products/sff", sffProductRoutes);
+app.use("/api/jds", JDS);
 
 // Queue Routers
 app.use("/api/sff-queue", sffQueueRouter);

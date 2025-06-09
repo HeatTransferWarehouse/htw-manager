@@ -239,6 +239,25 @@ function Nav() {
                     Description Issues
                   </NavLink>
                 </DropDownItem>
+                <DropDownItem>
+                  <NavLink
+                    to={"/jds/new-product"}
+                    className="p-2 hover:text-secondary whitespace-nowrap">
+                    JDS Product Import
+                  </NavLink>
+                </DropDownItem>
+              </DropDownContent>
+            </DropDownContainer>
+            <DropDownContainer type="hover">
+              <DropDownTrigger>Sanmar</DropDownTrigger>
+              <DropDownContent>
+                <DropDownItem>
+                  <NavLink
+                    to={"/sanmar-price-sync"}
+                    className="p-2 hover:text-secondary whitespace-nowrap">
+                    Price Sync
+                  </NavLink>
+                </DropDownItem>
               </DropDownContent>
             </DropDownContainer>
             {user.access_level === "5" && (

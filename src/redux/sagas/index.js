@@ -10,6 +10,7 @@ import ClothingSaga from "./clothingSaga";
 import AdminSaga from "./adminSaga";
 import PromotionsSaga from "./promotionsSaga";
 import rootProductsSage from "./products";
+import JDSSaga from "./jdsSaga";
 
 // rootSaga is the primary saga.
 // It bundles up all of the other sagas so our project can use them.
@@ -27,5 +28,6 @@ export default function* rootSaga() {
     AdminSaga(),
     PromotionsSaga(),
     rootProductsSage(),
+    JDSSaga(),
   ]);
 }

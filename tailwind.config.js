@@ -11,6 +11,7 @@ module.exports = {
         dark: "#1d1d1d",
         darkBg: "white",
         neutral: "#666666",
+        secondaryHover: "#eeecf9",
       },
       backgroundColor: {
         grad: "linear-gradient(90deg, #a759d1 0%, #6240D0 29%, #ff1362, 67%, #fc4242 80%, #a759d1 100%)",

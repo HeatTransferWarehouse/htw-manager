@@ -32,6 +32,7 @@ import ProductsMissingAlts from "../Pages/ProductsMissingAlt";
 import ProductTools from "../Pages/ProductTools";
 import RhineStoneMockUp from "../Pages/RhinestoneMockUp/page";
 import { twMerge } from "tailwind-merge";
+import JDSProductCreation from "../Pages/JDS/ProductCreation/page";
 
 // App.js
 export const routeConfig = [
@@ -149,6 +150,20 @@ export const routeConfig = [
     protected: true,
     page_title: "Products With No Descriptions",
   },
+  {
+    path: "/jds/new-product",
+    name: "JDS Product Creation",
+    element: <JDSProductCreation />,
+    protected: true,
+    page_title: "JDS Product Creation",
+  },
+  {
+    path: "/products/no-description",
+    name: "Products With No Descriptions",
+    element: <ProductsWithNoDesc />,
+    protected: true,
+    page_title: "Products With No Descriptions",
+  },
 ];
 
 function App() {
@@ -203,8 +218,6 @@ function App() {
   const currentPage = routeConfig.find(
     (route) => route.path === location.pathname
   );
-
-  console.log("currentPage", currentPage);
 
   return (
     <>

@@ -12,6 +12,7 @@ import clothingReducer from "./clothingReducer";
 import admin from "./adminReducer";
 import promotionsReducer from "./promotionsReducer";
 import productsReducer from "./products";
+import jdsReducer from "./jdsReducer";
 
 // rootReducer is the primary reducer for our entire project
 // It bundles up all of the other reducers so our project can use them.
@@ -33,6 +34,7 @@ const rootReducer = combineReducers({
   admin,
   promotionsReducer,
   productsReducer,
+  jdsReducer,
 });
 
 export default rootReducer;
