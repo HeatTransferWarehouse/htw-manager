@@ -13,6 +13,7 @@ import {
   DropDownTrigger,
 } from "../../../ui/dropdown";
 import { twMerge } from "tailwind-merge";
+import Toast from "../../../ui/toast";
 
 function JDSProductCreation() {
   const state = useSelector((state) => state.jdsReducer);
@@ -28,6 +29,7 @@ function JDSProductCreation() {
   const [bcCategoriesList, setBcCategoriesList] = React.useState([]);
   const [bcCategoriesErrors, setBcCategoriesErrors] = React.useState(null);
   const [storeToUse, setStoreToUse] = React.useState("htw");
+  const [bcProductsAddSuccess, setBcProductsAddSuccess] = React.useState(false);
 
   const storeToUseMap = {
     htw: "Heat Transfer Warehouse",
@@ -45,10 +47,11 @@ function JDSProductCreation() {
         return {
           name: product.name || "",
           sku: product.sku || "",
-          price: product.twentyCases || 0,
+          price: product.oneCase || 0,
           weight: 1,
           categories: [],
           thumbnail: product.thumbnail || "",
+          description: product.description || "",
         };
       })
     );
@@ -66,11 +69,13 @@ function JDSProductCreation() {
     setBcCategoriesErrors(state.bcCategoriesErrors);
     setBcLoading(state.bcLoading);
     setBCError(state.bcProductsAddError);
+    setBcProductsAddSuccess(state.bcProductsAddSuccess);
   }, [
     state.bcCategoriesList,
     state.bcCategoriesErrors,
     state.bcLoading,
     state.bcProductsAddError,
+    state.bcProductsAddSuccess,
   ]);
 
   useEffect(() => {
@@ -120,6 +125,14 @@ function JDSProductCreation() {
         weight: 0,
         price: product.price * 1.5,
         categories: product.categories,
+        images: [
+          {
+            image_url: product.thumbnail,
+            is_thumbnail: true,
+            sort_order: -2147483648,
+          },
+        ],
+        description: product.description || "",
         type: "physical",
         is_visible: false,
         is_featured: false,
@@ -134,6 +147,12 @@ function JDSProductCreation() {
 
   return (
     <>
+      <Toast
+        onClose={() => dispatch({ type: "CLEAR_PRODUCT_ADD_SUCCESS" })}
+        isOpen={bcProductsAddSuccess}
+        title={"Products Added to BigCommerce"}
+        variant={"success"}
+      />
       {bcCategoriesErrors && (
         <div className="w-screen h-screen flex items-center justify-center bg-black/50 fixed top-0 left-0 z-50">
           <Card className="max-w-screen-md flex flex-col items-center justify-center gap-4 w-full p-6">
@@ -195,8 +214,8 @@ function JDSProductCreation() {
         JDS Product Import
       </h1>
       <div className="flex justify-center gap-2 mt-8 items-center">
-        <DropDownContainer>
-          <DropDownTrigger className="bg-white text-nowrap border w-[230px] border-gray-300">
+        <DropDownContainer type="click">
+          <DropDownTrigger className="!bg-white text-nowrap hover:border-secondary !justify-between border w-[230px] border-gray-300">
             {storeToUseMap[storeToUse]}
           </DropDownTrigger>
           <DropDownContent>
@@ -256,14 +275,14 @@ function JDSProductCreation() {
         </Button>
         <Button
           className={
-            "bg-secondary flex items-center justify-center w-[130px] h-[40px] text-white m-0"
+            "bg-secondary flex items-center justify-center w-[180px] h-[40px] text-white m-0"
           }
           disabled={bcLoading || !importedProducts.length}
           onClick={(e) => addProductsToBC()}>
           {bcLoading ? (
             <BiLoaderAlt className="animate-spin z-10 block text-white w-6 h-6" />
           ) : (
-            "Add Products"
+            "Add Products To BC"
           )}
         </Button>
       </div>

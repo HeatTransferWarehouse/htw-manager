@@ -33,10 +33,12 @@ function* addJDSProductsToBC(action) {
       products,
       store: storeToUse,
     });
-    console.log("Response from BigCommerce:", response);
     if (response.status === 200) {
       yield put({
         type: "SET_PRODUCT_ADD_SUCCESS",
+      });
+      yield put({
+        type: "CLEAR_JDS_PRODUCTS_TO_IMPORT",
       });
     }
   } catch (error) {
@@ -47,7 +49,6 @@ function* addJDSProductsToBC(action) {
       payload: error?.response.data.message,
     });
   } finally {
-    console.log("Resetting loading state");
     yield put({ type: "SET_BC_LOADING", payload: false });
   }
 }

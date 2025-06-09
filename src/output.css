@@ -1167,6 +1167,10 @@ video {
   width: 100vw;
 }
 
+.w-\[180px\] {
+  width: 180px;
+}
+
 .min-w-32 {
   min-width: 8rem;
 }
@@ -1487,6 +1491,10 @@ video {
   justify-content: space-between;
 }
 
+.\!justify-between {
+  justify-content: space-between !important;
+}
+
 .gap-1 {
   gap: 0.25rem;
 }
@@ -1777,6 +1785,11 @@ video {
 .bg-yellow-600 {
   --tw-bg-opacity: 1;
   background-color: rgb(202 138 4 / var(--tw-bg-opacity));
+}
+
+.\!bg-white {
+  --tw-bg-opacity: 1 !important;
+  background-color: rgb(255 255 255 / var(--tw-bg-opacity)) !important;
 }
 
 .bg-opacity-50 {

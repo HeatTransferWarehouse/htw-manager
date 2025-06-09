@@ -6,6 +6,8 @@ const productsToImport = (state = [], action) => {
       return action.payload;
     case "REMOVE_JDS_PRODUCT":
       return state.filter((product) => product.sku !== action.payload);
+    case "CLEAR_JDS_PRODUCTS_TO_IMPORT":
+      return [];
     default:
       return state;
   }
@@ -62,6 +64,17 @@ const bcProductsAddError = (state = null, action) => {
   }
 };
 
+const bcProductsAddSuccess = (state = false, action) => {
+  switch (action.type) {
+    case "SET_PRODUCT_ADD_SUCCESS":
+      return true;
+    case "CLEAR_PRODUCT_ADD_SUCCESS":
+      return false;
+    default:
+      return state;
+  }
+};
+
 const bcLoading = (state = false, action) => {
   switch (action.type) {
     case "SET_BC_LOADING":
@@ -79,4 +92,5 @@ export default combineReducers({
   bcCategoriesErrors,
   bcLoading,
   bcProductsAddError,
+  bcProductsAddSuccess,
 });
