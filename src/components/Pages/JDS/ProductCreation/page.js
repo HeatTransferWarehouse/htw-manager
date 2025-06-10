@@ -50,7 +50,7 @@ function JDSProductCreation() {
           price: product.oneCase || 0,
           weight: 1,
           categories: [],
-          thumbnail: product.thumbnail || "",
+          thumbnail: product.image || "",
           description: product.description || "",
         };
       })
