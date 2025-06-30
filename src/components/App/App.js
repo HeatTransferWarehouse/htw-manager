@@ -33,6 +33,7 @@ import ProductTools from "../Pages/ProductTools";
 import RhineStoneMockUp from "../Pages/RhinestoneMockUp/page";
 import { twMerge } from "tailwind-merge";
 import JDSProductCreation from "../Pages/JDS/ProductCreation/page";
+import PageNotFound from "../Pages/404/page";
 
 // App.js
 export const routeConfig = [
@@ -157,13 +158,6 @@ export const routeConfig = [
     protected: true,
     page_title: "JDS Product Creation",
   },
-  {
-    path: "/products/no-description",
-    name: "Products With No Descriptions",
-    element: <ProductsWithNoDesc />,
-    protected: true,
-    page_title: "Products With No Descriptions",
-  },
 ];
 
 function App() {
@@ -179,7 +173,7 @@ function App() {
     }
     logoutTimerRef.current = setTimeout(() => {
       dispatch({ type: "UNSET_USER" });
-    }, 300000); // 300,000ms = 5 min
+    }, 1800000); // 30 minutes
   }, [dispatch]);
 
   useEffect(() => {
@@ -221,11 +215,12 @@ function App() {
 
   return (
     <>
-      {user.id && currentPage.path !== "/rhinestone-mockup" && <Nav />}
+      {user.id && location.pathname !== "/rhinestone-mockup" && <Nav />}
+
       <main
         className={twMerge(
           "main-container",
-          currentPage.path === "/rhinestone-mockup" && "rhinestone-mockup"
+          currentPage?.path === "/rhinestone-mockup" && "rhinestone-mockup"
         )}>
         <Routes>
           {/* Redirect to user's default path if logged in and visiting "/login" */}
@@ -245,7 +240,9 @@ function App() {
             }
           />
 
-          {routeConfig.map(({ path, element, protected: isProtected }) => {
+          {routeConfig.map((route) => {
+            if (!route || typeof route.path === "undefined") return null;
+            const { path, element, protected: isProtected } = route;
             if (isProtected === true) {
               return (
                 <Route
@@ -265,16 +262,7 @@ function App() {
             }
             return <Route key={path} path={path} element={element} />;
           })}
-
-          {/* Catch-all 404 route */}
-          <Route
-            path="*"
-            element={
-              <>
-                <h1 className="fourfour">404</h1>
-              </>
-            }
-          />
+          <Route path="*" element={<PageNotFound />} />
         </Routes>
       </main>
     </>

@@ -2,10 +2,12 @@ import React, { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Button } from "../../../ui/button";
 import { Card } from "../../../ui/card";
-import { BiLoaderAlt } from "react-icons/bi";
-import { MdError } from "react-icons/md";
-import CategoryPicker from "./category-folders";
-import { FaCheck } from "react-icons/fa6";
+import { BiLoaderAlt, BiPlus } from "react-icons/bi";
+import { GoPlusCircle } from "react-icons/go";
+import Toast from "../../../ui/toast";
+import ProductCard from "./product-card";
+import ErrorHandler from "../../../ErrorHandler/page";
+import Popover from "../../../ui/popover";
 import {
   DropDownContainer,
   DropDownContent,
@@ -13,13 +15,22 @@ import {
   DropDownTrigger,
 } from "../../../ui/dropdown";
 import { twMerge } from "tailwind-merge";
-import Toast from "../../../ui/toast";
+import { FaCheck, FaSpinner } from "react-icons/fa6";
+import colorNameList from "color-name-list";
+import { AiFillMinusCircle } from "react-icons/ai";
+import { useVariantUtils } from "./utilities/variant-utils";
+import { useBCProductUtils } from "./utilities/bc-utils";
 
 function JDSProductCreation() {
+  const { buildProductVariantsFromJDSData, buildAllVariants } =
+    useVariantUtils();
+  const { addProductsToBC } = useBCProductUtils();
   const state = useSelector((state) => state.jdsReducer);
+  const importComplete = state.importComplete;
   const dispatch = useDispatch();
   const priceRefs = React.useRef({});
   const [importedProducts, setImportedProducts] = React.useState([]);
+  const [mainProducts, setMainProducts] = React.useState([]);
   const [priceInputs, setPriceInputs] = React.useState({});
   const [skuInput, setSkuInput] = React.useState("");
   const [loading, setLoading] = React.useState(false);
@@ -30,6 +41,8 @@ function JDSProductCreation() {
   const [bcCategoriesErrors, setBcCategoriesErrors] = React.useState(null);
   const [storeToUse, setStoreToUse] = React.useState("htw");
   const [bcProductsAddSuccess, setBcProductsAddSuccess] = React.useState(false);
+  const [activeProductIndex, setActiveProductIndex] = React.useState(null);
+  const [activeProduct, setActiveProduct] = React.useState(null);
 
   const storeToUseMap = {
     htw: "Heat Transfer Warehouse",
@@ -37,8 +50,55 @@ function JDSProductCreation() {
     sandbox: "Sandbox Store",
   };
 
+  const variantTypeMap = {
+    radio_buttons: "Radio Buttons",
+    rectangles: "Rectangle List",
+    dropdown: "Dropdown",
+    swatch: "Swatch",
+  };
+
   const bundledSkus = (string) => {
     return string.split(",").map((sku) => sku);
+  };
+
+  function extractOptionsFromVariants(variants) {
+    const optionMap = new Map();
+
+    for (const variant of variants) {
+      for (const opt of variant.option_values) {
+        const key = `${opt.option_display_name}|${opt.type}`;
+        if (!optionMap.has(key)) {
+          optionMap.set(key, {
+            display_name: opt.option_display_name,
+            type: opt.type,
+            option_values: [],
+          });
+        }
+
+        const existingValues = optionMap.get(key).option_values;
+        const alreadyExists = existingValues.some((v) => v.label === opt.label);
+        if (!alreadyExists) {
+          existingValues.push({
+            label: opt.label,
+            is_default: false,
+            sort_order: existingValues.length,
+          });
+        }
+      }
+    }
+
+    return Array.from(optionMap.values());
+  }
+
+  const addVariantsToggle = (index) => {
+    setActiveProductIndex(index);
+    const copiedProduct = JSON.parse(JSON.stringify(mainProducts[index]));
+    setActiveProduct((prev) => {
+      return {
+        ...prev,
+        variants: copiedProduct.originalVariants || [],
+      };
+    });
   };
 
   useEffect(() => {
@@ -92,56 +152,69 @@ function JDSProductCreation() {
     });
   };
 
+  const addNewProduct = () => {
+    setMainProducts((prevProducts) => [
+      ...prevProducts,
+      {
+        name: "",
+        sku: "",
+        price: 0,
+        weight: 1,
+        categories: [],
+        thumbnail: "",
+        description: "",
+        variants: [],
+        store: "htw",
+      },
+    ]);
+  };
+
+  // Add this effect:
+  useEffect(() => {
+    if (importComplete && importedProducts.length > 0) {
+      buildProductVariantsFromJDSData(importedProducts, setActiveProduct);
+
+      // Reset the flag!
+      dispatch({ type: "CLEAR_JDS_IMPORT_COMPLETE" });
+    }
+    // eslint-disable-next-line
+  }, [importComplete, importedProducts]);
+
+  const saveVariants = () => {
+    const finalVariants = buildAllVariants(activeProduct);
+    const correspondingProduct = mainProducts[activeProductIndex];
+    setMainProducts((prevProducts) => {
+      const updatedProducts = [...prevProducts];
+      updatedProducts[activeProductIndex] = {
+        ...correspondingProduct,
+        name: activeProduct.name,
+        price: activeProduct.price,
+        variants: finalVariants,
+        originalVariants: activeProduct.variants,
+        options: activeProduct.variants.map((v, index) => {
+          return {
+            display_name: v.display_name,
+            type: v.type,
+            sort_order: index,
+            option_values: v.option_values.map((opt) => ({
+              label: opt.label,
+              is_default: opt.is_default,
+              sort_order: opt.sort_order || 0,
+            })),
+          };
+        }),
+      };
+      return updatedProducts;
+    });
+    setActiveProductIndex(null);
+    setActiveProduct(null);
+  };
+
   const removeProduct = (index) => {
-    setImportedProducts((prevProducts) => {
+    setMainProducts((prevProducts) => {
       const updatedProducts = [...prevProducts];
       updatedProducts.splice(index, 1);
       return updatedProducts;
-    });
-    dispatch({
-      type: "REMOVE_JDS_PRODUCT",
-      payload: importedProducts[index].sku,
-    });
-  };
-
-  const addProductsToBC = () => {
-    const allProductsValid = importedProducts.every(
-      (product) =>
-        product.name &&
-        product.sku &&
-        product.price &&
-        product.categories.length > 0
-    );
-    if (!allProductsValid) {
-      alert(
-        "Please ensure all products have a name, SKU, price, and at least one category selected."
-      );
-      return;
-    }
-    const cleanedProducts = importedProducts.map((product) => {
-      return {
-        name: product.name,
-        sku: product.sku,
-        weight: 0,
-        price: product.price * 1.5,
-        categories: product.categories,
-        images: [
-          {
-            image_url: product.thumbnail,
-            is_thumbnail: true,
-            sort_order: -2147483648,
-          },
-        ],
-        description: product.description || "",
-        type: "physical",
-        is_visible: false,
-        is_featured: false,
-        is_free_shipping: false,
-      };
-    });
-    dispatch({
-      type: "ADD_JDS_PRODUCTS_TO_BC",
-      payload: { products: cleanedProducts, store: storeToUse },
     });
   };
 
@@ -153,132 +226,44 @@ function JDSProductCreation() {
         title={"Products Added to BigCommerce"}
         variant={"success"}
       />
-      {bcCategoriesErrors && (
-        <div className="w-screen h-screen flex items-center justify-center bg-black/50 fixed top-0 left-0 z-50">
-          <Card className="max-w-screen-md flex flex-col items-center justify-center gap-4 w-full p-6">
-            <MdError className="text-6xl text-red-600" />
-            <h2 className="text-xl font-semibold ">
-              Error Fetching BigCommerce Categories
-            </h2>
-            <p className="text-base">{bcCategoriesErrors}</p>
-            <Button
-              className="mt-4 bg-secondary text-white"
-              onClick={() => {
-                dispatch({ type: "CLEAR_BIG_COMMERCE_CATEGORIES_ERROR" });
-                setBcCategoriesErrors(null);
-              }}>
-              Okay
-            </Button>
-          </Card>
-        </div>
-      )}
-      {BCError && (
-        <div className="w-screen h-screen flex items-center justify-center bg-black/50 fixed top-0 left-0 z-50">
-          <Card className="max-w-screen-md flex flex-col items-center justify-center gap-4 w-full p-6">
-            <MdError className="text-6xl text-red-600" />
-            <h2 className="text-xl font-semibold ">
-              Error Adding Products to BigCommerce
-            </h2>
-            <p className="text-lg">{BCError}</p>
-            <Button
-              className="mt-4 bg-secondary text-white"
-              onClick={() => {
-                dispatch({ type: "CLEAR_BC_PRODUCT_ADD_ERROR" });
-                setBcCategoriesErrors(null);
-              }}>
-              Okay
-            </Button>
-          </Card>
-        </div>
-      )}
-      {error && (
-        <div className="w-screen h-screen flex items-center justify-center bg-black/50 fixed top-0 left-0 z-50">
-          <Card className="max-w-screen-md flex flex-col items-center justify-center gap-4 w-full p-6">
-            <MdError className="text-6xl text-red-600" />
-            <h2 className="text-xl font-semibold ">
-              Error Fetching JDS Product Data
-            </h2>
-            <p className="text-base">{error}</p>
-            <Button
-              className="mt-4 bg-secondary text-white"
-              onClick={() => {
-                dispatch({ type: "CLEAR_JDS_ERROR" });
-                setError(null);
-              }}>
-              Okay
-            </Button>
-          </Card>
-        </div>
-      )}
+      <ErrorHandler
+        shouldShow={bcCategoriesErrors}
+        title="Error Fetching BigCommerce Categories"
+        message={bcCategoriesErrors}
+        onClose={() => {
+          dispatch({ type: "CLEAR_BIG_COMMERCE_CATEGORIES_ERROR" });
+          setBcCategoriesErrors(null);
+        }}
+      />
+      <ErrorHandler
+        shouldShow={BCError}
+        title="Error Adding Products to BigCommerce"
+        message={BCError}
+        onClose={() => {
+          dispatch({ type: "CLEAR_BC_PRODUCT_ADD_ERROR" });
+          setBcCategoriesErrors(null);
+        }}
+      />
+      <ErrorHandler
+        shouldShow={error}
+        title="Error Fetching JDS Product Data"
+        message={error}
+        onClose={() => {
+          dispatch({ type: "CLEAR_JDS_ERROR" });
+          setError(null);
+        }}
+      />
+
       <h1 className="font-bold mx-auto mb-4 mt-8 text-4xl">
         JDS Product Import
       </h1>
-      <div className="flex justify-center gap-2 mt-8 items-center">
-        <DropDownContainer type="click">
-          <DropDownTrigger className="!bg-white text-nowrap hover:border-secondary !justify-between border w-[230px] border-gray-300">
-            {storeToUseMap[storeToUse]}
-          </DropDownTrigger>
-          <DropDownContent>
-            <DropDownItem
-              className={twMerge(
-                storeToUse === "htw" && "bg-secondary/10",
-                "flex items-center justify-between"
-              )}
-              onClick={() => setStoreToUse("htw")}>
-              Heat Transfer Warehouse
-              {storeToUse === "htw" && (
-                <FaCheck className="text-secondary w-4 h-4 ml-2" />
-              )}
-            </DropDownItem>
-            <DropDownItem
-              className={twMerge(
-                storeToUse === "sff" && "bg-secondary/10",
-                "flex items-center justify-between"
-              )}
-              onClick={() => setStoreToUse("sff")}>
-              Shirts From Fargo
-              {storeToUse === "sff" && (
-                <FaCheck className="text-secondary w-4 h-4 ml-2" />
-              )}
-            </DropDownItem>
-            <DropDownItem
-              className={twMerge(
-                storeToUse === "sandbox" && "bg-secondary/10",
-                "flex items-center justify-between"
-              )}
-              onClick={() => setStoreToUse("sandbox")}>
-              Sandbox Store
-              {storeToUse === "sandbox" && (
-                <FaCheck className="text-secondary w-4 h-4 ml-2" />
-              )}
-            </DropDownItem>
-          </DropDownContent>
-        </DropDownContainer>
-        <input
-          type="text"
-          onChange={(e) => setSkuInput(e.target.value)}
-          value={skuInput}
-          placeholder="Enter SKU(s) separated by commas to import"
-          className="border border-gray-300 p-2 rounded-md m-0 w-full max-w-md"
-        />
-        <Button
-          className={
-            "bg-secondary flex items-center justify-center w-[75px] h-[40px] text-white m-0"
-          }
-          disabled={loading || !skuInput}
-          onClick={(e) => getJDSProductData()}>
-          {loading ? (
-            <BiLoaderAlt className="animate-spin z-10 block text-white w-6 h-6" />
-          ) : (
-            "Import"
-          )}
-        </Button>
+      <div className="flex justify-center gap-2 mt-8 mb-4 items-center">
         <Button
           className={
             "bg-secondary flex items-center justify-center w-[180px] h-[40px] text-white m-0"
           }
-          disabled={bcLoading || !importedProducts.length}
-          onClick={(e) => addProductsToBC()}>
+          disabled={bcLoading || !mainProducts.length}
+          onClick={(e) => addProductsToBC(mainProducts)}>
           {bcLoading ? (
             <BiLoaderAlt className="animate-spin z-10 block text-white w-6 h-6" />
           ) : (
@@ -286,152 +271,332 @@ function JDSProductCreation() {
           )}
         </Button>
       </div>
-      {importedProducts.length > 0 && (
-        <div className="flex w-full px-4 max-w-screen-xl mx-auto flex-col items-center my-4">
-          {importedProducts.map((product, index) => {
+      <ul className="list-none w-full flex flex-col gap-2 mb-8 max-w-screen-lg mx-auto">
+        {mainProducts.length > 0 &&
+          mainProducts.map((product, index) => {
             const totalCatCount = product.categories?.length || 0;
             return (
-              <Card
-                key={index}
-                className="grid grid-cols-[250px_1fr_min-content] gap-8 p-4 my-2 rounded-md relative">
-                <img src={product.thumbnail} className="w-full h-auto" alt="" />
-                <div className="flex flex-col gap-3 w-full">
-                  <div className="grid gap-4 grid-cols-5">
-                    <fieldset className="flex w-full col-span-4 flex-col gap-1 items-start">
-                      <label
-                        className="font-medium"
-                        htmlFor={`sku-${product.name + index}`}>
-                        Product Name
-                      </label>
-                      <input
-                        className="border border-gray-300 p-2 rounded-md m-0 w-full"
-                        type="text"
-                        id={`sku-${product.name + index}`}
-                        value={product.name}
-                        onChange={(e) => {
-                          setImportedProducts((prevProducts) => {
-                            const updatedProducts = [...prevProducts];
-                            updatedProducts[index].name = e.target.value;
-                            return updatedProducts;
-                          });
-                        }}
-                      />
-                    </fieldset>
-                    <fieldset className="flex w-full flex-col col-span-1 gap-1 items-start">
-                      <label
-                        className="font-medium"
-                        htmlFor={`sku-${product.sku + index}`}>
-                        Sku
-                      </label>
-                      <input
-                        className="border border-gray-300 p-2 rounded-md m-0 w-full "
-                        type="text"
-                        id={`sku-${product.sku + index}`}
-                        value={product.sku}
-                        onChange={(e) => {
-                          setImportedProducts((prevProducts) => {
-                            const updatedProducts = [...prevProducts];
-                            updatedProducts[index].sku = e.target.value;
-                            return updatedProducts;
-                          });
-                        }}
-                      />
-                    </fieldset>
-                  </div>
-                  <fieldset className="flex flex-col gap-1 items-start">
-                    <label
-                      className="font-medium"
-                      htmlFor={`sku-${product.price + index}`}>
-                      Price
-                    </label>
+              <li key={index}>
+                <ProductCard
+                  props={{
+                    product,
+                    index,
+                    totalCatCount,
+                    mainProducts,
+                    setMainProducts,
+                    priceRefs,
+                    priceInputs,
+                    setPriceInputs,
+                    removeProduct,
+                    bcCategoriesList,
+                    storeToUseMap,
+                    addVariantsToggle: (index) => addVariantsToggle(index),
+                    setStoreToUse,
+                  }}
+                />
+              </li>
+            );
+          })}
+        <li>
+          <Card className="p-0">
+            <button
+              onClick={addNewProduct}
+              className="flex w-full p-4 items-center justify-between">
+              Add New Product
+              <GoPlusCircle className="w-6 h-6" />
+            </button>
+          </Card>
+        </li>
+      </ul>
+      <Popover
+        open={activeProductIndex !== null}
+        onOpenChange={() => setActiveProductIndex(null)}>
+        <div className="h-20 flex items-center justify-between px-4 border-b border-neutral/20">
+          <div className="flex items-center gap-1">
+            <h2 className="font-medium text-xl">Variant Options</h2>
+            <p className="text-neutral font-normal text-base">
+              ({activeProduct?.variants.length || 0} options)
+            </p>
+          </div>
+          <div className="flex items-center gap-4">
+            <input
+              type="text"
+              onChange={(e) => setSkuInput(e.target.value)}
+              value={skuInput}
+              placeholder="Enter SKU(s) separated by commas to import"
+              className="border border-gray-300 p-2 rounded-md m-0 w-[400px] max-w-md"
+            />
+            <button
+              disabled={loading || !skuInput}
+              onClick={(e) => getJDSProductData()}
+              className="flex items-center text-nowrap justify-center w-[220px] h-[42px] gap-1 bg-white text-secondary rounded border-secondary border hover:bg-secondary/10 transition-colors">
+              {loading ? (
+                <BiLoaderAlt className="animate-spin w-5 h-5" />
+              ) : (
+                <>
+                  Import Variant Options <BiPlus className="w-5 h-5" />
+                </>
+              )}
+            </button>
+            <button
+              onClick={(e) => {
+                setActiveProduct((prev) => {
+                  const updatedProduct = { ...prev };
+                  updatedProduct.variants.push({
+                    display_name: "",
+                    type: "dropdown",
+                    option_values: [
+                      { label: "", is_default: false, sort_order: 0 },
+                    ],
+                  });
+                  return updatedProduct;
+                });
+              }}
+              className="flex items-center text-nowrap justify-center w-[220px] h-[42px] gap-1 bg-white text-secondary rounded border-secondary border hover:bg-secondary/10 transition-colors">
+              Add New Variant Option <BiPlus className="w-5 h-5" />
+            </button>
+          </div>
+        </div>
+        <div className="h-[calc(100%-9rem)] overflow-auto">
+          <div className="w-full flex flex-col gap-8 px-4 py-8">
+            {activeProduct?.variants.map((variant, index) => {
+              return (
+                <div className="grid grid-cols-12 gap-8" key={index}>
+                  <fieldset className="w-full col-span-3 flex flex-col gap-2">
+                    <label htmlFor="">Name</label>
                     <input
-                      className="border border-gray-300 p-2 rounded-md m-0 w-full max-w-[100px]"
                       type="text"
-                      inputMode="decimal"
-                      ref={(el) =>
-                        (priceRefs.current[`${product.sku}-${index}`] = el)
-                      }
-                      id={`sku-${product.sku}-${index}`}
-                      value={`$ ${
-                        priceInputs[`${product.sku}-${index}`] ??
-                        (product.price * 1.5).toFixed(2)
-                      }`}
+                      value={variant.display_name}
                       onChange={(e) => {
-                        // Strip everything except digits and decimal point
-                        let raw = e.target.value.replace(/[^0-9.]/g, "");
-
-                        // Allow only one decimal point
-                        const parts = raw.split(".");
-                        if (parts.length > 2) return;
-
-                        // Set user input
-                        setPriceInputs((prev) => ({
-                          ...prev,
-                          [`${product.sku}-${index}`]: raw,
-                        }));
-
-                        const parsed = parseFloat(raw);
-                        if (!isNaN(parsed)) {
-                          setImportedProducts((prevProducts) => {
-                            const updated = [...prevProducts];
-                            updated[index].twentyCases = parsed / 1.5;
-                            return updated;
-                          });
-                        }
+                        setActiveProduct((prev) => {
+                          const updatedProduct = { ...prev };
+                          updatedProduct.variants[index].display_name =
+                            e.target.value;
+                          return updatedProduct;
+                        });
                       }}
-                      onBlur={() => {
-                        const key = `${product.sku}-${index}`;
-                        const raw = priceInputs[key];
-
-                        const parsed = parseFloat(raw);
-
-                        if (!raw || isNaN(parsed)) {
-                          // Reset to calculated value if input is empty or invalid
-                          setPriceInputs((prev) => ({
-                            ...prev,
-                            [key]: (product.twentyCases * 1.5).toFixed(2),
-                          }));
-                        } else {
-                          // Format to exactly 2 decimal places
-                          setPriceInputs((prev) => ({
-                            ...prev,
-                            [key]: parsed.toFixed(2),
-                          }));
-                        }
-                      }}
+                      placeholder="Color, Size, etc."
+                      className="border border-gray-300 m-0 p-2 rounded-md w-full"
                     />
+                    <button
+                      onClick={() => {
+                        setActiveProduct((prev) => {
+                          const updatedProduct = { ...prev };
+                          updatedProduct.variants.splice(index, 1);
+                          return updatedProduct;
+                        });
+                      }}
+                      className="col-start-1 row-start-2 text-red-600 w-fit">
+                      Delete Option
+                    </button>
                   </fieldset>
-                  <fieldset>
-                    <label
-                      className="font-medium"
-                      htmlFor={`categories-${product.sku}-${index}`}>
-                      Categories
-                      <span className="text-sm ml-1 font-normal text-secondary">
-                        ({totalCatCount})
-                      </span>
-                    </label>
-                    <div className="w-full border border-gray-300 rounded mt-2 p-2 max-h-[400px] overflow-y-auto">
-                      <CategoryPicker
-                        props={{
-                          bcCategoriesList,
-                          setImportedProducts,
-                          importedProducts,
-                          sku: product.sku,
-                        }}
-                      />
+                  <fieldset className="w-full col-span-3 flex flex-col gap-2">
+                    <label htmlFor="">Type</label>
+                    <DropDownContainer
+                      className="mb-0 p-0 top-0 w-full"
+                      type="click">
+                      <DropDownTrigger className="bg-white w-full text-nowrap hover:border-secondary top-0 justify-between border border-gray-300">
+                        {variantTypeMap[variant.type] || "Select Type"}
+                      </DropDownTrigger>
+                      <DropDownContent>
+                        <DropDownItem
+                          className={twMerge(
+                            variant.type === "radio_buttons" &&
+                              "bg-secondary/10",
+                            "flex items-center justify-between"
+                          )}
+                          onClick={() => {
+                            setActiveProduct((prev) => {
+                              const updatedProduct = { ...prev };
+                              updatedProduct.variants[index].type =
+                                "radio_buttons";
+                              return updatedProduct;
+                            });
+                          }}>
+                          Radio Buttons
+                          {variant.type === "radio_buttons" && (
+                            <FaCheck className="text-secondary w-4 h-4 ml-2" />
+                          )}
+                        </DropDownItem>
+                        <DropDownItem
+                          className={twMerge(
+                            variant.type === "rectangles" && "bg-secondary/10",
+                            "flex items-center justify-between"
+                          )}
+                          onClick={() => {
+                            setActiveProduct((prev) => {
+                              const updatedProduct = { ...prev };
+                              updatedProduct.variants[index].type =
+                                "rectangles";
+                              return updatedProduct;
+                            });
+                          }}>
+                          Rectangle List
+                          {variant.type === "rectangles" && (
+                            <FaCheck className="text-secondary w-4 h-4 ml-2" />
+                          )}
+                        </DropDownItem>
+                        <DropDownItem
+                          className={twMerge(
+                            variant.type === "dropdown" && "bg-secondary/10",
+                            "flex items-center justify-between"
+                          )}
+                          onClick={() => {
+                            setActiveProduct((prev) => {
+                              const updatedProduct = { ...prev };
+                              updatedProduct.variants[index].type = "dropdown";
+                              return updatedProduct;
+                            });
+                          }}>
+                          Dropdown
+                          {variant.type === "dropdown" && (
+                            <FaCheck className="text-secondary w-4 h-4 ml-2" />
+                          )}
+                        </DropDownItem>
+                        <DropDownItem
+                          className={twMerge(
+                            variant.type === "swatch" && "bg-secondary/10",
+                            "flex items-center justify-between"
+                          )}
+                          onClick={() => {
+                            setActiveProduct((prev) => {
+                              const updatedProduct = { ...prev };
+                              updatedProduct.variants[index].type = "swatch";
+                              return updatedProduct;
+                            });
+                          }}>
+                          Swatch
+                          {variant.type === "swatch" && (
+                            <FaCheck className="text-secondary w-4 h-4 ml-2" />
+                          )}
+                        </DropDownItem>
+                      </DropDownContent>
+                    </DropDownContainer>
+                  </fieldset>
+                  <fieldset className="w-full flex col-span-6 flex-col gap-2">
+                    <label htmlFor="">Values</label>
+                    <div className="flex flex-col w-full items-start gap-3">
+                      {variant.option_values.map((option, optionIndex) => {
+                        return (
+                          <div
+                            className="grid w-full grid-cols-[1fr_min-content] gap-4"
+                            key={`optionValue-${optionIndex}`}>
+                            <input
+                              className="border border-gray-300 m-0 pl-2 py-2 rounded-md w-full"
+                              onChange={(e) => {
+                                setActiveProduct((prev) => {
+                                  const updatedProduct = { ...prev };
+                                  updatedProduct.variants[index].option_values[
+                                    optionIndex
+                                  ].label = e.target.value;
+
+                                  return updatedProduct;
+                                });
+                              }}
+                              value={option.label}
+                              placeholder="Enter value here"
+                              type="text"
+                            />
+                            <div className="flex items-center gap-2">
+                              <button
+                                onClick={() => {
+                                  setActiveProduct((prev) => {
+                                    const updatedProduct = { ...prev };
+                                    const currentOption =
+                                      updatedProduct.variants[index]
+                                        .option_values[optionIndex];
+                                    if (!currentOption.is_default) {
+                                      updatedProduct.variants[
+                                        index
+                                      ].option_values.forEach((val) => {
+                                        val.is_default = false;
+                                      });
+                                    }
+
+                                    updatedProduct.variants[
+                                      index
+                                    ].option_values[optionIndex].is_default =
+                                      !option.is_default;
+
+                                    return updatedProduct;
+                                  });
+                                }}
+                                className="flex items-center test-sm gap-2">
+                                <span
+                                  className={twMerge(
+                                    "w-5 h-5 flex items-center border justify-center rounded-full",
+                                    option.is_default
+                                      ? "border-secondary "
+                                      : "border-neutral"
+                                  )}>
+                                  {option.is_default && (
+                                    <span className="w-3 h-3 bg-secondary rounded-full" />
+                                  )}
+                                </span>
+                                Default
+                              </button>
+
+                              <button
+                                onClick={() => {
+                                  setActiveProduct((prev) => {
+                                    const updatedProduct = { ...prev };
+                                    updatedProduct.variants[
+                                      index
+                                    ].option_values.splice(optionIndex, 1);
+                                    return updatedProduct;
+                                  });
+                                }}
+                                className={twMerge(
+                                  "w-fit h-fit rounded-full",
+                                  variant.option_values.length < 2 &&
+                                    "opacity-0 pointer-events-none"
+                                )}>
+                                <AiFillMinusCircle className="w-[0.8rem] h-[0.8rem] fill-red-600" />
+                              </button>
+                            </div>
+                          </div>
+                        );
+                      })}
+                      <button
+                        className="text-secondary text-sm h-fit w-fit"
+                        onClick={() => {
+                          setActiveProduct((prev) => {
+                            const updatedProduct = { ...prev };
+                            updatedProduct.variants[index].option_values.push({
+                              label: "",
+                              is_default: false,
+                              sort_order:
+                                updatedProduct.variants[index].option_values
+                                  .length,
+                            });
+                            return updatedProduct;
+                          });
+                        }}>
+                        Add Another Value
+                      </button>
                     </div>
                   </fieldset>
                 </div>
-                <Button
-                  onClick={() => removeProduct(index)}
-                  className="py-1 px-2 text-red-600 hover:bg-red-600/10 transition-colors text-sm font-medium">
-                  Remove
-                </Button>
-              </Card>
-            );
-          })}
+              );
+            })}
+          </div>
         </div>
-      )}
+        <div className="h-16 flex items-center justify-end gap-4 border-t border-neutral/20 px-4">
+          <button
+            className="text-secondary"
+            onClick={() => {
+              setActiveProductIndex(null);
+              setActiveProduct(null);
+            }}>
+            Cancel
+          </button>
+          <button
+            onClick={() => saveVariants()}
+            className="p-2 bg-secondary text-white rounded">
+            Save Variants
+          </button>
+        </div>
+      </Popover>
     </>
   );
 }

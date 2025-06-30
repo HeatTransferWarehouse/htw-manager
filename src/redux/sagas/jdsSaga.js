@@ -13,6 +13,7 @@ function* getJDSProductData(action) {
       type: "SET_JDS_PRODUCTS_TO_IMPORT",
       payload: response.data.products,
     });
+    yield put({ type: "SET_JDS_IMPORT_COMPLETE", payload: true });
   } catch (error) {
     yield put({
       type: "SET_JDS_ERROR",
@@ -25,13 +26,11 @@ function* getJDSProductData(action) {
 
 function* addJDSProductsToBC(action) {
   const products = action.payload.products;
-  const storeToUse = action.payload.store;
   try {
     yield put({ type: "SET_BC_LOADING", payload: true });
 
     const response = yield axios.post(`/api/jds/bc/products/add`, {
       products,
-      store: storeToUse,
     });
     if (response.status === 200) {
       yield put({

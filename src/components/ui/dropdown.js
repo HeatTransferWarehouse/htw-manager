@@ -24,6 +24,8 @@ const DropDownContainer = ({
   const { activeDropdownId, setActiveDropdownId, closeAllDropdowns } =
     useDropDownManager();
   const triggerRef = useRef(null);
+  const containerRef = useRef(null);
+  const contentRef = useRef(null);
   const [dropdownstyle, setDropdownstyle] = useState({});
 
   // Generate a unique ID for each dropdown instance using useRef
@@ -77,7 +79,14 @@ const DropDownContainer = ({
 
   useEffect(() => {
     const handleClickOutside = (event) => {
-      if (triggerRef.current && !triggerRef.current.contains(event.target)) {
+      const trigger = triggerRef.current;
+      const content = contentRef.current;
+      if (
+        trigger &&
+        !trigger.contains(event.target) &&
+        content &&
+        !content.contains(event.target)
+      ) {
         if (isOpen) {
           closeDropdown();
           onClose && onClose(event);
@@ -94,15 +103,25 @@ const DropDownContainer = ({
         document.removeEventListener("click", handleClickOutside);
       }
     };
-  }, [type, isOpen, onClose]);
+  }, [type, isOpen, onClose, triggerRef, contentRef]);
 
   return (
     <DropDownContext.Provider
-      value={{ isOpen, toggleOpen, closeDropdown, dropdownstyle, type }}>
+      value={{
+        isOpen,
+        toggleOpen,
+        closeDropdown,
+        dropdownstyle,
+        type,
+        containerRef,
+        triggerRef,
+        contentRef,
+      }}>
       <div
+        ref={containerRef}
         onMouseEnter={() => type === "hover" && setActiveDropdownId(uniqueId)}
         onMouseLeave={() => type === "hover" && closeAllDropdowns()}
-        className={twMerge(className, "relative pb-2 top-1")}>
+        className={twMerge("relative pb-2 top-1", className)}>
         {React.Children.map(children, (child) => {
           if (child.type === DropDownTrigger) {
             return React.cloneElement(child, {
@@ -117,16 +136,17 @@ const DropDownContainer = ({
 };
 
 const DropDownTrigger = forwardRef(
-  ({ children, className, onClick, ...props }, ref) => {
-    const { isOpen, toggleOpen, type } = useContext(DropDownContext);
+  ({ children, className, onClick, ...props }) => {
+    const { isOpen, toggleOpen, type, triggerRef } =
+      useContext(DropDownContext);
 
     return (
       <button
-        ref={ref}
+        ref={triggerRef}
         className={twMerge(
-          className,
           isOpen ? "bg-secondary/10" : "",
-          "cursor-pointer p-2 rounded-md transition hover:bg-secondary/10 flex items-center justify-start gap-4"
+          "cursor-pointer p-2 rounded-md transition hover:bg-secondary/10 flex items-center justify-start gap-4",
+          className
         )}
         onClick={(e) => {
           onClick && onClick(e);
@@ -145,8 +165,8 @@ const DropDownTrigger = forwardRef(
 );
 
 const DropDownContent = ({ children, className }) => {
-  const { isOpen, dropdownstyle } = useContext(DropDownContext);
-  const contentRef = useRef(null);
+  const { isOpen, dropdownstyle, containerRef, contentRef } =
+    useContext(DropDownContext);
   const [isPositioned, setIsPositioned] = useState(false);
 
   useEffect(() => {
@@ -158,8 +178,8 @@ const DropDownContent = ({ children, className }) => {
       const viewportHeight = window.innerHeight;
       const viewportWidth = window.innerWidth;
 
-      let top = positionY + triggerHeight + 4;
-      let left = positionX;
+      let top = triggerHeight + 4;
+      let left = 0;
       let isBottom = false;
       let isRight = false;
 
@@ -185,20 +205,20 @@ const DropDownContent = ({ children, className }) => {
     }
   }, [isOpen, dropdownstyle, children, contentRef]);
 
-  return isOpen
+  return isOpen && containerRef.current
     ? createPortal(
         <div
           ref={contentRef}
           className={twMerge(
-            className,
-            "absolute z-[999999] rounded-md h-fit max-h-[200px] min-w-[120px] overflow-x-hidden overflow-y-auto bg-white shadow-default"
+            "absolute z-[999999] rounded-md h-fit max-h-[200px] min-w-[120px] overflow-x-hidden overflow-y-auto bg-white shadow-default",
+            className
           )}
           style={{
             ...isPositioned,
           }}>
           {children}
         </div>,
-        document.getElementById("react-root")
+        containerRef.current
       )
     : null;
 };
@@ -209,9 +229,9 @@ const DropDownItem = ({ children, className, onClick, active }) => {
   return (
     <div
       className={twMerge(
-        className,
         active ? "bg-secondary/10 text-secondary" : "",
-        "p-2 hover:bg-secondary/10 hover:text-secondary cursor-pointer"
+        "p-2 hover:bg-secondary/10 hover:text-secondary cursor-pointer",
+        className
       )}
       onClick={(e) => {
         onClick && onClick(e);

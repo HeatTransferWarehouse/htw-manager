@@ -2,15 +2,14 @@ import React from "react";
 import CategoryBranch from "./category-branch";
 
 function CategoryPicker({ props }) {
-  const { bcCategoriesList, importedProducts, setImportedProducts, sku } =
-    props;
+  const { bcCategoriesList, setMainProducts, mainProducts, sku } = props;
 
   const [expanded, setExpanded] = React.useState({});
   const toggleExpanded = (id) =>
     setExpanded((prev) => ({ ...prev, [id]: !prev[id] }));
 
   const addCategoryToProduct = (entityId) => {
-    setImportedProducts((prev) =>
+    setMainProducts((prev) =>
       prev.map((product) =>
         product.sku === sku
           ? {
@@ -33,7 +32,7 @@ function CategoryPicker({ props }) {
           key={cat.entityId}
           category={cat}
           level={1}
-          importedProducts={importedProducts}
+          mainProducts={mainProducts}
           sku={sku}
           expanded={expanded}
           toggleExpanded={toggleExpanded}

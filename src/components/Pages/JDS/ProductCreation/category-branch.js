@@ -2,14 +2,14 @@ import { twMerge } from "tailwind-merge";
 import { FaFolder } from "react-icons/fa";
 import { FaChevronDown, FaCheck } from "react-icons/fa6";
 
-function getSelectedCount(category, importedProducts) {
-  const isDirectlySelected = importedProducts.some((product) =>
+function getSelectedCount(category, mainProducts) {
+  const isDirectlySelected = mainProducts.some((product) =>
     product.categories?.includes(category.entityId)
   );
 
   const childrenCount =
     category.children?.reduce((sum, child) => {
-      return sum + getSelectedCount(child, importedProducts);
+      return sum + getSelectedCount(child, mainProducts);
     }, 0) || 0;
 
   return (isDirectlySelected ? 1 : 0) + childrenCount;
@@ -18,7 +18,7 @@ function getSelectedCount(category, importedProducts) {
 function CategoryBranch({
   category,
   level,
-  importedProducts,
+  mainProducts,
   sku,
   expanded,
   toggleExpanded,
@@ -26,12 +26,12 @@ function CategoryBranch({
   index,
   isLast,
 }) {
-  const isAddedToProduct = importedProducts.some(
+  const isAddedToProduct = mainProducts.some(
     (product) =>
       product.sku === sku && product.categories?.includes(category.entityId)
   );
 
-  const selectedCount = getSelectedCount(category, importedProducts);
+  const selectedCount = getSelectedCount(category, mainProducts);
   const hasChildren = category.children?.length > 0;
 
   const levelPaddingMap = {
@@ -92,7 +92,7 @@ function CategoryBranch({
             key={child.entityId}
             category={child}
             level={level + 1}
-            importedProducts={importedProducts}
+            mainProducts={mainProducts}
             sku={sku}
             expanded={expanded}
             toggleExpanded={toggleExpanded}
