@@ -230,9 +230,8 @@ function JDSProductCreation() {
         {mainProducts.length > 0 &&
           mainProducts.map((product, index) => {
             const totalCatCount = product.categories?.length || 0;
-            const key = product.sku || product.name || index;
             return (
-              <li key={key}>
+              <li key={index}>
                 <ProductCard
                   product={product}
                   index={index}
