@@ -152,8 +152,6 @@ export const useVariantUtils = () => {
     const foundSizes = new Set();
     const materialMap = new Map();
 
-    console.log(importedProducts);
-
     importedProducts.forEach((product) => {
       const parsed = parseNameForVariants(product.name);
       if (parsed) {
@@ -257,8 +255,6 @@ export const useVariantUtils = () => {
    */
   function buildAllVariants(activeProduct) {
     if (!activeProduct?.variants?.length) return [];
-
-    console.log(activeProduct);
 
     const optionGroups = activeProduct.variants.map((v) =>
       v.option_values.map((opt) => ({

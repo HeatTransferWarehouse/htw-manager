@@ -14,23 +14,21 @@ import { GoPlusCircle } from "react-icons/go";
 import SkuInput from "./variant-sku-input";
 import { HiMiniCog8Tooth } from "react-icons/hi2";
 
-function ProductCard({ props }) {
-  const {
-    product,
-    index,
-    totalCatCount,
-    mainProducts,
-    setMainProducts,
-    priceRefs,
-    priceInputs,
-    setPriceInputs,
-    removeProduct,
-    bcCategoriesList,
-    storeToUseMap,
-    addVariantsToggle,
-    setStoreToUse,
-  } = props;
-
+function ProductCard({
+  product,
+  index,
+  totalCatCount,
+  mainProducts,
+  setMainProducts,
+  priceRefs,
+  priceInputs,
+  setPriceInputs,
+  removeProduct,
+  bcCategoriesList,
+  storeToUseMap,
+  addVariantsToggle,
+  setStoreToUse,
+}) {
   function groupOptionValuesByDisplayName() {
     const grouped = {};
 
