@@ -127,6 +127,7 @@
     "@babel/plugin-proposal-private-property-in-object": "^7.21.11",
     "concurrently": "^9.0.1",
     "nodemon": "^3.1.7",
+    "prettier": "^3.6.2",
     "react-app-rewired": "^2.2.1",
     "sass": "^1.79.4",
     "sass-loader": "^16.0.2",
@@ -134,7 +135,7 @@
     "tailwindcss": "^3.4.13"
   },
   "engines": {
-    "node": "18.x"
+    "node": "20.x"
   },
   "browserslist": [
     ">0.2%",
