@@ -8,6 +8,7 @@ const sharp = require('sharp'); // Import sharp for image processing
 const PSD = require('psd'); // Import psd.js
 const path = require('path');
 const sizeOf = require('image-size'); // Import image-size package for getting dimensions
+const { PDFDocument } = require('pdf-lib'); // Import pdf-lib for PDF processing
 
 const storage = multer.memoryStorage();
 const upload = multer({ storage: storage });

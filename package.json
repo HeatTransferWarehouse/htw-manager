@@ -73,6 +73,7 @@
     "passport": "^0.7.0",
     "passport-local": "^1.0.0",
     "path": "^0.12.7",
+    "pdf-lib": "^1.17.1",
     "pg": "^8.13.0",
     "postcss-loader": "^8.1.1",
     "psd": "^3.4.0",
