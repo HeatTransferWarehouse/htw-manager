@@ -395,6 +395,7 @@ router.post('/process-image', upload.single('file'), async (req, res) => {
         heightInInches,
         ppi: density,
         size: metadata.size,
+        type: 'image',
       });
     }
 
@@ -407,6 +408,7 @@ router.post('/process-image', upload.single('file'), async (req, res) => {
         widthInInches: 2,
         heightInInches: 2,
         size: fileStats.size,
+        type: 'vector',
       });
     }
 
@@ -444,6 +446,7 @@ router.post('/process-image', upload.single('file'), async (req, res) => {
             widthInInches,
             heightInInches,
             size: metadata.size,
+            type: 'image',
           });
 
           // Clean up temporary files
@@ -454,6 +457,28 @@ router.post('/process-image', upload.single('file'), async (req, res) => {
           console.error('Error processing PSD file:', error);
           res.status(500).json({ message: 'Failed to generate PSD preview' });
         });
+    }
+
+    // Handle PDF files
+    else if (fileExtension === 'pdf') {
+      const pdfDoc = await PDFDocument.load(fileBuffer);
+      const page = pdfDoc.getPage(0);
+
+      const { width, height } = page.getSize();
+
+      // Render the page to PNG (pdf-lib supports embedded PNG/JPG but not rasterizing)
+      // You'll need to use pdf-lib only for metadata, then fallback to sharp/imagemagick for actual rendering
+
+      // TEMPORARY: fallback response
+      return res.json({
+        image: '', // Placeholder if you don't rasterize here
+        aspectRatio: width / height,
+        widthInInches: width / 72,
+        heightInInches: height / 72,
+        ppi: 72,
+        size: fileStats.size,
+        type: 'pdf',
+      });
     }
 
     // Unsupported file type
