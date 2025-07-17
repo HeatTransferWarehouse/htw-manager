@@ -480,6 +480,41 @@ router.post('/process-image', upload.single('file'), async (req, res) => {
         size: fileStats.size,
         type: 'pdf',
       });
+    } else if (fileExtension === 'svg') {
+      // Parse the SVG XML to get dimensions
+      const svgString = fileBuffer.toString('utf8');
+      const viewBoxMatch = svgString.match(/viewBox="([^"]+)"/);
+      const widthMatch = svgString.match(/width="([^"]+)"/);
+      const heightMatch = svgString.match(/height="([^"]+)"/);
+
+      let width = 0;
+      let height = 0;
+
+      if (widthMatch && heightMatch) {
+        width = parseFloat(widthMatch[1]);
+        height = parseFloat(heightMatch[1]);
+      } else if (viewBoxMatch) {
+        const viewBoxValues = viewBoxMatch[1].split(' ').map(Number);
+        width = viewBoxValues[2];
+        height = viewBoxValues[3];
+      } else {
+        width = 100; // fallback default
+        height = 100;
+      }
+
+      // Optionally render to PNG for preview
+      const pngBuffer = await sharp(fileBuffer).png().toBuffer();
+      const base64Image = pngBuffer.toString('base64');
+
+      return res.json({
+        image: `data:image/png;base64,${base64Image}`,
+        aspectRatio: width / height,
+        widthInInches: width / 72, // assuming 72 PPI for fallback
+        heightInInches: height / 72,
+        ppi: 72,
+        size: fileStats.size,
+        type: 'svg',
+      });
     }
 
     // Unsupported file type
