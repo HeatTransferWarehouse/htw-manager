@@ -32,10 +32,6 @@ router.post('/update-item-price', async (req, res) => {
     const requestOrigin = req.get('origin');
 
     let hash, apiKey;
-    hash = process.env.STORE_HASH;
-    apiKey = process.env.BG_AUTH_TOKEN;
-
-    console.log('Request Origin:', requestOrigin);
 
     if (requestOrigin === 'https://heat-transfer-warehouse-sandbox.mybigcommerce.com') {
       hash = process.env.SANDBOX_HASH;
@@ -155,8 +151,7 @@ router.post('/cart-transfer-price', async (req, res) => {
     const requestOrigin = req.get('origin');
 
     let hash, apiKey;
-    hash = process.env.STORE_HASH;
-    apiKey = process.env.BG_AUTH_TOKEN;
+
     if (requestOrigin === 'https://heat-transfer-warehouse-sandbox.mybigcommerce.com') {
       hash = process.env.SANDBOX_HASH;
       apiKey = process.env.SANDBOX_API_KEY;
