@@ -37,8 +37,8 @@ app.use(passport.initialize());
 app.use(passport.session());
 
 const allowedOrigins = [
-  'https://heattransferwarehouse.com',
-  'https://heat-transfer-warehouse-sandbox.mybigcommerce.com',
+  'https://www.heattransferwarehouse.com',
+  'https://www.heat-transfer-warehouse-sandbox.mybigcommerce.com',
   'http://admin.heattransferwarehouse.com',
   // add more if needed
 ];
