@@ -36,21 +36,20 @@ app.use(
 app.use(passport.initialize());
 app.use(passport.session());
 
-const allowedOrigins = process.env.ALLOWED_ORIGINS?.split(',').map((o) => o.trim()) || [];
-const trustedDevIp = process.env.ALLOWED_CORS_IP || '';
+const allowedOrigins = [
+  'https://heattransferwarehouse.com',
+  'https://heat-transfer-warehouse-sandbox.mybigcommerce.com',
+  'http://admin.heattransferwarehouse.com',
+  // add more if needed
+];
 
 const dynamicCors = (req, res, next) => {
   const origin = req.headers.origin;
-  const clientIp = req.headers['x-forwarded-for']?.split(',')[0] || req.socket.remoteAddress;
 
   const isWhitelistedOrigin = allowedOrigins.includes(origin);
-  const isLocalhostOrigin = /^http:\/\/localhost:\d+$/.test(origin);
-  const isTrustedIp = clientIp?.includes(trustedDevIp);
-
-  const allowOrigin = isWhitelistedOrigin || (isLocalhostOrigin && isTrustedIp);
 
   const corsOptions = {
-    origin: allowOrigin ? origin : false,
+    origin: isWhitelistedOrigin ? origin : false,
     credentials: true,
     methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
     optionsSuccessStatus: 200,
