@@ -74,6 +74,7 @@ const htwRouter = require('./routes/htwRequests');
 const htwRoutes = require('./routes/product-issues/htw');
 const sffProductRoutes = require('./routes/product-issues/sff');
 const JDS = require('./routes/JDS/index');
+const google = require('./routes/google-sheets');
 // const ssActivewear = require('./routes/ssactivewear');
 
 app.use('/api/user', userRouter);
@@ -85,6 +86,7 @@ app.use('/api/htw', htwRouter);
 app.use('/api/products/htw', htwRoutes);
 app.use('/api/products/sff', sffProductRoutes);
 app.use('/api/jds', JDS);
+app.use('/api/google', google);
 // app.use('/api/ssactivewear', ssActivewear);
 
 // Queue Routers
