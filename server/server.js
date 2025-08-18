@@ -40,6 +40,8 @@ const allowedOrigins = [
   'https://www.heattransferwarehouse.com',
   'https://www.heat-transfer-warehouse-sandbox.mybigcommerce.com',
   'http://admin.heattransferwarehouse.com',
+  'http://localhost:3000',
+  'http://localhost:8000',
   // add more if needed
 ];
 
@@ -62,7 +64,7 @@ app.use(dynamicCors);
 
 // Route includes
 const userRouter = require('./routes/userrouter');
-const captureRouter = require('./routes/index');
+// const captureRouter = require('./routes/index');
 const sffQueueRouter = require('./routes/sffQueueRouter');
 const supacolorRouter = require('./routes/supacolorOrderRouter');
 const queueRouter = require('./routes/queueRouter');
@@ -75,10 +77,11 @@ const htwRoutes = require('./routes/product-issues/htw');
 const sffProductRoutes = require('./routes/product-issues/sff');
 const JDS = require('./routes/JDS/index');
 const google = require('./routes/google-sheets');
+const bigCommerceOrdersAPI = require('./routes/big-commerce/orders/route');
 // const ssActivewear = require('./routes/ssactivewear');
 
 app.use('/api/user', userRouter);
-app.use('/api/bp-api', captureRouter);
+// app.use('/api/bp-api', captureRouter);
 app.use('/supacolor-api', supacolorRouter);
 app.use('/api/lookup', lookupRouter);
 app.use('/api/promotions', promoTracker);
@@ -87,6 +90,7 @@ app.use('/api/products/htw', htwRoutes);
 app.use('/api/products/sff', sffProductRoutes);
 app.use('/api/jds', JDS);
 app.use('/api/google', google);
+app.use('/api/big-commerce/orders', bigCommerceOrdersAPI);
 // app.use('/api/ssactivewear', ssActivewear);
 
 // Queue Routers

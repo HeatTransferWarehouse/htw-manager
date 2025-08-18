@@ -1,18 +1,19 @@
-import { combineReducers } from "redux";
-import item from "./itemReducer";
-import redirect from "./redirectReducer";
-import error from "./errorsReducer";
-import login from "./loginModeReducer";
-import user from "./userReducer";
-import queue from "./queueReducer";
-import sffQueue from "./sffQueueReducer";
-import loading from "./loadingReducer";
-import decoQueueReducer from "./decoQueueReducer";
-import clothingReducer from "./clothingReducer";
-import admin from "./adminReducer";
-import promotionsReducer from "./promotionsReducer";
-import productsReducer from "./products";
-import jdsReducer from "./jdsReducer";
+import { combineReducers } from 'redux';
+import item from './itemReducer';
+import redirect from './redirectReducer';
+import error from './errorsReducer';
+import login from './loginModeReducer';
+import user from './userReducer';
+import queue from './queueReducer';
+import sffQueue from './sffQueueReducer';
+import loading from './loadingReducer';
+import decoQueueReducer from './decoQueueReducer';
+import clothingReducer from './clothingReducer';
+import admin from './adminReducer';
+import promotionsReducer from './promotionsReducer';
+import productsReducer from './products';
+import jdsReducer from './jdsReducer';
+import BC from './big-commerce/BCReducer';
 
 // rootReducer is the primary reducer for our entire project
 // It bundles up all of the other reducers so our project can use them.
@@ -35,6 +36,7 @@ const rootReducer = combineReducers({
   promotionsReducer,
   productsReducer,
   jdsReducer,
+  BC,
 });
 
 export default rootReducer;
