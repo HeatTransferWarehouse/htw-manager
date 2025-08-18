@@ -173,7 +173,7 @@ function OrdersTable({
           </button>
           <Pagination
             props={{
-              items: sortedData,
+              items: filteredData,
               rowsPerPage: rowsPerPage,
               setRowsPerPage: setRowsPerPage,
               page: page,
