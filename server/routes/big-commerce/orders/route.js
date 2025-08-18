@@ -74,17 +74,18 @@ router.post('/sync', async function (req, res) {
           tax: order.total_tax,
           grand_total: order.total_inc_tax,
           total_items: order.items_total,
-          status: order.status,
+          status: order.status ?? 'Awaiting Fulfillment',
         };
       })
     );
 
-    if (ordersWithProducts.length > 0) {
-      for (const orderData of ordersWithProducts) {
-        await addOrderToDatabase(orderData, res);
-      }
-      res.status(200).json({ success: true, message: 'Orders synced successfully' });
+    const results = [];
+    for (const orderData of ordersWithProducts) {
+      const result = await addOrderToDatabase(orderData);
+      results.push(result);
     }
+
+    res.status(200).json({ success: true, results });
   } catch (error) {
     console.error('Error syncing orders:', error);
   }
@@ -102,6 +103,7 @@ const getOrderData = async (orderID) => {
       },
     });
     const order = await response.json();
+
     const products = await getProductsOnOrder(order.products.url);
     const ordersWithProducts = {
       order_id: order.id,
@@ -165,9 +167,12 @@ const getProductsOnOrder = async (url) => {
   }
 };
 
-const addOrderToDatabase = async (orderData, res) => {
+const addOrderToDatabase = async (orderData) => {
   try {
-    console.log('Inserting order into database:', orderData);
+    if (!orderData || !orderData.status) {
+      console.warn('Invalid orderData:', orderData);
+      return { success: false, message: 'Invalid orderData' };
+    }
 
     const {
       order_id,
@@ -181,14 +186,13 @@ const addOrderToDatabase = async (orderData, res) => {
       status,
     } = orderData;
 
-    // Check if order already exists
     const existingOrder = await pool.query('SELECT id FROM picklist_orders WHERE order_id = $1', [
       order_id,
     ]);
 
     if (existingOrder.rows.length > 0) {
       console.log(`Order ${order_id} already exists. Skipping insert.`);
-      return res.status(200).json({ success: false, message: 'Order already exists' });
+      return { success: false, message: 'Order already exists' };
     }
 
     const result = await pool.query(
@@ -219,10 +223,10 @@ const addOrderToDatabase = async (orderData, res) => {
       ]
     );
 
-    res.status(201).json({ success: true, order: result.rows[0] });
+    return { success: true, order: result.rows[0] };
   } catch (err) {
     console.error('Error inserting order:', err);
-    res.status(500).json({ success: false, message: 'Failed to insert order' });
+    return { success: false, message: 'Failed to insert order', error: err };
   }
 };
 
