@@ -88,15 +88,13 @@ function ShipstationPickList() {
       const htmlBody = getInlineStyledHtml(ref);
       const html = `<!DOCTYPE html><html><body>${htmlBody}</body></html>`;
 
-      // Step 3: Send HTML to PDF server
-      const response = await fetch(
-        'https://admin.heattransferwarehouse.com/api/big-commerce/orders/generate-pdf',
-        {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ html }),
-        }
-      );
+      // ✅ Send to your local Python print server
+      const response = await fetch('http://localhost:4577/generate-pdf', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ html }),
+        mode: 'cors',
+      });
 
       if (!response.ok) {
         const text = await response.text();
@@ -105,7 +103,7 @@ function ShipstationPickList() {
         return;
       }
 
-      // Step 4: Display PDF
+      // Convert response into a blob
       const blob = await response.blob();
       setSavedPDFBlob(blob);
       const url = URL.createObjectURL(blob);
