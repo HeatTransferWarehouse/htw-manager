@@ -91,11 +91,14 @@ function ShipstationPickList() {
       const html = `<!DOCTYPE html><html><body>${htmlBody}</body></html>`;
 
       // Step 3: Send HTML to PDF server
-      const response = await fetch('http://localhost:8000/api/big-commerce/orders/print-pdf', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ html }),
-      });
+      const response = await fetch(
+        'https://admin.heattransferwarehouse.com/api/big-commerce/orders/print-pdf',
+        {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ html }),
+        }
+      );
 
       if (!response.ok) {
         const text = await response.text();
