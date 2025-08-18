@@ -55,6 +55,7 @@
     "ftp": "^0.3.10",
     "get-image-colors": "^4.0.1",
     "googleapis": "^155.0.1",
+    "html-pdf-node": "^1.0.8",
     "html2pdf.js": "^0.10.3",
     "image-brightness": "^0.0.10",
     "image-size": "^1.1.1",

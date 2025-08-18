@@ -69,7 +69,6 @@ function ShipstationPickList() {
   const generatePDF = async () => {
     const ref = printRef.current;
     if (!ref) {
-      console.error('No print element found');
       setGeneratingPDF(false);
       return;
     }
@@ -78,7 +77,6 @@ function ShipstationPickList() {
       // Step 1: Try to fetch available printers
       setGeneratingPDF(true);
       const printersList = await getLocalPrinters();
-      console.log('printersList', printersList);
 
       if (printersList && printersList.printers.length > 0) {
         setPrintersList(printersList.printers);
@@ -91,14 +89,11 @@ function ShipstationPickList() {
       const html = `<!DOCTYPE html><html><body>${htmlBody}</body></html>`;
 
       // Step 3: Send HTML to PDF server
-      const response = await fetch(
-        'https://admin.heattransferwarehouse.com/api/big-commerce/orders/print-pdf',
-        {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ html }),
-        }
-      );
+      const response = await fetch('http://localhost:8000/api/big-commerce/orders/generate-pdf', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ html }),
+      });
 
       if (!response.ok) {
         const text = await response.text();
@@ -160,7 +155,6 @@ function ShipstationPickList() {
       const result = await response.json();
 
       if (response.ok) {
-        console.log('Print successful');
         dispatch({ type: 'MARK_ORDERS_PRINTED', payload: activeOrders.map((o) => o.order_id) });
         setOpenPrintModal(false);
         setSelectedPrinter('');
@@ -228,7 +222,7 @@ function ShipstationPickList() {
                     </label>
                     <DropDownContainer className={'w-full'} type="click">
                       <DropDownTrigger className="w-full border border-black justify-between">
-                        {selectedPrinter.alias || 'Select Printer'}
+                        {selectedPrinter?.alias || 'Select Printer'}
                       </DropDownTrigger>
                       <DropDownContent
                         style={{
@@ -240,7 +234,7 @@ function ShipstationPickList() {
                           <DropDownItem
                             className={twMerge(
                               'flex items-center justify-between',
-                              printer.name === selectedPrinter.name ? 'bg-secondary/5' : ''
+                              printer.name === selectedPrinter?.name ? 'bg-secondary/5' : ''
                             )}
                             onClick={() => setSelectedPrinter(printer)}
                             key={idx}

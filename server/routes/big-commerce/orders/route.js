@@ -2,7 +2,7 @@ require('dotenv').config();
 const express = require('express');
 const router = express.Router();
 const pool = require('../../../modules/pool');
-const puppeteer = require('puppeteer');
+const pdf = require('html-pdf-node');
 
 router.post('/create-order', async function (req, res) {
   if (req.body.data) {
@@ -191,7 +191,6 @@ const addOrderToDatabase = async (orderData) => {
     ]);
 
     if (existingOrder.rows.length > 0) {
-      console.log(`Order ${order_id} already exists. Skipping insert.`);
       return { success: false, message: 'Order already exists' };
     }
 
@@ -265,24 +264,17 @@ router.put('/mark-printed', async (req, res) => {
   }
 });
 
-router.post('/print-pdf', async (req, res) => {
+router.post('/generate-pdf', async (req, res) => {
   try {
     const { html } = req.body;
     if (!html) {
       return res.status(400).send('Missing HTML');
     }
 
-    const browser = await puppeteer.launch({
-      headless: 'new',
-      args: ['--no-sandbox'],
-    });
+    const file = { content: html };
+    const options = { format: 'A4' };
 
-    const page = await browser.newPage();
-    await page.setContent(html, { waitUntil: 'networkidle0' });
-
-    const pdfBuffer = await page.pdf({ format: 'A4' });
-
-    await browser.close();
+    const pdfBuffer = await pdf.generatePdf(file, options);
 
     res.set({
       'Content-Type': 'application/pdf',
@@ -292,7 +284,7 @@ router.post('/print-pdf', async (req, res) => {
 
     res.end(pdfBuffer);
   } catch (err) {
-    console.error('Puppeteer PDF generation error:', err);
+    console.error('PDF generation error:', err);
     res.status(500).send('Failed to generate PDF');
   }
 });
