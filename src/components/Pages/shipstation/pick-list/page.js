@@ -159,6 +159,7 @@ function ShipstationPickList() {
         dispatch({ type: 'MARK_ORDERS_PRINTED', payload: activeOrders.map((o) => o.order_id) });
         setOpenPrintModal(false);
         setSelectedPrinter('');
+        setActiveOrders([]);
       } else {
         alert(`Print error: ${result.error}`);
       }

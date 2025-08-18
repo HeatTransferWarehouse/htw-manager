@@ -6,30 +6,24 @@ import React, {
   useState,
   createContext,
   useContext,
-} from "react";
-import { twMerge } from "tailwind-merge";
-import { FaChevronDown, FaChevronUp } from "react-icons/fa6";
-import { createPortal } from "react-dom";
-import { useDropDownManager } from "../../context/dropdownContext";
+} from 'react';
+import { twMerge } from 'tailwind-merge';
+import { FaChevronDown, FaChevronUp } from 'react-icons/fa6';
+import { createPortal } from 'react-dom';
+import { useDropDownManager } from '../../context/dropdownContext';
 
 // Create a Context for dropdown state
 const DropDownContext = createContext();
 
-const DropDownContainer = ({
-  children,
-  className,
-  onClose,
-  type = "hover",
-}) => {
-  const { activeDropdownId, setActiveDropdownId, closeAllDropdowns } =
-    useDropDownManager();
+const DropDownContainer = ({ children, className, onClose, type = 'hover' }) => {
+  const { activeDropdownId, setActiveDropdownId, closeAllDropdowns } = useDropDownManager();
   const triggerRef = useRef(null);
   const containerRef = useRef(null);
   const contentRef = useRef(null);
   const [dropdownstyle, setDropdownstyle] = useState({});
 
   // Generate a unique ID for each dropdown instance using useRef
-  const uniqueIdRef = useRef(Symbol("dropdown-id"));
+  const uniqueIdRef = useRef(Symbol('dropdown-id'));
   const uniqueId = uniqueIdRef.current;
 
   // Check if this dropdown is open based on the unique ID
@@ -59,21 +53,21 @@ const DropDownContainer = ({
   }, []);
 
   useEffect(() => {
-    const mainContainer = document.querySelector(".main-container");
+    const mainContainer = document.querySelector('.main-container');
     if (!mainContainer) return;
 
     const handleScrollResize = () => {
       requestAnimationFrame(calculatePosition);
     };
 
-    mainContainer.addEventListener("scroll", handleScrollResize);
-    window.addEventListener("resize", handleScrollResize);
+    mainContainer.addEventListener('scroll', handleScrollResize);
+    window.addEventListener('resize', handleScrollResize);
 
     calculatePosition();
 
     return () => {
-      mainContainer.removeEventListener("scroll", handleScrollResize);
-      window.removeEventListener("resize", handleScrollResize);
+      mainContainer.removeEventListener('scroll', handleScrollResize);
+      window.removeEventListener('resize', handleScrollResize);
     };
   }, [calculatePosition]);
 
@@ -94,13 +88,13 @@ const DropDownContainer = ({
       }
     };
 
-    if (type !== "hover") {
-      document.addEventListener("click", handleClickOutside);
+    if (type !== 'hover') {
+      document.addEventListener('click', handleClickOutside);
     }
 
     return () => {
-      if (type !== "hover") {
-        document.removeEventListener("click", handleClickOutside);
+      if (type !== 'hover') {
+        document.removeEventListener('click', handleClickOutside);
       }
     };
   }, [type, isOpen, onClose, triggerRef, contentRef]);
@@ -116,12 +110,14 @@ const DropDownContainer = ({
         containerRef,
         triggerRef,
         contentRef,
-      }}>
+      }}
+    >
       <div
         ref={containerRef}
-        onMouseEnter={() => type === "hover" && setActiveDropdownId(uniqueId)}
-        onMouseLeave={() => type === "hover" && closeAllDropdowns()}
-        className={twMerge("relative pb-2 top-1", className)}>
+        onMouseEnter={() => type === 'hover' && setActiveDropdownId(uniqueId)}
+        onMouseLeave={() => type === 'hover' && closeAllDropdowns()}
+        className={twMerge('relative pb-2 top-1', className)}
+      >
         {React.Children.map(children, (child) => {
           if (child.type === DropDownTrigger) {
             return React.cloneElement(child, {
@@ -135,45 +131,45 @@ const DropDownContainer = ({
   );
 };
 
-const DropDownTrigger = forwardRef(
-  ({ children, className, onClick, ...props }) => {
-    const { isOpen, toggleOpen, type, triggerRef } =
-      useContext(DropDownContext);
+const DropDownTrigger = forwardRef(({ children, className, onClick, ...props }) => {
+  const { isOpen, toggleOpen, type, triggerRef } = useContext(DropDownContext);
 
-    return (
-      <button
-        ref={triggerRef}
-        className={twMerge(
-          isOpen ? "bg-secondary/10" : "",
-          "cursor-pointer p-2 rounded-md transition hover:bg-secondary/10 flex items-center justify-start gap-4",
-          className
-        )}
-        onClick={(e) => {
-          onClick && onClick(e);
-          if (type !== "hover") toggleOpen();
-        }}
-        {...props}>
-        {children}
-        {type !== "popover" && (
-          <span className="pointer-events-none flex items-center justify-center">
-            {isOpen ? <FaChevronUp /> : <FaChevronDown />}
-          </span>
-        )}
-      </button>
-    );
-  }
-);
+  return (
+    <button
+      ref={triggerRef}
+      className={twMerge(
+        isOpen ? 'bg-secondary/10' : '',
+        'cursor-pointer group p-2 rounded-md transition hover:text-secondary flex items-center justify-start gap-4',
+        className
+      )}
+      onClick={(e) => {
+        onClick && onClick(e);
+        if (type !== 'hover') toggleOpen();
+      }}
+      {...props}
+    >
+      {children}
+      {type !== 'popover' && (
+        <span className="pointer-events-none flex items-center justify-center">
+          {isOpen ? (
+            <FaChevronUp className="group-hover:text-secondary" />
+          ) : (
+            <FaChevronDown className="group-hover:text-secondary" />
+          )}
+        </span>
+      )}
+    </button>
+  );
+});
 
 const DropDownContent = ({ children, className }) => {
-  const { isOpen, dropdownstyle, containerRef, contentRef } =
-    useContext(DropDownContext);
+  const { isOpen, dropdownstyle, containerRef, contentRef } = useContext(DropDownContext);
   const [isPositioned, setIsPositioned] = useState(false);
 
   useEffect(() => {
     if (isOpen && contentRef.current) {
       const { offsetWidth, scrollHeight } = contentRef.current;
-      const { buttonWidth, positionX, positionY, triggerHeight } =
-        dropdownstyle;
+      const { buttonWidth, positionX, positionY, triggerHeight } = dropdownstyle;
 
       const viewportHeight = window.innerHeight;
       const viewportWidth = window.innerWidth;
@@ -197,10 +193,10 @@ const DropDownContent = ({ children, className }) => {
           buttonWidth < contentRef.current?.scrollWidth
             ? contentRef.current?.scrollWidth
             : buttonWidth,
-        left: isRight ? "unset" : left,
-        right: isRight ? viewportWidth - positionX - buttonWidth : "unset",
-        top: isBottom ? "unset" : top,
-        bottom: isBottom ? viewportHeight - positionY + 4 : "unset",
+        left: isRight ? 'unset' : left,
+        right: isRight ? viewportWidth - positionX - buttonWidth : 'unset',
+        top: isBottom ? 'unset' : top,
+        bottom: isBottom ? viewportHeight - positionY + 4 : 'unset',
       });
     }
   }, [isOpen, dropdownstyle, children, contentRef]);
@@ -210,12 +206,13 @@ const DropDownContent = ({ children, className }) => {
         <div
           ref={contentRef}
           className={twMerge(
-            "absolute z-[999999] rounded-md h-fit max-h-[200px] min-w-[120px] overflow-x-hidden overflow-y-auto bg-white shadow-default",
+            'absolute z-[999999] rounded-md h-fit max-h-[200px] min-w-[120px] overflow-x-hidden overflow-y-auto bg-white shadow-default',
             className
           )}
           style={{
             ...isPositioned,
-          }}>
+          }}
+        >
           {children}
         </div>,
         containerRef.current
@@ -229,14 +226,15 @@ const DropDownItem = ({ children, className, onClick, active }) => {
   return (
     <div
       className={twMerge(
-        active ? "bg-secondary/10 text-secondary" : "",
-        "p-2 hover:bg-secondary/10 hover:text-secondary cursor-pointer",
+        active ? 'bg-secondary/10 text-secondary' : '',
+        'p-2 hover:bg-secondary/10 hover:text-secondary cursor-pointer',
         className
       )}
       onClick={(e) => {
         onClick && onClick(e);
         closeDropdown(); // Explicitly close the dropdown after clicking the item
-      }}>
+      }}
+    >
       {children}
     </div>
   );

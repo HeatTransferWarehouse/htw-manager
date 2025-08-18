@@ -61,12 +61,24 @@ function* getLocalPrinters() {
   }
 }
 
+function* deleteOrders(action) {
+  try {
+    yield axios.delete(`/api/big-commerce/orders`, {
+      data: { orderIds: action.payload }, // this should be an array of order IDs
+    });
+    yield put({ type: 'GET_ORDERS' }); // Refresh orders
+  } catch (err) {
+    console.log('Error in deleteOrders Saga', err);
+  }
+}
+
 function* ordersSaga() {
   yield takeLatest('GET_ORDERS', getOrders);
   yield takeLatest('MARK_ORDERS_PRINTED', markOrdersPrinted);
   yield takeLatest('GENERATE_PDF', generatePDF);
   yield takeLatest('SYNC_ORDERS', syncOrders);
   yield takeLatest('GET_PRINTERS', getLocalPrinters);
+  yield takeLatest('DELETE_ORDERS', deleteOrders);
 }
 
 export default ordersSaga;

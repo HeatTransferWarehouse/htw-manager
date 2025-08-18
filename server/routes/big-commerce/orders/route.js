@@ -91,6 +91,34 @@ router.post('/sync', async function (req, res) {
   }
 });
 
+router.delete('/', async (req, res) => {
+  const orderIds = req.body.orderIds;
+
+  if (!Array.isArray(orderIds) || orderIds.length === 0) {
+    return res.status(400).json({ success: false, message: 'An array of order IDs is required' });
+  }
+
+  try {
+    const placeholders = orderIds.map((_, i) => `$${i + 1}`).join(', ');
+    const query = `DELETE FROM picklist_orders WHERE order_id IN (${placeholders}) RETURNING *`;
+
+    const result = await pool.query(query, orderIds);
+
+    if (result.rows.length > 0) {
+      res.status(200).json({
+        success: true,
+        message: `${result.rows.length} order(s) deleted successfully`,
+        deleted: result.rows,
+      });
+    } else {
+      res.status(404).json({ success: false, message: 'No orders found to delete' });
+    }
+  } catch (err) {
+    console.error('Error deleting orders:', err);
+    res.status(500).json({ success: false, message: 'Failed to delete orders' });
+  }
+});
+
 const getOrderData = async (orderID) => {
   try {
     const url = `https://api.bigcommerce.com/stores/${process.env.STORE_HASH}/v2/orders/${orderID}?include=consignments`;
