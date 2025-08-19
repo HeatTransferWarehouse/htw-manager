@@ -304,7 +304,7 @@ function OrdersTable({
                 .map((order, index) => {
                   return (
                     <TableRow
-                      className={order.is_printed && 'bg-green-600/15'}
+                      className={order.is_printed && 'bg-green-600/10'}
                       key={index}
                       isMobile={false}
                     >
@@ -418,7 +418,7 @@ function OrdersTable({
                       </TableCell>
                       <TableCell
                         className={twMerge(
-                          'truncate overflow-hidden mb-auto whitespace-nowrap w-full',
+                          'mb-auto',
                           expandedOrderIDs.includes(order.order_id) &&
                             'flex flex-col gap-2 items-start'
                         )}
@@ -432,8 +432,8 @@ function OrdersTable({
                               </div>
                             ))}
                       </TableCell>
-                      <TableCell className={'mb-auto'} minWidth={'8rem'}>
-                        {order.shipping.shipping_method}
+                      <TableCell className={' mb-auto'} minWidth={'8rem'}>
+                        <span className="truncate w-full">{order.shipping.shipping_method}</span>
                       </TableCell>
                       <TableCell className={'mb-auto'} minWidth={'8rem'}>
                         {formatMoney(order.shipping.cost_inc_tax)}
