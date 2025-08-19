@@ -29,7 +29,7 @@ import {
 } from '../../../ui/pagination';
 import ReactDOM from 'react-dom';
 import Search from './search';
-import { DeleteModal, ManageTagsModal } from '../modals/modals';
+import DeleteModal from '../modals/modals';
 
 const detectOS = () => {
   const platform = window.navigator.platform.toLowerCase();

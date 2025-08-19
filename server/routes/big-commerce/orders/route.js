@@ -27,7 +27,7 @@ const ALLOWED_STATUSES = new Set(['Awaiting Fulfillment', 'Awaiting Payment']);
 const PENDING_TIMERS = new Map(); // order_id -> timeout
 const DELAY_MS = 5_000; // initial delay after webhook
 const MAX_RETRIES = 3; // how many times to recheck if still Incomplete
-const BACKOFF_MS = 15_000; // wait between retries
+const BACKOFF_MS = 5_000; // wait between retries
 
 // Sync concurrency + pagination
 const SYNC_TARGET = 50; // aim to add up to 50 valid orders
@@ -255,88 +255,95 @@ function scheduleOrderProcess(orderId, delayMs = DELAY_MS) {
 // -----------------------------------------------------------------------
 
 async function syncOrders() {
-  let page = 1;
+  const addedTarget = SYNC_TARGET; // e.g., 50
+  const url = `https://api.bigcommerce.com/stores/${process.env.STORE_HASH}/v2/orders?limit=${SYNC_PAGE_SIZE || 100}&sort=date_created:desc&include=consignments`;
+
   let added = 0;
   let skippedIncomplete = 0;
   const results = [];
 
-  while (added < SYNC_TARGET) {
-    const url = `https://api.bigcommerce.com/stores/${process.env.STORE_HASH}/v2/orders?limit=${SYNC_PAGE_SIZE}&page=${page}&sort=date_created:desc&include=consignments`;
-    const orders = await fetchJSON(url);
-    if (!orders.length) break;
+  // 1) single page fetch (fast)
+  const orders = await fetchJSON(url);
+  if (!orders?.length) {
+    return { success: true, added: 0, skipped_incomplete: 0, results: [] };
+  }
 
-    // Build tasks for this page
-    const tasks = [];
-    for (const o of orders) {
-      const status = (o.status || '').trim();
-      if (!ALLOWED_STATUSES.has(status)) {
-        if (status === 'Incomplete') skippedIncomplete++;
-        continue;
-      }
+  // 2) build tasks only for allowed statuses
+  const tasks = [];
+  for (const o of orders) {
+    const status = (o.status || '').trim();
+    if (!ALLOWED_STATUSES.has(status)) {
+      if (status === 'Incomplete') skippedIncomplete++;
+      continue;
+    }
 
-      tasks.push(async () => {
-        try {
-          const products = await getProductsOnOrder(o.products.url);
-          const cons = o.consignments?.[0]?.shipping?.[0] || {};
-          const orderData = {
+    tasks.push(async () => {
+      try {
+        const products = await getProductsOnOrder(o.products.url);
+        const cons = o.consignments?.[0]?.shipping?.[0] || {};
+
+        const orderData = {
+          order_id: o.id,
+          date_created: o.date_created,
+          line_items: products.map((p) => ({
+            id: p.id,
             order_id: o.id,
-            date_created: o.date_created,
-            line_items: products.map((p) => ({
-              id: p.id,
-              order_id: o.id,
-              name: p.name,
-              sku: p.sku,
-              quantity: p.quantity,
-              price: p.total_inc_tax,
-              options: (p.product_options || []).map((opt) => ({
-                display_name: opt.display_name,
-                display_value: opt.display_value,
-              })),
+            name: p.name,
+            sku: p.sku,
+            quantity: p.quantity,
+            price: p.total_inc_tax,
+            options: (p.product_options || []).map((opt) => ({
+              display_name: opt.display_name,
+              display_value: opt.display_value,
             })),
-            shipping: {
-              shipping_method: cons.shipping_method,
-              cost_inc_tax: cons.cost_inc_tax,
-              street_1: cons.street_1,
-              street_2: cons.street_2,
-              city: cons.city,
-              state: cons.state,
-              zip: cons.zip,
-              country: cons.country,
-            },
-            customer: {
-              first_name: o.billing_address?.first_name,
-              last_name: o.billing_address?.last_name,
-              email: o.billing_address?.email,
-              phone: o.billing_address?.phone,
-            },
-            subtotal: o.subtotal_ex_tax,
-            tax: o.total_tax,
-            grand_total: o.total_inc_tax,
-            total_items: o.items_total,
-            status: status || 'Awaiting Fulfillment',
-          };
+          })),
+          shipping: {
+            shipping_method: cons.shipping_method,
+            cost_inc_tax: cons.cost_inc_tax,
+            street_1: cons.street_1,
+            street_2: cons.street_2,
+            city: cons.city,
+            state: cons.state,
+            zip: cons.zip,
+            country: cons.country,
+          },
+          customer: {
+            first_name: o.billing_address?.first_name,
+            last_name: o.billing_address?.last_name,
+            email: o.billing_address?.email,
+            phone: o.billing_address?.phone,
+          },
+          subtotal: o.subtotal_ex_tax,
+          tax: o.total_tax,
+          grand_total: o.total_inc_tax,
+          total_items: o.items_total,
+          status: status || 'Awaiting Fulfillment',
+        };
 
-          const out = await addOrderToDatabase(orderData);
-          if (out?.success) {
-            return out.order;
-          }
-          return null;
-        } catch (e) {
-          console.error(`Task failed for order ${o.id}:`, e.message || e);
-          return null;
-        }
-      });
-    }
+        const out = await addOrderToDatabase(orderData);
+        return out?.success ? out.order : null;
+      } catch (e) {
+        console.error(`Task failed for order ${o.id}:`, e.message || e);
+        return null;
+      }
+    });
+  }
 
-    if (tasks.length) {
-      const pageResults = await runWithConcurrencyLimit(tasks, SYNC_CONCURRENCY);
-      const addedNow = pageResults.filter(Boolean);
-      results.push(...addedNow);
-      added += addedNow.length;
-    }
+  if (!tasks.length) {
+    return { success: true, added: 0, skipped_incomplete: skippedIncomplete, results: [] };
+  }
 
-    if (orders.length < SYNC_PAGE_SIZE) break; // no more pages
-    page++;
+  // 3) run tasks concurrently and cap to target
+  const raw = await runWithConcurrencyLimit(tasks, SYNC_CONCURRENCY); // e.g., 8
+  const inserted = raw.filter(Boolean).slice(0, addedTarget);
+
+  added = inserted.length;
+  results.push(...inserted);
+
+  // 4) (Optional) notify front end
+  if (typeof sseEmit === 'function') {
+    sseEmit('sync-finished', { added, skipped_incomplete: skippedIncomplete });
+    if (added > 0) sseEmit('orders-updated', { action: 'bulk', count: added });
   }
 
   return { success: true, added, skipped_incomplete: skippedIncomplete, results };
