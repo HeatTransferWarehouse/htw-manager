@@ -16,12 +16,36 @@ import { twMerge } from 'tailwind-merge';
 import { FaCheck } from 'react-icons/fa6';
 import { getLocalPrinters } from '../utils/utils';
 
+const calculateOrderAges = (orders) => {
+  const now = Date.now();
+  return orders.map((order) => {
+    const createdAt = new Date(order.created_at);
+    const diffInMs = now - createdAt;
+    const diffInMinutes = Math.floor(diffInMs / (1000 * 60));
+    const diffInHours = Math.floor(diffInMs / (1000 * 60 * 60));
+    const diffInDays = Math.floor(diffInMs / (1000 * 60 * 60 * 24));
+
+    let ageLabel = '';
+    if (diffInMinutes < 60) {
+      ageLabel = `${diffInMinutes} min`;
+    } else if (diffInHours < 24) {
+      ageLabel = `${diffInHours} hr`;
+    } else {
+      ageLabel = `${diffInDays} day${diffInDays > 1 ? 's' : ''}`;
+    }
+
+    return { ...order, age: ageLabel };
+  });
+};
+
 function ShipstationPickList() {
   const ordersStore = useSelector((state) => state.BC.orders.orders);
   const syncing = useSelector((state) => state.BC.orders.syncing);
+  const orderTags = useSelector((state) => state.BC.orders.tags);
   const dispatch = useDispatch();
   const printRef = React.useRef();
   const [orders, setOrders] = React.useState([]);
+  const [orderTagsList, setOrdersTagsList] = React.useState(orderTags || []);
   const [activeOrders, setActiveOrders] = React.useState([]);
   const [expandedOrderIDs, setExpandedOrderIDs] = React.useState([]);
   const [openPrintModal, setOpenPrintModal] = React.useState(false);
@@ -31,14 +55,32 @@ function ShipstationPickList() {
   const [selectedPrinter, setSelectedPrinter] = React.useState('');
   const [savedPDFBlob, setSavedPDFBlob] = React.useState(null);
   const [view, setView] = React.useState('all');
+  const [currentTime, setCurrentTime] = React.useState(Date.now());
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setCurrentTime(Date.now());
+    }, 60 * 1000); // every minute
+
+    return () => clearInterval(interval);
+  }, []);
+
+  useEffect(() => {
+    setOrders((prevOrders) => calculateOrderAges(prevOrders));
+  }, [currentTime]);
 
   useEffect(() => {
     dispatch({ type: 'GET_ORDERS' });
+    dispatch({ type: 'GET_ORDER_TAGS' });
   }, [dispatch]);
 
   useEffect(() => {
-    setOrders(ordersStore);
+    setOrders(calculateOrderAges(ordersStore));
   }, [ordersStore]);
+
+  useEffect(() => {
+    setOrdersTagsList(orderTags);
+  }, [orderTags]);
 
   const printOrders = async () => {
     generatePDF();
@@ -183,6 +225,7 @@ function ShipstationPickList() {
         view={view}
         setView={setView}
         syncing={syncing}
+        orderTagsList={orderTagsList}
       />
 
       {generatingPDF &&

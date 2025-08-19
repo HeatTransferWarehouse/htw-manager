@@ -72,11 +72,12 @@ const TableHeadCell = ({ className, children, minWidth }) => {
   );
 };
 
-const TableCell = ({ className, children, minWidth, isMobile }) => {
+const TableCell = ({ className, children, minWidth, isMobile, style }) => {
   return (
     <span
       style={{
         minWidth: minWidth,
+        ...style, // Allow additional styles to be passed
       }}
       className={twMerge(
         'py-2 pl-4 flex items-center border-t border-solid border-gray-200',

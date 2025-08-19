@@ -1195,6 +1195,10 @@ video {
   width: 230px;
 }
 
+.w-\[26rem\] {
+  width: 26rem;
+}
+
 .w-\[300px\] {
   width: 300px;
 }
@@ -1229,26 +1233,6 @@ video {
 
 .w-screen {
   width: 100vw;
-}
-
-.w-40 {
-  width: 10rem;
-}
-
-.w-60 {
-  width: 15rem;
-}
-
-.w-96 {
-  width: 24rem;
-}
-
-.w-\[26rem\] {
-  width: 26rem;
-}
-
-.w-24 {
-  width: 6rem;
 }
 
 .min-w-32 {
@@ -1349,6 +1333,10 @@ video {
 
 .max-w-screen-xs {
   max-width: 375px;
+}
+
+.max-w-\[1800px\] {
+  max-width: 1800px;
 }
 
 .grow {
@@ -1521,7 +1509,7 @@ video {
 }
 
 .grid-cols-orders {
-  grid-template-columns: 4rem 3fr 4fr 5fr 8fr 10fr 2fr 7fr 3fr 3fr 3fr;
+  grid-template-columns: 4rem 3fr 3fr 2fr 5fr 6fr 9fr 2fr 7fr 3fr 3fr 5fr;
 }
 
 .grid-cols-productsList {
@@ -1948,6 +1936,10 @@ video {
   background-color: rgb(202 138 4 / var(--tw-bg-opacity));
 }
 
+.bg-green-600\/15 {
+  background-color: rgb(22 163 74 / 0.15);
+}
+
 .bg-opacity-50 {
   --tw-bg-opacity: 0.5;
 }
@@ -2165,6 +2157,10 @@ video {
   padding-left: 1rem;
 }
 
+.pl-8 {
+  padding-left: 2rem;
+}
+
 .pl-\[1\.75rem\] {
   padding-left: 1.75rem;
 }
@@ -2199,10 +2195,6 @@ video {
 
 .pt-4 {
   padding-top: 1rem;
-}
-
-.pl-8 {
-  padding-left: 2rem;
 }
 
 .text-left {
@@ -2303,6 +2295,10 @@ video {
   font-weight: 600;
 }
 
+.font-thin {
+  font-weight: 100;
+}
+
 .italic {
   font-style: italic;
 }
@@ -2380,6 +2376,11 @@ video {
 .text-white {
   --tw-text-opacity: 1;
   color: rgb(255 255 255 / var(--tw-text-opacity));
+}
+
+.text-green-800 {
+  --tw-text-opacity: 1;
+  color: rgb(22 101 52 / var(--tw-text-opacity));
 }
 
 .underline {
@@ -2568,6 +2569,11 @@ video {
   background-color: rgb(167 89 209 / 0.85);
 }
 
+.hover\:bg-red-600:hover {
+  --tw-bg-opacity: 1;
+  background-color: rgb(220 38 38 / var(--tw-bg-opacity));
+}
+
 .hover\:bg-red-600\/10:hover {
   background-color: rgb(220 38 38 / 0.1);
 }
@@ -2606,9 +2612,9 @@ video {
   background-color: rgb(202 138 4 / 0.85);
 }
 
-.hover\:bg-red-600:hover {
+.hover\:bg-white:hover {
   --tw-bg-opacity: 1;
-  background-color: rgb(220 38 38 / var(--tw-bg-opacity));
+  background-color: rgb(255 255 255 / var(--tw-bg-opacity));
 }
 
 .hover\/group-clear\:fill-secondary:hover {
@@ -2646,6 +2652,16 @@ video {
 .hover\:text-white:hover {
   --tw-text-opacity: 1;
   color: rgb(255 255 255 / var(--tw-text-opacity));
+}
+
+.hover\:text-black:hover {
+  --tw-text-opacity: 1;
+  color: rgb(0 0 0 / var(--tw-text-opacity));
+}
+
+.hover\:text-gray-500:hover {
+  --tw-text-opacity: 1;
+  color: rgb(107 114 128 / var(--tw-text-opacity));
 }
 
 .hover\:underline:hover {
