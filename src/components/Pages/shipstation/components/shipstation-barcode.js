@@ -12,6 +12,8 @@ const ShipStationBarcode = ({ encoded, orderId }) => {
       }}
     >
       <Barcode
+        fontOptions="bold"
+        font="Arial"
         value={orderId.toString()}
         format="CODE128"
         width={1.5} // thickness of each bar (default: 2)

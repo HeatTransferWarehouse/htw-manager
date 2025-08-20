@@ -83,30 +83,83 @@ const getProductsOnOrder = async (url) => {
   return fetchJSON(url);
 };
 
+const getProductMetaFields = async (productId) => {
+  const url = `https://api.bigcommerce.com/stores/${process.env.STORE_HASH}/v3/catalog/products/${productId}/metafields`;
+  const resp = await fetchJSON(url);
+  return resp?.data || [];
+};
+
+const getVariantMetaFields = async (productId, variantId) => {
+  const url = `https://api.bigcommerce.com/stores/${process.env.STORE_HASH}/v3/catalog/products/${productId}/variants/${variantId}/metafields`;
+  const resp = await fetchJSON(url);
+  return resp?.data || [];
+};
+
 const getOrderData = async (orderID) => {
   const url = `https://api.bigcommerce.com/stores/${process.env.STORE_HASH}/v2/orders/${orderID}?include=consignments`;
   const order = await fetchJSON(url);
 
-  // Guard: structure may vary if no consignments yet
   const cons = order.consignments?.[0]?.shipping?.[0] || {};
-
   const products = await getProductsOnOrder(order.products.url);
+
+  // IMPORTANT: await the map with Promise.all, and use p.product_id
+  const line_items = await Promise.all(
+    (products || []).map(async (p) => {
+      const productMetaFields = await getProductMetaFields(p.product_id); // not p.id
+      const variantMetaFields = await getVariantMetaFields(p.product_id, p.variant_id);
+      const isProductDropship = (productMetaFields || []).some((f) => {
+        if (f.namespace !== 'shipping.shipperhq' || f.key !== 'shipping-groups') return false;
+
+        // value may be a JSON array string like '["Supacolor Dropship"]'
+        const values = (() => {
+          if (typeof f.value !== 'string') return [];
+          try {
+            const parsed = JSON.parse(f.value);
+            return Array.isArray(parsed) ? parsed : [f.value];
+          } catch {
+            return [f.value]; // not JSON, treat as scalar string
+          }
+        })();
+
+        return values.some((v) => /drop\s*-?\s*ship/i.test(String(v)));
+      });
+      const isVariantDropship = (variantMetaFields || []).some((f) => {
+        if (f.namespace !== 'shipping.shipperhq' || f.key !== 'shipping-groups') return false;
+
+        // value may be a JSON array string like '["Supacolor Dropship"]'
+        const values = (() => {
+          if (typeof f.value !== 'string') return [];
+          try {
+            const parsed = JSON.parse(f.value);
+            return Array.isArray(parsed) ? parsed : [f.value];
+          } catch {
+            return [f.value]; // not JSON, treat as scalar string
+          }
+        })();
+
+        return values.some((v) => /drop\s*-?\s*ship/i.test(String(v)));
+      });
+      return {
+        id: p.id, // order line item id
+        order_id: order.id,
+        product_id: p.product_id, // keep the catalog product id too
+        name: p.name,
+        sku: p.sku,
+        quantity: p.quantity,
+        price: p.total_inc_tax,
+        is_dropship: isProductDropship ? true : isVariantDropship ? true : false,
+        options: (p.product_options || []).map((opt) => ({
+          display_name: opt.display_name,
+          display_value: opt.display_value,
+        })),
+      };
+    })
+  );
 
   return {
     order_id: order.id,
-    date_created: order.date_created, // BigCommerce date string, e.g. "Tue, 19 Aug 2025 18:52:56 +0000"
-    line_items: products.map((p) => ({
-      id: p.id,
-      order_id: order.id,
-      name: p.name,
-      sku: p.sku,
-      quantity: p.quantity,
-      price: p.total_inc_tax,
-      options: (p.product_options || []).map((opt) => ({
-        display_name: opt.display_name,
-        display_value: opt.display_value,
-      })),
-    })),
+    date_created: order.date_created,
+    line_items,
     shipping: {
       shipping_method: cons.shipping_method,
       cost_inc_tax: cons.cost_inc_tax,
@@ -225,7 +278,7 @@ async function processSingleOrder(orderId, attempt = 1) {
       return;
     }
 
-    const result = await addOrderToDatabase(data);
+    const result = await addOrderToDatabase(data, true);
     if (result?.success) {
       console.log(`✅ Order ${orderId} added`);
     } else {
@@ -280,23 +333,68 @@ async function syncOrders() {
     tasks.push(async () => {
       try {
         const products = await getProductsOnOrder(o.products.url);
+
         const cons = o.consignments?.[0]?.shipping?.[0] || {};
+
+        const line_items = await Promise.all(
+          (products || []).map(async (p) => {
+            const productMetaFields = await getProductMetaFields(p.product_id); // not p.id
+            const variantMetaFields = await getVariantMetaFields(p.product_id, p.variant_id);
+            const isProductDropship = (productMetaFields || []).some((f) => {
+              if (f.namespace !== 'shipping.shipperhq' || f.key !== 'shipping-groups') return false;
+
+              // value may be a JSON array string like '["Supacolor Dropship"]'
+              const values = (() => {
+                if (typeof f.value !== 'string') return [];
+                try {
+                  const parsed = JSON.parse(f.value);
+                  return Array.isArray(parsed) ? parsed : [f.value];
+                } catch {
+                  return [f.value]; // not JSON, treat as scalar string
+                }
+              })();
+
+              return values.some((v) => /drop\s*-?\s*ship/i.test(String(v)));
+            });
+            const isVariantDropship = (variantMetaFields || []).some((f) => {
+              if (f.namespace !== 'shipping.shipperhq' || f.key !== 'shipping-groups') return false;
+
+              // value may be a JSON array string like '["Supacolor Dropship"]'
+              const values = (() => {
+                if (typeof f.value !== 'string') return [];
+                try {
+                  const parsed = JSON.parse(f.value);
+                  return Array.isArray(parsed) ? parsed : [f.value];
+                } catch {
+                  return [f.value]; // not JSON, treat as scalar string
+                }
+              })();
+
+              return values.some((v) => /drop\s*-?\s*ship/i.test(String(v)));
+            });
+
+            return {
+              id: p.id, // order line item id
+              order_id: o.id,
+              product_id: p.product_id, // keep the catalog product id too
+              variant_id: p.variant_id,
+              name: p.name,
+              sku: p.sku,
+              quantity: p.quantity,
+              price: p.total_inc_tax,
+              is_dropship: isProductDropship ? true : isVariantDropship ? true : false,
+              options: (p.product_options || []).map((opt) => ({
+                display_name: opt.display_name,
+                display_value: opt.display_value,
+              })),
+            };
+          })
+        );
 
         const orderData = {
           order_id: o.id,
           date_created: o.date_created,
-          line_items: products.map((p) => ({
-            id: p.id,
-            order_id: o.id,
-            name: p.name,
-            sku: p.sku,
-            quantity: p.quantity,
-            price: p.total_inc_tax,
-            options: (p.product_options || []).map((opt) => ({
-              display_name: opt.display_name,
-              display_value: opt.display_value,
-            })),
-          })),
+          line_items: line_items,
           shipping: {
             shipping_method: cons.shipping_method,
             cost_inc_tax: cons.cost_inc_tax,
@@ -467,20 +565,6 @@ router.post('/generate-pdf', async (req, res) => {
     console.error('PDF generation error:', err);
     return res.status(500).send('Failed to generate PDF');
   }
-});
-
-// subscribe to events (SSE)
-router.get('/events', (req, res) => {
-  res.setHeader('Content-Type', 'text/event-stream');
-  res.setHeader('Cache-Control', 'no-cache, no-transform');
-  res.setHeader('Connection', 'keep-alive');
-
-  // if you use compression middleware globally, disable it for this route:
-  // res.flushHeaders?.(); // ok to call if you have it
-
-  res.write('\n'); // open the stream
-  sseClients.add(res);
-  req.on('close', () => sseClients.delete(res));
 });
 
 module.exports = router;

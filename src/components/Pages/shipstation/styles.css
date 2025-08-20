@@ -66,6 +66,7 @@
 #print-section tr {
   margin: 0;
   background-color: white;
+  page-break-inside: avoid;
 }
 .order-print-page {
   page-break-after: auto;

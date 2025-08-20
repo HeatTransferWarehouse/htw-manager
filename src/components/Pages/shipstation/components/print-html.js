@@ -1,10 +1,23 @@
 import React from 'react';
 import ShipStationBarcode from './shipstation-barcode';
-import { formatMoney, formatPhoneNumber, toTitleCase } from '../utils/utils';
+import {
+  cleanDisplayName,
+  formatMoney,
+  formatPhoneNumber,
+  optionCleaner,
+  shouldExcludeOption,
+  toTitleCase,
+} from '../utils/utils';
 
 const PrintHtml = React.forwardRef(({ activeOrders }, ref) => {
   return (
-    <div ref={ref} id="print-section">
+    <div
+      style={{
+        fontFamily: 'Arial, sans-serif',
+      }}
+      ref={ref}
+      id="print-section"
+    >
       {activeOrders.map((order, i) => (
         <div
           style={{
@@ -28,6 +41,7 @@ const PrintHtml = React.forwardRef(({ activeOrders }, ref) => {
                 margin: '0',
                 padding: '0',
               }}
+              loading="eager"
               src="https://cdn11.bigcommerce.com/s-et4qthkygq/images/stencil/original/image-manager/heat-transfer-warehouse-logo-2024.png?t=1710348082"
               alt="Heat Transfer Warehouse Logo"
             ></img>
@@ -207,7 +221,7 @@ const PrintHtml = React.forwardRef(({ activeOrders }, ref) => {
               >
                 <span
                   style={{
-                    fontWeight: '500',
+                    fontWeight: '600',
                   }}
                 >
                   Order Number:
@@ -222,7 +236,7 @@ const PrintHtml = React.forwardRef(({ activeOrders }, ref) => {
               >
                 <span
                   style={{
-                    fontWeight: '500',
+                    fontWeight: '600',
                   }}
                 >
                   Order Date:
@@ -318,6 +332,7 @@ const PrintHtml = React.forwardRef(({ activeOrders }, ref) => {
               <tr
                 style={{
                   borderBottom: '1px solid black',
+                  pageBreakInside: 'avoid', // Prevent breaking inside the header
                 }}
               >
                 <th
@@ -328,7 +343,7 @@ const PrintHtml = React.forwardRef(({ activeOrders }, ref) => {
                     margin: '0',
                     paddingRight: '0',
                     paddingLeft: '0',
-                    fontWeight: '500',
+                    fontWeight: '600',
                   }}
                 >
                   Qty
@@ -341,7 +356,7 @@ const PrintHtml = React.forwardRef(({ activeOrders }, ref) => {
                     margin: '0',
                     paddingRight: '0',
                     paddingLeft: '0.5rem',
-                    fontWeight: '500',
+                    fontWeight: '600',
                   }}
                 >
                   Sku
@@ -354,7 +369,7 @@ const PrintHtml = React.forwardRef(({ activeOrders }, ref) => {
                     margin: '0',
                     paddingRight: '0',
                     paddingLeft: '0',
-                    fontWeight: '500',
+                    fontWeight: '600',
                   }}
                 >
                   Item
@@ -367,7 +382,7 @@ const PrintHtml = React.forwardRef(({ activeOrders }, ref) => {
                     margin: '0',
                     paddingRight: '0',
                     paddingLeft: '0',
-                    fontWeight: '500',
+                    fontWeight: '600',
                   }}
                 >
                   Price
@@ -378,6 +393,7 @@ const PrintHtml = React.forwardRef(({ activeOrders }, ref) => {
               {order.line_items.map((product, idx) => (
                 <tr
                   style={{
+                    pageBreakInside: 'avoid',
                     borderBottom: '1px solid lightgray',
                   }}
                   key={product.id + product.order_id}
@@ -408,7 +424,32 @@ const PrintHtml = React.forwardRef(({ activeOrders }, ref) => {
                       verticalAlign: 'top',
                     }}
                   >
-                    {product.sku}
+                    <span
+                      style={{
+                        display: 'flex',
+                        flexDirection: 'column',
+                        gap: '0.25rem',
+                      }}
+                    >
+                      {product.sku}
+                      {product.is_dropship ? (
+                        <span
+                          style={{
+                            backgroundColor: '#404040',
+                            width: 'fit-content',
+                            borderRadius: '0.25rem',
+                            fontWeight: '600',
+                            color: 'white',
+                            fontSize: '12px',
+                            padding: '0.25rem',
+                          }}
+                        >
+                          DROPSHIP
+                        </span>
+                      ) : (
+                        ''
+                      )}
+                    </span>
                   </td>
                   <td
                     style={{
@@ -447,7 +488,7 @@ const PrintHtml = React.forwardRef(({ activeOrders }, ref) => {
                       {product.options &&
                         product.options.length > 0 &&
                         product.options.map((opt, i) => {
-                          if (opt.display_name === 'Upload File') {
+                          if (shouldExcludeOption(opt.display_name)) {
                             return null;
                           }
                           return (
@@ -463,9 +504,9 @@ const PrintHtml = React.forwardRef(({ activeOrders }, ref) => {
                                   fontWeight: '600',
                                 }}
                               >
-                                {opt.display_name}:
+                                {cleanDisplayName(opt.display_name)}:
                               </span>{' '}
-                              {opt.display_value}
+                              {optionCleaner(opt.display_name, opt.display_value)}
                             </p>
                           );
                         })}
@@ -489,6 +530,7 @@ const PrintHtml = React.forwardRef(({ activeOrders }, ref) => {
               ))}
               <tr
                 style={{
+                  pageBreakInside: 'avoid',
                   borderBottom: '1px solid lightgray',
                 }}
               >
@@ -579,7 +621,7 @@ const PrintHtml = React.forwardRef(({ activeOrders }, ref) => {
                 style={{
                   margin: '0',
                   padding: '0',
-                  fontWeight: '500',
+                  fontWeight: '600',
                 }}
               >
                 Subtotal
@@ -600,7 +642,7 @@ const PrintHtml = React.forwardRef(({ activeOrders }, ref) => {
                 style={{
                   margin: '0',
                   padding: '0',
-                  fontWeight: '500',
+                  fontWeight: '600',
                 }}
               >
                 Tax
