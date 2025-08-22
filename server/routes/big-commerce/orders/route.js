@@ -24,6 +24,83 @@ const storeFrontToken = {
   expiry: 0,
 };
 
+const storeMap = {
+  sandbox: {
+    hash: process.env.SANDBOX_HASH,
+    token: process.env.SANDBOX_API_KEY,
+  },
+  htw: {
+    hash: process.env.STORE_HASH,
+    token: process.env.BG_AUTH_TOKEN,
+  },
+  sff: {
+    hash: process.env.SFF_STORE_HASH,
+    token: process.env.SFF_AUTH_TOKEN,
+  },
+};
+
+// Store API tokens and expiry times by store key
+const apiTokens = {
+  sandbox: { token: null, expiry: null },
+  htw: { token: null, expiry: null },
+  sff: { token: null, expiry: null },
+};
+
+// Request a new token for a given store
+const getApiToken = async (storeKey) => {
+  const storeData = storeMap[storeKey];
+  if (!storeData) throw new Error(`Invalid store key: ${storeKey}`);
+
+  const expiresAtUnix = Math.floor(Date.now() / 1000) + 1800;
+
+  const url = `https://api.bigcommerce.com/stores/${storeData.hash}/v3/storefront/api-token`;
+
+  try {
+    const response = await fetch(url, {
+      method: 'POST',
+      headers: {
+        Accept: 'application/json',
+        'Content-Type': 'application/json',
+        'X-Auth-Token': storeData.token,
+      },
+      body: JSON.stringify({
+        channel_id: 1, // Adjust if needed
+        expires_at: expiresAtUnix,
+      }),
+    });
+
+    const json = await response.json();
+
+    if (!json.data?.token) {
+      throw new Error(`Failed to retrieve token from BigCommerce for ${storeKey}`);
+    }
+
+    apiTokens[storeKey] = {
+      token: json.data.token,
+      expiry: expiresAtUnix * 1000, // convert to ms
+    };
+
+    return json.data.token;
+  } catch (err) {
+    console.error(`Error fetching API token for ${storeKey}:`, err);
+    throw err;
+  }
+};
+
+// Get a valid (possibly cached) token for a given store
+const getValidApiToken = async (storeKey) => {
+  const { token, expiry } = apiTokens[storeKey] || {};
+  const bufferTime = 60 * 1000; // 1 min buffer
+
+  const isExpired = !token || Date.now() >= expiry - bufferTime;
+
+  if (isExpired) {
+    return await getApiToken(storeKey);
+  }
+
+  return token;
+};
+
 // -----------------------------------------------------------------------
 // Utilities
 // -----------------------------------------------------------------------
@@ -243,22 +320,6 @@ const getStoreFrontToken = async () => {
 //
 // @returns {Promise<string>} A valid Storefront API token
 // -----------------------------------------------------------------------------
-const getValidApiToken = async () => {
-  const { token, expiry } = storeFrontToken || {};
-  const bufferTime = 60 * 1000; // Refresh 1 min before expiry
-
-  // Determine if the token is missing or too close to expiration
-  const isExpired = !token || Date.now() >= expiry - bufferTime;
-
-  if (isExpired) {
-    // Refresh token from backend (default to "htw" store)
-    const newToken = await getStoreFrontToken('htw');
-    return newToken;
-  }
-
-  // Return the cached valid token
-  return token;
-};
 
 const getProductsOnOrder = async (url) => {
   return fetchJSON(url);
@@ -273,7 +334,7 @@ const getProductsOnOrder = async (url) => {
  */
 const getProductCategories = async (productId) => {
   try {
-    const token = await getValidApiToken();
+    const token = await getValidApiToken('htw');
 
     const query = `
       query getProductCategories {
@@ -340,7 +401,7 @@ const getProductCategories = async (productId) => {
  * @returns {Promise<Array>} - Returns an array of metafields (empty if not found)
  */
 const getVariantMetaFields = async (productId, variantId) => {
-  const token = await getValidApiToken();
+  const token = await getValidApiToken('htw');
 
   const query = `
     query getProduct {
@@ -408,7 +469,7 @@ const getVariantMetaFields = async (productId, variantId) => {
  * @returns {Promise<Array>} - Returns an array of metafields (empty if none found)
  */
 const getProductMetaFields = async (productId) => {
-  const token = await getValidApiToken();
+  const token = await getValidApiToken('htw');
 
   const query = `
     query getProduct {
