@@ -446,6 +446,20 @@ const PrintHtml = React.forwardRef(({ activeOrders }, ref) => {
                         >
                           DROPSHIP
                         </span>
+                      ) : product.is_clothing ? (
+                        <span
+                          style={{
+                            backgroundColor: '#d6d6d6',
+                            width: 'fit-content',
+                            borderRadius: '0.25rem',
+                            fontWeight: '600',
+                            color: 'black',
+                            fontSize: '12px',
+                            padding: '0.25rem',
+                          }}
+                        >
+                          CLOTHING
+                        </span>
                       ) : (
                         ''
                       )}

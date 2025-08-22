@@ -28,7 +28,6 @@ import {
   PaginationTrigger,
 } from '../../../ui/pagination';
 import ReactDOM from 'react-dom';
-import Search from './search';
 import DeleteModal from '../modals/modals';
 import PicklistHeader from './table-header';
 
@@ -55,7 +54,6 @@ function OrdersTable({
   const [rowsPerPage, setRowsPerPage] = useState(50);
   const [page, setPage] = useState(0);
   const [sort, setSort] = useState({ sort_by: 'order_id', order: 'desc' });
-  const [sortedData, setSortedData] = useState([]);
   const [searchTerm, setSearchTerm] = useState('');
   const [deleteModalActive, setDeleteModalActive] = useState(false);
 
@@ -100,6 +98,8 @@ function OrdersTable({
 
     if (view === 'printed') return sorted.filter((o) => o.is_printed);
     if (view === 'not-printed') return sorted.filter((o) => !o.is_printed);
+    if (view === 'dropship')
+      return sorted.filter((o) => o.line_items.some((item) => item.is_dropship));
     return sorted;
   }, [ordersData, sort, view]);
 
@@ -117,14 +117,6 @@ function OrdersTable({
   const handleSort = (sort_by) => {
     const newOrder = sort.sort_by === sort_by && sort.order === 'asc' ? 'desc' : 'asc';
     setSort({ sort_by, order: newOrder });
-    const sorted = [...ordersData].sort((a, b) => {
-      if (newOrder === 'asc') {
-        return a[sort_by] > b[sort_by] ? 1 : -1;
-      } else {
-        return a[sort_by] < b[sort_by] ? 1 : -1;
-      }
-    });
-    setSortedData(sorted);
   };
 
   const handleSearch = (query) => {
@@ -181,6 +173,7 @@ function OrdersTable({
           setRowsPerPage={setRowsPerPage}
           page={page}
           setPage={setPage}
+          orderTagsList={orderTagsList}
         />
         <TableContainer tableFor={'orders'}>
           <TableHeader className={''}>
@@ -305,7 +298,7 @@ function OrdersTable({
                         {!expandedOrderIDs.includes(order.order_id) ? (
                           order.line_items.length > 1 ? (
                             <span className="flex items-center w-full justify-between">
-                              {order.line_items.length} Items
+                              ({order.line_items.length} Items)
                               <span className="flex items-center gap-1">
                                 {order.line_items.map((item, index) => {
                                   if (item.is_dropship) {
@@ -316,11 +309,28 @@ function OrdersTable({
                                       />
                                     );
                                   }
+                                  if (item.is_clothing) {
+                                    return (
+                                      <span
+                                        className="bg-blue-700 rounded-md h-6 w-[6px]"
+                                        key={item.id}
+                                      />
+                                    );
+                                  }
                                 })}
                               </span>
                             </span>
                           ) : (
-                            <span className="truncate w-full">{order.line_items[0].sku}</span>
+                            <span className="truncate  flex items-center w-full justify-between">
+                              {order.line_items[0].sku}
+                              {order.line_items[0].is_dropship ? (
+                                <span className="bg-yellow-400 rounded-md h-6 w-[6px]" />
+                              ) : order.line_items[0].is_clothing ? (
+                                <span className="bg-blue-700 rounded-md h-6 w-[6px]" />
+                              ) : (
+                                ''
+                              )}
+                            </span>
                           )
                         ) : (
                           order.line_items.map((product, idx) => (
@@ -335,6 +345,13 @@ function OrdersTable({
                                   className="bg-yellow-400 text-black rounded-md h-6 px-1"
                                 >
                                   DS
+                                </span>
+                              ) : product.is_clothing ? (
+                                <span
+                                  title="Dropship Item"
+                                  className="bg-blue-700 text-white rounded-md h-6 px-1"
+                                >
+                                  CL
                                 </span>
                               ) : (
                                 ''

@@ -5,20 +5,6 @@ const router = express.Router();
 const pool = require('../../../modules/pool');
 const pdf = require('html-pdf-node');
 
-const sseClients = new Set();
-
-function sseEmit(event, payload) {
-  const msg = `event: ${event}\n` + `data: ${JSON.stringify(payload)}\n\n`;
-  for (const res of sseClients) {
-    try {
-      res.write(msg);
-    } catch (_) {}
-  }
-}
-
-// keep alive so proxies don’t close the stream
-setInterval(() => sseEmit('ping', { t: Date.now() }), 25000);
-
 // ----------------------------- Config ----------------------------------
 
 const ALLOWED_STATUSES = new Set(['Awaiting Fulfillment', 'Awaiting Payment']);
@@ -33,142 +19,119 @@ const BACKOFF_MS = 5_000; // wait between retries
 const SYNC_TARGET = 50; // aim to add up to 50 valid orders
 const SYNC_CONCURRENCY = 8; // parallel workers for product fetch + insert
 const SYNC_PAGE_SIZE = 50;
+const storeFrontToken = {
+  token: null,
+  expiry: 0,
+};
 
 // -----------------------------------------------------------------------
 // Utilities
 // -----------------------------------------------------------------------
 
+const getBaseUrl = () => {
+  // server-side: decide based on environment
+  return process.env.NODE_ENV === 'production'
+    ? 'https://admin.heattransferwarehouse.com'
+    : 'http://localhost:8000';
+};
+
+/**
+ * Fetches JSON from a given URL with BigCommerce authentication headers.
+ *
+ * @param {string} url - The endpoint to fetch.
+ * @param {object} [options={}] - Optional fetch options (method, headers, body, etc.).
+ *                                These override or extend the default values.
+ * @returns {Promise<object>} - Resolves with parsed JSON response.
+ * @throws {Error} - Throws if the response status is not OK (>=400).
+ */
 const fetchJSON = async (url, options = {}) => {
+  // Send the request, merging defaults with any provided options
   const resp = await fetch(url, {
-    method: 'GET',
+    method: 'GET', // default method is GET
     headers: {
+      // BigCommerce requires an API token
       'X-Auth-Token': process.env.BG_AUTH_TOKEN,
       'Content-Type': 'application/json',
       Accept: 'application/json',
     },
-    ...options,
+    ...options, // spread user-provided options (overrides defaults)
   });
+
+  // If response is not OK (e.g., 4xx/5xx), capture the error text
   if (!resp.ok) {
-    const text = await resp.text().catch(() => '');
+    const text = await resp.text().catch(() => ''); // fallback if body can't be read
     throw new Error(`Fetch failed ${resp.status}: ${text || resp.statusText}`);
   }
+
+  // Parse and return JSON body
   return resp.json();
 };
 
+// Run tasks with a concurrency limit
+/**
+ * Executes a list of async tasks with a maximum concurrency limit.
+ *
+ * @param {Array<Function>} tasks - An array of functions, each returning a Promise (async task).
+ * @param {number} limit - Maximum number of tasks to run in parallel.
+ * @returns {Promise<Array>} - Resolves with an array of results in the same order as the tasks.
+ */
 const runWithConcurrencyLimit = async (tasks, limit) => {
+  // Pre-allocate an array for results, same length as tasks
   const results = new Array(tasks.length);
+
+  // Shared index tracker for which task should be run next
   let idx = 0;
 
+  /**
+   * Worker function:
+   * - Repeatedly takes the next available task (based on shared `idx`)
+   * - Executes it, and saves its result in the correct slot in `results`
+   * - Stops when no tasks are left
+   */
   const worker = async () => {
     while (idx < tasks.length) {
+      // Capture the current index, then increment for the next worker
       const myIdx = idx++;
       try {
+        // Run the task and store its result
         results[myIdx] = await tasks[myIdx]();
       } catch (e) {
+        // Catch errors so one failed task doesn't crash the whole run
         console.error('Task error:', e);
         results[myIdx] = null;
       }
     }
   };
 
+  // Launch `limit` number of workers (or fewer if fewer tasks exist)
   await Promise.all(Array.from({ length: Math.min(limit, tasks.length) }, worker));
+
+  // Return all task results in original order
   return results;
 };
 
-// -----------------------------------------------------------------------
-// BigCommerce helpers
-// -----------------------------------------------------------------------
-
-const getProductsOnOrder = async (url) => {
-  return fetchJSON(url);
-};
-
-const getProductMetaFields = async (productId) => {
-  const url = `https://api.bigcommerce.com/stores/${process.env.STORE_HASH}/v3/catalog/products/${productId}/metafields`;
-  const resp = await fetchJSON(url);
-  return resp?.data || [];
-};
-
-const getVariantMetaFields = async (productId, variantId) => {
-  const url = `https://api.bigcommerce.com/stores/${process.env.STORE_HASH}/v3/catalog/products/${productId}/variants/${variantId}/metafields`;
-  const resp = await fetchJSON(url);
-  return resp?.data || [];
-};
-
-const getOrderData = async (orderID) => {
-  const url = `https://api.bigcommerce.com/stores/${process.env.STORE_HASH}/v2/orders/${orderID}?include=consignments`;
-  const order = await fetchJSON(url);
-
-  const cons = order.consignments?.[0]?.shipping?.[0] || {};
-  const products = await getProductsOnOrder(order.products.url);
-
-  // IMPORTANT: await the map with Promise.all, and use p.product_id
-  const line_items = await Promise.all(
-    (products || []).map(async (p) => {
-      const productMetaFields = await getProductMetaFields(p.product_id); // not p.id
-      const variantMetaFields = await getVariantMetaFields(p.product_id, p.variant_id);
-      const isProductDropship = (productMetaFields || []).some((f) => {
-        if (f.namespace !== 'shipping.shipperhq' || f.key !== 'shipping-groups') return false;
-
-        // value may be a JSON array string like '["Supacolor Dropship"]'
-        const values = (() => {
-          if (typeof f.value !== 'string') return [];
-          try {
-            const parsed = JSON.parse(f.value);
-            return Array.isArray(parsed) ? parsed : [f.value];
-          } catch {
-            return [f.value]; // not JSON, treat as scalar string
-          }
-        })();
-
-        return values.some((v) => /drop\s*-?\s*ship/i.test(String(v)));
-      });
-      const isVariantDropship = (variantMetaFields || []).some((f) => {
-        if (f.namespace !== 'shipping.shipperhq' || f.key !== 'shipping-groups') return false;
-
-        // value may be a JSON array string like '["Supacolor Dropship"]'
-        const values = (() => {
-          if (typeof f.value !== 'string') return [];
-          try {
-            const parsed = JSON.parse(f.value);
-            return Array.isArray(parsed) ? parsed : [f.value];
-          } catch {
-            return [f.value]; // not JSON, treat as scalar string
-          }
-        })();
-
-        return values.some((v) => /drop\s*-?\s*ship/i.test(String(v)));
-      });
-      return {
-        id: p.id, // order line item id
-        order_id: order.id,
-        product_id: p.product_id, // keep the catalog product id too
-        name: p.name,
-        sku: p.sku,
-        quantity: p.quantity,
-        price: p.total_inc_tax,
-        is_dropship: isProductDropship ? true : isVariantDropship ? true : false,
-        options: (p.product_options || []).map((opt) => ({
-          display_name: opt.display_name,
-          display_value: opt.display_value,
-        })),
-      };
-    })
-  );
-
+/**
+ *
+ * @param {object} order
+ * @param {object} consignments
+ * @param {object} lineItems
+ * @returns
+ */
+const buildOrderJSON = async (order, consignments, lineItems) => {
+  // Build a structured order JSON object
   return {
     order_id: order.id,
     date_created: order.date_created,
-    line_items,
+    line_items: lineItems,
     shipping: {
-      shipping_method: cons.shipping_method,
-      cost_inc_tax: cons.cost_inc_tax,
-      street_1: cons.street_1,
-      street_2: cons.street_2,
-      city: cons.city,
-      state: cons.state,
-      zip: cons.zip,
-      country: cons.country,
+      shipping_method: consignments.shipping_method,
+      cost_inc_tax: consignments.cost_inc_tax,
+      street_1: consignments.street_1,
+      street_2: consignments.street_2,
+      city: consignments.city,
+      state: consignments.state,
+      zip: consignments.zip,
+      country: consignments.country,
     },
     customer: {
       first_name: order.billing_address?.first_name,
@@ -185,9 +148,446 @@ const getOrderData = async (orderID) => {
 };
 
 // -----------------------------------------------------------------------
+// BigCommerce helpers
+// -----------------------------------------------------------------------
+
+/**
+ * Recursively unwraps GraphQL "edges → node" structures into plain objects/arrays.
+ *
+ * BigCommerce (and many GraphQL APIs) wrap lists in:
+ *   { edges: [ { node: {...} }, { node: {...} } ] }
+ *
+ * This helper flattens that pattern so you get just the array of nodes:
+ *   [ {...}, {...} ]
+ *
+ * @param {any} obj - The object/array/value to unwrap.
+ * @returns {any} - A new object/array/value with edges stripped out.
+ */
+const unwrapEdges = (obj) => {
+  // Case 1: If it's an array, recurse into each element
+  if (Array.isArray(obj)) {
+    return obj.map(unwrapEdges);
+  }
+
+  // Case 2: If it's a non-null object, check for edges or recurse deeper
+  else if (obj && typeof obj === 'object') {
+    // If this object has `edges`, return an array of unwrapped nodes
+    if (obj.edges) {
+      return obj.edges.map((edge) => unwrapEdges(edge.node));
+    }
+
+    // Otherwise, recurse into each property of the object
+    const newObj = {};
+    for (const key in obj) {
+      newObj[key] = unwrapEdges(obj[key]);
+    }
+    return newObj;
+  }
+
+  // Case 3: Primitive (string, number, boolean, null, undefined)
+  return obj;
+};
+
+// Returns a valid Storefront token, refreshing if needed
+/**
+ * Ensures you always have a valid BigCommerce Storefront token.
+ * Caches the token in memory and only requests a new one if:
+ *   - No token is cached, OR
+ *   - The cached token has expired.
+ *
+ * @returns {Promise<string>} - A valid Storefront token
+ */
+const getStoreFrontToken = async () => {
+  // 1. Reuse token if it's cached AND not expired
+  if (storeFrontToken.token && Date.now() < storeFrontToken.expiry) {
+    return storeFrontToken.token;
+  }
+
+  try {
+    // 2. Otherwise, fetch a new token from your backend route
+    // server/routes/big-commerce/token.js must handle talking to BigCommerce
+    const res = await fetch(`${getBaseUrl()}/api/big-commerce/token?store=htw`, {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    });
+
+    // 3. Guard: Ensure the request succeeded
+    if (!res.ok) {
+      throw new Error(`Failed to fetch storefront token: ${res.statusText}`);
+    }
+
+    // 4. Parse response JSON
+    const data = await res.json();
+
+    // 5. Cache token in memory with expiration
+    // BigCommerce token response should include `token` and `expires_in` (in seconds)
+    storeFrontToken.token = data.token;
+    storeFrontToken.expiry = Date.now() + data.expires_in * 1000;
+
+    return storeFrontToken.token;
+  } catch (err) {
+    // 6. Log and rethrow for caller to handle
+    console.error('Error fetching Storefront token:', err);
+    throw err;
+  }
+};
+
+// -----------------------------------------------------------------------------
+// Returns a valid Storefront API token, refreshing from the server if needed.
+// -----------------------------------------------------------------------------
+// - Uses a cached token stored in `storeFrontToken`
+// - Adds a 1-minute buffer before expiry to avoid race conditions
+// - Calls `getStoreFrontToken(storeKey)` to refresh when expired
+//
+// @returns {Promise<string>} A valid Storefront API token
+// -----------------------------------------------------------------------------
+const getValidApiToken = async () => {
+  const { token, expiry } = storeFrontToken || {};
+  const bufferTime = 60 * 1000; // Refresh 1 min before expiry
+
+  // Determine if the token is missing or too close to expiration
+  const isExpired = !token || Date.now() >= expiry - bufferTime;
+
+  if (isExpired) {
+    // Refresh token from backend (default to "htw" store)
+    const newToken = await getStoreFrontToken('htw');
+    return newToken;
+  }
+
+  // Return the cached valid token
+  return token;
+};
+
+const getProductsOnOrder = async (url) => {
+  return fetchJSON(url);
+};
+
+/**
+ * Fetch categories for a given product from BigCommerce GraphQL Storefront API.
+ * https://developer.bigcommerce.com/graphql-storefront/reference#definition-CategoryConnection
+ *
+ * @param {number} productId - The product entity ID
+ * @returns {Promise<Array<{ name: string }>>} - Returns an array of category objects (empty if none found)
+ */
+const getProductCategories = async (productId) => {
+  try {
+    const token = await getValidApiToken();
+
+    const query = `
+      query getProductCategories {
+        site {
+          product(entityId: ${productId}) {
+            categories {
+              edges {
+                node {
+                  name
+                }
+              }
+            }
+          }
+        }
+      }
+    `;
+
+    const url = `https://store-${process.env.STORE_HASH}-1.mybigcommerce.com/graphql`;
+    const response = await fetch(url, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${token}`,
+      },
+      body: JSON.stringify({ query }),
+    });
+
+    if (!response.ok) {
+      throw new Error(`GraphQL request failed: ${response.status} ${response.statusText}`);
+    }
+
+    const text = await response.text();
+    const json = JSON.parse(text);
+
+    // GraphQL returned errors → bail out early
+    if (json.errors?.length) {
+      throw new Error(`GraphQL errors for product ${productId}: ${JSON.stringify(json.errors)}`);
+    }
+
+    // ✅ Defensive check: product might be null (e.g., deleted or invisible)
+    if (!json?.data?.site?.product) {
+      return [];
+    }
+
+    const categories = json.data.site.product.categories;
+    if (!categories) {
+      return [];
+    }
+
+    // unwrapEdges → converts { edges: [{ node: { name } }]} into [{ name }]
+    const cleaned = unwrapEdges(categories);
+
+    return cleaned;
+  } catch (err) {
+    console.error(`Error fetching categories for product ${productId}:`, err);
+    return [];
+  }
+};
+
+/**
+ * Fetch variant metafields for a product/variant
+ * @param {number} productId
+ * @param {number} variantId
+ * @returns {Promise<Array>} - Returns an array of metafields (empty if not found)
+ */
+const getVariantMetaFields = async (productId, variantId) => {
+  const token = await getValidApiToken();
+
+  const query = `
+    query getProduct {
+      site {
+        product(entityId: ${productId}) {
+          variants(first: 1, entityIds: [${variantId}]) {
+            edges {
+              node {
+                sku
+                metafields(namespace: "shipping.shipperhq") {
+                  edges {
+                    node {
+                      key
+                      value
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  `;
+
+  const url = `https://store-${process.env.STORE_HASH}-1.mybigcommerce.com/graphql`;
+  const option = {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      Authorization: `Bearer ${token}`,
+    },
+    body: JSON.stringify({ query }),
+  };
+
+  const response = await fetch(url, option);
+  const text = await response.text();
+
+  try {
+    const json = JSON.parse(text);
+
+    // ✅ Defensive checks
+    if (!json?.data?.site?.product) {
+      return [];
+    }
+
+    const variants = json.data.site.product.variants;
+    if (!variants) {
+      return [];
+    }
+
+    const cleaned = unwrapEdges(variants).flatMap((v) => v.metafields || []);
+    return cleaned;
+  } catch (err) {
+    console.error('Error parsing GraphQL response:', err, text);
+    return [];
+  }
+};
+
+/**
+ * Fetch product metafields for a given namespace
+ * https://developer.bigcommerce.com/graphql-storefront/reference#definition-MetafieldConnection
+ *
+ * @param {number} productId - The product entity ID
+ * @returns {Promise<Array>} - Returns an array of metafields (empty if none found)
+ */
+const getProductMetaFields = async (productId) => {
+  const token = await getValidApiToken();
+
+  const query = `
+    query getProduct {
+      site {
+        product(entityId: ${productId}) {
+          metafields(namespace: "shipping.shipperhq") {
+            edges {
+              node {
+                key
+                value
+              }
+            }
+          }
+        }
+      }
+    }
+  `;
+
+  const url = `https://store-${process.env.STORE_HASH}-1.mybigcommerce.com/graphql`;
+  const option = {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      Authorization: `Bearer ${token}`,
+    },
+    body: JSON.stringify({ query }),
+  };
+
+  const response = await fetch(url, option);
+  const text = await response.text();
+
+  try {
+    const json = JSON.parse(text);
+
+    // ✅ Defensive: check if product exists
+    if (!json?.data?.site?.product) {
+      return [];
+    }
+
+    // ✅ Defensive: check if metafields exist
+    const metafields = json.data.site.product.metafields;
+    if (!metafields) {
+      return [];
+    }
+
+    // Flatten the GraphQL edges -> node structure
+    const cleaned = unwrapEdges(metafields);
+    return cleaned;
+  } catch (err) {
+    console.error('Error parsing GraphQL response:', err, text);
+    return [];
+  }
+};
+
+/**
+ * https://developer.bigcommerce.com/graphql-storefront/reference#definition-MetafieldConnection
+ * @param {Object} metaFields
+ * @returns {boolean} - Returns true if any metafield indicates dropship
+ */
+const determineDropShipStatus = async (metaFields) => {
+  if (!metaFields || !Array.isArray(metaFields)) return false;
+
+  return metaFields.some((field) => {
+    if (field.key !== 'shipping-groups') return false;
+
+    // value may be a JSON array string like '["Supacolor Dropship"]'
+    const values = (() => {
+      if (typeof field.value !== 'string') return [];
+      try {
+        const parsed = JSON.parse(field.value);
+        return Array.isArray(parsed) ? parsed : [field.value];
+      } catch {
+        return [field.value]; // not JSON, treat as scalar string
+      }
+    })();
+
+    return values.some((v) => /drop\s*-?\s*ship/i.test(String(v)));
+  });
+};
+
+/**
+ * https://developer.bigcommerce.com/docs/rest-management/orders/order-products
+ * @param {object} products
+ * https://developer.bigcommerce.com/docs/rest-management/orders
+ * @param {object} order
+ * @returns {Promise<object>} - Returns a JSON object with order details
+ */
+const processLineItems = async (products, order) => {
+  return Promise.all(
+    (products || []).map(async (p) => {
+      // ✅ Skip if product_id is invalid OR product is not visible
+      if (!p.product_id || p.product_id <= 0 || p.is_visible === false) {
+        return {
+          id: p.id,
+          order_id: order.id,
+          product_id: p.product_id,
+          name: p.name,
+          sku: p.sku,
+          quantity: p.quantity,
+          price: p.total_inc_tax,
+          is_clothing: false,
+          is_dropship: false,
+          options: (p.product_options || []).map((opt) => ({
+            display_name: opt.display_name,
+            display_value: opt.display_value,
+          })),
+        };
+      }
+
+      // 1. Product-level metafields
+      const productMetaFields = await getProductMetaFields(p.product_id);
+
+      // 2. Variant-level metafields (only if variant_id exists)
+      const variantMetaFields = await getVariantMetaFields(p.product_id, p.variant_id);
+
+      // 3. Categories
+      const productCategories = await getProductCategories(p.product_id);
+
+      // 4. Dropship determination
+      const isProductDropship = await determineDropShipStatus(productMetaFields);
+      const isVariantDropship = await determineDropShipStatus(variantMetaFields);
+
+      // 5. Clothing check
+      const isClothingProduct = productCategories?.some(
+        (cat) => cat?.name?.trim().toLowerCase() === 'clothing'
+      );
+
+      // 6. Build output
+      return {
+        id: p.id,
+        order_id: order.id,
+        product_id: p.product_id,
+        name: p.name,
+        sku: p.sku,
+        quantity: p.quantity,
+        price: p.total_inc_tax,
+        is_clothing: isClothingProduct,
+        is_dropship: isProductDropship || isVariantDropship || false,
+        options: (p.product_options || []).map((opt) => ({
+          display_name: opt.display_name,
+          display_value: opt.display_value,
+        })),
+      };
+    })
+  );
+};
+
+/**
+ * https://developer.bigcommerce.com/docs/rest-management/orders#get-an-order
+ * @param {Int} orderID
+ * @returns {Promise<object>} - Returns a JSON object with order details
+ */
+const getOrderData = async (orderID) => {
+  const url = `https://api.bigcommerce.com/stores/${process.env.STORE_HASH}/v2/orders/${orderID}?include=consignments`;
+  const order = await fetchJSON(url);
+
+  // Separate consignments shipping info
+  const cons = order.consignments?.[0]?.shipping?.[0] || {};
+  // Get products on order based on order.products.url
+  const products = await getProductsOnOrder(order.products.url);
+
+  // Build line items with product and variant metadata and categories
+  const line_items = await processLineItems(products, order);
+
+  // Build the final order JSON
+  const json = await buildOrderJSON(order, cons, line_items);
+
+  return json;
+};
+
+// -----------------------------------------------------------------------
 // DB
 // -----------------------------------------------------------------------
 
+/**
+ *
+ * @param {Object} orderData
+ * @returns {Promise<{ success: boolean, order?: object, message?: string, error?: Error }>} - Returns an object indicating success or failure
+ */
 const addOrderToDatabase = async (orderData) => {
   try {
     if (!orderData?.order_id) return { success: false, message: 'Missing order_id' };
@@ -255,6 +655,7 @@ const addOrderToDatabase = async (orderData) => {
 // Per-order delayed processing for webhook
 // -----------------------------------------------------------------------
 
+// Processes a single order with retries and backoff
 async function processSingleOrder(orderId, attempt = 1) {
   try {
     const data = await getOrderData(orderId);
@@ -264,7 +665,9 @@ async function processSingleOrder(orderId, attempt = 1) {
     }
     const status = (data.status || '').trim();
 
+    // Check if status is allowed
     if (!ALLOWED_STATUSES.has(status)) {
+      // If status is Incomplete, retry with backoff
       if (status === 'Incomplete' && attempt < MAX_RETRIES) {
         console.log(
           `🕒 Order ${orderId} still Incomplete (attempt ${attempt}/${MAX_RETRIES}). Retrying in ${
@@ -273,12 +676,14 @@ async function processSingleOrder(orderId, attempt = 1) {
         );
         setTimeout(() => processSingleOrder(orderId, attempt + 1), BACKOFF_MS);
       } else {
+        // If not allowed or max retries reached, skip
         console.log(`⏭️ Skipping order ${orderId} (status: ${status || 'N/A'})`);
       }
       return;
     }
 
-    const result = await addOrderToDatabase(data, true);
+    // If we reach here, the order is valid and we can add it to the database
+    const result = await addOrderToDatabase(data);
     if (result?.success) {
       console.log(`✅ Order ${orderId} added`);
     } else {
@@ -289,12 +694,15 @@ async function processSingleOrder(orderId, attempt = 1) {
   }
 }
 
+// Schedules an order for processing after a delay
 function scheduleOrderProcess(orderId, delayMs = DELAY_MS) {
   console.log(`⏳ Scheduling order ${orderId} processing in ${delayMs / 1000}s`);
 
+  // Clear any existing timer for this order
   const existing = PENDING_TIMERS.get(orderId);
   if (existing) clearTimeout(existing);
 
+  // Set a new timer
   const t = setTimeout(() => {
     PENDING_TIMERS.delete(orderId);
     processSingleOrder(orderId);
@@ -307,118 +715,71 @@ function scheduleOrderProcess(orderId, delayMs = DELAY_MS) {
 // Full sync (paginated + concurrent)
 // -----------------------------------------------------------------------
 
+/**
+ * Synchronizes orders from BigCommerce into your local database.
+ *
+ * Flow:
+ *  1. Fetch a single page of orders from BigCommerce REST API (v2).
+ *  2. Filter out disallowed statuses (skip incomplete, etc).
+ *  3. For allowed orders, build async tasks to:
+ *      - Fetch products on the order
+ *      - Enrich line items with categories + variant metadata
+ *      - Construct final order JSON
+ *      - Insert into database
+ *  4. Run tasks concurrently with a max concurrency cap.
+ *  5. Return stats: added, skipped, results.
+ *
+ * @returns {Promise<{success: boolean, added: number, skipped_incomplete: number, results: Array}>}
+ */
 async function syncOrders() {
+  // How many orders to sync in one run (cap)
   const addedTarget = SYNC_TARGET; // e.g., 50
-  const url = `https://api.bigcommerce.com/stores/${process.env.STORE_HASH}/v2/orders?limit=${SYNC_PAGE_SIZE || 100}&sort=date_created:desc&include=consignments`;
+
+  // BigCommerce v2 Orders API endpoint (one page only)
+  const url = `https://api.bigcommerce.com/stores/${process.env.STORE_HASH}/v2/orders?limit=${
+    SYNC_PAGE_SIZE || 100
+  }&sort=date_created:desc&include=consignments`;
 
   let added = 0;
   let skippedIncomplete = 0;
   const results = [];
 
-  // 1) single page fetch (fast)
+  // 1) Fetch a single page of orders
   const orders = await fetchJSON(url);
   if (!orders?.length) {
     return { success: true, added: 0, skipped_incomplete: 0, results: [] };
   }
 
-  // 2) build tasks only for allowed statuses
+  // 2) Build task list for eligible orders only
   const tasks = [];
   for (const o of orders) {
     const status = (o.status || '').trim();
+
+    // Skip orders not in allowed statuses
     if (!ALLOWED_STATUSES.has(status)) {
       if (status === 'Incomplete') skippedIncomplete++;
       continue;
     }
 
+    // Wrap order processing logic in an async task
     tasks.push(async () => {
       try {
-        const products = await getProductsOnOrder(o.products.url);
-
+        // Extract first consignment's shipping info
         const cons = o.consignments?.[0]?.shipping?.[0] || {};
 
-        const line_items = await Promise.all(
-          (products || []).map(async (p) => {
-            const productMetaFields = await getProductMetaFields(p.product_id); // not p.id
-            const variantMetaFields = await getVariantMetaFields(p.product_id, p.variant_id);
-            const isProductDropship = (productMetaFields || []).some((f) => {
-              if (f.namespace !== 'shipping.shipperhq' || f.key !== 'shipping-groups') return false;
+        // Fetch products for this order
+        const products = await getProductsOnOrder(o.products.url);
 
-              // value may be a JSON array string like '["Supacolor Dropship"]'
-              const values = (() => {
-                if (typeof f.value !== 'string') return [];
-                try {
-                  const parsed = JSON.parse(f.value);
-                  return Array.isArray(parsed) ? parsed : [f.value];
-                } catch {
-                  return [f.value]; // not JSON, treat as scalar string
-                }
-              })();
+        // Enrich line items with variant metadata + categories
+        const line_items = await processLineItems(products, o);
 
-              return values.some((v) => /drop\s*-?\s*ship/i.test(String(v)));
-            });
-            const isVariantDropship = (variantMetaFields || []).some((f) => {
-              if (f.namespace !== 'shipping.shipperhq' || f.key !== 'shipping-groups') return false;
+        // Build normalized order JSON object
+        const json = await buildOrderJSON(o, cons, line_items);
 
-              // value may be a JSON array string like '["Supacolor Dropship"]'
-              const values = (() => {
-                if (typeof f.value !== 'string') return [];
-                try {
-                  const parsed = JSON.parse(f.value);
-                  return Array.isArray(parsed) ? parsed : [f.value];
-                } catch {
-                  return [f.value]; // not JSON, treat as scalar string
-                }
-              })();
+        // Insert order into database
+        const out = await addOrderToDatabase(json);
 
-              return values.some((v) => /drop\s*-?\s*ship/i.test(String(v)));
-            });
-
-            return {
-              id: p.id, // order line item id
-              order_id: o.id,
-              product_id: p.product_id, // keep the catalog product id too
-              variant_id: p.variant_id,
-              name: p.name,
-              sku: p.sku,
-              quantity: p.quantity,
-              price: p.total_inc_tax,
-              is_dropship: isProductDropship ? true : isVariantDropship ? true : false,
-              options: (p.product_options || []).map((opt) => ({
-                display_name: opt.display_name,
-                display_value: opt.display_value,
-              })),
-            };
-          })
-        );
-
-        const orderData = {
-          order_id: o.id,
-          date_created: o.date_created,
-          line_items: line_items,
-          shipping: {
-            shipping_method: cons.shipping_method,
-            cost_inc_tax: cons.cost_inc_tax,
-            street_1: cons.street_1,
-            street_2: cons.street_2,
-            city: cons.city,
-            state: cons.state,
-            zip: cons.zip,
-            country: cons.country,
-          },
-          customer: {
-            first_name: o.billing_address?.first_name,
-            last_name: o.billing_address?.last_name,
-            email: o.billing_address?.email,
-            phone: o.billing_address?.phone,
-          },
-          subtotal: o.subtotal_ex_tax,
-          tax: o.total_tax,
-          grand_total: o.total_inc_tax,
-          total_items: o.items_total,
-          status: status || 'Awaiting Fulfillment',
-        };
-
-        const out = await addOrderToDatabase(orderData);
+        // Return inserted order or null if failed
         return out?.success ? out.order : null;
       } catch (e) {
         console.error(`Task failed for order ${o.id}:`, e.message || e);
@@ -427,23 +788,21 @@ async function syncOrders() {
     });
   }
 
+  // No valid tasks? Return early
   if (!tasks.length) {
     return { success: true, added: 0, skipped_incomplete: skippedIncomplete, results: [] };
   }
 
-  // 3) run tasks concurrently and cap to target
-  const raw = await runWithConcurrencyLimit(tasks, SYNC_CONCURRENCY); // e.g., 8
+  // 3) Run tasks with concurrency limiter (e.g., 8 at a time)
+  const raw = await runWithConcurrencyLimit(tasks, SYNC_CONCURRENCY);
+
+  // Keep only up to `addedTarget` successful inserts
   const inserted = raw.filter(Boolean).slice(0, addedTarget);
 
   added = inserted.length;
   results.push(...inserted);
 
-  // 4) (Optional) notify front end
-  if (typeof sseEmit === 'function') {
-    sseEmit('sync-finished', { added, skipped_incomplete: skippedIncomplete });
-    if (added > 0) sseEmit('orders-updated', { action: 'bulk', count: added });
-  }
-
+  // 4) Return sync stats
   return { success: true, added, skipped_incomplete: skippedIncomplete, results };
 }
 

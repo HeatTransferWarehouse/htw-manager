@@ -1,16 +1,11 @@
-import React, { useContext, useEffect, useState } from "react";
-import { NavLink, useLocation } from "react-router-dom"; // Remove HashRouter, just import NavLink
-import { useDispatch, useSelector } from "react-redux";
-import { MobileNav } from "./MoblieNav";
-import { RxHamburgerMenu } from "react-icons/rx";
-import { BreakpointsContext } from "../../context/BreakpointsContext";
-import {
-  DropDownContainer,
-  DropDownContent,
-  DropDownItem,
-  DropDownTrigger,
-} from "../ui/dropdown";
-import { FaUserCircle } from "react-icons/fa";
+import React, { useContext, useEffect, useState } from 'react';
+import { NavLink, useLocation } from 'react-router-dom'; // Remove HashRouter, just import NavLink
+import { useDispatch, useSelector } from 'react-redux';
+import { MobileNav } from './MoblieNav';
+import { RxHamburgerMenu } from 'react-icons/rx';
+import { BreakpointsContext } from '../../context/BreakpointsContext';
+import { DropDownContainer, DropDownContent, DropDownItem, DropDownTrigger } from '../ui/dropdown';
+import { FaUserCircle } from 'react-icons/fa';
 
 function Nav() {
   const breakPoint = useContext(BreakpointsContext);
@@ -23,6 +18,7 @@ function Nav() {
   const [sffQueue, setSffQueue] = useState(false);
   const [clothingQueue, setClothingQueue] = useState(false);
   const [productTools, setProductTools] = useState(false);
+  const [pricklist, setPicklist] = useState(false);
   const dispatch = useDispatch();
   const user = useSelector((store) => store.user.userReducer);
   const pagePath = location.pathname;
@@ -36,12 +32,12 @@ function Nav() {
   };
 
   useEffect(() => {
-    const mainContainer = document.getElementsByClassName("main-container")[0];
+    const mainContainer = document.getElementsByClassName('main-container')[0];
     if (mainContainer) {
       if (isOpen) {
-        mainContainer.classList.add("no-pointer-events");
+        mainContainer.classList.add('no-pointer-events');
       } else {
-        mainContainer.classList.remove("no-pointer-events");
+        mainContainer.classList.remove('no-pointer-events');
       }
     }
   }, [isOpen]);
@@ -49,37 +45,41 @@ function Nav() {
   useEffect(() => {
     disableAll();
     switch (pagePath) {
-      case "/":
+      case '/':
         disableAll();
         setHome(true);
         break;
-      case "/resources":
+      case '/resources':
         disableAll();
         setResources(true);
         break;
-      case "/decoqueue":
+      case '/decoqueue':
         disableAll();
         setDecoQueue(true);
         break;
-      case "/admin":
+      case '/admin':
         disableAll();
         setAdmin(true);
         break;
-      case "/supacolor":
+      case '/supacolor':
         disableAll();
         setSupacolor(true);
         break;
-      case "/sff-queue":
+      case '/sff-queue':
         disableAll();
         setSffQueue(true);
         break;
-      case "/product-tools":
+      case '/product-tools':
         disableAll();
         setProductTools(true);
         break;
-      case "/queue/clothing":
+      case '/queue/clothing':
         disableAll();
         setClothingQueue(true);
+        break;
+      case '/shipstation/pick-list':
+        disableAll();
+        setPicklist(true);
         break;
       default:
         break;
@@ -95,10 +95,11 @@ function Nav() {
     setSffQueue(false);
     setClothingQueue(false);
     setProductTools(false);
+    setPicklist(false);
   };
 
   useEffect(() => {
-    dispatch({ type: "FETCH_USER" });
+    dispatch({ type: 'FETCH_USER' });
   }, [dispatch]);
 
   const props = {
@@ -123,10 +124,12 @@ function Nav() {
     setClothingQueue: setClothingQueue,
     productTools: productTools,
     setProductTools: setProductTools,
+    pricklist: pricklist,
+    setPicklist: setPicklist,
   };
 
   const renderNav = () => {
-    if (breakPoint === "tablet" || breakPoint === "mobile") {
+    if (breakPoint === 'tablet' || breakPoint === 'mobile') {
       return <MobileNav {...props} />;
     }
     return null;
@@ -151,10 +154,9 @@ function Nav() {
                 setHome(true);
               }}
               className={`${
-                home
-                  ? "text-secondary border-secondary"
-                  : "text-dark border-white"
-              } p-2 hover:border-secondary hover:text-secondary border-b-[3px] border-solid`}>
+                home ? 'text-secondary border-secondary' : 'text-dark border-white'
+              } p-2 hover:border-secondary hover:text-secondary border-b-[3px] border-solid`}
+            >
               Home
             </NavLink>
             <NavLink
@@ -164,10 +166,9 @@ function Nav() {
                 setResources(true);
               }}
               className={`${
-                resources
-                  ? "text-secondary border-secondary"
-                  : "text-dark border-white"
-              } p-2 hover:border-secondary hover:text-secondary border-b-[3px] border-solid`}>
+                resources ? 'text-secondary border-secondary' : 'text-dark border-white'
+              } p-2 hover:border-secondary hover:text-secondary border-b-[3px] border-solid`}
+            >
               Resources
             </NavLink>
             <NavLink
@@ -177,10 +178,9 @@ function Nav() {
                 setSupacolor(true);
               }}
               className={`${
-                supacolor
-                  ? "text-secondary border-secondary"
-                  : "text-dark border-white"
-              } p-2 hover:border-secondary hover:text-secondary border-b-[3px] border-solid`}>
+                supacolor ? 'text-secondary border-secondary' : 'text-dark border-white'
+              } p-2 hover:border-secondary hover:text-secondary border-b-[3px] border-solid`}
+            >
               Supacolor
             </NavLink>
             <NavLink
@@ -190,10 +190,9 @@ function Nav() {
                 setDecoQueue(true);
               }}
               className={`${
-                decoQueue
-                  ? "text-secondary border-secondary"
-                  : "text-dark border-white"
-              } p-2 hover:border-secondary hover:text-secondary border-b-[3px] border-solid`}>
+                decoQueue ? 'text-secondary border-secondary' : 'text-dark border-white'
+              } p-2 hover:border-secondary hover:text-secondary border-b-[3px] border-solid`}
+            >
               DecoQueue
             </NavLink>
             <NavLink
@@ -203,10 +202,9 @@ function Nav() {
                 setSffQueue(true);
               }}
               className={`${
-                sffQueue
-                  ? "text-secondary border-secondary"
-                  : "text-dark border-white"
-              } p-2 hover:border-secondary hover:text-secondary border-b-[3px] border-solid`}>
+                sffQueue ? 'text-secondary border-secondary' : 'text-dark border-white'
+              } p-2 hover:border-secondary hover:text-secondary border-b-[3px] border-solid`}
+            >
               SFF Queue
             </NavLink>
             <NavLink
@@ -216,10 +214,9 @@ function Nav() {
                 setClothingQueue(true);
               }}
               className={`${
-                clothingQueue
-                  ? "text-secondary border-secondary"
-                  : "text-dark border-white"
-              } p-2 hover:border-secondary hover:text-secondary border-b-[3px] border-solid`}>
+                clothingQueue ? 'text-secondary border-secondary' : 'text-dark border-white'
+              } p-2 hover:border-secondary hover:text-secondary border-b-[3px] border-solid`}
+            >
               Clothing Queue
             </NavLink>
             <DropDownContainer type="hover">
@@ -227,22 +224,25 @@ function Nav() {
               <DropDownContent>
                 <DropDownItem>
                   <NavLink
-                    to={"/products/missing-alts"}
-                    className="p-2 hover:text-secondary whitespace-nowrap">
+                    to={'/products/missing-alts'}
+                    className="p-2 hover:text-secondary whitespace-nowrap"
+                  >
                     Alt Tag Issues
                   </NavLink>
                 </DropDownItem>
                 <DropDownItem>
                   <NavLink
-                    to={"/products/no-description"}
-                    className="p-2 hover:text-secondary whitespace-nowrap">
+                    to={'/products/no-description'}
+                    className="p-2 hover:text-secondary whitespace-nowrap"
+                  >
                     Description Issues
                   </NavLink>
                 </DropDownItem>
                 <DropDownItem>
                   <NavLink
-                    to={"/jds/new-product"}
-                    className="p-2 hover:text-secondary whitespace-nowrap">
+                    to={'/jds/new-product'}
+                    className="p-2 hover:text-secondary whitespace-nowrap"
+                  >
                     JDS Product Import
                   </NavLink>
                 </DropDownItem>
@@ -253,14 +253,27 @@ function Nav() {
               <DropDownContent>
                 <DropDownItem>
                   <NavLink
-                    to={"/sanmar-price-sync"}
-                    className="p-2 hover:text-secondary whitespace-nowrap">
+                    to={'/sanmar-price-sync'}
+                    className="p-2 hover:text-secondary whitespace-nowrap"
+                  >
                     Price Sync
                   </NavLink>
                 </DropDownItem>
               </DropDownContent>
             </DropDownContainer>
-            {user.access_level === "5" && (
+            <NavLink
+              to="/shipstation/pick-list"
+              onClick={() => {
+                disableAll();
+                setPicklist(true);
+              }}
+              className={`${
+                pricklist ? 'text-secondary border-secondary' : 'text-dark border-white'
+              } p-2 hover:border-secondary hover:text-secondary border-b-[3px] border-solid`}
+            >
+              Orders Picklist
+            </NavLink>
+            {user.access_level === '5' && (
               <NavLink
                 to="/admin"
                 onClick={() => {
@@ -268,10 +281,9 @@ function Nav() {
                   setAdmin(true);
                 }}
                 className={`${
-                  admin
-                    ? "text-secondary border-secondary"
-                    : "text-dark border-white"
-                } p-2 hover:border-secondary hover:text-secondary border-b-[3px] border-solid`}>
+                  admin ? 'text-secondary border-secondary' : 'text-dark border-white'
+                } p-2 hover:border-secondary hover:text-secondary border-b-[3px] border-solid`}
+              >
                 Admin
               </NavLink>
             )}
@@ -292,9 +304,10 @@ function Nav() {
                   <NavLink
                     to="/"
                     onClick={() => {
-                      dispatch({ type: "LOGOUT" });
+                      dispatch({ type: 'LOGOUT' });
                     }}
-                    className="p-2 hover:text-secondary">
+                    className="p-2 hover:text-secondary"
+                  >
                     Log Out
                   </NavLink>
                 </DropDownItem>

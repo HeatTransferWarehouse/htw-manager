@@ -17,6 +17,8 @@ import {
   DropDownItem,
   DropDownTrigger,
 } from '../../../ui/dropdown';
+import TagsDropdown from './tags';
+import { Link, useLocation } from 'react-router-dom';
 
 function PicklistHeader({
   handleSearch,
@@ -31,12 +33,16 @@ function PicklistHeader({
   setRowsPerPage,
   page,
   setPage,
+  orderTagsList,
 }) {
+  const location = useLocation();
+  const pathname = location.pathname;
+
   const dispatch = useDispatch();
   return (
     <div className="p-4 flex border-b border-gray-300 items-center gap-3">
       <Search onSearch={handleSearch} />
-      <ViewDropdown view={view} setView={setView} />
+      <ViewDropdown view={view} url={pathname} />
       <button
         disabled={activeOrders.length === 0}
         className={twMerge(
@@ -49,6 +55,7 @@ function PicklistHeader({
       >
         Print
       </button>
+      {/* <TagsDropdown orderTagsList={orderTagsList} /> */}
       <button
         onClick={() => {
           dispatch({ type: 'SYNC_ORDERS' });
@@ -91,7 +98,7 @@ function PicklistHeader({
   );
 }
 
-const ViewDropdown = ({ view, setView }) => {
+const ViewDropdown = ({ view, url }) => {
   return (
     <DropDownContainer type="click">
       <DropDownTrigger className="w-full hover:border-secondary border text-lg border-black justify-between">
@@ -100,30 +107,43 @@ const ViewDropdown = ({ view, setView }) => {
       <DropDownContent>
         <DropDownItem
           className={twMerge(
-            'text-black text-base',
+            'text-black text-base p-0',
             view === 'all' && 'bg-secondary/10 text-secondary'
           )}
-          onClick={() => setView('all')}
         >
-          All
+          <Link className="w-full flex p-2" to={`${url}?view=all`}>
+            All
+          </Link>
         </DropDownItem>
         <DropDownItem
           className={twMerge(
-            'text-black text-base',
+            'text-black text-base p-0',
             view === 'printed' && 'bg-secondary/10 text-secondary'
           )}
-          onClick={() => setView('printed')}
         >
-          Printed
+          <Link className="w-full flex p-2" to={`${url}?view=printed`}>
+            Printed
+          </Link>
         </DropDownItem>
         <DropDownItem
           className={twMerge(
-            'text-black text-base',
+            'text-black text-base p-0',
             view === 'not-printed' && 'bg-secondary/10 text-secondary'
           )}
-          onClick={() => setView('not-printed')}
         >
-          Not Printed
+          <Link className="w-full flex p-2" to={`${url}?view=not-printed`}>
+            Not Printed
+          </Link>
+        </DropDownItem>
+        <DropDownItem
+          className={twMerge(
+            'text-black text-base p-0',
+            view === 'drop-ship' && 'bg-secondary/10 text-secondary'
+          )}
+        >
+          <Link className="w-full flex p-2" to={`${url}?view=dropship`}>
+            Dropship
+          </Link>
         </DropDownItem>
       </DropDownContent>
     </DropDownContainer>

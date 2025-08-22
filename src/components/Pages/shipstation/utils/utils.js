@@ -122,3 +122,10 @@ export const optionCleaner = (displayName, displayValue) => {
 
   return displayValue;
 };
+
+export const filterDropshipOrders = (orders) => {
+  return orders.filter((order) => {
+    const items = order.items || [];
+    return items.some((item) => item.is_dropship);
+  });
+};

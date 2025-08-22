@@ -72,6 +72,19 @@ function* deleteOrders(action) {
   }
 }
 
+function* getTags() {
+  try {
+    const response = yield axios.get(`/api/big-commerce/orders/tags`);
+    if (response.status === 200 && response.data.tags) {
+      yield put({ type: 'SET_TAGS', payload: response.data.tags });
+    } else {
+      console.error('Failed to fetch tags:', response.data.message);
+    }
+  } catch (err) {
+    console.error('Error in getTags Saga', err);
+  }
+}
+
 function* ordersSaga() {
   yield takeLatest('GET_ORDERS', getOrders);
   yield takeLatest('MARK_ORDERS_PRINTED', markOrdersPrinted);
@@ -79,6 +92,7 @@ function* ordersSaga() {
   yield takeLatest('SYNC_ORDERS', syncOrders);
   yield takeLatest('GET_PRINTERS', getLocalPrinters);
   yield takeLatest('DELETE_ORDERS', deleteOrders);
+  yield takeLatest('GET_TAGS', getTags);
 }
 
 export default ordersSaga;

@@ -15,6 +15,7 @@ import {
 import { twMerge } from 'tailwind-merge';
 import { FaCheck } from 'react-icons/fa6';
 import { getLocalPrinters } from '../utils/utils';
+import { useLocation } from 'react-router-dom';
 
 const calculateOrderAges = (orders) => {
   const now = Date.now();
@@ -39,6 +40,9 @@ const calculateOrderAges = (orders) => {
 };
 
 function ShipstationPickList() {
+  const location = useLocation();
+  const searchParams = new URLSearchParams(location.search);
+  const view = searchParams.get('view') || 'all'; // Default to 'new' if no parameter
   const ordersStore = useSelector((state) => state.BC.orders.orders);
   const syncing = useSelector((state) => state.BC.orders.syncing);
   const orderTags = useSelector((state) => state.BC.orders.tags);
@@ -54,7 +58,6 @@ function ShipstationPickList() {
   const [printersList, setPrintersList] = React.useState([]);
   const [selectedPrinter, setSelectedPrinter] = React.useState('');
   const [savedPDFBlob, setSavedPDFBlob] = React.useState(null);
-  const [view, setView] = React.useState('all');
   const [currentTime, setCurrentTime] = React.useState(Date.now());
 
   useEffect(() => {
@@ -223,7 +226,6 @@ function ShipstationPickList() {
         setExpandedOrderIDs={setExpandedOrderIDs}
         printOrders={printOrders}
         view={view}
-        setView={setView}
         syncing={syncing}
         orderTagsList={orderTagsList}
       />
@@ -254,9 +256,9 @@ function ShipstationPickList() {
               <div className="grid grid-cols-[800px_1fr]">
                 {pdfUrl && (
                   <iframe
-                    src={`${pdfUrl}#zoom=50`}
+                    src={`${pdfUrl}#zoom=65`}
                     width="100%"
-                    height="650px"
+                    height="800px"
                     style={{ border: '1px solid #ccc', display: 'block' }}
                   ></iframe>
                 )}
