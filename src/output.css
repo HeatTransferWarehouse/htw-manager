@@ -939,6 +939,10 @@ video {
   margin-top: 2rem;
 }
 
+.mb-1 {
+  margin-bottom: 0.25rem;
+}
+
 .block {
   display: block;
 }
@@ -1065,6 +1069,10 @@ video {
 
 .h-screen {
   height: 100vh;
+}
+
+.h-7 {
+  height: 1.75rem;
 }
 
 .max-h-\[136px\] {
@@ -1259,6 +1267,34 @@ video {
   width: 450px;
 }
 
+.w-\[200px\] {
+  width: 200px;
+}
+
+.\!w-\[200px\] {
+  width: 200px !important;
+}
+
+.\!w-\[150px\] {
+  width: 150px !important;
+}
+
+.w-7 {
+  width: 1.75rem;
+}
+
+.w-\[75px\] {
+  width: 75px;
+}
+
+.w-\[80px\] {
+  width: 80px;
+}
+
+.w-\[77px\] {
+  width: 77px;
+}
+
 .min-w-32 {
   min-width: 8rem;
 }
@@ -1357,6 +1393,10 @@ video {
 
 .max-w-screen-xs {
   max-width: 375px;
+}
+
+.flex-grow {
+  flex-grow: 1;
 }
 
 .grow {
@@ -1724,6 +1764,10 @@ video {
 
 .rounded-sm {
   border-radius: 0.125rem;
+}
+
+.rounded-xl {
+  border-radius: 0.75rem;
 }
 
 .border {
@@ -2231,6 +2275,10 @@ video {
   padding-top: 1rem;
 }
 
+.pb-3 {
+  padding-bottom: 0.75rem;
+}
+
 .text-left {
   text-align: left;
 }
@@ -2459,6 +2507,12 @@ video {
   box-shadow: var(--tw-ring-offset-shadow, 0 0 #0000), var(--tw-ring-shadow, 0 0 #0000), var(--tw-shadow);
 }
 
+.shadow-xl {
+  --tw-shadow: 0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1);
+  --tw-shadow-colored: 0 20px 25px -5px var(--tw-shadow-color), 0 8px 10px -6px var(--tw-shadow-color);
+  box-shadow: var(--tw-ring-offset-shadow, 0 0 #0000), var(--tw-ring-shadow, 0 0 #0000), var(--tw-shadow);
+}
+
 .outline-none {
   outline: 2px solid transparent;
   outline-offset: 2px;
@@ -2472,6 +2526,11 @@ video {
 
 .ring-secondary\/20 {
   --tw-ring-color: rgb(98 64 208 / 0.2);
+}
+
+.brightness-50 {
+  --tw-brightness: brightness(.5);
+  filter: var(--tw-blur) var(--tw-brightness) var(--tw-contrast) var(--tw-grayscale) var(--tw-hue-rotate) var(--tw-invert) var(--tw-saturate) var(--tw-sepia) var(--tw-drop-shadow);
 }
 
 .filter {
@@ -2553,6 +2612,14 @@ video {
 .placeholder\:text-gray-600::placeholder {
   --tw-text-opacity: 1;
   color: rgb(75 85 99 / var(--tw-text-opacity));
+}
+
+.first\:pt-2:first-child {
+  padding-top: 0.5rem;
+}
+
+.first\:pt-3:first-child {
+  padding-top: 0.75rem;
 }
 
 .last\:border-b:last-child {

@@ -444,7 +444,9 @@ const PrintHtml = React.forwardRef(({ activeOrders }, ref) => {
                             padding: '0.25rem',
                           }}
                         >
-                          DROPSHIP
+                          {product.name.toLowerCase().includes('supacolor')
+                            ? 'SC DROPSHIP'
+                            : 'DROPSHIP'}
                         </span>
                       ) : product.is_clothing ? (
                         <span
@@ -619,8 +621,10 @@ const PrintHtml = React.forwardRef(({ activeOrders }, ref) => {
               flexDirection: 'column',
               gap: '0.75rem',
               width: '200px',
-              marginTop: '0.5rem',
+              paddingTop: '0.5rem',
               fontSize: '12px',
+              pageBreakInside: 'avoid', // ✅ key
+              breakInside: 'avoid', // ✅ modern browsers
             }}
           >
             <div

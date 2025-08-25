@@ -162,7 +162,7 @@ const DropDownTrigger = forwardRef(({ children, className, onClick, ...props }) 
   );
 });
 
-const DropDownContent = ({ children, className }) => {
+const DropDownContent = ({ children, className, style }) => {
   const { isOpen, dropdownstyle, containerRef, contentRef } = useContext(DropDownContext);
   const [isPositioned, setIsPositioned] = useState(false);
 
@@ -210,6 +210,7 @@ const DropDownContent = ({ children, className }) => {
             className
           )}
           style={{
+            ...style,
             ...isPositioned,
           }}
         >

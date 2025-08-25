@@ -344,7 +344,9 @@ function OrdersTable({
                                   title="Dropship Item"
                                   className="bg-yellow-400 text-black rounded-md h-6 px-1"
                                 >
-                                  DS
+                                  {product.name.toLowerCase().includes('supacolor')
+                                    ? 'SC DS'
+                                    : 'DS'}
                                 </span>
                               ) : product.is_clothing ? (
                                 <span
