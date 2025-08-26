@@ -77,10 +77,6 @@ export const getAgeColor = (minutes) => {
 export const shouldExcludeOption = (displayName) => {
   if (displayName.toLowerCase().includes('terms')) {
     return true;
-  } else if (displayName.toLowerCase().includes('upload')) {
-    return true;
-  } else if (displayName.toLowerCase().includes('digital proof')) {
-    return true;
   } else if (displayName.toLowerCase() === 'acknowledgement') {
     return true;
   }
