@@ -195,6 +195,8 @@ const runWithConcurrencyLimit = async (tasks, limit) => {
  * @returns
  */
 const buildOrderJSON = async (order, consignments, lineItems) => {
+  console.log(order);
+
   // Build a structured order JSON object
   return {
     order_id: order.id,
@@ -215,6 +217,7 @@ const buildOrderJSON = async (order, consignments, lineItems) => {
       last_name: order.billing_address?.last_name,
       email: order.billing_address?.email,
       phone: order.billing_address?.phone,
+      company: order.billing_address?.company,
     },
     subtotal: order.subtotal_ex_tax,
     tax: order.total_tax,

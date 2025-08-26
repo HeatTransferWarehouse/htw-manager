@@ -217,7 +217,6 @@ function ShipstationPickList() {
 
   return (
     <div>
-      <h1>Big Commerce Orders</h1>
       <OrdersTable
         ordersData={orders}
         activeOrders={activeOrders}

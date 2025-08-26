@@ -40,7 +40,7 @@ function PicklistHeader({
 
   const dispatch = useDispatch();
   return (
-    <div className="p-4 flex border-b border-gray-300 items-center gap-3">
+    <div className="p-4 flex  items-center gap-3">
       <Search onSearch={handleSearch} />
       <ViewDropdown view={view} url={pathname} />
       <button

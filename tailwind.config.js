@@ -28,7 +28,7 @@ module.exports = {
         queue: '4rem 3fr 4fr 6fr 2fr 2fr 2fr 4rem',
         queueMobile: '3rem 1fr 3rem',
         clothing: '3rem 3fr 3fr 8fr 4fr 2fr 2fr 3fr 3rem 1px',
-        orders: '4rem 3fr 3fr 2fr 5fr 7fr 9fr 2fr 7fr 3fr 3fr 5fr',
+        orders: '4rem 2fr 3fr 2fr 4fr 6fr 7fr 6fr 5fr 1fr 3fr 3fr 5fr',
         adminUserTable: '8fr 3fr 3fr 4rem 4rem',
         supacolor: '3rem 2fr 2fr 2fr 1.5fr 1.5fr 9rem',
         promos: '5rem 4fr 1.5fr 1.5fr 1.5fr 7rem',

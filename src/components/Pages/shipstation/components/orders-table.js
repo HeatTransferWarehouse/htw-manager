@@ -134,7 +134,7 @@ function OrdersTable({
 
   const renderSortButton = (column, label) => (
     <button
-      className="w-full p-2 rounded-md whitespace-nowrap flex items-center gap-1 hover:bg-gray-100"
+      className="w-full p-2 whitespace-nowrap flex justify-between items-center gap-1 hover:bg-gray-100"
       onClick={(e) => handleSort(column)}
     >
       {label}
@@ -176,39 +176,42 @@ function OrdersTable({
           orderTagsList={orderTagsList}
         />
         <TableContainer tableFor={'orders'}>
-          <TableHeader className={''}>
-            <TableHeadCell className={'!py-0 text-sm'} minWidth={'4.5rem'}></TableHeadCell>
-            <TableHeadCell className={'!py-0 text-sm'} minWidth={'7rem'}>
+          <TableHeader className={'bg-gray-200 border-y border-gray-400'}>
+            <TableHeadCell className={'p-0 text-sm'} minWidth={'4rem'} />
+            <TableHeadCell className={'p-0 text-sm'} minWidth={'6rem'}>
               {renderSortButton('order_id', 'Order #')}
             </TableHeadCell>
-            <TableHeadCell className={'!py-0 text-sm'} minWidth={'7rem'}>
+            <TableHeadCell className={'p-0 text-sm border-l border-gray-400'} minWidth={'7rem'}>
               {renderSortButton('created_at', 'Order Date')}
             </TableHeadCell>
-            <TableHeadCell className={'!py-0 text-sm'} minWidth={'5rem'}>
+            <TableHeadCell className={'p-0 text-sm border-l border-gray-400'} minWidth={'5rem'}>
               {renderSortButton('age', 'Age')}
             </TableHeadCell>
-            <TableHeadCell className={'!py-0 text-sm'} minWidth={'7rem'}>
-              {renderSortButton('status', 'Status')}
+            <TableHeadCell className={'text-sm border-l border-gray-400'} minWidth={'10rem'}>
+              Status
             </TableHeadCell>
-            <TableHeadCell className={'!pl-4 !py-0 text-sm '} minWidth={'10rem'}>
+            <TableHeadCell className={'text-sm border-l border-gray-400 '} minWidth={'10rem'}>
               Item Sku
             </TableHeadCell>
-            <TableHeadCell className={'!pl-4 !py-0 text-sm'} minWidth={'10rem'}>
+            <TableHeadCell className={'text-sm border-l border-gray-400'} minWidth={'10rem'}>
               Item Name
             </TableHeadCell>
-            <TableHeadCell className={'!pl-4 !py-0 text-sm'} minWidth={'6rem'}>
-              Quantity
+            <TableHeadCell className={'text-sm border-l border-gray-400'} minWidth={'10rem'}>
+              Recipient
             </TableHeadCell>
-            <TableHeadCell className={'!pl-4 !py-0 text-sm'} minWidth={'8rem'}>
+            <TableHeadCell className={'text-sm border-l border-gray-400'} minWidth={'8rem'}>
               Shipping Method
             </TableHeadCell>
-            <TableHeadCell className={'!pl-4 !py-0 text-sm'} minWidth={'8rem'}>
+            <TableHeadCell className={'text-sm border-l border-gray-400'} minWidth={'4.5rem'}>
+              Quantity
+            </TableHeadCell>
+            <TableHeadCell className={'text-sm border-l border-gray-400'} minWidth={'8rem'}>
               Shipping Total
             </TableHeadCell>
-            <TableHeadCell className={'!pl-4 !py-0 text-sm'} minWidth={'7rem'}>
+            <TableHeadCell className={'text-sm border-l border-gray-400'} minWidth={'7rem'}>
               Order Total
             </TableHeadCell>
-            <TableHeadCell className={'!py-0 !pl-4 text-sm'} minWidth={'7rem'}>
+            <TableHeadCell className={'text-sm border-l border-gray-400'} minWidth={'7rem'}>
               Print Time
             </TableHeadCell>
           </TableHeader>
@@ -223,7 +226,10 @@ function OrdersTable({
                       key={index}
                       isMobile={false}
                     >
-                      <TableCell className={'flex items-center gap-1 mb-auto'}>
+                      <TableCell
+                        minWidth={'4rem'}
+                        className={'flex p-2 items-center gap-1 mb-auto'}
+                      >
                         <button
                           className={twMerge(
                             order.line_items.length <= 1 && 'opacity-0 pointer-events-none'
@@ -268,14 +274,14 @@ function OrdersTable({
                           )}
                         </button>
                       </TableCell>
-                      <TableCell className={'mb-auto'} minWidth={'7rem'}>
+                      <TableCell className={'mb-auto p-2'} minWidth={'6rem'}>
                         {order.order_id}
                       </TableCell>
-                      <TableCell className={'mb-auto'} minWidth={'7rem'}>
+                      <TableCell className={'mb-auto p-2'} minWidth={'6rem'}>
                         {new Date(order.created_at).toLocaleDateString('en-US')}
                       </TableCell>
                       <TableCell
-                        className="mb-auto font-thin"
+                        className="mb-auto p-2 font-thin"
                         minWidth={'5rem'}
                         style={{
                           color: getAgeColor(ageToMinutes(order.age)),
@@ -284,12 +290,12 @@ function OrdersTable({
                         {order.age}
                       </TableCell>
 
-                      <TableCell className={'mb-auto'} minWidth={'7rem'}>
+                      <TableCell className={'mb-auto p-2'} minWidth={'10rem'}>
                         {order.status}
                       </TableCell>
                       <TableCell
                         className={twMerge(
-                          'truncate overflow-hidden mb-auto whitespace-nowrap w-full',
+                          'truncate overflow-hidden p-2 mb-auto whitespace-nowrap w-full',
                           expandedOrderIDs.includes(order.order_id) &&
                             'flex flex-col gap-2 items-start'
                         )}
@@ -322,7 +328,7 @@ function OrdersTable({
                             </span>
                           ) : (
                             <span className="truncate  flex items-center w-full justify-between">
-                              {order.line_items[0].sku}
+                              <span className="w-full truncate">{order.line_items[0].sku}</span>
                               {order.line_items[0].is_dropship ? (
                                 <span className="bg-yellow-400 rounded-md h-6 w-[6px]" />
                               ) : order.line_items[0].is_clothing ? (
@@ -338,7 +344,7 @@ function OrdersTable({
                               className=" flex items-center gap-1 justify-between w-full"
                               key={idx}
                             >
-                              <span className="truncate">{product.sku}</span>
+                              <span className="truncate w-full">{product.sku}</span>
                               {product.is_dropship ? (
                                 <span
                                   title="Dropship Item"
@@ -364,7 +370,7 @@ function OrdersTable({
                       </TableCell>
                       <TableCell
                         className={twMerge(
-                          'truncate mb-auto w-full',
+                          'truncate mb-auto p-2 w-full',
                           expandedOrderIDs.includes(order.order_id) &&
                             'flex flex-col gap-2 items-start'
                         )}
@@ -384,34 +390,38 @@ function OrdersTable({
                           ))
                         )}
                       </TableCell>
+                      <TableCell className={'mb-auto p-2'} minWidth={'8rem'}>
+                        <span className="truncate w-full">
+                          {order.customer.company
+                            ? order.customer.company
+                            : `${order.customer.first_name} ${order.customer.last_name}`}
+                        </span>
+                      </TableCell>
+
+                      <TableCell className={' mb-auto p-2'} minWidth={'8rem'}>
+                        <span className="truncate w-full">{order.shipping.shipping_method}</span>
+                      </TableCell>
                       <TableCell
-                        className={twMerge(
-                          'mb-auto',
-                          expandedOrderIDs.includes(order.order_id) &&
-                            'flex flex-col gap-2 items-start'
-                        )}
-                        minWidth={'6rem'}
+                        className={'mb-auto w-full flex flex-col gap-2 items-end text-right p-2'}
+                        minWidth={'4.5rem'}
                       >
                         {!expandedOrderIDs.includes(order.order_id)
                           ? order.total_items
                           : order.line_items.map((product, idx) => (
-                              <div className="truncate w-full" key={idx}>
+                              <div className="text-right ml-auto" key={idx}>
                                 {product.quantity}
                               </div>
                             ))}
                       </TableCell>
-                      <TableCell className={' mb-auto'} minWidth={'8rem'}>
-                        <span className="truncate w-full">{order.shipping.shipping_method}</span>
-                      </TableCell>
-                      <TableCell className={'mb-auto'} minWidth={'8rem'}>
+                      <TableCell className={'mb-auto flex justify-end p-2'} minWidth={'8rem'}>
                         {formatMoney(order.shipping.cost_inc_tax)}
                       </TableCell>
-                      <TableCell className={'mb-auto'} minWidth={'7rem'}>
+                      <TableCell className={'mb-auto flex justify-end p-2'} minWidth={'7rem'}>
                         {formatMoney(Number(order.grand_total))}
                       </TableCell>
                       <TableCell
                         className={twMerge(
-                          'mb-auto',
+                          'mb-auto p-2',
                           order.is_printed && 'text-green-800 font-medium'
                         )}
                         minWidth={'7rem'}
