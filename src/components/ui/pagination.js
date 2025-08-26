@@ -1,10 +1,10 @@
-import React, { forwardRef, useEffect, useRef, useState } from "react";
-import { createPortal } from "react-dom";
-import { twMerge } from "tailwind-merge";
-import { FaCaretDown, FaChevronLeft, FaChevronRight } from "react-icons/fa6";
+import React, { forwardRef, useEffect, useRef, useState } from 'react';
+import { createPortal } from 'react-dom';
+import { twMerge } from 'tailwind-merge';
+import { FaCaretDown, FaChevronLeft, FaChevronRight } from 'react-icons/fa6';
 
 const Pagination = ({ children, id, props }) => {
-  const { items, rowsPerPage, page, setRowsPerPage, setPage } = props;
+  const { itemsCount, rowsPerPage, page, setRowsPerPage, setPage } = props;
 
   const triggerRef = useRef(null);
   const [internalOpen, setInternalOpen] = useState(false);
@@ -17,8 +17,8 @@ const Pagination = ({ children, id, props }) => {
   const [buttonWidth, setButtonWidth] = useState(0);
 
   useEffect(() => {
-    setNextIsDisabled(items.length <= rowsPerPage * (page + 1));
-  }, [rowsPerPage, page, items.length]);
+    setNextIsDisabled(itemsCount <= rowsPerPage * (page + 1));
+  }, [rowsPerPage, page, itemsCount]);
 
   const calculatePosition = () => {
     if (!triggerRef.current) return;
@@ -31,21 +31,21 @@ const Pagination = ({ children, id, props }) => {
   };
 
   useEffect(() => {
-    const mainContainer = document.querySelector(".main-container");
+    const mainContainer = document.querySelector('.main-container');
     if (!mainContainer) return;
 
     const handleScrollResize = () => {
       calculatePosition();
     };
 
-    mainContainer.addEventListener("scroll", handleScrollResize);
-    window.addEventListener("resize", handleScrollResize); // Attach resize to the window
+    mainContainer.addEventListener('scroll', handleScrollResize);
+    window.addEventListener('resize', handleScrollResize); // Attach resize to the window
 
     calculatePosition(); // Initial calculation
 
     return () => {
-      mainContainer.removeEventListener("scroll", handleScrollResize);
-      window.removeEventListener("resize", handleScrollResize);
+      mainContainer.removeEventListener('scroll', handleScrollResize);
+      window.removeEventListener('resize', handleScrollResize);
     };
   }, []);
 
@@ -68,16 +68,15 @@ const Pagination = ({ children, id, props }) => {
       }
     };
 
-    document.addEventListener("click", handleClickOutside);
+    document.addEventListener('click', handleClickOutside);
 
     return () => {
-      document.removeEventListener("click", handleClickOutside);
+      document.removeEventListener('click', handleClickOutside);
     };
   }, [id]);
 
   return (
-    <div
-      className={twMerge("px-1 py-2 flex justify-end items-center grow gap-2")}>
+    <div className={twMerge('px-1 py-2 flex justify-end items-center grow gap-2')}>
       <div className="flex items-center relative gap-6">
         {React.Children.map(children, (child) => {
           if (child.type === PaginationTrigger) {
@@ -92,7 +91,7 @@ const Pagination = ({ children, id, props }) => {
               buttonWidth,
               setRowsPerPage,
               setPage,
-              items,
+              itemsCount,
               positionx,
               positiony,
               triggerHeight,
@@ -110,7 +109,7 @@ const Pagination = ({ children, id, props }) => {
               buttonWidth,
               setRowsPerPage,
               setPage,
-              items,
+              itemsCount,
               positionx,
               positiony,
               triggerHeight,
@@ -125,34 +124,33 @@ const Pagination = ({ children, id, props }) => {
   );
 };
 
-const PaginationTrigger = forwardRef(
-  ({ isOpen, setOpen, rowsPerPage, page, items }, ref) => {
-    const getPaginationRange = () => {
-      const start = page === 0 ? 1 : page * rowsPerPage + 1;
-      const end = Math.min(rowsPerPage * (page + 1), items.length);
-      return `${start} - ${end}`;
-    };
+const PaginationTrigger = forwardRef(({ isOpen, setOpen, rowsPerPage, page, itemsCount }, ref) => {
+  const getPaginationRange = () => {
+    const start = page === 0 ? 1 : page * rowsPerPage + 1;
+    const end = Math.min(rowsPerPage * (page + 1), itemsCount);
+    return `${start} - ${end}`;
+  };
 
-    return (
-      <button
-        className={twMerge(
-          "rounded-md flex gap-1 items-center hover:bg-secondary/10 group/rows hover:text-secondary p-2 transition duration-200",
-          isOpen && "bg-secondary/10 text-secondary"
-        )}
-        onClick={(e) => {
-          e.preventDefault();
-          e.stopPropagation();
-          setOpen(!isOpen);
-        }}
-        ref={ref}>
-        <p>{getPaginationRange()}</p>
-        <p>of</p>
-        <p>{items.length}</p>
-        <FaCaretDown className="w-3 h-3 ml-2" />
-      </button>
-    );
-  }
-);
+  return (
+    <button
+      className={twMerge(
+        'rounded-md flex gap-1 items-center hover:bg-secondary/10 group/rows hover:text-secondary p-2 transition duration-200',
+        isOpen && 'bg-secondary/10 text-secondary'
+      )}
+      onClick={(e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        setOpen(!isOpen);
+      }}
+      ref={ref}
+    >
+      <p>{getPaginationRange()}</p>
+      <p>of</p>
+      <p>{itemsCount}</p>
+      <FaCaretDown className="w-3 h-3 ml-2" />
+    </button>
+  );
+});
 
 const PaginationSheet = ({
   className,
@@ -176,12 +174,12 @@ const PaginationSheet = ({
     width: buttonWidth,
     height: mounted ? `${sheetHeight}px` : 0,
     left: positionx,
-    top: sheetPosition === "top" ? positiony + triggerHeight + 4 : "unset",
+    top: sheetPosition === 'top' ? positiony + triggerHeight + 4 : 'unset',
     bottom:
-      sheetPosition === "bottom"
+      sheetPosition === 'bottom'
         ? window.outerHeight - positiony + triggerHeight + 4 - sheetHeight
-        : "unset",
-    transition: "height 150ms",
+        : 'unset',
+    transition: 'height 150ms',
   };
 
   return renderContent
@@ -189,10 +187,11 @@ const PaginationSheet = ({
         <div
           className={twMerge(
             className,
-            mounted ? "shadow-default" : "",
-            "absolute z-[999999] rounded-md overflow-hidden bg-white"
+            mounted ? 'shadow-default' : '',
+            'absolute z-[999999] rounded-md overflow-hidden bg-white'
           )}
-          style={style}>
+          style={style}
+        >
           <ul className="list-none w-full m-0 p-0">
             {React.Children.map(children, (child) => {
               return React.cloneElement(child, {
@@ -222,14 +221,15 @@ const PaginationOption = ({
     <li
       className={twMerge(
         className,
-        value === rowsPerPage ? "bg-secondary/10 text-secondary" : "",
-        "cursor-pointer py-2 px-3 hover:text-secondary hover:bg-secondary/10"
+        value === rowsPerPage ? 'bg-secondary/10 text-secondary' : '',
+        'cursor-pointer py-2 px-3 hover:text-secondary hover:bg-secondary/10'
       )}
       onClick={() => {
         setRowsPerPage(value);
         setPage(0);
         setOpen(false);
-      }}>
+      }}
+    >
       {children}
     </li>
   );
@@ -241,44 +241,42 @@ const PaginationControls = ({ setPage, page, nextIsDisabled }) => {
       <button
         aria-label="Previous Page"
         className={twMerge(
-          "p-3 rounded-full flex items-center justify-center transition duration-200 ",
-          page === 0
-            ? "cursor-not-allowed"
-            : "hover:bg-secondary/10 group/pag-next"
+          'p-3 rounded-full flex items-center justify-center transition duration-200 ',
+          page === 0 ? 'cursor-not-allowed' : 'hover:bg-secondary/10 group/pag-next'
         )}
         onClick={(e) => {
           e.preventDefault();
           e.stopPropagation();
           setPage(page - 1);
         }}
-        disabled={page === 0}>
+        disabled={page === 0}
+      >
         <FaChevronLeft
           className={twMerge(
-            "w-4 h-4 relative right-[1px] transition duration-200 ",
-            page === 0 ? "fill-gray-400" : "group-hover/pag-next:fill-secondary"
+            'w-4 h-4 relative right-[1px] transition duration-200 ',
+            page === 0 ? 'fill-gray-400' : 'group-hover/pag-next:fill-secondary'
           )}
         />
       </button>
       <button
         aria-label="Next Page"
         className={twMerge(
-          "p-3 rounded-full transition duration-200 ",
+          'p-3 rounded-full transition duration-200 ',
           !nextIsDisabled
-            ? "cursor-pointer hover:bg-secondary/10 group/pag-next"
-            : "cursor-not-allowed"
+            ? 'cursor-pointer hover:bg-secondary/10 group/pag-next'
+            : 'cursor-not-allowed'
         )}
         disabled={nextIsDisabled}
         onClick={(e) => {
           e.preventDefault();
           e.stopPropagation();
           setPage(page + 1);
-        }}>
+        }}
+      >
         <FaChevronRight
           className={twMerge(
-            "w-4 h-4 relative left-[1px] transition duration-200 ",
-            nextIsDisabled
-              ? "fill-gray-400"
-              : "group-hover/pag-next:fill-secondary"
+            'w-4 h-4 relative left-[1px] transition duration-200 ',
+            nextIsDisabled ? 'fill-gray-400' : 'group-hover/pag-next:fill-secondary'
           )}
         />
       </button>
@@ -286,10 +284,4 @@ const PaginationControls = ({ setPage, page, nextIsDisabled }) => {
   );
 };
 
-export {
-  Pagination,
-  PaginationTrigger,
-  PaginationSheet,
-  PaginationOption,
-  PaginationControls,
-};
+export { Pagination, PaginationTrigger, PaginationSheet, PaginationOption, PaginationControls };

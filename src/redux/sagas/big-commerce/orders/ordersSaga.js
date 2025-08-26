@@ -1,12 +1,26 @@
 import { put, takeLatest } from 'redux-saga/effects';
 import axios from 'axios';
 
-function* getOrders() {
+function* getOrders(action) {
   try {
-    const response = yield axios.get(`/api/big-commerce/orders`);
-    yield put({ type: 'SET_ORDERS', payload: response.data });
+    const page = action.payload?.page || 1; // default page = 1
+    const limit = action.payload?.limit || 100; // default limit = 100
+    const filter = action.payload?.filter || 'all'; // optional filter
+
+    const response = yield axios.get(
+      `/api/big-commerce/orders?page=${page}&limit=${limit}&filter=${filter}`
+    );
+
+    // API returns: { orders: [...], pagination: {...} }
+    yield put({
+      type: 'SET_ORDERS',
+      payload: {
+        orders: response.data.orders,
+        pagination: response.data.pagination,
+      },
+    });
   } catch (err) {
-    console.log('Error in delete Webhook Saga', err);
+    console.error('Error in getOrders Saga:', err);
   }
 }
 

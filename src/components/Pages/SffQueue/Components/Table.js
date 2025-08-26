@@ -1,26 +1,18 @@
-import React, { useEffect, useState } from "react";
-import { TableContent } from "./TableContent";
-import { TableNav } from "./TableNav";
-import { useQueueActions } from "../Functions/queue-actions";
-import {
-  HiOutlineArrowNarrowUp,
-  HiOutlineArrowNarrowDown,
-} from "react-icons/hi";
-import Search from "../../../Search/Search";
-import {
-  Table,
-  TableContainer,
-  TableHeadCell,
-  TableHeader,
-} from "../../../Table/Table";
-import { TableHeaderContainer } from "./TableHeader";
+import React, { useEffect, useState } from 'react';
+import { TableContent } from './TableContent';
+import { TableNav } from './TableNav';
+import { useQueueActions } from '../Functions/queue-actions';
+import { HiOutlineArrowNarrowUp, HiOutlineArrowNarrowDown } from 'react-icons/hi';
+import Search from '../../../Search/Search';
+import { Table, TableContainer, TableHeadCell, TableHeader } from '../../../Table/Table';
+import { TableHeaderContainer } from './TableHeader';
 import {
   PaginationControls,
   PaginationOption,
   PaginationSheet,
   PaginationTrigger,
   Pagination,
-} from "../../../ui/pagination";
+} from '../../../ui/pagination';
 
 export function TableComponent({ props }) {
   const { getQueueItems } = useQueueActions();
@@ -32,7 +24,7 @@ export function TableComponent({ props }) {
   });
   const [rowsPerPage, setRowsPerPage] = useState(10);
   const [page, setPage] = useState(0);
-  const [searchQuery, setSearchQuery] = useState("");
+  const [searchQuery, setSearchQuery] = useState('');
 
   useEffect(() => {
     setItems({
@@ -46,10 +38,7 @@ export function TableComponent({ props }) {
   const handleSort = (e, sort_by) => {
     e.stopPropagation();
     e.preventDefault();
-    const newOrder =
-      props.sort.sort_by === sort_by && props.sort.order === "asc"
-        ? "desc"
-        : "asc";
+    const newOrder = props.sort.sort_by === sort_by && props.sort.order === 'asc' ? 'desc' : 'asc';
     getQueueItems(e, sort_by, newOrder);
   };
 
@@ -60,25 +49,22 @@ export function TableComponent({ props }) {
   const renderSortButton = (column, label) => (
     <button
       className="w-fit p-2 rounded-md whitespace-nowrap flex items-center gap-1 hover:bg-gray-100"
-      onClick={(e) => handleSort(e, column)}>
+      onClick={(e) => handleSort(e, column)}
+    >
       {label}
       {props.sort.sort_by === column &&
-        (props.sort.order === "asc" ? (
-          <HiOutlineArrowNarrowUp />
-        ) : (
-          <HiOutlineArrowNarrowDown />
-        ))}
+        (props.sort.order === 'asc' ? <HiOutlineArrowNarrowUp /> : <HiOutlineArrowNarrowDown />)}
     </button>
   );
 
   const currentViewItems =
-    props.view === "new"
+    props.view === 'new'
       ? items.newItems
-      : props.view === "progress"
-      ? items.inProgressItems
-      : props.view === "hold"
-      ? items.onHoldItems
-      : items.completedItems;
+      : props.view === 'progress'
+        ? items.inProgressItems
+        : props.view === 'hold'
+          ? items.onHoldItems
+          : items.completedItems;
 
   // Filter items based on search query
   const filteredItems = currentViewItems.filter(
@@ -120,26 +106,24 @@ export function TableComponent({ props }) {
           isMobile: props.isMobile,
         }}
       />
-      <TableContainer tableFor={"sff"}>
+      <TableContainer tableFor={'sff'}>
         {!props.isMobile && (
           <TableHeader>
             <TableHeadCell />
-            <TableHeadCell minWidth={"7rem"}>
-              {renderSortButton("order_number", "Order Number")}
+            <TableHeadCell minWidth={'7rem'}>
+              {renderSortButton('order_number', 'Order Number')}
             </TableHeadCell>
-            <TableHeadCell minWidth={"10rem"}>
-              {renderSortButton("sku", "Sku")}
+            <TableHeadCell minWidth={'10rem'}>{renderSortButton('sku', 'Sku')}</TableHeadCell>
+            <TableHeadCell minWidth={'15rem'}>
+              {renderSortButton('description', 'Product Name')}
             </TableHeadCell>
-            <TableHeadCell minWidth={"15rem"}>
-              {renderSortButton("description", "Product Name")}
+            <TableHeadCell minWidth={'15rem'}>Product Length</TableHeadCell>
+            <TableHeadCell>{renderSortButton('qty', 'Qty')}</TableHeadCell>
+            <TableHeadCell minWidth={'5rem'}>
+              {renderSortButton('priority', 'Priority')}
             </TableHeadCell>
-            <TableHeadCell minWidth={"15rem"}>Product Length</TableHeadCell>
-            <TableHeadCell>{renderSortButton("qty", "Qty")}</TableHeadCell>
-            <TableHeadCell minWidth={"5rem"}>
-              {renderSortButton("priority", "Priority")}
-            </TableHeadCell>
-            <TableHeadCell minWidth={"8rem"}>
-              {renderSortButton("created_at", "Created At")}
+            <TableHeadCell minWidth={'8rem'}>
+              {renderSortButton('created_at', 'Created At')}
             </TableHeadCell>
             <TableHeadCell />
           </TableHeader>
@@ -162,15 +146,16 @@ export function TableComponent({ props }) {
       </TableContainer>
       <Pagination
         props={{
-          items: filteredItems,
+          itemsCount: filteredItems.length,
           rowsPerPage,
           setRowsPerPage,
           page,
           setPage,
-        }}>
+        }}
+      >
         <PaginationTrigger />
         <PaginationControls />
-        <PaginationSheet sheetPosition={"bottom"}>
+        <PaginationSheet sheetPosition={'bottom'}>
           <PaginationOption value={10}>10</PaginationOption>
           <PaginationOption value={25}>25</PaginationOption>
           <PaginationOption value={50}>50</PaginationOption>

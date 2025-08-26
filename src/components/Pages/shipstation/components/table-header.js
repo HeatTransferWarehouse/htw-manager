@@ -34,6 +34,7 @@ function PicklistHeader({
   page,
   setPage,
   orderTagsList,
+  orderCount,
 }) {
   const location = useLocation();
   const pathname = location.pathname;
@@ -78,7 +79,7 @@ function PicklistHeader({
       </button>
       <Pagination
         props={{
-          items: filteredData,
+          itemsCount: orderCount,
           rowsPerPage: rowsPerPage,
           setRowsPerPage: setRowsPerPage,
           page: page,

@@ -195,8 +195,6 @@ const runWithConcurrencyLimit = async (tasks, limit) => {
  * @returns
  */
 const buildOrderJSON = async (order, consignments, lineItems) => {
-  console.log(order);
-
   // Build a structured order JSON object
   return {
     order_id: order.id,
@@ -896,10 +894,83 @@ router.post('/sync', async (req, res) => {
   }
 });
 
+router.get('/total-orders', async (req, res) => {
+  try {
+    const result = await pool.query('SELECT COUNT(*) FROM picklist_orders');
+    const count = parseInt(result.rows[0]?.count || '0', 10);
+    return res.status(200).json({ total_orders: count });
+  } catch (err) {
+    console.error('Error fetching total orders:', err);
+    return res.status(500).json({ success: false, message: 'Failed to fetch total orders' });
+  }
+});
+
 router.get('/', async (req, res) => {
   try {
-    const result = await pool.query('SELECT * FROM picklist_orders ORDER BY created_at DESC');
-    return res.status(200).json(result.rows);
+    const page = parseInt(req.query.page, 10) || 1;
+    const limit = parseInt(req.query.limit, 10) || 100;
+    const offset = (page - 1) * limit;
+    const filter = req.query.filter || 'all';
+
+    // Build conditions
+    let conditions = [];
+
+    if (filter === 'printed') {
+      conditions.push('is_printed = true');
+    } else if (filter === 'not-printed') {
+      conditions.push('is_printed = false');
+    } else if (filter === 'dropship') {
+      conditions.push(`
+        EXISTS (
+          SELECT 1
+          FROM jsonb_array_elements(line_items::jsonb) li
+          WHERE COALESCE(li->>'is_dropship','false')::boolean = true
+        )
+      `);
+    }
+
+    const whereClause = conditions.length ? `WHERE ${conditions.join(' AND ')}` : '';
+
+    // Use CTE so count + data come from the same filtered set
+    const countQuery = `
+      WITH filtered AS (
+        SELECT *
+        FROM picklist_orders
+        ${whereClause}
+      )
+      SELECT COUNT(*) FROM filtered
+    `;
+
+    const dataQuery = `
+      WITH filtered AS (
+        SELECT *
+        FROM picklist_orders
+        ${whereClause}
+      )
+      SELECT *
+      FROM filtered
+      ORDER BY created_at DESC
+      LIMIT $1 OFFSET $2
+    `;
+
+    // 1. Count
+    const totalResult = await pool.query(countQuery);
+    const totalOrders = parseInt(totalResult.rows[0].count, 10);
+    const totalPages = Math.ceil(totalOrders / limit);
+
+    // 2. Data
+    const result = await pool.query(dataQuery, [limit, offset]);
+
+    // 3. Return with metadata
+    return res.status(200).json({
+      orders: result.rows,
+      pagination: {
+        totalOrders,
+        totalPages,
+        currentPage: page,
+        pageSize: limit,
+      },
+    });
   } catch (err) {
     console.error('Error fetching orders:', err);
     return res.status(500).json({ success: false, message: 'Failed to fetch orders' });

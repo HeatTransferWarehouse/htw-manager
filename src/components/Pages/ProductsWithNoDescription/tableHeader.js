@@ -1,12 +1,12 @@
-import React, { useState, useEffect } from "react";
-import { Button } from "../../ui/button";
-import { twMerge } from "tailwind-merge";
-import { Sheet, SheetContent, SheetHeader, SheetTrigger } from "../../ui/sheet";
-import { Input, Label, RadioButton, RadioGroup } from "../../Form/form";
-import { FaFilter } from "react-icons/fa6";
-import { IoClose } from "react-icons/io5";
-import Search from "./searchProductsInput";
-import { FaSyncAlt } from "react-icons/fa";
+import React, { useState, useEffect } from 'react';
+import { Button } from '../../ui/button';
+import { twMerge } from 'tailwind-merge';
+import { Sheet, SheetContent, SheetHeader, SheetTrigger } from '../../ui/sheet';
+import { Input, Label, RadioButton, RadioGroup } from '../../Form/form';
+import { FaFilter } from 'react-icons/fa6';
+import { IoClose } from 'react-icons/io5';
+import Search from './searchProductsInput';
+import { FaSyncAlt } from 'react-icons/fa';
 
 import {
   Pagination,
@@ -14,7 +14,7 @@ import {
   PaginationOption,
   PaginationSheet,
   PaginationTrigger,
-} from "../../ui/pagination";
+} from '../../ui/pagination';
 
 export default function TableHeaderContainer({ props }) {
   const {
@@ -39,21 +39,21 @@ export default function TableHeaderContainer({ props }) {
     setDescriptionFilter,
     descriptionFilter,
   } = props;
-  const [sync, setSync] = useState("No sync data available");
+  const [sync, setSync] = useState('No sync data available');
   const [sheetOpen, setSheetOpen] = useState(false);
 
   useEffect(() => {
     if (lastSync.data && lastSync.data.length > 0) {
       const unFormattedLastSync = new Date(lastSync.data[0]?.date);
       const options = {
-        year: "numeric",
-        month: "long",
-        day: "numeric",
-        hour: "numeric",
-        minute: "2-digit",
-        timeZone: "America/Chicago", // Central Time
+        year: 'numeric',
+        month: 'long',
+        day: 'numeric',
+        hour: 'numeric',
+        minute: '2-digit',
+        timeZone: 'America/Chicago', // Central Time
       };
-      setSync(unFormattedLastSync.toLocaleString("en-US", options));
+      setSync(unFormattedLastSync.toLocaleString('en-US', options));
     }
   }, [lastSync]);
 
@@ -64,8 +64,9 @@ export default function TableHeaderContainer({ props }) {
   return (
     <div
       className={twMerge(
-        "flex justify-between items-end flex-col md:flex-row p-2 border-b border-solid border-gray-200"
-      )}>
+        'flex justify-between items-end flex-col md:flex-row p-2 border-b border-solid border-gray-200'
+      )}
+    >
       <div className="md:flex-grow max-md:w-full p-4 max-md:grid max-md:grid-cols-2">
         <Search
           className="max-md:col-span-2"
@@ -75,16 +76,11 @@ export default function TableHeaderContainer({ props }) {
           }}
         />
         <div className="w-full max-md:col-span-1 flex flex-col gap-2 items-start">
-          <Button
-            variant={"secondary"}
-            disabled={activeSyncStatus.data}
-            onClick={syncCatalog}>
+          <Button variant={'secondary'} disabled={activeSyncStatus.data} onClick={syncCatalog}>
             Sync Catalog
           </Button>
           {!activeSyncStatus.data ? (
-            <span className="text-xs flex mt-2 text-gray-500">
-              Last Sync: {sync}
-            </span>
+            <span className="text-xs flex mt-2 text-gray-500">Last Sync: {sync}</span>
           ) : (
             <span className="text-xs flex mt-2 text-gray-500">
               <FaSyncAlt className="w-3 mr-2 p-0 relative top-[2px] h-3 animate-spin fill-gray-500" />
@@ -96,10 +92,11 @@ export default function TableHeaderContainer({ props }) {
           <div className="flex col-span-1 items-start justify-end">
             <SheetTrigger
               className={
-                "flex items-center justify-center gap-2 group hover:text-secondary transition"
+                'flex items-center justify-center gap-2 group hover:text-secondary transition'
               }
-              setOpen={setSheetOpen}>
-              Filters{" "}
+              setOpen={setSheetOpen}
+            >
+              Filters{' '}
               <FaFilter className="w-4 h-4 fill-black group-hover:fill-secondary transition" />
             </SheetTrigger>
           </div>
@@ -110,7 +107,8 @@ export default function TableHeaderContainer({ props }) {
               return (
                 <span
                   className="bg-gray-200 whitespace-nowrap max-w-fit min-w-fit flex gap-2 items-center rounded-md p-2 overflow-hidden"
-                  key={category}>
+                  key={category}
+                >
                   <button
                     onClick={(e) => {
                       e.preventDefault();
@@ -120,7 +118,8 @@ export default function TableHeaderContainer({ props }) {
                         )
                       );
                     }}
-                    className="p-1 rounded-full m-0 border-none bg-transparent hover:bg-gray-300 flex items-center justify-center">
+                    className="p-1 rounded-full m-0 border-none bg-transparent hover:bg-gray-300 flex items-center justify-center"
+                  >
                     <IoClose className="w-3 h-3" />
                   </button>
                   {category}
@@ -135,9 +134,10 @@ export default function TableHeaderContainer({ props }) {
           {!isMobile && (
             <SheetTrigger
               className={
-                "flex items-center justify-center gap-2 group hover:text-secondary transition"
+                'flex items-center justify-center gap-2 group hover:text-secondary transition'
               }
-              setOpen={setSheetOpen}>
+              setOpen={setSheetOpen}
+            >
               Filters
               <FaFilter className="w-4 h-4 fill-black group-hover:fill-secondary transition" />
             </SheetTrigger>
@@ -148,7 +148,8 @@ export default function TableHeaderContainer({ props }) {
                 return (
                   <span
                     className="bg-gray-200 whitespace-nowrap min-w-fit flex gap-2 items-center rounded-md p-2 overflow-hidden"
-                    key={category}>
+                    key={category}
+                  >
                     <button
                       onClick={(e) => {
                         e.preventDefault();
@@ -158,7 +159,8 @@ export default function TableHeaderContainer({ props }) {
                           )
                         );
                       }}
-                      className="p-1 rounded-full m-0 border-none bg-transparent hover:bg-gray-300 flex items-center justify-center">
+                      className="p-1 rounded-full m-0 border-none bg-transparent hover:bg-gray-300 flex items-center justify-center"
+                    >
                       <IoClose className="w-3 h-3" />
                     </button>
                     {category}
@@ -173,35 +175,32 @@ export default function TableHeaderContainer({ props }) {
             onClose={() => setSheetOpen(false)}
             position="right"
             type="side"
-            animate={true}>
+            animate={true}
+          >
             <SheetContent>
               <SheetHeader title="Filters" setOpen={setSheetOpen}>
                 <div className="flex flex-col mb-8 gap-3">
-                  <span className="text-base font-semibold text-black">
-                    Status
-                  </span>
+                  <span className="text-base font-semibold text-black">Status</span>
                   <RadioGroup>
                     <RadioButton
                       value="All"
                       defaultChecked
-                      onChange={() => setDescriptionFilter("all")}
-                      checked={descriptionFilter === "all"}
+                      onChange={() => setDescriptionFilter('all')}
+                      checked={descriptionFilter === 'all'}
                     />
                   </RadioGroup>
                   <RadioGroup>
                     <RadioButton
                       value="No Description"
-                      checked={descriptionFilter === "withoutDescription"}
-                      onChange={() =>
-                        setDescriptionFilter("withoutDescription")
-                      }
+                      checked={descriptionFilter === 'withoutDescription'}
+                      onChange={() => setDescriptionFilter('withoutDescription')}
                     />
                   </RadioGroup>
                   <RadioGroup>
                     <RadioButton
                       value="No Heading Tags"
-                      onChange={() => setDescriptionFilter("withDescription")}
-                      checked={descriptionFilter === "withDescription"}
+                      onChange={() => setDescriptionFilter('withDescription')}
+                      checked={descriptionFilter === 'withDescription'}
                     />
                   </RadioGroup>
                 </div>
@@ -209,7 +208,8 @@ export default function TableHeaderContainer({ props }) {
                   <>
                     <span
                       className="hover:underline hover:text-secondary"
-                      onClick={handleAllClearFilters}>
+                      onClick={handleAllClearFilters}
+                    >
                       Clear all
                     </span>
                     <div className="flex max-h-[136px] overflow-y-auto my-4 items-center flex-wrap gap-2">
@@ -217,18 +217,19 @@ export default function TableHeaderContainer({ props }) {
                         return (
                           <span
                             className="bg-gray-200 whitespace-nowrap max-w-48 flex gap-2 items-center rounded-md p-2 overflow-hidden"
-                            key={category}>
+                            key={category}
+                          >
                             <button
                               onClick={(e) => {
                                 e.preventDefault();
                                 setSelectedCategoryFilters(
                                   selectedCategoryFilters.filter(
-                                    (selectedCategory) =>
-                                      selectedCategory !== category
+                                    (selectedCategory) => selectedCategory !== category
                                   )
                                 );
                               }}
-                              className="p-1 rounded-full m-0 border-none bg-transparent hover:bg-gray-300 flex items-center justify-center">
+                              className="p-1 rounded-full m-0 border-none bg-transparent hover:bg-gray-300 flex items-center justify-center"
+                            >
                               <IoClose className="w-3 h-3" />
                             </button>
                             {category}
@@ -262,16 +263,17 @@ export default function TableHeaderContainer({ props }) {
         </div>
         <Pagination
           props={{
-            items: filteredProducts,
+            itemsCount: filteredProducts.length,
             rowsPerPage: rowsPerPage,
             page: page,
             setPage: setPage,
             position: position,
             setRowsPerPage: setRowsPerPage,
-          }}>
+          }}
+        >
           <PaginationTrigger />
           <PaginationControls />
-          <PaginationSheet sheetPosition={"top"}>
+          <PaginationSheet sheetPosition={'top'}>
             <PaginationOption value={10}>10</PaginationOption>
             <PaginationOption value={25}>25</PaginationOption>
             <PaginationOption value={50}>50</PaginationOption>

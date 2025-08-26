@@ -1,6 +1,6 @@
-import React, { useEffect, useState, useMemo } from "react";
-import { useDispatch, useSelector } from "react-redux";
-import LoadingOverlay from "../../LoadingOverlay";
+import React, { useEffect, useState, useMemo } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import LoadingOverlay from '../../LoadingOverlay';
 import {
   Table,
   TableBody,
@@ -9,39 +9,39 @@ import {
   TableHeadCell,
   TableHeader,
   TableRow,
-} from "../../Table/Table";
-import TableHeaderContainer from "./tableHeader";
-import { twMerge } from "tailwind-merge";
+} from '../../Table/Table';
+import TableHeaderContainer from './tableHeader';
+import { twMerge } from 'tailwind-merge';
 import {
   Pagination,
   PaginationControls,
   PaginationOption,
   PaginationSheet,
   PaginationTrigger,
-} from "../../ui/pagination";
+} from '../../ui/pagination';
 
 export default function ProductsWithNoDesc() {
   const dispatch = useDispatch();
 
-  const [view, setView] = useState("htw");
+  const [view, setView] = useState('htw');
 
   useEffect(() => {
-    dispatch({ type: "FETCH_HTW_DESCRIPTION_PRODUCTS" });
+    dispatch({ type: 'FETCH_HTW_DESCRIPTION_PRODUCTS' });
     dispatch({
-      type: "FETCH_HTW_DESCRIPTION_SYNC_DATA",
+      type: 'FETCH_HTW_DESCRIPTION_SYNC_DATA',
       payload: {
         query: true,
       },
     });
-    dispatch({ type: "FETCH_HTW_DESCRIPTIONS_SYNC_STATUS" });
-    dispatch({ type: "FETCH_SFF_DESCRIPTION_PRODUCTS" });
+    dispatch({ type: 'FETCH_HTW_DESCRIPTIONS_SYNC_STATUS' });
+    dispatch({ type: 'FETCH_SFF_DESCRIPTION_PRODUCTS' });
     dispatch({
-      type: "FETCH_SFF_DESCRIPTION_SYNC_DATA",
+      type: 'FETCH_SFF_DESCRIPTION_SYNC_DATA',
       payload: {
         query: true,
       },
     });
-    dispatch({ type: "FETCH_SFF_DESCRIPTIONS_SYNC_STATUS" });
+    dispatch({ type: 'FETCH_SFF_DESCRIPTIONS_SYNC_STATUS' });
   }, [dispatch, view]);
 
   // Redux state
@@ -53,16 +53,16 @@ export default function ProductsWithNoDesc() {
   const htwCount = htw.descriptionProducts.count;
 
   const { descriptionProducts, descriptionSyncData, descriptionsSyncStatus } =
-    view === "htw" ? htw : sff;
+    view === 'htw' ? htw : sff;
 
   // // Component states
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(25);
   const [selectedCategoryFilters, setSelectedCategoryFilters] = useState([]);
-  const [productSearchQuery, setProductSearchQuery] = useState("");
-  const [searchQuery, setSearchQuery] = useState("");
+  const [productSearchQuery, setProductSearchQuery] = useState('');
+  const [searchQuery, setSearchQuery] = useState('');
   const [isMobile, setIsMobile] = useState(false);
-  const [descriptionFilter, setDescriptionFilter] = useState("all");
+  const [descriptionFilter, setDescriptionFilter] = useState('all');
 
   const setViewPath = (view) => {
     setView(view);
@@ -92,12 +92,12 @@ export default function ProductsWithNoDesc() {
         setIsMobile(false);
       }
     };
-    window.addEventListener("resize", handleResize);
+    window.addEventListener('resize', handleResize);
 
     handleResize();
 
     return () => {
-      window.removeEventListener("resize", handleResize);
+      window.removeEventListener('resize', handleResize);
     };
   }, []);
 
@@ -112,28 +112,19 @@ export default function ProductsWithNoDesc() {
 
       const matchesCategoryFilters =
         selectedCategoryFilters.length === 0 ||
-        selectedCategoryFilters.some((filter) =>
-          product.categories?.includes(filter)
-        );
+        selectedCategoryFilters.some((filter) => product.categories?.includes(filter));
 
       const matchesDescriptionFilter =
-        descriptionFilter === "all" ||
-        (descriptionFilter === "withDescription" &&
+        descriptionFilter === 'all' ||
+        (descriptionFilter === 'withDescription' &&
           product.description &&
           product.description.trim().length > 0) ||
-        (descriptionFilter === "withoutDescription" &&
+        (descriptionFilter === 'withoutDescription' &&
           (!product.description || product.description.trim().length === 0));
 
-      return (
-        matchesSearchQuery && matchesCategoryFilters && matchesDescriptionFilter
-      );
+      return matchesSearchQuery && matchesCategoryFilters && matchesDescriptionFilter;
     });
-  }, [
-    descriptionProducts,
-    productSearchQuery,
-    selectedCategoryFilters,
-    descriptionFilter,
-  ]);
+  }, [descriptionProducts, productSearchQuery, selectedCategoryFilters, descriptionFilter]);
 
   // // Filter categories based on search input
   const filteredCategories = useMemo(() => {
@@ -151,12 +142,12 @@ export default function ProductsWithNoDesc() {
 
   // // Sync catalog function
   const syncCatalog = () => {
-    if (view === "sff") {
-      dispatch({ type: "SYNC_SFF_DESCRIPTION_PRODUCTS" });
-      dispatch({ type: "FETCH_SFF_DESCRIPTIONS_SYNC_STATUS" });
+    if (view === 'sff') {
+      dispatch({ type: 'SYNC_SFF_DESCRIPTION_PRODUCTS' });
+      dispatch({ type: 'FETCH_SFF_DESCRIPTIONS_SYNC_STATUS' });
     } else {
-      dispatch({ type: "SYNC_HTW_DESCRIPTION_PRODUCTS" });
-      dispatch({ type: "FETCH_HTW_DESCRIPTIONS_SYNC_STATUS" });
+      dispatch({ type: 'SYNC_HTW_DESCRIPTION_PRODUCTS' });
+      dispatch({ type: 'FETCH_HTW_DESCRIPTIONS_SYNC_STATUS' });
     }
   };
 
@@ -198,23 +189,25 @@ export default function ProductsWithNoDesc() {
       <Table>
         <div className="flex py-4 items-center justify-center gap-4">
           <button
-            onClick={() => setViewPath("htw")}
+            onClick={() => setViewPath('htw')}
             className={twMerge(
-              view === "htw"
-                ? "bg-secondary text-white"
-                : "bg-white text-secondary hover:bg-secondary/10",
-              "rounded-md font-semibold border-none transition p-2"
-            )}>
+              view === 'htw'
+                ? 'bg-secondary text-white'
+                : 'bg-white text-secondary hover:bg-secondary/10',
+              'rounded-md font-semibold border-none transition p-2'
+            )}
+          >
             HTW ({htwCount})
           </button>
           <button
-            onClick={() => setViewPath("sff")}
+            onClick={() => setViewPath('sff')}
             className={twMerge(
-              view === "sff"
-                ? "bg-secondary text-white"
-                : "bg-white text-secondary hover:bg-secondary/10",
-              "rounded-md font-semibold border-none transition p-2"
-            )}>
+              view === 'sff'
+                ? 'bg-secondary text-white'
+                : 'bg-white text-secondary hover:bg-secondary/10',
+              'rounded-md font-semibold border-none transition p-2'
+            )}
+          >
             SFF ({sffCount})
           </button>
         </div>
@@ -242,10 +235,9 @@ export default function ProductsWithNoDesc() {
                           target="_blank"
                           rel="noopener noreferrer"
                           href={`https://store-${
-                            view === "sff" ? "q6y5gcujza" : "et4qthkygq"
-                          }.mybigcommerce.com/manage/products/edit/${
-                            product.product_id
-                          }`}>
+                            view === 'sff' ? 'q6y5gcujza' : 'et4qthkygq'
+                          }.mybigcommerce.com/manage/products/edit/${product.product_id}`}
+                        >
                           {product.name}
                         </a>
                       </span>
@@ -261,32 +253,29 @@ export default function ProductsWithNoDesc() {
                 })}
               </div>
             ) : (
-              <TableContainer tableFor={"productsList"}>
-                <TableHeader className={"pl-2 py-2"}>
+              <TableContainer tableFor={'productsList'}>
+                <TableHeader className={'pl-2 py-2'}>
                   <TableHeadCell>Product Name</TableHeadCell>
                   <TableHeadCell>Categories</TableHeadCell>
                   <TableHeadCell>Status</TableHeadCell>
                 </TableHeader>
                 <TableBody>
                   {paginatedProducts.map((product) => (
-                    <TableRow className={"last:border-b"} key={product.id}>
-                      <TableCell className={"py-4"}>
+                    <TableRow className={'last:border-b'} key={product.id}>
+                      <TableCell className={'py-4'}>
                         <a
                           className="hover:text-secondary underline"
                           target="_blank"
                           rel="noopener noreferrer"
                           href={`https://store-${
-                            view === "sff" ? "q6y5gcujza" : "et4qthkygq"
-                          }.mybigcommerce.com/manage/products/edit/${
-                            product.product_id
-                          }`}>
+                            view === 'sff' ? 'q6y5gcujza' : 'et4qthkygq'
+                          }.mybigcommerce.com/manage/products/edit/${product.product_id}`}
+                        >
                           {product.name}
                         </a>
                       </TableCell>
-                      <TableCell>
-                        {(product.categories || []).join(", ")}
-                      </TableCell>
-                      <TableCell className={"pr-4"}>
+                      <TableCell>{(product.categories || []).join(', ')}</TableCell>
+                      <TableCell className={'pr-4'}>
                         {product.description ? (
                           <span className="bg-secondary/30 w-full p-2 rounded-md">
                             No Heading Tags
@@ -304,12 +293,13 @@ export default function ProductsWithNoDesc() {
             )}
             <Pagination
               props={{
-                items: filteredProducts,
+                itemsCount: filteredProducts.length,
                 rowsPerPage: rowsPerPage,
                 page: page,
                 setPage: setPage,
                 setRowsPerPage: setRowsPerPage,
-              }}>
+              }}
+            >
               <PaginationTrigger />
               <PaginationControls />
               <PaginationSheet sheetPosition="bottom">

@@ -125,3 +125,61 @@ export const filterDropshipOrders = (orders) => {
     return items.some((item) => item.is_dropship);
   });
 };
+
+export const calculateOrderAges = (orders = []) => {
+  const now = Date.now();
+  return orders.map((order) => {
+    const createdAt = new Date(order.created_at);
+    const diffInMs = now - createdAt;
+    const diffInMinutes = Math.floor(diffInMs / 60000);
+    const diffInHours = Math.floor(diffInMs / 3600000);
+    const diffInDays = Math.floor(diffInMs / 86400000);
+
+    let ageLabel = '';
+    if (diffInMinutes < 60) ageLabel = `${diffInMinutes} min`;
+    else if (diffInHours < 24) ageLabel = `${diffInHours} hr`;
+    else ageLabel = `${diffInDays} day${diffInDays > 1 ? 's' : ''}`;
+
+    return { ...order, age: ageLabel };
+  });
+};
+
+// utils/tableUtils.js
+export const parseAgeToMinutes = (ageStr) => {
+  if (!ageStr) return Infinity;
+  const [value, unit] = ageStr.split(' ');
+  const num = parseInt(value, 10);
+  if (isNaN(num)) return Infinity;
+
+  switch (unit) {
+    case 'min':
+      return num;
+    case 'hr':
+      return num * 60;
+    case 'day':
+    case 'days':
+      return num * 1440;
+    default:
+      return Infinity;
+  }
+};
+
+export function sortOrders(orders, sort) {
+  if (!Array.isArray(orders)) return [];
+
+  return [...orders].sort((a, b) => {
+    const valA = a[sort.sort_by] ?? '';
+    const valB = b[sort.sort_by] ?? '';
+
+    if (sort.sort_by === 'age') {
+      const ageA = parseAgeToMinutes(valA);
+      const ageB = parseAgeToMinutes(valB);
+      return sort.order === 'asc' ? ageA - ageB : ageB - ageA;
+    }
+
+    if (valA === null) return 1;
+    if (valB === null) return -1;
+
+    return sort.order === 'asc' ? (valA > valB ? 1 : -1) : valA < valB ? 1 : -1;
+  });
+}

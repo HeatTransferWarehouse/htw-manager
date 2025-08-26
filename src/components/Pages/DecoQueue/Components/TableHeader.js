@@ -1,18 +1,18 @@
-import React, { useState } from "react";
-import { useQueueActions } from "../Functions/queue-actions";
-import { FaCheck } from "react-icons/fa";
-import { PiPlayBold } from "react-icons/pi";
-import { MdOutlineChecklistRtl } from "react-icons/md";
-import { CgTrash } from "react-icons/cg";
-import { BiReset } from "react-icons/bi";
-import { twMerge } from "tailwind-merge";
+import React, { useState } from 'react';
+import { useQueueActions } from '../Functions/queue-actions';
+import { FaCheck } from 'react-icons/fa';
+import { PiPlayBold } from 'react-icons/pi';
+import { MdOutlineChecklistRtl } from 'react-icons/md';
+import { CgTrash } from 'react-icons/cg';
+import { BiReset } from 'react-icons/bi';
+import { twMerge } from 'tailwind-merge';
 import {
   Pagination,
   PaginationOption,
   PaginationTrigger,
   PaginationControls,
   PaginationSheet,
-} from "../../../ui/pagination";
+} from '../../../ui/pagination';
 
 export function TableHeaderContainer({ props }) {
   const [allSelected, setAllSelected] = useState(false);
@@ -35,19 +35,14 @@ export function TableHeaderContainer({ props }) {
 
     // Determine if all items on the current page are selected
     const allSelected =
-      pageItems.length > 0 &&
-      pageItems.every((id) => props.checkedIds.includes(id));
+      pageItems.length > 0 && pageItems.every((id) => props.checkedIds.includes(id));
 
     if (allSelected) {
       // Deselect all items on the current page
-      props.setCheckedIds((prevIds) =>
-        prevIds.filter((id) => !pageItems.includes(id))
-      );
+      props.setCheckedIds((prevIds) => prevIds.filter((id) => !pageItems.includes(id)));
     } else {
       // Select all items on the current page
-      props.setCheckedIds((prevIds) => [
-        ...new Set([...prevIds, ...pageItems]),
-      ]);
+      props.setCheckedIds((prevIds) => [...new Set([...prevIds, ...pageItems])]);
     }
   };
 
@@ -61,32 +56,32 @@ export function TableHeaderContainer({ props }) {
     // Get items for the current page
     pageItems = props.items.slice(startIndex, endIndex).map((item) => item.id);
 
-    return (
-      pageItems.length > 0 &&
-      pageItems.every((id) => props.checkedIds.includes(id))
-    );
+    return pageItems.length > 0 && pageItems.every((id) => props.checkedIds.includes(id));
   };
 
   return (
     <div
       className={twMerge(
-        "flex justify-between items-center py-2 border-t border-b border-solid border-gray-200"
-      )}>
+        'flex justify-between items-center py-2 border-t border-b border-solid border-gray-200'
+      )}
+    >
       <div
         style={{
-          width: props.isMobile ? "100%" : "fit-content",
+          width: props.isMobile ? '100%' : 'fit-content',
         }}
-        className="flex items-start md:items-center max-md:flex-col overflow-hidden">
+        className="flex items-start md:items-center max-md:flex-col overflow-hidden"
+      >
         <div
           className="flex items-center justify-between pl-2 pr-4"
           style={{
-            width: props.isMobile ? "100%" : "fit-content",
-          }}>
+            width: props.isMobile ? '100%' : 'fit-content',
+          }}
+        >
           <div className="flex items-center gap-2">
             <span className="checkbox-container">
               <input
                 style={{
-                  margin: "0px",
+                  margin: '0px',
                 }}
                 className="checkbox-input w-"
                 type="checkbox"
@@ -106,7 +101,7 @@ export function TableHeaderContainer({ props }) {
               </>
             ) : (
               <>
-                {" "}
+                {' '}
                 <p>{props.items.length} Items</p>
               </>
             )}
@@ -117,13 +112,14 @@ export function TableHeaderContainer({ props }) {
               e.preventDefault();
               e.stopPropagation();
               props.setFiltersActive(true);
-            }}>
+            }}
+          >
             Filter
           </button>
         </div>
         {allSelected ||
           (props.checkedIds.length > 0 &&
-            (props.view === "new" ? (
+            (props.view === 'new' ? (
               <div className="flex items-center px-4 pt-2 max-md:pb-2 justify-start gap-2 max-w-full md:grow overflow-x-auto">
                 <button
                   className="w-fit flex items-center gap-2 whitespace-nowrap border border-solid text-green-600 hover:bg-green-600/10 border-green-600 rounded-md p-2"
@@ -131,7 +127,8 @@ export function TableHeaderContainer({ props }) {
                     startQueueItem(e, props.checkedIds);
                     setAllSelected(false);
                     props.setCheckedIds([]);
-                  }}>
+                  }}
+                >
                   Start
                   <PiPlayBold className="w-4 fill-green-600 h-4" />
                 </button>
@@ -141,7 +138,8 @@ export function TableHeaderContainer({ props }) {
                     completeQueueItem(e, props.checkedIds);
                     setAllSelected(false);
                     props.setCheckedIds([]);
-                  }}>
+                  }}
+                >
                   Complete
                   <MdOutlineChecklistRtl className="fill-secondary w-6 h-6" />
                 </button>
@@ -151,12 +149,13 @@ export function TableHeaderContainer({ props }) {
                     e.stopPropagation();
                     e.preventDefault();
                     props.setDeleteModalActive(true);
-                  }}>
+                  }}
+                >
                   Delete
                   <CgTrash className="w-5 h-5 fill-red-600" />
                 </button>
               </div>
-            ) : props.view === "progress" ? (
+            ) : props.view === 'progress' ? (
               <div className="flex items-center px-4 pt-2 max-md:pb-2 justify-start gap-2 max-w-full md:grow overflow-x-auto">
                 <button
                   className="w-fit min-w-fit flex items-center justify-center gap-2 snap-start whitespace-nowrap border border-solid text-secondary hover:bg-secondary/10 border-secondary rounded-md p-2"
@@ -164,7 +163,8 @@ export function TableHeaderContainer({ props }) {
                     completeQueueItem(e, props.checkedIds);
                     setAllSelected(false);
                     props.setCheckedIds([]);
-                  }}>
+                  }}
+                >
                   Complete
                   <MdOutlineChecklistRtl className="fill-secondary w-6 h-6" />
                 </button>
@@ -174,7 +174,8 @@ export function TableHeaderContainer({ props }) {
                     sendBackProgressQueueItem(e, props.checkedIds);
                     setAllSelected(false);
                     props.setCheckedIds([]);
-                  }}>
+                  }}
+                >
                   Send to New
                   <BiReset className="w-6 h-6 fill-secondary" />
                 </button>
@@ -184,7 +185,8 @@ export function TableHeaderContainer({ props }) {
                     e.stopPropagation();
                     e.preventDefault();
                     props.setDeleteModalActive(true);
-                  }}>
+                  }}
+                >
                   Delete
                   <CgTrash className="w-5 h-5 fill-red-600" />
                 </button>
@@ -197,7 +199,8 @@ export function TableHeaderContainer({ props }) {
                     sendBackCompletedQueueItem(e, props.checkedIds);
                     setAllSelected(false);
                     props.setCheckedIds([]);
-                  }}>
+                  }}
+                >
                   Send to Progress
                   <BiReset className="w-6 h-6 fill-secondary" />
                 </button>
@@ -207,7 +210,8 @@ export function TableHeaderContainer({ props }) {
                     sendBackProgressQueueItem(e, props.checkedIds);
                     setAllSelected(false);
                     props.setCheckedIds([]);
-                  }}>
+                  }}
+                >
                   Send to New
                   <BiReset className="w-6 h-6 fill-secondary" />
                 </button>
@@ -217,7 +221,8 @@ export function TableHeaderContainer({ props }) {
                     e.stopPropagation();
                     e.preventDefault();
                     props.setDeleteModalActive(true);
-                  }}>
+                  }}
+                >
                   Delete
                   <CgTrash className="w-5 h-5 fill-red-600" />
                 </button>
@@ -227,15 +232,16 @@ export function TableHeaderContainer({ props }) {
       {!props.isMobile && (
         <Pagination
           props={{
-            items: props.items,
+            itemsCount: props.items.length,
             rowsPerPage: props.rowsPerPage,
             page: props.page,
             setPage: props.setPage,
             setRowsPerPage: props.setRowsPerPage,
-          }}>
+          }}
+        >
           <PaginationTrigger />
           <PaginationControls />
-          <PaginationSheet sheetPosition={"top"}>
+          <PaginationSheet sheetPosition={'top'}>
             <PaginationOption value={10}>10</PaginationOption>
             <PaginationOption value={25}>25</PaginationOption>
             <PaginationOption value={50}>50</PaginationOption>

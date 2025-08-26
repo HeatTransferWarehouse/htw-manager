@@ -188,7 +188,7 @@ export function TableComponent({ props }) {
       </TableContainer>
       <Pagination
         props={{
-          items: filteredItems,
+          itemsCount: filteredItems.length,
           rowsPerPage,
           setRowsPerPage,
           page,

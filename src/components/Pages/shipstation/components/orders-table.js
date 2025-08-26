@@ -18,8 +18,7 @@ import {
   DropDownItem,
   DropDownTrigger,
 } from '../../../ui/dropdown';
-import { ageToMinutes, formatMoney, getAgeColor, toTitleCase } from '../utils/utils';
-import { FaSyncAlt } from 'react-icons/fa';
+import { ageToMinutes, formatMoney, getAgeColor } from '../utils/utils';
 import {
   Pagination,
   PaginationControls,
@@ -30,13 +29,7 @@ import {
 import ReactDOM from 'react-dom';
 import DeleteModal from '../modals/modals';
 import PicklistHeader from './table-header';
-
-const detectOS = () => {
-  const platform = window.navigator.platform.toLowerCase();
-  return platform.includes('mac') ? 'mac' : 'pc';
-};
-
-const os = detectOS();
+import useOrdersData from '../hooks/useOrdersData';
 
 function OrdersTable({
   ordersData,
@@ -49,70 +42,19 @@ function OrdersTable({
   setView,
   syncing,
   orderTagsList,
+  setRowsPerPage,
+  setPage,
+  page,
+  rowsPerPage,
+  ordersCount,
 }) {
   const dispatch = useDispatch();
-  const [rowsPerPage, setRowsPerPage] = useState(50);
-  const [page, setPage] = useState(0);
+
   const [sort, setSort] = useState({ sort_by: 'order_id', order: 'desc' });
   const [searchTerm, setSearchTerm] = useState('');
   const [deleteModalActive, setDeleteModalActive] = useState(false);
 
-  const sortedOrders = useMemo(() => {
-    if (!Array.isArray(ordersData)) return [];
-
-    const parseAgeToMinutes = (ageStr) => {
-      if (!ageStr) return Infinity;
-
-      const [value, unit] = ageStr.split(' ');
-      const num = parseInt(value, 10);
-      if (isNaN(num)) return Infinity;
-
-      switch (unit) {
-        case 'min':
-          return num;
-        case 'hr':
-          return num * 60;
-        case 'day':
-        case 'days':
-          return num * 1440;
-        default:
-          return Infinity;
-      }
-    };
-
-    const sorted = [...ordersData].sort((a, b) => {
-      const valA = a[sort.sort_by] ?? '';
-      const valB = b[sort.sort_by] ?? '';
-
-      if (sort.sort_by === 'age') {
-        const ageA = parseAgeToMinutes(valA);
-        const ageB = parseAgeToMinutes(valB);
-        return sort.order === 'asc' ? ageA - ageB : ageB - ageA;
-      }
-
-      // fallback for other fields
-      if (valA === null) return 1;
-      if (valB === null) return -1;
-      return sort.order === 'asc' ? (valA > valB ? 1 : -1) : valA < valB ? 1 : -1;
-    });
-
-    if (view === 'printed') return sorted.filter((o) => o.is_printed);
-    if (view === 'not-printed') return sorted.filter((o) => !o.is_printed);
-    if (view === 'dropship')
-      return sorted.filter((o) => o.line_items.some((item) => item.is_dropship));
-    return sorted;
-  }, [ordersData, sort, view]);
-
-  const filteredData = useMemo(() => {
-    const q = searchTerm.toLowerCase().trim();
-    return sortedOrders.filter((order) => {
-      const matchOrderId = order.order_id?.toString().includes(q);
-      const matchLineItems = order.line_items?.some(
-        (item) => item.sku?.toLowerCase().includes(q) || item.name?.toLowerCase().includes(q)
-      );
-      return matchOrderId || matchLineItems;
-    });
-  }, [sortedOrders, searchTerm]);
+  const filteredData = useOrdersData(ordersData, sort, view, searchTerm);
 
   const handleSort = (sort_by) => {
     const newOrder = sort.sort_by === sort_by && sort.order === 'asc' ? 'desc' : 'asc';
@@ -174,6 +116,7 @@ function OrdersTable({
           page={page}
           setPage={setPage}
           orderTagsList={orderTagsList}
+          orderCount={ordersCount}
         />
         <TableContainer tableFor={'orders'}>
           <TableHeader className={'bg-gray-200 border-y border-gray-400'}>
@@ -217,235 +160,228 @@ function OrdersTable({
           </TableHeader>
           <TableBody>
             {filteredData.length > 0 &&
-              filteredData
-                .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-                .map((order, index) => {
-                  return (
-                    <TableRow
-                      className={order.is_printed && 'bg-green-600/10'}
-                      key={index}
-                      isMobile={false}
-                    >
-                      <TableCell
-                        minWidth={'4rem'}
-                        className={'flex p-2 items-center gap-1 mb-auto'}
-                      >
-                        <button
-                          className={twMerge(
-                            order.line_items.length <= 1 && 'opacity-0 pointer-events-none'
-                          )}
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            if (expandedOrderIDs.includes(order.order_id)) {
-                              setExpandedOrderIDs((prev) =>
-                                prev.filter((id) => id !== order.order_id)
-                              );
-                            } else {
-                              setExpandedOrderIDs((prev) => [...prev, order.order_id]);
-                            }
-                          }}
-                        >
-                          {expandedOrderIDs.includes(order.order_id) ? (
-                            <FaChevronRight className="w-4 h-4 rotate-90" />
-                          ) : (
-                            <FaChevronRight className="w-4 h-4 " />
-                          )}
-                        </button>
-                        <button
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            if (activeOrders.some((o) => o.order_id === order.order_id)) {
-                              setActiveOrders((prev) =>
-                                prev.filter((o) => o.order_id !== order.order_id)
-                              );
-                            } else {
-                              setActiveOrders((prev) => [...prev, order]);
-                            }
-                          }}
-                          className={twMerge(
-                            'w-5 h-5 rounded border  flex items-center justify-center',
-                            activeOrders.some((o) => o.order_id === order.order_id)
-                              ? 'bg-secondary border-secondary'
-                              : 'border-black bg-white'
-                          )}
-                        >
-                          {activeOrders.some((o) => o.order_id === order.order_id) && (
-                            <FaCheck className="w-3 h-3 text-white" />
-                          )}
-                        </button>
-                      </TableCell>
-                      <TableCell className={'mb-auto p-2'} minWidth={'6rem'}>
-                        {order.order_id}
-                      </TableCell>
-                      <TableCell className={'mb-auto p-2'} minWidth={'6rem'}>
-                        {new Date(order.created_at).toLocaleDateString('en-US')}
-                      </TableCell>
-                      <TableCell
-                        className="mb-auto p-2 font-thin"
-                        minWidth={'5rem'}
-                        style={{
-                          color: getAgeColor(ageToMinutes(order.age)),
+              filteredData.map((order, index) => {
+                return (
+                  <TableRow
+                    className={order.is_printed && 'bg-green-600/10'}
+                    key={index}
+                    isMobile={false}
+                  >
+                    <TableCell minWidth={'4rem'} className={'flex p-2 items-center gap-1 mb-auto'}>
+                      <button
+                        className={twMerge(
+                          order.line_items.length <= 1 && 'opacity-0 pointer-events-none'
+                        )}
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          if (expandedOrderIDs.includes(order.order_id)) {
+                            setExpandedOrderIDs((prev) =>
+                              prev.filter((id) => id !== order.order_id)
+                            );
+                          } else {
+                            setExpandedOrderIDs((prev) => [...prev, order.order_id]);
+                          }
                         }}
                       >
-                        {order.age}
-                      </TableCell>
-
-                      <TableCell className={'mb-auto p-2'} minWidth={'10rem'}>
-                        {order.status}
-                      </TableCell>
-                      <TableCell
-                        className={twMerge(
-                          'truncate overflow-hidden p-2 mb-auto whitespace-nowrap w-full',
-                          expandedOrderIDs.includes(order.order_id) &&
-                            'flex flex-col gap-2 items-start'
+                        {expandedOrderIDs.includes(order.order_id) ? (
+                          <FaChevronRight className="w-4 h-4 rotate-90" />
+                        ) : (
+                          <FaChevronRight className="w-4 h-4 " />
                         )}
-                        minWidth={'10rem'}
+                      </button>
+                      <button
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          if (activeOrders.some((o) => o.order_id === order.order_id)) {
+                            setActiveOrders((prev) =>
+                              prev.filter((o) => o.order_id !== order.order_id)
+                            );
+                          } else {
+                            setActiveOrders((prev) => [...prev, order]);
+                          }
+                        }}
+                        className={twMerge(
+                          'w-5 h-5 rounded border  flex items-center justify-center',
+                          activeOrders.some((o) => o.order_id === order.order_id)
+                            ? 'bg-secondary border-secondary'
+                            : 'border-black bg-white'
+                        )}
                       >
-                        {!expandedOrderIDs.includes(order.order_id) ? (
-                          order.line_items.length > 1 ? (
-                            <span className="flex items-center w-full justify-between">
-                              ({order.line_items.length} Items)
-                              <span className="flex items-center gap-1">
-                                {order.line_items.map((item, index) => {
-                                  if (item.is_dropship) {
-                                    return (
-                                      <span
-                                        className="bg-yellow-400 rounded-md h-6 w-[6px]"
-                                        key={item.id}
-                                      />
-                                    );
-                                  }
-                                  if (item.is_clothing) {
-                                    return (
-                                      <span
-                                        className="bg-blue-700 rounded-md h-6 w-[6px]"
-                                        key={item.id}
-                                      />
-                                    );
-                                  }
-                                })}
+                        {activeOrders.some((o) => o.order_id === order.order_id) && (
+                          <FaCheck className="w-3 h-3 text-white" />
+                        )}
+                      </button>
+                    </TableCell>
+                    <TableCell className={'mb-auto p-2'} minWidth={'6rem'}>
+                      {order.order_id}
+                    </TableCell>
+                    <TableCell className={'mb-auto p-2'} minWidth={'6rem'}>
+                      {new Date(order.created_at).toLocaleDateString('en-US')}
+                    </TableCell>
+                    <TableCell
+                      className="mb-auto p-2 font-thin"
+                      minWidth={'5rem'}
+                      style={{
+                        color: getAgeColor(ageToMinutes(order.age)),
+                      }}
+                    >
+                      {order.age}
+                    </TableCell>
+
+                    <TableCell className={'mb-auto p-2'} minWidth={'10rem'}>
+                      {order.status}
+                    </TableCell>
+                    <TableCell
+                      className={twMerge(
+                        'truncate overflow-hidden p-2 mb-auto whitespace-nowrap w-full',
+                        expandedOrderIDs.includes(order.order_id) &&
+                          'flex flex-col gap-2 items-start'
+                      )}
+                      minWidth={'10rem'}
+                    >
+                      {!expandedOrderIDs.includes(order.order_id) ? (
+                        order.line_items.length > 1 ? (
+                          <span className="flex items-center w-full justify-between">
+                            ({order.line_items.length} Items)
+                            <span className="flex items-center gap-1">
+                              {order.line_items.map((item, index) => {
+                                if (item.is_dropship) {
+                                  return (
+                                    <span
+                                      className="bg-yellow-400 rounded-md h-6 w-[6px]"
+                                      key={item.id}
+                                    />
+                                  );
+                                }
+                                if (item.is_clothing) {
+                                  return (
+                                    <span
+                                      className="bg-blue-700 rounded-md h-6 w-[6px]"
+                                      key={item.id}
+                                    />
+                                  );
+                                }
+                              })}
+                            </span>
+                          </span>
+                        ) : (
+                          <span className="truncate  flex items-center w-full justify-between">
+                            <span className="w-full truncate">{order.line_items[0].sku}</span>
+                            {order.line_items[0].is_dropship ? (
+                              <span className="bg-yellow-400 rounded-md h-6 w-[6px]" />
+                            ) : order.line_items[0].is_clothing ? (
+                              <span className="bg-blue-700 rounded-md h-6 w-[6px]" />
+                            ) : (
+                              ''
+                            )}
+                          </span>
+                        )
+                      ) : (
+                        order.line_items.map((product, idx) => (
+                          <div
+                            className=" flex items-center gap-1 justify-between w-full"
+                            key={idx}
+                          >
+                            <span className="truncate w-full">{product.sku}</span>
+                            {product.is_dropship ? (
+                              <span
+                                title="Dropship Item"
+                                className="bg-yellow-400 text-black rounded-md h-6 px-1"
+                              >
+                                {product.name.toLowerCase().includes('supacolor') ? 'SC DS' : 'DS'}
                               </span>
-                            </span>
-                          ) : (
-                            <span className="truncate  flex items-center w-full justify-between">
-                              <span className="w-full truncate">{order.line_items[0].sku}</span>
-                              {order.line_items[0].is_dropship ? (
-                                <span className="bg-yellow-400 rounded-md h-6 w-[6px]" />
-                              ) : order.line_items[0].is_clothing ? (
-                                <span className="bg-blue-700 rounded-md h-6 w-[6px]" />
-                              ) : (
-                                ''
-                              )}
-                            </span>
-                          )
+                            ) : product.is_clothing ? (
+                              <span
+                                title="Dropship Item"
+                                className="bg-blue-700 text-white rounded-md h-6 px-1"
+                              >
+                                CL
+                              </span>
+                            ) : (
+                              ''
+                            )}
+                          </div>
+                        ))
+                      )}
+                    </TableCell>
+                    <TableCell
+                      className={twMerge(
+                        'truncate mb-auto p-2 w-full',
+                        expandedOrderIDs.includes(order.order_id) &&
+                          'flex flex-col gap-2 items-start'
+                      )}
+                      minWidth={'10rem'}
+                    >
+                      {!expandedOrderIDs.includes(order.order_id) ? (
+                        order.line_items.length > 1 ? (
+                          `(${order.line_items.length} Items)`
                         ) : (
-                          order.line_items.map((product, idx) => (
-                            <div
-                              className=" flex items-center gap-1 justify-between w-full"
-                              key={idx}
-                            >
-                              <span className="truncate w-full">{product.sku}</span>
-                              {product.is_dropship ? (
-                                <span
-                                  title="Dropship Item"
-                                  className="bg-yellow-400 text-black rounded-md h-6 px-1"
-                                >
-                                  {product.name.toLowerCase().includes('supacolor')
-                                    ? 'SC DS'
-                                    : 'DS'}
-                                </span>
-                              ) : product.is_clothing ? (
-                                <span
-                                  title="Dropship Item"
-                                  className="bg-blue-700 text-white rounded-md h-6 px-1"
-                                >
-                                  CL
-                                </span>
-                              ) : (
-                                ''
-                              )}
-                            </div>
-                          ))
-                        )}
-                      </TableCell>
-                      <TableCell
-                        className={twMerge(
-                          'truncate mb-auto p-2 w-full',
-                          expandedOrderIDs.includes(order.order_id) &&
-                            'flex flex-col gap-2 items-start'
-                        )}
-                        minWidth={'10rem'}
-                      >
-                        {!expandedOrderIDs.includes(order.order_id) ? (
-                          order.line_items.length > 1 ? (
-                            `(${order.line_items.length} Items)`
-                          ) : (
-                            <span className="truncate w-full">{order.line_items[0].name}</span>
-                          )
-                        ) : (
-                          order.line_items.map((product, idx) => (
-                            <div className="truncate w-full" key={idx}>
-                              {product.name}
-                            </div>
-                          ))
-                        )}
-                      </TableCell>
-                      <TableCell className={'mb-auto p-2'} minWidth={'8rem'}>
-                        <span className="truncate w-full">
-                          {order.customer.company
-                            ? order.customer.company
-                            : `${order.customer.first_name} ${order.customer.last_name}`}
-                        </span>
-                      </TableCell>
+                          <span className="truncate w-full">{order.line_items[0].name}</span>
+                        )
+                      ) : (
+                        order.line_items.map((product, idx) => (
+                          <div className="truncate w-full" key={idx}>
+                            {product.name}
+                          </div>
+                        ))
+                      )}
+                    </TableCell>
+                    <TableCell className={'mb-auto p-2'} minWidth={'8rem'}>
+                      <span className="truncate w-full">
+                        {order.customer.company
+                          ? order.customer.company
+                          : `${order.customer.first_name} ${order.customer.last_name}`}
+                      </span>
+                    </TableCell>
 
-                      <TableCell className={' mb-auto p-2'} minWidth={'8rem'}>
-                        <span className="truncate w-full">{order.shipping.shipping_method}</span>
-                      </TableCell>
-                      <TableCell
-                        className={'mb-auto w-full flex flex-col gap-2 items-end text-right p-2'}
-                        minWidth={'4.5rem'}
-                      >
-                        {!expandedOrderIDs.includes(order.order_id)
-                          ? order.total_items
-                          : order.line_items.map((product, idx) => (
-                              <div className="text-right ml-auto" key={idx}>
-                                {product.quantity}
-                              </div>
-                            ))}
-                      </TableCell>
-                      <TableCell className={'mb-auto flex justify-end p-2'} minWidth={'8rem'}>
-                        {formatMoney(order.shipping.cost_inc_tax)}
-                      </TableCell>
-                      <TableCell className={'mb-auto flex justify-end p-2'} minWidth={'7rem'}>
-                        {formatMoney(Number(order.grand_total))}
-                      </TableCell>
-                      <TableCell
-                        className={twMerge(
-                          'mb-auto p-2',
-                          order.is_printed && 'text-green-800 font-medium'
-                        )}
-                        minWidth={'7rem'}
-                      >
-                        {order.printed_time
-                          ? new Date(order.printed_time).toLocaleString('en-US', {
-                              year: 'numeric',
-                              month: '2-digit',
-                              day: '2-digit',
-                              hour: 'numeric',
-                              minute: '2-digit',
-                              hour12: true,
-                            })
-                          : 'N/A'}
-                      </TableCell>
-                    </TableRow>
-                  );
-                })}
+                    <TableCell className={' mb-auto p-2'} minWidth={'8rem'}>
+                      <span className="truncate w-full">{order.shipping.shipping_method}</span>
+                    </TableCell>
+                    <TableCell
+                      className={'mb-auto w-full flex flex-col gap-2 items-end text-right p-2'}
+                      minWidth={'4.5rem'}
+                    >
+                      {!expandedOrderIDs.includes(order.order_id)
+                        ? order.total_items
+                        : order.line_items.map((product, idx) => (
+                            <div className="text-right ml-auto" key={idx}>
+                              {product.quantity}
+                            </div>
+                          ))}
+                    </TableCell>
+                    <TableCell className={'mb-auto flex justify-end p-2'} minWidth={'8rem'}>
+                      {formatMoney(order.shipping.cost_inc_tax)}
+                    </TableCell>
+                    <TableCell className={'mb-auto flex justify-end p-2'} minWidth={'7rem'}>
+                      {formatMoney(Number(order.grand_total))}
+                    </TableCell>
+                    <TableCell
+                      className={twMerge(
+                        'mb-auto p-2',
+                        order.is_printed && 'text-green-800 font-medium'
+                      )}
+                      minWidth={'7rem'}
+                    >
+                      {order.printed_time
+                        ? new Date(order.printed_time).toLocaleString('en-US', {
+                            year: 'numeric',
+                            month: '2-digit',
+                            day: '2-digit',
+                            hour: 'numeric',
+                            minute: '2-digit',
+                            hour12: true,
+                          })
+                        : 'N/A'}
+                    </TableCell>
+                  </TableRow>
+                );
+              })}
           </TableBody>
         </TableContainer>
         <div className="border-t border-gray-300 ">
           <Pagination
             props={{
-              items: filteredData,
+              itemsCount: ordersCount,
               rowsPerPage: rowsPerPage,
               setRowsPerPage: setRowsPerPage,
               page: page,
