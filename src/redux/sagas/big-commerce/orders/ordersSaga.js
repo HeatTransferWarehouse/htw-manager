@@ -46,11 +46,24 @@ function* getOrders(action) {
 }
 
 function* markOrdersPrinted(action) {
+  const page = action.payload?.page || 1; // default page = 1
+  const limit = action.payload?.limit || 100; // default limit = 100
+  const filter = action.payload?.filter || 'all'; // optional filter
+  const search = action.payload?.search || ''; // optional search
+  const orderIds = action.payload?.orderIds || []; // array of order IDs to mark as printed
   try {
     yield axios.put(`/api/big-commerce/orders/mark-printed`, {
-      orderIds: action.payload, // this should be an array of order IDs
+      orderIds: orderIds, // this should be an array of order IDs
     });
-    yield put({ type: 'GET_ORDERS' }); // Refresh orders
+    yield put({
+      type: 'GET_ORDERS',
+      payload: {
+        page,
+        limit,
+        filter,
+        search,
+      },
+    }); // Refresh orders
   } catch (err) {
     console.log('Error in markOrdersPrinted Saga', err);
   }

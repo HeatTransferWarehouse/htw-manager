@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { getLocalPrinters } from '../utils/utils';
 
-export default function usePrinter(printRef, activeOrders, dispatch) {
+export default function usePrinter(printRef, activeOrders, dispatch, limit, view, search, page) {
   const [generatingPDF, setGeneratingPDF] = useState(false);
   const [openPrintModal, setOpenPrintModal] = useState(false);
   const [pdfUrl, setPdfUrl] = useState(null);
@@ -129,7 +129,13 @@ export default function usePrinter(printRef, activeOrders, dispatch) {
       if (response.ok) {
         dispatch({
           type: 'MARK_ORDERS_PRINTED',
-          payload: activeOrders.map((o) => o.order_id),
+          payload: {
+            orderIds: activeOrders.map((o) => o.order_id),
+            limit,
+            filter: view,
+            search,
+            page,
+          },
         });
         setOpenPrintModal(false);
         setSelectedPrinter('');

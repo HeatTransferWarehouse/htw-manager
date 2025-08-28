@@ -48,11 +48,13 @@ function OrdersTable({
   rowsPerPage,
   ordersCount,
   splitOrders,
+  setSearchTerm,
+  searchTerm,
 }) {
   const dispatch = useDispatch();
 
   const [sort, setSort] = useState({ sort_by: 'order_id', order: 'desc' });
-  const [searchTerm, setSearchTerm] = useState('');
+
   const [deleteModalActive, setDeleteModalActive] = useState(false);
 
   const filteredData = useOrdersData(ordersData, sort, view, searchTerm);

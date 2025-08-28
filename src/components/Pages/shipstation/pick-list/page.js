@@ -20,7 +20,7 @@ function ShipstationPickList() {
   const ordersStore = useSelector((state) => state.BC.orders.orders);
   const syncing = useSelector((state) => state.BC.orders.syncing);
   const orderTags = useSelector((state) => state.BC.orders.tags);
-
+  const [searchTerm, setSearchTerm] = useState('');
   const [rowsPerPage, setRowsPerPage] = useState(50);
   const [page, setPage] = useState(0);
   const [orders, setOrders] = useState([]);
@@ -60,7 +60,7 @@ function ShipstationPickList() {
     printOrders,
     sendToPrinter,
     markPrinterAsDefault,
-  } = usePrinter(printRef, activeOrders, dispatch);
+  } = usePrinter(printRef, activeOrders, dispatch, rowsPerPage, view, searchTerm, page + 1);
 
   useEffect(() => {
     const interval = setInterval(() => {
@@ -119,6 +119,8 @@ function ShipstationPickList() {
         page={page}
         setPage={setPage}
         ordersCount={ordersCount}
+        searchTerm={searchTerm}
+        setSearchTerm={setSearchTerm}
       />
 
       {generatingPDF &&
