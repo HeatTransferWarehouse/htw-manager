@@ -221,24 +221,26 @@ const DropDownContent = ({ children, className, style }) => {
     : null;
 };
 
-const DropDownItem = ({ children, className, onClick, active }) => {
+const DropDownItem = forwardRef(({ children, className, onClick, active, ...rest }, ref) => {
   const { closeDropdown } = useContext(DropDownContext);
 
   return (
     <div
+      ref={ref}
       className={twMerge(
         active ? 'bg-secondary/10 text-secondary' : '',
         'p-2 hover:bg-secondary/10 hover:text-secondary cursor-pointer',
         className
       )}
       onClick={(e) => {
-        onClick && onClick(e);
+        if (onClick) onClick(e);
         closeDropdown(); // Explicitly close the dropdown after clicking the item
       }}
+      {...rest}
     >
       {children}
     </div>
   );
-};
+});
 
 export { DropDownContainer, DropDownTrigger, DropDownContent, DropDownItem };

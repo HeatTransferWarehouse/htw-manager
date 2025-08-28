@@ -30,6 +30,25 @@ function ShipstationPickList() {
   const [expandedOrderIDs, setExpandedOrderIDs] = useState([]);
   const [currentTime, setCurrentTime] = useState(Date.now());
 
+  const shipmentsByOrder = orders.reduce((acc, order) => {
+    const { order_id, shipment_number } = order;
+
+    if (!acc[order_id]) {
+      acc[order_id] = new Set();
+    }
+
+    // add shipment_number to that order's set
+    acc[order_id].add(shipment_number || 0);
+
+    return acc;
+  }, {});
+
+  // Convert to array with counts if needed:
+  const splitOrders = Object.entries(shipmentsByOrder).map(([order_id, shipments]) => ({
+    order_id,
+    shipmentCount: shipments.size,
+  }));
+
   const {
     generatingPDF,
     openPrintModal,
@@ -91,6 +110,7 @@ function ShipstationPickList() {
         expandedOrderIDs={expandedOrderIDs}
         setExpandedOrderIDs={setExpandedOrderIDs}
         printOrders={printOrders}
+        splitOrders={splitOrders}
         view={view}
         syncing={syncing}
         orderTagsList={orderTagsList}
@@ -137,7 +157,7 @@ function ShipstationPickList() {
           width: '1px',
         }}
       >
-        <PrintHtml ref={printRef} activeOrders={activeOrders} />
+        <PrintHtml ref={printRef} activeOrders={activeOrders} splitOrders={splitOrders} />
       </div>
     </div>
   );

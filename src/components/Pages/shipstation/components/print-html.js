@@ -9,7 +9,11 @@ import {
   toTitleCase,
 } from '../utils/utils';
 
-const PrintHtml = React.forwardRef(({ activeOrders }, ref) => {
+const PrintHtml = React.forwardRef(({ activeOrders, splitOrders }, ref) => {
+  const getOrderKey = (order) => `${order.order_id}-${order.shipment_number || order.id}`;
+  const splitInfo = (order) =>
+    splitOrders.find((o) => o.order_id === String(order.order_id)) || null;
+
   return (
     <div
       style={{
@@ -24,7 +28,7 @@ const PrintHtml = React.forwardRef(({ activeOrders }, ref) => {
             pageBreakAfter: i < activeOrders.length - 1 ? 'always' : 'auto',
             paddingTop: '40px',
           }}
-          key={order.order_id + 'print'}
+          key={getOrderKey(order) + 'print'}
           className="order-print-page"
         >
           <div
@@ -45,7 +49,7 @@ const PrintHtml = React.forwardRef(({ activeOrders }, ref) => {
               src="https://cdn11.bigcommerce.com/s-et4qthkygq/images/stencil/original/image-manager/heat-transfer-warehouse-logo-2024.png?t=1710348082"
               alt="Heat Transfer Warehouse Logo"
             ></img>
-            <ShipStationBarcode orderId={order.order_id} />
+            <ShipStationBarcode splitInfo={splitInfo(order)} orderInfo={order} />
             <div
               style={{
                 display: 'flex',
@@ -226,7 +230,10 @@ const PrintHtml = React.forwardRef(({ activeOrders }, ref) => {
                 >
                   Order Number:
                 </span>{' '}
-                {order.order_id}
+                {order.order_id}{' '}
+                {splitInfo(order)
+                  ? `(${order.shipment_number} of ${splitInfo(order).shipmentCount})`
+                  : ''}
               </p>
               <p
                 style={{

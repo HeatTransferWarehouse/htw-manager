@@ -905,6 +905,162 @@ router.get('/total-orders', async (req, res) => {
   }
 });
 
+router.post('/split', async (req, res) => {
+  const client = await pool.connect();
+  try {
+    const { orderId, shipments } = req.body;
+
+    // 1. Fetch original order once
+    const foundOrder = await client.query(
+      'SELECT * FROM picklist_orders WHERE order_id = $1 AND shipment_number = 0',
+      [orderId]
+    );
+    if (foundOrder.rows.length === 0) {
+      return res.status(404).json({ success: false, message: 'Order not found' });
+    }
+
+    const originalOrder = foundOrder.rows[0];
+    const lineItems = originalOrder.line_items || []; // JSON array
+    const results = [];
+
+    await client.query('BEGIN');
+
+    for (let i = 0; i < shipments.length; i++) {
+      const shipment = shipments[i];
+      const shipmentItems = lineItems.filter((li) => shipment.items.includes(li.id));
+
+      if (i === 0) {
+        // Update the existing base row for first shipment
+        const updated = await client.query(
+          `
+          UPDATE picklist_orders
+          SET line_items = $1::jsonb,
+              shipment_number = $2
+          WHERE id = $3
+          RETURNING *;
+        `,
+          [JSON.stringify(shipmentItems), shipment.id, originalOrder.id]
+        );
+        results.push(updated.rows[0]);
+      } else {
+        // Insert fresh duplicates for subsequent shipments, but clone from in-memory originalOrder
+        const duplicated = await client.query(
+          `
+          INSERT INTO picklist_orders (
+            order_id, customer, shipping, status, total_items, grand_total,
+            created_at, is_printed, printed_time, line_items, shipment_number
+          )
+          VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10::jsonb,$11)
+          RETURNING *;
+        `,
+          [
+            originalOrder.order_id,
+            originalOrder.customer,
+            originalOrder.shipping,
+            originalOrder.status,
+            originalOrder.total_items,
+            originalOrder.grand_total,
+            originalOrder.created_at,
+            originalOrder.is_printed,
+            originalOrder.printed_time,
+            JSON.stringify(shipmentItems),
+            shipment.id,
+          ]
+        );
+        results.push(duplicated.rows[0]);
+      }
+    }
+
+    await client.query('COMMIT');
+
+    return res.status(200).json({
+      success: true,
+      message: 'Order split successfully',
+      orders: results,
+    });
+  } catch (err) {
+    await client.query('ROLLBACK');
+    console.error('Error splitting order:', err);
+    return res
+      .status(500)
+      .json({ success: false, message: 'Failed to split order', error: err.message });
+  } finally {
+    client.release();
+  }
+});
+
+router.post('/merge', async (req, res) => {
+  const client = await pool.connect();
+  try {
+    const { orderId, shipments } = req.body;
+
+    if (!orderId || !Array.isArray(shipments) || shipments.length < 2) {
+      return res.status(400).json({
+        success: false,
+        message: 'Invalid request. Must supply orderId and at least two shipments.',
+      });
+    }
+
+    // 1. Get all the shipments for this order
+    const { rows: foundShipments } = await client.query(
+      `SELECT * FROM picklist_orders
+       WHERE order_id = $1 AND shipment_number = ANY($2::int[])
+       ORDER BY shipment_number ASC`,
+      [orderId, shipments]
+    );
+
+    if (foundShipments.length < 2) {
+      return res
+        .status(404)
+        .json({ success: false, message: 'Not enough shipments found to merge.' });
+    }
+
+    // 2. Merge line items
+    let mergedLineItems = [];
+    foundShipments.forEach((order) => {
+      const items = Array.isArray(order.line_items)
+        ? order.line_items
+        : JSON.parse(order.line_items || '[]');
+      mergedLineItems = [...mergedLineItems, ...items];
+    });
+
+    // 3. Pick the "primary" shipment (smallest shipment_number)
+    const primary = foundShipments[0];
+    const otherIds = foundShipments.slice(1).map((o) => o.id);
+
+    await client.query('BEGIN');
+
+    // 4. Update the primary shipment with merged line items
+    const { rows: updatedOrder } = await client.query(
+      `UPDATE picklist_orders
+       SET line_items = $1::jsonb,
+           shipment_number = 0
+       WHERE id = $2
+       RETURNING *`,
+      [JSON.stringify(mergedLineItems), primary.id]
+    );
+
+    // 5. Delete the other split shipments
+    if (otherIds.length > 0) {
+      await client.query(`DELETE FROM picklist_orders WHERE id = ANY($1::uuid[])`, [otherIds]);
+    }
+
+    await client.query('COMMIT');
+
+    return res.status(200).json({
+      success: true,
+      message: 'Shipments merged successfully',
+      order: updatedOrder[0],
+    });
+  } catch (err) {
+    await client.query('ROLLBACK');
+    console.error('Error merging orders:', err);
+    return res.status(500).json({ success: false, message: 'Failed to merge orders' });
+  } finally {
+    client.release();
+  }
+});
+
 router.get('/', async (req, res) => {
   try {
     const page = parseInt(req.query.page, 10) || 1;

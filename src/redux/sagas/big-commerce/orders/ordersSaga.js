@@ -1,6 +1,26 @@
 import { put, takeLatest } from 'redux-saga/effects';
 import axios from 'axios';
 
+function* splitOrder(action) {
+  try {
+    const { orderId, shipments, view, page, rowsPerPage } = action.payload;
+    yield axios.post(`/api/big-commerce/orders/split`, { orderId, shipments });
+    yield put({ type: 'GET_ORDERS', payload: { page, filter: view, limit: rowsPerPage } }); // Refresh orders
+  } catch (err) {
+    console.error('Error in splitOrder Saga:', err);
+  }
+}
+
+function* combineOrders(action) {
+  try {
+    const { view, page, rowsPerPage, orderId, shipments } = action.payload;
+    yield axios.post(`/api/big-commerce/orders/merge`, { orderId, shipments });
+    yield put({ type: 'GET_ORDERS', payload: { page, limit: rowsPerPage, filter: view } }); // Refresh orders
+  } catch (err) {
+    console.error('Error in combineOrders Saga:', err);
+  }
+}
+
 function* getOrders(action) {
   try {
     const page = action.payload?.page || 1; // default page = 1
@@ -107,6 +127,8 @@ function* ordersSaga() {
   yield takeLatest('GET_PRINTERS', getLocalPrinters);
   yield takeLatest('DELETE_ORDERS', deleteOrders);
   yield takeLatest('GET_TAGS', getTags);
+  yield takeLatest('SPLIT_ORDER', splitOrder);
+  yield takeLatest('COMBINE_ORDERS', combineOrders);
 }
 
 export default ordersSaga;

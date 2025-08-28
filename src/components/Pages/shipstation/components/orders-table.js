@@ -47,6 +47,7 @@ function OrdersTable({
   page,
   rowsPerPage,
   ordersCount,
+  splitOrders,
 }) {
   const dispatch = useDispatch();
 
@@ -60,6 +61,8 @@ function OrdersTable({
     const newOrder = sort.sort_by === sort_by && sort.order === 'asc' ? 'desc' : 'asc';
     setSort({ sort_by, order: newOrder });
   };
+
+  const getOrderKey = (order) => `${order.order_id}-${order.shipment_number || order.id}`;
 
   const handleSearch = (query) => {
     setSearchTerm(query.toLowerCase());
@@ -105,8 +108,8 @@ function OrdersTable({
         <PicklistHeader
           handleSearch={handleSearch}
           view={view}
-          setView={setView}
           printOrders={printOrders}
+          setActiveOrders={setActiveOrders}
           activeOrders={activeOrders}
           syncing={syncing}
           setDeleteModalActive={setDeleteModalActive}
@@ -121,7 +124,7 @@ function OrdersTable({
         <TableContainer tableFor={'orders'}>
           <TableHeader className={'bg-gray-200 border-y border-gray-400'}>
             <TableHeadCell className={'p-0 text-sm'} minWidth={'4rem'} />
-            <TableHeadCell className={'p-0 text-sm'} minWidth={'6rem'}>
+            <TableHeadCell className={'p-0 text-sm'} minWidth={'9rem'}>
               {renderSortButton('order_id', 'Order #')}
             </TableHeadCell>
             <TableHeadCell className={'p-0 text-sm border-l border-gray-400'} minWidth={'7rem'}>
@@ -161,85 +164,102 @@ function OrdersTable({
           <TableBody>
             {filteredData.length > 0 &&
               filteredData.map((order, index) => {
+                const orderKey = getOrderKey(order);
+
                 return (
                   <TableRow
                     className={order.is_printed && 'bg-green-600/10'}
-                    key={index}
+                    key={orderKey} // use unique key here too
                     isMobile={false}
                   >
-                    <TableCell minWidth={'4rem'} className={'flex p-2 items-center gap-1 mb-auto'}>
+                    <TableCell minWidth={'4rem'} className="flex p-2 items-center gap-1 mb-auto">
+                      {/* Expand button */}
                       <button
                         className={twMerge(
                           order.line_items.length <= 1 && 'opacity-0 pointer-events-none'
                         )}
                         onClick={(e) => {
                           e.stopPropagation();
-                          if (expandedOrderIDs.includes(order.order_id)) {
-                            setExpandedOrderIDs((prev) =>
-                              prev.filter((id) => id !== order.order_id)
-                            );
+                          if (expandedOrderIDs.includes(orderKey)) {
+                            setExpandedOrderIDs((prev) => prev.filter((id) => id !== orderKey));
                           } else {
-                            setExpandedOrderIDs((prev) => [...prev, order.order_id]);
+                            setExpandedOrderIDs((prev) => [...prev, orderKey]);
                           }
                         }}
                       >
-                        {expandedOrderIDs.includes(order.order_id) ? (
+                        {expandedOrderIDs.includes(orderKey) ? (
                           <FaChevronRight className="w-4 h-4 rotate-90" />
                         ) : (
                           <FaChevronRight className="w-4 h-4 " />
                         )}
                       </button>
+
+                      {/* Select checkbox */}
                       <button
                         onClick={(e) => {
                           e.stopPropagation();
-                          if (activeOrders.some((o) => o.order_id === order.order_id)) {
+                          if (activeOrders.some((o) => getOrderKey(o) === orderKey)) {
                             setActiveOrders((prev) =>
-                              prev.filter((o) => o.order_id !== order.order_id)
+                              prev.filter((o) => getOrderKey(o) !== orderKey)
                             );
                           } else {
                             setActiveOrders((prev) => [...prev, order]);
                           }
                         }}
                         className={twMerge(
-                          'w-5 h-5 rounded border  flex items-center justify-center',
-                          activeOrders.some((o) => o.order_id === order.order_id)
+                          'w-5 h-5 rounded border flex items-center justify-center',
+                          activeOrders.some((o) => getOrderKey(o) === orderKey)
                             ? 'bg-secondary border-secondary'
                             : 'border-black bg-white'
                         )}
                       >
-                        {activeOrders.some((o) => o.order_id === order.order_id) && (
+                        {activeOrders.some((o) => getOrderKey(o) === orderKey) && (
                           <FaCheck className="w-3 h-3 text-white" />
                         )}
                       </button>
                     </TableCell>
-                    <TableCell className={'mb-auto p-2'} minWidth={'6rem'}>
-                      {order.order_id}
+
+                    <TableCell className="mb-auto p-2" minWidth="9rem">
+                      <a
+                        className="text-secondary"
+                        href={`https://store-et4qthkygq.mybigcommerce.com/manage/orders/${order.order_id}`}
+                      >
+                        {order.order_id}
+                      </a>
+                      {splitOrders.find((o) => o.order_id === String(order.order_id))
+                        ?.shipmentCount > 1 && (
+                        <span className="ml-1 text-sm text-gray-600">
+                          ({order.shipment_number} of{' '}
+                          {
+                            splitOrders.find((o) => o.order_id === String(order.order_id))
+                              ?.shipmentCount
+                          }
+                          )
+                        </span>
+                      )}
                     </TableCell>
-                    <TableCell className={'mb-auto p-2'} minWidth={'6rem'}>
+                    <TableCell className="mb-auto p-2" minWidth="6rem">
                       {new Date(order.created_at).toLocaleDateString('en-US')}
                     </TableCell>
                     <TableCell
                       className="mb-auto p-2 font-thin"
-                      minWidth={'5rem'}
-                      style={{
-                        color: getAgeColor(ageToMinutes(order.age)),
-                      }}
+                      minWidth="5rem"
+                      style={{ color: getAgeColor(ageToMinutes(order.age)) }}
                     >
                       {order.age}
                     </TableCell>
 
-                    <TableCell className={'mb-auto p-2'} minWidth={'10rem'}>
+                    <TableCell className="mb-auto p-2" minWidth="10rem">
                       {order.status}
                     </TableCell>
                     <TableCell
                       className={twMerge(
                         'truncate overflow-hidden p-2 mb-auto whitespace-nowrap w-full',
-                        expandedOrderIDs.includes(order.order_id) &&
-                          'flex flex-col gap-2 items-start'
+                        expandedOrderIDs.includes(orderKey) && 'flex flex-col gap-2 items-start'
                       )}
-                      minWidth={'10rem'}
+                      minWidth="10rem"
                     >
-                      {!expandedOrderIDs.includes(order.order_id) ? (
+                      {!expandedOrderIDs.includes(orderKey) ? (
                         order.line_items.length > 1 ? (
                           <span className="flex items-center w-full justify-between">
                             ({order.line_items.length} Items)
@@ -265,7 +285,7 @@ function OrdersTable({
                             </span>
                           </span>
                         ) : (
-                          <span className="truncate  flex items-center w-full justify-between">
+                          <span className="truncate flex items-center w-full justify-between">
                             <span className="w-full truncate">{order.line_items[0].sku}</span>
                             {order.line_items[0].is_dropship ? (
                               <span className="bg-yellow-400 rounded-md h-6 w-[6px]" />
@@ -278,10 +298,7 @@ function OrdersTable({
                         )
                       ) : (
                         order.line_items.map((product, idx) => (
-                          <div
-                            className=" flex items-center gap-1 justify-between w-full"
-                            key={idx}
-                          >
+                          <div className="flex items-center gap-1 justify-between w-full" key={idx}>
                             <span className="truncate w-full">{product.sku}</span>
                             {product.is_dropship ? (
                               <span
@@ -292,7 +309,7 @@ function OrdersTable({
                               </span>
                             ) : product.is_clothing ? (
                               <span
-                                title="Dropship Item"
+                                title="Clothing Item"
                                 className="bg-blue-700 text-white rounded-md h-6 px-1"
                               >
                                 CL
@@ -304,15 +321,15 @@ function OrdersTable({
                         ))
                       )}
                     </TableCell>
+
                     <TableCell
                       className={twMerge(
                         'truncate mb-auto p-2 w-full',
-                        expandedOrderIDs.includes(order.order_id) &&
-                          'flex flex-col gap-2 items-start'
+                        expandedOrderIDs.includes(orderKey) && 'flex flex-col gap-2 items-start'
                       )}
-                      minWidth={'10rem'}
+                      minWidth="10rem"
                     >
-                      {!expandedOrderIDs.includes(order.order_id) ? (
+                      {!expandedOrderIDs.includes(orderKey) ? (
                         order.line_items.length > 1 ? (
                           `(${order.line_items.length} Items)`
                         ) : (
@@ -326,6 +343,7 @@ function OrdersTable({
                         ))
                       )}
                     </TableCell>
+
                     <TableCell className={'mb-auto p-2'} minWidth={'8rem'}>
                       <span className="truncate w-full">
                         {order.customer.company
