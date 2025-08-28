@@ -26,7 +26,7 @@ export default function PrintModal({
 
   return ReactDOM.createPortal(
     <div className="fixed top-0 right-0 bg-black/50 w-full h-full z-50 flex items-center justify-center">
-      <div className="bg-white w-[1300px] overflow-hidden rounded shadow-lg">
+      <div className="bg-white h-[calc(100%-2rem)] max-h-[895px] w-auto aspect-[1.45/1] overflow-hidden rounded shadow-lg">
         {/* Header */}
         <div className="p-2 flex items-center justify-between shadow-default bg-gray-200 ">
           <h2 className="text-lg">Print Preview</h2>
@@ -34,13 +34,13 @@ export default function PrintModal({
         </div>
 
         {/* Body */}
-        <div className="grid grid-cols-[800px_1fr]">
+        <div className="grid h-[calc(100%-94px)] grid-cols-[2fr_1fr]">
           {/* PDF Preview */}
           {pdfUrl && (
             <iframe
               src={`${pdfUrl}#zoom=65`}
               width="100%"
-              height="800px"
+              height="100%"
               style={{ border: '1px solid #ccc', display: 'block' }}
               title="Print Preview"
             ></iframe>
