@@ -1,5 +1,4 @@
 require('dotenv').config();
-require('./cron-jobs/product-sync');
 const express = require('express');
 const bodyParser = require('body-parser');
 const app = express();
@@ -65,14 +64,12 @@ app.use(dynamicCors);
 
 // Route includes
 const userRouter = require('./routes/userrouter');
-// const captureRouter = require('./routes/index');
 const sffQueueRouter = require('./routes/sffQueueRouter');
 const supacolorRouter = require('./routes/supacolorOrderRouter');
 const queueRouter = require('./routes/queueRouter');
 const lookupRouter = require('./routes/orderLookUp');
 const clothingQueueRouter = require('./routes/clothingQueue');
 const adminRouter = require('./routes/admin');
-const promoTracker = require('./routes/promo-tracking');
 const htwRouter = require('./routes/htwRequests');
 const htwRoutes = require('./routes/product-issues/htw');
 const sffProductRoutes = require('./routes/product-issues/sff');
@@ -80,13 +77,10 @@ const JDS = require('./routes/JDS/index');
 const google = require('./routes/google-sheets');
 const bigCommerceOrdersAPI = require('./routes/big-commerce/orders/route');
 const bigCommerceTokenRouter = require('./routes/big-commerce/token');
-// const ssActivewear = require('./routes/ssactivewear');
 
 app.use('/api/user', userRouter);
-// app.use('/api/bp-api', captureRouter);
 app.use('/supacolor-api', supacolorRouter);
 app.use('/api/lookup', lookupRouter);
-app.use('/api/promotions', promoTracker);
 app.use('/api/htw', htwRouter);
 app.use('/api/products/htw', htwRoutes);
 app.use('/api/products/sff', sffProductRoutes);
@@ -94,7 +88,6 @@ app.use('/api/jds', JDS);
 app.use('/api/google', google);
 app.use('/api/big-commerce/orders', bigCommerceOrdersAPI);
 app.use('/api/big-commerce/token', bigCommerceTokenRouter);
-// app.use('/api/ssactivewear', ssActivewear);
 
 // Queue Routers
 app.use('/api/sff-queue', sffQueueRouter);

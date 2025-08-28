@@ -9,7 +9,6 @@ import Main from '../Home/Main';
 import Resources from '../Pages/Resources';
 import ProtectedRoute from '../ProtectedRoute/ProtectedRoute';
 import AdminRoute from '../ProtectedRoute/AdminRoute';
-import WallyB from '../Pages/WallyB';
 import Admin from '../Pages/Admin/Admin';
 import Login from '../LoginPage/LoginPage';
 import Supacolor from '../Pages/Supacolor';
@@ -117,13 +116,6 @@ export const routeConfig = [
     element: <Account />,
     protected: true,
     page_title: 'Account',
-  },
-  {
-    path: '/wallyb',
-    name: 'WallyB',
-    element: <WallyB />,
-    protected: 'admin',
-    page_title: 'WallyB',
   },
   {
     path: '/register',

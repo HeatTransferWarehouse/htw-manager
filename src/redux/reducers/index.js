@@ -10,7 +10,6 @@ import loading from './loadingReducer';
 import decoQueueReducer from './decoQueueReducer';
 import clothingReducer from './clothingReducer';
 import admin from './adminReducer';
-import promotionsReducer from './promotionsReducer';
 import productsReducer from './products';
 import jdsReducer from './jdsReducer';
 import BC from './big-commerce/BCReducer';
@@ -33,7 +32,6 @@ const rootReducer = combineReducers({
   decoQueueReducer,
   clothingReducer,
   admin,
-  promotionsReducer,
   productsReducer,
   jdsReducer,
   BC,

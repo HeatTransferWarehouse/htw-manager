@@ -61,6 +61,8 @@ yarn.lock
 .rts2_cache_es/
 .rts2_cache_umd/
 
+build/
+
 # Optional REPL history
 .node_repl_history
 

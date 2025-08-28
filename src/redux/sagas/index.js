@@ -8,7 +8,6 @@ import SffQueueSaga from './sffQueueSaga';
 import DecoQueueSaga from './queueSaga';
 import ClothingSaga from './clothingSaga';
 import AdminSaga from './adminSaga';
-import PromotionsSaga from './promotionsSaga';
 import rootProductsSage from './products';
 import JDSSaga from './jdsSaga';
 import BCSaga from './big-commerce/BCSaga';
@@ -27,7 +26,6 @@ export default function* rootSaga() {
     DecoQueueSaga(),
     ClothingSaga(),
     AdminSaga(),
-    PromotionsSaga(),
     rootProductsSage(),
     JDSSaga(),
     BCSaga(),
