@@ -19,11 +19,11 @@ const ShipStationBarcode = ({ splitInfo, orderInfo }) => {
         width={1.5} // thickness of each bar (default: 2)
         height={30} // height of the barcode (default: 100)
         fontSize={0} // font size for text under barcode
-        margin={5} // margin around the barcode
+        margin={4} // margin around the barcode
       />
-      <p style={{ textAlign: 'center', fontSize: '16px', marginTop: '4px', fontWeight: 600 }}>
+      <p style={{ textAlign: 'center', fontSize: '12pt', margin: 0, fontWeight: 600 }}>
         {orderInfo.order_id}{' '}
-        {splitInfo.shipmentCount > 1
+        {splitInfo && splitInfo.shipmentCount > 1
           ? `(${orderInfo.shipment_number} of ${splitInfo.shipmentCount})`
           : ''}
       </p>
