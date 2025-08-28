@@ -749,11 +749,6 @@ async function processSingleOrder(orderId, attempt = 1) {
     if (!ALLOWED_STATUSES.has(status)) {
       // If status is Incomplete, retry with backoff
       if (status === 'Incomplete' && attempt < MAX_RETRIES) {
-        console.log(
-          `🕒 Order ${orderId} still Incomplete (attempt ${attempt}/${MAX_RETRIES}). Retrying in ${
-            BACKOFF_MS / 1000
-          }s…`
-        );
         setTimeout(() => processSingleOrder(orderId, attempt + 1), BACKOFF_MS);
       } else {
         // If not allowed or max retries reached, skip
@@ -776,8 +771,6 @@ async function processSingleOrder(orderId, attempt = 1) {
 
 // Schedules an order for processing after a delay
 function scheduleOrderProcess(orderId, delayMs = DELAY_MS) {
-  console.log(`⏳ Scheduling order ${orderId} processing in ${delayMs / 1000}s`);
-
   // Clear any existing timer for this order
   const existing = PENDING_TIMERS.get(orderId);
   if (existing) clearTimeout(existing);
@@ -915,7 +908,7 @@ router.post('/status-updated', async (req, res) => {
   try {
     const orderId = req.body?.data?.id;
     if (!orderId) {
-      console.error('No order id provided on webhook payload');
+      console.log('No order id provided on webhook payload');
       return res.status(400).json({ success: false, message: 'No order id' });
     }
     const { new_status_id, previous_status_id } = req.body?.data.status || {};

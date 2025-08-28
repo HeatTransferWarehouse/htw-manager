@@ -231,10 +231,31 @@ const PrintHtml = React.forwardRef(({ activeOrders, splitOrders }, ref) => {
                     {product.quantity}
                   </td>
                   <td style={{ fontSize: '9pt', padding: '6pt 0 6pt 4pt', verticalAlign: 'top' }}>
-                    {product.sku}
+                    <span>{product.sku}</span>
                   </td>
                   <td style={{ fontSize: '9pt', padding: '6pt 0', verticalAlign: 'top' }}>
-                    {product.name}
+                    <span style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
+                      <p style={{ margin: '0', padding: '0' }}>
+                        <span style={{ fontWeight: '600' }}> Name: </span> {product.name}{' '}
+                      </p>
+                      {product.options &&
+                        product.options.length > 0 &&
+                        product.options.map((opt, i) => {
+                          if (shouldExcludeOption(opt.display_name)) {
+                            return null;
+                          }
+                          return (
+                            <p style={{ margin: '0', padding: '0' }} key={i + product.id + 'opt'}>
+                              {' '}
+                              <span style={{ fontWeight: '600' }}>
+                                {' '}
+                                {cleanDisplayName(opt.display_name)}:{' '}
+                              </span>{' '}
+                              {optionCleaner(opt.display_name, opt.display_value)}{' '}
+                            </p>
+                          );
+                        })}
+                    </span>
                   </td>
                   <td
                     style={{

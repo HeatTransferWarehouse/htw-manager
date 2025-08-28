@@ -46,13 +46,6 @@ router.post('/update-item-price', async (req, res) => {
       throw new Error('Invalid origin');
     }
 
-    console.log('Using Store Hash:', hash);
-    console.log('Using API Key:', apiKey);
-
-    console.log('Cart Item ID:', cartItemId);
-    console.log('Cart ID:', cartId);
-    console.log('Item Price:', itemPrice);
-
     // URL for adding the item to the cart
     const updateUrl = `https://api.bigcommerce.com/stores/${hash}/v3/carts/${cartId}/items/${cartItemId}`;
 
