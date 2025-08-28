@@ -4,6 +4,7 @@ import { twMerge } from 'tailwind-merge';
 import { FaSyncAlt } from 'react-icons/fa';
 import { useDispatch } from 'react-redux';
 import { toTitleCase } from '../utils/utils';
+import { createPortal } from 'react-dom';
 import {
   Pagination,
   PaginationControls,
@@ -196,119 +197,125 @@ const ActionsDropdown = ({
 }) => {
   const splitButtonRef = React.useRef(null);
   const mergeButtonRef = React.useRef(null);
-  const [splitToolTipPositions, setSplitToolTipPositions] = React.useState({ top: 0, left: 0 });
-  const [mergeToolTipPositions, setMergeToolTipPositions] = React.useState({ top: 0, left: 0 });
-  const [triggerClicked, setTriggerClicked] = React.useState(false);
 
-  React.useEffect(() => {
-    if (splitButtonRef.current) {
-      setSplitToolTipPositions({
-        top:
-          splitButtonRef.current.getBoundingClientRect().top -
-          splitButtonRef.current.getBoundingClientRect().height * 3 +
-          10,
-        left:
-          splitButtonRef.current.getBoundingClientRect().left +
-          splitButtonRef.current.getBoundingClientRect().width,
-      });
-    }
-    if (mergeButtonRef.current) {
-      setMergeToolTipPositions({
-        top:
-          mergeButtonRef.current.getBoundingClientRect().top -
-          mergeButtonRef.current.getBoundingClientRect().height * 3 +
-          10,
-        left:
-          mergeButtonRef.current.getBoundingClientRect().left +
-          mergeButtonRef.current.getBoundingClientRect().width,
-      });
-    }
-  }, [triggerClicked]);
+  const [tooltip, setTooltip] = React.useState(null);
+
+  const showTooltip = (ref, text) => {
+    if (!ref.current) return;
+    const rect = ref.current.getBoundingClientRect();
+    setTooltip({
+      text,
+      // vertical center of button
+      top: rect.top + rect.height / 2,
+      // right edge of button, plus small gap
+      left: rect.left + rect.width + 8,
+    });
+  };
+
+  const hideTooltip = () => setTooltip(null);
 
   return (
-    <DropDownContainer type="click">
-      <DropDownTrigger
-        onClick={() => setTriggerClicked(true)}
-        className="w-full hover:border-secondary border text-lg border-black justify-between"
-      >
-        Actions
-      </DropDownTrigger>
-      <DropDownContent className="overflow-visible">
-        <DropDownItem
-          ref={splitButtonRef}
-          className={twMerge(
-            'text-base relative border-b group/split border-gray-300 p-2',
-            canSplitOrder
-              ? 'text-black hover:bg-secondary/10'
-              : 'text-gray-500 !bg-transparent hover:text-gray-500 cursor-not-allowed'
-          )}
-        >
-          <button
-            onClick={(e) => {
-              if (canSplitOrder) {
-                setOrderSplitModalActive(true);
+    <>
+      <DropDownContainer type="click">
+        <DropDownTrigger className="w-full hover:border-secondary border text-lg border-black justify-between">
+          Actions
+        </DropDownTrigger>
+        <DropDownContent className="overflow-visible">
+          {/* Split Orders */}
+          <DropDownItem
+            ref={splitButtonRef}
+            className={twMerge(
+              'text-base relative border-b border-gray-300 p-2',
+              canSplitOrder
+                ? 'text-black hover:bg-secondary/10 cursor-pointer'
+                : 'text-gray-500 !bg-transparent hover:text-gray-500 cursor-not-allowed'
+            )}
+            onMouseEnter={() => {
+              if (!canSplitOrder) {
+                showTooltip(
+                  splitButtonRef,
+                  activeOrders.length === 0
+                    ? 'Splitting is disabled when no orders are selected'
+                    : oneOrderActive
+                      ? 'Splitting is only available for orders with multiple items'
+                      : 'Splitting is only available when one order is selected'
+                );
               }
             }}
+            onMouseLeave={hideTooltip}
           >
-            Split Order
-          </button>
-          {!canSplitOrder && (
-            <span
-              style={{ left: splitToolTipPositions.left, top: splitToolTipPositions.top }}
-              className="fixed top-0 opacity-0 group-hover/split:opacity-100 pointer-events-none transition-opacity text-sm text-nowrap p-2 bg-gray-800 shadow-default rounded text-white"
+            <button
+              onClick={() => {
+                if (canSplitOrder) setOrderSplitModalActive(true);
+              }}
             >
-              <TbTriangleFilled className="absolute top-1/2 -translate-y-1/2 -left-2 -rotate-90 text-gray-800" />
-              {activeOrders.length === 0
-                ? 'Splitting is disabled when no orders are selected'
-                : oneOrderActive
-                  ? 'Splitting is only available for orders with multiple items'
-                  : 'Splitting is only available when one order is selected'}
-            </span>
-          )}
-        </DropDownItem>
+              Split Order
+            </button>
+          </DropDownItem>
 
-        <DropDownItem
-          ref={mergeButtonRef}
-          disabled={!canMergeOrders}
-          className={twMerge(
-            'text-base relative text-nowrap group/combine p-2',
-            canMergeOrders
-              ? 'text-black hover:bg-secondary/10'
-              : 'text-gray-500 !bg-transparent hover:text-gray-500 cursor-not-allowed'
-          )}
-          onClick={(e) => {
-            if (canMergeOrders) {
-              // Dispatch merge action
-              dispatch({
-                type: 'COMBINE_ORDERS',
-                payload: {
-                  orderId: activeOrders[0].order_id,
-                  shipments: activeOrders.map((order) => Number(order.shipment_number)),
-                  view: view,
-                  page: page + 1,
-                  rowsPerPage: rowsPerPage,
-                },
-              });
-              // Clear active orders
-              setActiveOrders([]);
-            }
-          }}
-        >
-          Combine Orders
-          {!canMergeOrders && (
-            <span
-              style={{ left: mergeToolTipPositions.left, top: mergeToolTipPositions.top }}
-              className="fixed top-0 opacity-0 group-hover/combine:opacity-100 pointer-events-none transition-opacity text-sm text-nowrap p-2 bg-gray-800 shadow-default rounded text-white"
-            >
-              <TbTriangleFilled className="absolute top-1/2 -translate-y-1/2 -left-2 -rotate-90 text-gray-800" />
-              {activeOrders.length === 0
-                ? 'Combining is disabled when no orders are selected'
-                : 'Combining is only available for orders that were split'}
-            </span>
-          )}
-        </DropDownItem>
-      </DropDownContent>
-    </DropDownContainer>
+          {/* Combine Orders */}
+          <DropDownItem
+            ref={mergeButtonRef}
+            className={twMerge(
+              'text-base relative text-nowrap p-2',
+              canMergeOrders
+                ? 'text-black hover:bg-secondary/10 cursor-pointer'
+                : 'text-gray-500 !bg-transparent hover:text-gray-500 cursor-not-allowed'
+            )}
+            onClick={() => {
+              if (canMergeOrders) {
+                dispatch({
+                  type: 'COMBINE_ORDERS',
+                  payload: {
+                    orderId: activeOrders[0].order_id,
+                    shipments: activeOrders.map((order) => Number(order.shipment_number)),
+                    view,
+                    page: page + 1,
+                    rowsPerPage,
+                  },
+                });
+                setActiveOrders([]);
+              }
+            }}
+            onMouseEnter={() => {
+              if (!canMergeOrders) {
+                showTooltip(
+                  mergeButtonRef,
+                  activeOrders.length === 0
+                    ? 'Combining is disabled when no orders are selected'
+                    : 'Combining is only available for orders that were split'
+                );
+              }
+            }}
+            onMouseLeave={hideTooltip}
+          >
+            Combine Orders
+          </DropDownItem>
+        </DropDownContent>
+      </DropDownContainer>
+
+      {/* Tooltip (portal-like) */}
+      {tooltip &&
+        createPortal(
+          <div
+            style={{
+              position: 'fixed',
+              top: tooltip.top,
+              left: tooltip.left + 2,
+              transform: 'translateY(-50%)',
+              zIndex: 9999,
+            }}
+            className="bg-gray-800 text-white text-sm px-3 py-2 rounded shadow-default whitespace-nowrap"
+          >
+            <TbTriangleFilled
+              className="absolute -rotate-90 left-[-6px] top-1/2 -translate-y-1/2 text-gray-800"
+              size={12}
+            />
+            {tooltip.text}
+          </div>,
+          document.body
+        )}
+    </>
   );
 };
 
