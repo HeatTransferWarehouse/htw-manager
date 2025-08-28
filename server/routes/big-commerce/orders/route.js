@@ -887,8 +887,6 @@ async function syncOrders() {
 }
 
 async function updateOrderStatus(orderId, newStatus) {
-  console.log(`Updating order ${orderId} status to "${newStatus}" in database...`);
-
   try {
     const result = await pool.query(
       `
@@ -931,8 +929,6 @@ router.post('/status-updated', async (req, res) => {
     }
 
     await updateOrderStatus(orderId, newStatus);
-
-    console.log(`Webhook: Order ${orderId} status changed from "${prevStatus}" to "${newStatus}"`);
   } catch (err) {
     console.error('Error handling status-updated webhook:', err);
     return res.status(500).json({ success: false, message: 'Internal server error' });
