@@ -975,7 +975,7 @@ router.post('/split', async (req, res) => {
 
     // 1. Fetch original order once
     const foundOrder = await client.query(
-      'SELECT * FROM picklist_orders WHERE order_id = $1 AND shipment_number = 0',
+      'SELECT * FROM picklist_orders WHERE order_id = $1 AND (shipment_number IS NULL OR shipment_number = 0)',
       [orderId]
     );
     if (foundOrder.rows.length === 0) {
@@ -983,21 +983,49 @@ router.post('/split', async (req, res) => {
     }
 
     const originalOrder = foundOrder.rows[0];
-    const lineItems = originalOrder.line_items || []; // JSON array
-    const results = [];
 
+    // ✅ Ensure JSON is parsed
+    // ✅ Step 1: Normalize line_items into an array
+    let lineItems;
+    try {
+      if (Array.isArray(originalOrder.line_items)) {
+        lineItems = originalOrder.line_items;
+      } else if (typeof originalOrder.line_items === 'string') {
+        lineItems = JSON.parse(originalOrder.line_items);
+      } else if (originalOrder.line_items && typeof originalOrder.line_items === 'object') {
+        // pg may already give parsed JSON if you use json/jsonb column
+        lineItems = originalOrder.line_items;
+      } else {
+        lineItems = [];
+      }
+    } catch (e) {
+      console.error('❌ Failed to parse line_items:', originalOrder.line_items, e);
+      lineItems = [];
+    }
+
+    const results = [];
     await client.query('BEGIN');
 
     for (let i = 0; i < shipments.length; i++) {
       const shipment = shipments[i];
-      const shipmentItems = lineItems.filter((li) => shipment.items.includes(li.id));
+
+      // Normalize both sets of IDs to strings for comparison
+      const shipmentItems = lineItems.filter((li) =>
+        shipment.items.map(String).includes(String(li.id))
+      );
+
+      console.log(`Shipment ${shipment.id} will contain items:`, shipmentItems);
+
+      if (!shipmentItems.length) {
+        console.warn(`⚠️ No matching items found for shipment ${shipment.id}`);
+      }
 
       if (i === 0) {
         // Update the existing base row for first shipment
         const updated = await client.query(
           `
           UPDATE picklist_orders
-          SET line_items = $1::jsonb,
+          SET line_items = $1,
               shipment_number = $2
           WHERE id = $3
           RETURNING *;
@@ -1006,7 +1034,7 @@ router.post('/split', async (req, res) => {
         );
         results.push(updated.rows[0]);
       } else {
-        // Insert fresh duplicates for subsequent shipments, but clone from in-memory originalOrder
+        // Insert fresh duplicates for subsequent shipments
         const duplicated = await client.query(
           `
           INSERT INTO picklist_orders (
