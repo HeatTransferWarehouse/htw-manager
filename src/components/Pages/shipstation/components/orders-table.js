@@ -65,7 +65,16 @@ function OrdersTable({
   const getOrderKey = (order) => `${order.order_id}-${order.shipment_number || order.id}`;
 
   const handleSearch = (query) => {
-    setSearchTerm(query.toLowerCase());
+    const term = query.trim().toLowerCase().replace(/\s+/g, ' ');
+    setSearchTerm(term);
+
+    // reset to first page whenever a new search happens
+    setPage(0);
+
+    dispatch({
+      type: 'GET_ORDERS',
+      payload: { page: 1, limit: rowsPerPage, filter: view, search: term },
+    });
   };
 
   const deleteOrders = () => {
@@ -238,7 +247,7 @@ function OrdersTable({
                         </span>
                       )}
                     </TableCell>
-                    <TableCell className="mb-auto p-2" minWidth="6rem">
+                    <TableCell className="mb-auto p-2" minWidth="7rem">
                       {new Date(order.created_at).toLocaleDateString('en-US')}
                     </TableCell>
                     <TableCell

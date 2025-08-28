@@ -26,10 +26,11 @@ function* getOrders(action) {
     const page = action.payload?.page || 1; // default page = 1
     const limit = action.payload?.limit || 100; // default limit = 100
     const filter = action.payload?.filter || 'all'; // optional filter
+    const search = action.payload?.search || ''; // optional search
 
-    const response = yield axios.get(
-      `/api/big-commerce/orders?page=${page}&limit=${limit}&filter=${filter}`
-    );
+    const response = yield axios.get('/api/big-commerce/orders', {
+      params: { page, limit, filter, search },
+    });
 
     // API returns: { orders: [...], pagination: {...} }
     yield put({

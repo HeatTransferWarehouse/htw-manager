@@ -9,6 +9,24 @@ const pdf = require('html-pdf-node');
 
 const ALLOWED_STATUSES = new Set(['Awaiting Fulfillment', 'Awaiting Payment']);
 
+const STATUS_MAP = {
+  0: 'Incomplete',
+  1: 'Pending',
+  2: 'Shipped',
+  3: 'Partially Shipped',
+  4: 'Refunded',
+  5: 'Cancelled',
+  6: 'Declined',
+  7: 'Awaiting Payment',
+  8: 'Awaiting Pickup',
+  9: 'Awaiting Shipment',
+  10: 'Completed',
+  11: 'Awaiting Fulfillment',
+  12: 'Manual Verification Required',
+  13: 'Disputed',
+  14: 'Partially Refunded',
+};
+
 // Webhook delay/debounce: give BigCommerce time to flip out of "Incomplete"
 const PENDING_TIMERS = new Map(); // order_id -> timeout
 const DELAY_MS = 5_000; // initial delay after webhook
@@ -868,9 +886,58 @@ async function syncOrders() {
   return { success: true, added, skipped_incomplete: skippedIncomplete, results };
 }
 
+async function updateOrderStatus(orderId, newStatus) {
+  console.log(`Updating order ${orderId} status to "${newStatus}" in database...`);
+
+  try {
+    const result = await pool.query(
+      `
+      UPDATE picklist_orders
+      SET status = $1
+      WHERE order_id = $2
+      RETURNING *;
+    `,
+      [newStatus, orderId]
+    );
+    if (result.rows.length === 0) {
+      console.log(`Order ${orderId} not found in database for status update.`);
+    } else {
+      console.log(`Order ${orderId} status updated to "${newStatus}".`);
+    }
+  } catch (err) {
+    console.error(`Error updating status for order ${orderId}:`, err);
+  }
+}
+
 // -----------------------------------------------------------------------
 // Routes
 // -----------------------------------------------------------------------
+
+router.post('/status-updated', async (req, res) => {
+  try {
+    const orderId = req.body?.data?.id;
+    if (!orderId) {
+      console.error('No order id provided on webhook payload');
+      return res.status(400).json({ success: false, message: 'No order id' });
+    }
+    const { new_status_id, previous_status_id } = req.body?.data.status || {};
+    const newStatus = STATUS_MAP[new_status_id] || 'Unknown';
+    const prevStatus = STATUS_MAP[previous_status_id] || 'Unknown';
+
+    if (prevStatus === 'Incomplete') {
+      return res
+        .status(200)
+        .json({ success: true, message: 'Ignored Incomplete → X status change' });
+    }
+
+    await updateOrderStatus(orderId, newStatus);
+
+    console.log(`Webhook: Order ${orderId} status changed from "${prevStatus}" to "${newStatus}"`);
+  } catch (err) {
+    console.error('Error handling status-updated webhook:', err);
+    return res.status(500).json({ success: false, message: 'Internal server error' });
+  }
+});
 
 router.post('/create-order', (req, res) => {
   const orderID = req.body?.data?.id;
@@ -1067,10 +1134,13 @@ router.get('/', async (req, res) => {
     const limit = parseInt(req.query.limit, 10) || 100;
     const offset = (page - 1) * limit;
     const filter = req.query.filter || 'all';
+    const search = req.query.search ? req.query.search.trim().toLowerCase() : null;
 
-    // Build conditions
     let conditions = [];
+    let countParams = [];
+    let dataParams = [limit, offset]; // limit + offset always first
 
+    // filters
     if (filter === 'printed') {
       conditions.push('is_printed = true');
     } else if (filter === 'not-printed') {
@@ -1085,9 +1155,29 @@ router.get('/', async (req, res) => {
       `);
     }
 
+    // search
+    if (search) {
+      const condition = `
+        (
+          CAST(order_id AS TEXT) ILIKE '%' || $1 || '%' OR
+          EXISTS (
+            SELECT 1
+            FROM jsonb_array_elements(line_items::jsonb) li
+            WHERE
+              li->>'sku' ILIKE '%' || $1 || '%' OR
+              li->>'name' ILIKE '%' || $1 || '%'
+          )
+        )
+      `;
+      conditions.push(condition);
+      countParams.push(search);
+
+      // 👇 for data query, search comes AFTER limit+offset
+      dataParams.push(search);
+    }
+
     const whereClause = conditions.length ? `WHERE ${conditions.join(' AND ')}` : '';
 
-    // Use CTE so count + data come from the same filtered set
     const countQuery = `
       WITH filtered AS (
         SELECT *
@@ -1097,11 +1187,12 @@ router.get('/', async (req, res) => {
       SELECT COUNT(*) FROM filtered
     `;
 
+    // Here $3 is the search param, because $1=limit, $2=offset
     const dataQuery = `
       WITH filtered AS (
         SELECT *
         FROM picklist_orders
-        ${whereClause}
+        ${whereClause.replace(/\$1/g, `$3`)} -- 👈 shift search param index
       )
       SELECT *
       FROM filtered
@@ -1109,15 +1200,12 @@ router.get('/', async (req, res) => {
       LIMIT $1 OFFSET $2
     `;
 
-    // 1. Count
-    const totalResult = await pool.query(countQuery);
+    const totalResult = await pool.query(countQuery, countParams);
     const totalOrders = parseInt(totalResult.rows[0].count, 10);
     const totalPages = Math.ceil(totalOrders / limit);
 
-    // 2. Data
-    const result = await pool.query(dataQuery, [limit, offset]);
+    const result = await pool.query(dataQuery, dataParams);
 
-    // 3. Return with metadata
     return res.status(200).json({
       orders: result.rows,
       pagination: {
