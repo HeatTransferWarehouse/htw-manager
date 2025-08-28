@@ -231,7 +231,7 @@ const PrintHtml = React.forwardRef(({ activeOrders, splitOrders }, ref) => {
                   Order Number:
                 </span>{' '}
                 {order.order_id}{' '}
-                {splitInfo(order)
+                {splitInfo(order).shipmentCount > 1
                   ? `(${order.shipment_number} of ${splitInfo(order).shipmentCount})`
                   : ''}
               </p>

@@ -23,7 +23,9 @@ const ShipStationBarcode = ({ splitInfo, orderInfo }) => {
       />
       <p style={{ textAlign: 'center', fontSize: '16px', marginTop: '4px', fontWeight: 600 }}>
         {orderInfo.order_id}{' '}
-        {splitInfo ? `(${orderInfo.shipment_number} of ${splitInfo.shipmentCount})` : ''}
+        {splitInfo.shipmentCount > 1
+          ? `(${orderInfo.shipment_number} of ${splitInfo.shipmentCount})`
+          : ''}
       </p>
     </div>
   );
