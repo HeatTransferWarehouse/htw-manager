@@ -20,6 +20,7 @@ function ShipstationPickList() {
   const ordersStore = useSelector((state) => state.BC.orders.orders);
   const syncing = useSelector((state) => state.BC.orders.syncing);
   const orderTags = useSelector((state) => state.BC.orders.tags);
+  const loading = useSelector((state) => state.BC.orders.loading);
   const [searchTerm, setSearchTerm] = useState('');
   const [rowsPerPage, setRowsPerPage] = useState(50);
   const [page, setPage] = useState(0);
@@ -121,6 +122,7 @@ function ShipstationPickList() {
         ordersCount={ordersCount}
         searchTerm={searchTerm}
         setSearchTerm={setSearchTerm}
+        loading={loading}
       />
 
       {generatingPDF &&

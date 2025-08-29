@@ -1,7 +1,7 @@
 import React from 'react';
 import Barcode from 'react-barcode';
 
-const ShipStationBarcode = ({ splitInfo, orderInfo }) => {
+const ShipStationBarcode = ({ orderInfo }) => {
   // Example ShipStation format (customize this depending on your needs)
   // Order ID must be in hex and wrapped in ^#^...^
 
@@ -23,9 +23,7 @@ const ShipStationBarcode = ({ splitInfo, orderInfo }) => {
       />
       <p style={{ textAlign: 'center', fontSize: '12pt', margin: 0, fontWeight: 600 }}>
         {orderInfo.order_id}{' '}
-        {splitInfo && splitInfo.shipmentCount > 1
-          ? `(${orderInfo.shipment_number} of ${splitInfo.shipmentCount})`
-          : ''}
+        {orderInfo.is_split && `(${orderInfo.shipment_number} of ${orderInfo.total_shipments})`}
       </p>
     </div>
   );

@@ -179,6 +179,16 @@ const ViewDropdown = ({ view, url }) => {
             Dropship
           </Link>
         </DropDownItem>
+        <DropDownItem
+          className={twMerge(
+            'text-black text-base p-0',
+            view === 'split' && 'bg-secondary/10 text-secondary'
+          )}
+        >
+          <Link className="w-full flex p-2" to={`${url}?view=split`}>
+            Split Orders
+          </Link>
+        </DropDownItem>
       </DropDownContent>
     </DropDownContainer>
   );

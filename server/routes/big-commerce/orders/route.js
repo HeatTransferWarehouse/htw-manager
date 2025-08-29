@@ -140,26 +140,28 @@ const getBaseUrl = () => {
  * @throws {Error} - Throws if the response status is not OK (>=400).
  */
 const fetchJSON = async (url, options = {}) => {
-  // Send the request, merging defaults with any provided options
-  const resp = await fetch(url, {
-    method: 'GET', // default method is GET
-    headers: {
-      // BigCommerce requires an API token
-      'X-Auth-Token': process.env.BG_AUTH_TOKEN,
-      'Content-Type': 'application/json',
-      Accept: 'application/json',
-    },
-    ...options, // spread user-provided options (overrides defaults)
-  });
+  if (!url) return undefined; // early return if url is missing
 
-  // If response is not OK (e.g., 4xx/5xx), capture the error text
-  if (!resp.ok) {
-    const text = await resp.text().catch(() => ''); // fallback if body can't be read
-    throw new Error(`Fetch failed ${resp.status}: ${text || resp.statusText}`);
+  try {
+    const resp = await fetch(url, {
+      method: 'GET',
+      headers: {
+        'X-Auth-Token': process.env.BG_AUTH_TOKEN,
+        'Content-Type': 'application/json',
+        Accept: 'application/json',
+      },
+      ...options,
+    });
+
+    if (!resp.ok) {
+      // swallow the error and just return undefined
+      return undefined;
+    }
+
+    return await resp.json().catch(() => undefined);
+  } catch {
+    return undefined; // catch network/other errors
   }
-
-  // Parse and return JSON body
-  return resp.json();
 };
 
 // Run tasks with a concurrency limit
@@ -212,8 +214,9 @@ const runWithConcurrencyLimit = async (tasks, limit) => {
  * @param {object} lineItems
  * @returns
  */
-const buildOrderJSON = async (order, consignments, lineItems) => {
+const buildOrderJSON = async (order, consignments, lineItems, coupons) => {
   // Build a structured order JSON object
+
   return {
     order_id: order.id,
     date_created: order.date_created,
@@ -240,6 +243,8 @@ const buildOrderJSON = async (order, consignments, lineItems) => {
     grand_total: order.total_inc_tax,
     total_items: order.items_total,
     status: order.status,
+    coupon_name: coupons.coupon_name,
+    coupon_value: coupons.coupon_value,
   };
 };
 
@@ -650,14 +655,30 @@ const getOrderData = async (orderID) => {
   // Get products on order based on order.products.url
   const products = await getProductsOnOrder(order.products.url);
 
+  const coupons = {
+    coupon_name: null,
+    coupon_value: null,
+  };
+
+  const couponData = await fetchJSON(order.coupons.url);
+
+  if (couponData && Array.isArray(couponData)) {
+    coupons.coupon_name = couponData[0]?.code || null;
+    coupons.coupon_value = parseFloat(couponData[0]?.discount) || null;
+  }
+
   // Build line items with product and variant metadata and categories
   const line_items = await processLineItems(products, order);
 
   // Build the final order JSON
-  const json = await buildOrderJSON(order, cons, line_items);
+  const json = await buildOrderJSON(order, cons, line_items, coupons);
+
+  await addOrderToDatabase(json);
 
   return json;
 };
+
+getOrderData(3614406);
 
 // -----------------------------------------------------------------------
 // DB
@@ -684,6 +705,8 @@ const addOrderToDatabase = async (orderData) => {
       total_items,
       status,
       date_created,
+      coupon_name,
+      coupon_value,
     } = orderData;
 
     const existing = await pool.query('SELECT id FROM picklist_orders WHERE order_id = $1', [
@@ -705,9 +728,11 @@ const addOrderToDatabase = async (orderData) => {
         tax,
         grand_total,
         status,
-        total_items
+        total_items,
+        coupon_name,
+        coupon_value
       )
-      VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10)
+      VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12)
       RETURNING *;
       `,
       [
@@ -721,6 +746,8 @@ const addOrderToDatabase = async (orderData) => {
         grand_total,
         status,
         total_items,
+        coupon_name,
+        coupon_value,
       ]
     );
 
@@ -739,6 +766,7 @@ const addOrderToDatabase = async (orderData) => {
 async function processSingleOrder(orderId, attempt = 1) {
   try {
     const data = await getOrderData(orderId);
+
     if (!data) {
       console.log(`⚪️ Order ${orderId}: no data returned`);
       return;
@@ -846,8 +874,20 @@ async function syncOrders() {
         // Enrich line items with variant metadata + categories
         const line_items = await processLineItems(products, o);
 
+        const coupons = {
+          coupon_name: null,
+          coupon_value: null,
+        };
+
+        const couponData = await fetchJSON(o.coupons.url);
+
+        if (couponData && Array.isArray(couponData)) {
+          coupons.coupon_name = couponData[0]?.code || null;
+          coupons.coupon_value = parseFloat(couponData[0]?.discount) || null;
+        }
+
         // Build normalized order JSON object
-        const json = await buildOrderJSON(o, cons, line_items);
+        const json = await buildOrderJSON(o, cons, line_items, coupons);
 
         // Insert order into database
         const out = await addOrderToDatabase(json);
@@ -1019,11 +1059,13 @@ router.post('/split', async (req, res) => {
           `
           UPDATE picklist_orders
           SET line_items = $1,
-              shipment_number = $2
-          WHERE id = $3
+              shipment_number = $2,
+              is_split = true,
+              total_shipments = $3
+          WHERE id = $4
           RETURNING *;
         `,
-          [JSON.stringify(shipmentItems), shipment.id, originalOrder.id]
+          [JSON.stringify(shipmentItems), shipment.id, shipments.length, originalOrder.id]
         );
         results.push(updated.rows[0]);
       } else {
@@ -1031,11 +1073,12 @@ router.post('/split', async (req, res) => {
         const duplicated = await client.query(
           `
           INSERT INTO picklist_orders (
-            order_id, customer, shipping, status, total_items, grand_total,
-            created_at, is_printed, printed_time, line_items, shipment_number
-          )
-          VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10::jsonb,$11)
-          RETURNING *;
+          order_id, customer, shipping, status, total_items, grand_total,
+          created_at, is_printed, printed_time, line_items, shipment_number,
+          is_split, total_shipments
+        )
+        VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10::jsonb,$11,$12,$13)
+        RETURNING *;
         `,
           [
             originalOrder.order_id,
@@ -1049,6 +1092,8 @@ router.post('/split', async (req, res) => {
             originalOrder.printed_time,
             JSON.stringify(shipmentItems),
             shipment.id,
+            true, // is_split
+            shipments.length, // total shipments
           ]
         );
         results.push(duplicated.rows[0]);
@@ -1118,7 +1163,9 @@ router.post('/merge', async (req, res) => {
     const { rows: updatedOrder } = await client.query(
       `UPDATE picklist_orders
        SET line_items = $1::jsonb,
-           shipment_number = 0
+           shipment_number = 0,
+            is_split = false,
+            total_shipments = 1
        WHERE id = $2
        RETURNING *`,
       [JSON.stringify(mergedLineItems), primary.id]
@@ -1152,17 +1199,17 @@ router.get('/', async (req, res) => {
     const offset = (page - 1) * limit;
     const filter = req.query.filter || 'all';
     const search = req.query.search ? req.query.search.trim().toLowerCase() : null;
+    const sort = req.query.sort || 'created_at_desc';
 
     let conditions = [];
     let countParams = [];
-    let dataParams = [limit, offset]; // limit + offset always first
+    let dataParams = [limit, offset]; // always start with limit + offset
 
-    // filters
-    if (filter === 'printed') {
-      conditions.push('is_printed = true');
-    } else if (filter === 'not-printed') {
-      conditions.push('is_printed = false');
-    } else if (filter === 'dropship') {
+    // --- Filters ---
+    if (filter === 'printed') conditions.push('is_printed = true');
+    else if (filter === 'not-printed') conditions.push('is_printed = false');
+    else if (filter === 'split') conditions.push('is_split = true');
+    else if (filter === 'dropship') {
       conditions.push(`
         EXISTS (
           SELECT 1
@@ -1172,29 +1219,47 @@ router.get('/', async (req, res) => {
       `);
     }
 
-    // search
+    // --- Search ---
     if (search) {
       const condition = `
         (
-          CAST(order_id AS TEXT) ILIKE '%' || $1 || '%' OR
-          EXISTS (
+          CAST(order_id AS TEXT) ILIKE '%' || $1 || '%'
+          OR EXISTS (
             SELECT 1
             FROM jsonb_array_elements(line_items::jsonb) li
-            WHERE
-              li->>'sku' ILIKE '%' || $1 || '%' OR
-              li->>'name' ILIKE '%' || $1 || '%'
+            WHERE li->>'sku' ILIKE '%' || $1 || '%'
+               OR li->>'name' ILIKE '%' || $1 || '%'
           )
         )
       `;
       conditions.push(condition);
-      countParams.push(search);
 
-      // 👇 for data query, search comes AFTER limit+offset
-      dataParams.push(search);
+      countParams.push(search);
+      dataParams.push(search); // will become $3 in the data query
     }
 
     const whereClause = conditions.length ? `WHERE ${conditions.join(' AND ')}` : '';
 
+    // --- Sorting ---
+    let orderBy = 'created_at DESC';
+    switch (sort.toLowerCase()) {
+      case 'created_at_asc':
+      case 'age_asc':
+        orderBy = 'created_at ASC';
+        break;
+      case 'created_at_desc':
+      case 'age_desc':
+        orderBy = 'created_at DESC';
+        break;
+      case 'order_id_asc':
+        orderBy = 'order_id ASC';
+        break;
+      case 'order_id_desc':
+        orderBy = 'order_id DESC';
+        break;
+    }
+
+    // --- Queries ---
     const countQuery = `
       WITH filtered AS (
         SELECT *
@@ -1204,24 +1269,33 @@ router.get('/', async (req, res) => {
       SELECT COUNT(*) FROM filtered
     `;
 
-    // Here $3 is the search param, because $1=limit, $2=offset
     const dataQuery = `
       WITH filtered AS (
         SELECT *
         FROM picklist_orders
-        ${whereClause.replace(/\$1/g, `$3`)} -- 👈 shift search param index
+        ${whereClause.replace(/\$1/g, `$3`)} -- shift search param for data query
       )
       SELECT *
       FROM filtered
-      ORDER BY created_at DESC
+      ORDER BY ${orderBy}
       LIMIT $1 OFFSET $2
     `;
 
-    const totalResult = await pool.query(countQuery, countParams);
+    // --- Execute safely ---
+    const totalResult = countParams.length
+      ? await pool.query(countQuery, countParams)
+      : await pool.query(countQuery);
+
     const totalOrders = parseInt(totalResult.rows[0].count, 10);
     const totalPages = Math.ceil(totalOrders / limit);
 
-    const result = await pool.query(dataQuery, dataParams);
+    const result =
+      dataParams.length > 2
+        ? await pool.query(dataQuery, dataParams)
+        : await pool.query(
+            dataQuery.replace(/\$3/g, 'NULL'), // if no search, remove placeholder
+            [limit, offset]
+          );
 
     return res.status(200).json({
       orders: result.rows,

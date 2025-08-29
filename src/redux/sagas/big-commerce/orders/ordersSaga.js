@@ -1,4 +1,4 @@
-import { put, takeLatest } from 'redux-saga/effects';
+import { put, takeLatest, race, delay, call } from 'redux-saga/effects';
 import axios from 'axios';
 
 function* splitOrder(action) {
@@ -23,25 +23,42 @@ function* combineOrders(action) {
 
 function* getOrders(action) {
   try {
-    const page = action.payload?.page || 1; // default page = 1
-    const limit = action.payload?.limit || 100; // default limit = 100
-    const filter = action.payload?.filter || 'all'; // optional filter
-    const search = action.payload?.search || ''; // optional search
+    const page = action.payload?.page || 1;
+    const limit = action.payload?.limit || 100;
+    const filter = action.payload?.filter || 'all';
+    const search = action.payload?.search || '';
+    const sort = action.payload?.sort || '';
 
-    const response = yield axios.get('/api/big-commerce/orders', {
-      params: { page, limit, filter, search },
+    // Kick off API call immediately
+    const apiCall = call(axios.get, '/api/big-commerce/orders', {
+      params: { page, limit, filter, search, sort },
     });
 
-    // API returns: { orders: [...], pagination: {...} }
-    yield put({
-      type: 'SET_ORDERS',
-      payload: {
-        orders: response.data.orders,
-        pagination: response.data.pagination,
-      },
+    // Race between API response and delay
+    const { response, loadingDelay } = yield race({
+      response: apiCall,
+      loadingDelay: delay(200), // only show loader if it takes longer than 200ms
     });
+
+    if (loadingDelay) {
+      // If delay finishes first → show loader and wait for API
+      yield put({ type: 'SET_ORDERS_LOADING', payload: true });
+      const resp = yield apiCall; // wait for API to finish
+      yield put({
+        type: 'SET_ORDERS',
+        payload: { orders: resp.data.orders, pagination: resp.data.pagination },
+      });
+    } else if (response) {
+      // If API finished before 200ms → skip showing loader
+      yield put({
+        type: 'SET_ORDERS',
+        payload: { orders: response.data.orders, pagination: response.data.pagination },
+      });
+    }
   } catch (err) {
     console.error('Error in getOrders Saga:', err);
+  } finally {
+    yield put({ type: 'SET_ORDERS_LOADING', payload: false });
   }
 }
 

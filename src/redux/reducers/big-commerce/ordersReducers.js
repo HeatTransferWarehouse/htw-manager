@@ -18,6 +18,15 @@ function syncing(state = false, action) {
   }
 }
 
+function loading(state = false, action) {
+  switch (action.type) {
+    case 'SET_ORDERS_LOADING':
+      return action.payload;
+    default:
+      return state;
+  }
+}
+
 function printers(state = [], action) {
   switch (action.type) {
     case 'SET_PRINTERS':
@@ -41,4 +50,5 @@ export default combineReducers({
   syncing,
   printers,
   tags,
+  loading,
 });

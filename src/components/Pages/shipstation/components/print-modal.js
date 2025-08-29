@@ -38,7 +38,7 @@ export default function PrintModal({
           {/* PDF Preview */}
           {pdfUrl && (
             <iframe
-              src={`${pdfUrl}#zoom=65`}
+              src={`${pdfUrl}#zoom=68`}
               width="100%"
               height="100%"
               style={{ border: '1px solid #ccc', display: 'block' }}

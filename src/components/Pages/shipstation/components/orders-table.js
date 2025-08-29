@@ -30,6 +30,7 @@ import ReactDOM from 'react-dom';
 import DeleteModal from '../modals/modals';
 import PicklistHeader from './table-header';
 import useOrdersData from '../hooks/useOrdersData';
+import LoadingSkeleton from './loading-skeleton';
 
 function OrdersTable({
   ordersData,
@@ -47,9 +48,9 @@ function OrdersTable({
   page,
   rowsPerPage,
   ordersCount,
-  splitOrders,
   setSearchTerm,
   searchTerm,
+  loading,
 }) {
   const dispatch = useDispatch();
 
@@ -61,7 +62,20 @@ function OrdersTable({
 
   const handleSort = (sort_by) => {
     const newOrder = sort.sort_by === sort_by && sort.order === 'asc' ? 'desc' : 'asc';
-    setSort({ sort_by, order: newOrder });
+    const newSort = { sort_by, order: newOrder };
+
+    setSort(newSort);
+
+    dispatch({
+      type: 'GET_ORDERS',
+      payload: {
+        page: 1, // reset to first page on new sort
+        limit: rowsPerPage, // whatever your pagination size is
+        filter: view, // whatever filter you’re using
+        search: searchTerm, // if you have a search box
+        sort: `${sort_by}_${newOrder}`, // backend expects combined key
+      },
+    });
   };
 
   const getOrderKey = (order) => `${order.order_id}-${order.shipment_number || order.id}`;
@@ -173,7 +187,9 @@ function OrdersTable({
             </TableHeadCell>
           </TableHeader>
           <TableBody>
-            {filteredData.length > 0 &&
+            {loading ? (
+              <LoadingSkeleton limit={rowsPerPage} />
+            ) : filteredData.length > 0 ? (
               filteredData.map((order, index) => {
                 const orderKey = getOrderKey(order);
 
@@ -233,19 +249,14 @@ function OrdersTable({
                     <TableCell className="mb-auto p-2" minWidth="9rem">
                       <a
                         className="text-secondary"
+                        target="_blank"
                         href={`https://store-et4qthkygq.mybigcommerce.com/manage/orders/${order.order_id}`}
                       >
                         {order.order_id}
                       </a>
-                      {splitOrders.find((o) => o.order_id === String(order.order_id))
-                        ?.shipmentCount > 1 && (
+                      {order.is_split && (
                         <span className="ml-1 text-sm text-gray-600">
-                          ({order.shipment_number} of{' '}
-                          {
-                            splitOrders.find((o) => o.order_id === String(order.order_id))
-                              ?.shipmentCount
-                          }
-                          )
+                          ({order.shipment_number} of {order.total_shipments})
                         </span>
                       )}
                     </TableCell>
@@ -404,7 +415,12 @@ function OrdersTable({
                     </TableCell>
                   </TableRow>
                 );
-              })}
+              })
+            ) : (
+              <p className="text-xl col-span-full text-center mx-auto my-8 text-gray-500">
+                No orders found
+              </p>
+            )}
           </TableBody>
         </TableContainer>
         <div className="border-t border-gray-300 ">
