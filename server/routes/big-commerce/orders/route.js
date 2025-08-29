@@ -349,6 +349,24 @@ const getProductsOnOrder = async (url) => {
   return fetchJSON(url);
 };
 
+const fetchGraphQL = async (query) => {
+  const token = await getValidApiToken('htw');
+  const url = `https://store-${process.env.STORE_HASH}-1.mybigcommerce.com/graphql`;
+
+  const resp = await fetch(url, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      Authorization: `Bearer ${token}`,
+    },
+    body: JSON.stringify({ query }),
+  });
+
+  const text = await resp.text();
+  if (!resp.ok) throw new Error(`GraphQL failed: ${resp.status} ${text}`);
+  return JSON.parse(text);
+};
+
 /**
  * Fetch categories for a given product from BigCommerce GraphQL Storefront API.
  * https://developer.bigcommerce.com/graphql-storefront/reference#definition-CategoryConnection
@@ -356,66 +374,44 @@ const getProductsOnOrder = async (url) => {
  * @param {number} productId - The product entity ID
  * @returns {Promise<Array<{ name: string }>>} - Returns an array of category objects (empty if none found)
  */
-const getProductCategories = async (productId) => {
-  try {
-    const token = await getValidApiToken('htw');
+const batchGetProductCategories = async (productIds, chunkSize = 5) => {
+  const results = {};
+
+  for (let i = 0; i < productIds.length; i += chunkSize) {
+    const chunk = productIds.slice(i, i + chunkSize);
 
     const query = `
-      query getProductCategories {
+      query {
         site {
-          product(entityId: ${productId}) {
-            categories {
-              edges {
-                node {
-                  name
+          ${chunk
+            .map(
+              (id, idx) => `
+              c${i + idx}: product(entityId: ${id}) {
+                entityId
+                categories {
+                  edges { node { name } }
                 }
               }
-            }
-          }
+            `
+            )
+            .join('\n')}
         }
       }
     `;
 
-    const url = `https://store-${process.env.STORE_HASH}-1.mybigcommerce.com/graphql`;
-    const response = await fetch(url, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        Authorization: `Bearer ${token}`,
-      },
-      body: JSON.stringify({ query }),
-    });
+    const json = await fetchGraphQL(query);
 
-    if (!response.ok) {
-      throw new Error(`GraphQL request failed: ${response.status} ${response.statusText}`);
+    if (json?.data?.site) {
+      for (const key in json.data.site) {
+        const prod = json.data.site[key];
+        if (prod) {
+          results[prod.entityId] = unwrapEdges(prod.categories);
+        }
+      }
     }
-
-    const text = await response.text();
-    const json = JSON.parse(text);
-
-    // GraphQL returned errors → bail out early
-    if (json.errors?.length) {
-      throw new Error(`GraphQL errors for product ${productId}: ${JSON.stringify(json.errors)}`);
-    }
-
-    // ✅ Defensive check: product might be null (e.g., deleted or invisible)
-    if (!json?.data?.site?.product) {
-      return [];
-    }
-
-    const categories = json.data.site.product.categories;
-    if (!categories) {
-      return [];
-    }
-
-    // unwrapEdges → converts { edges: [{ node: { name } }]} into [{ name }]
-    const cleaned = unwrapEdges(categories);
-
-    return cleaned;
-  } catch (err) {
-    console.error(`Error fetching categories for product ${productId}:`, err);
-    return [];
   }
+
+  return results; // { productId: [categories] }
 };
 
 /**
@@ -424,65 +420,58 @@ const getProductCategories = async (productId) => {
  * @param {number} variantId
  * @returns {Promise<Array>} - Returns an array of metafields (empty if not found)
  */
-const getVariantMetaFields = async (productId, variantId) => {
-  const token = await getValidApiToken('htw');
+const batchGetVariantMetaFields = async (variantPairs, chunkSize = 3) => {
+  const results = {};
 
-  const query = `
-    query getProduct {
-      site {
-        product(entityId: ${productId}) {
-          variants(first: 1, entityIds: [${variantId}]) {
-            edges {
-              node {
-                sku
-                metafields(namespace: "shipping.shipperhq") {
-                  edges {
-                    node {
-                      key
-                      value
-                    }
+  for (let i = 0; i < variantPairs.length; i += chunkSize) {
+    const chunk = variantPairs.slice(i, i + chunkSize);
+
+    // Each alias encodes product + variant
+    const query = `
+  query {
+    site {
+      ${chunk
+        .map(
+          ({ productId, variantId }, idx) => `
+          pv${i + idx}: product(entityId: ${productId}) {
+            entityId
+            variants(entityIds: [${variantId}]) {
+              edges {
+                node {
+                  entityId
+                  metafields(namespace: "shipping.shipperhq") {
+                    edges { node { key value } }
                   }
                 }
               }
             }
           }
-        }
-      }
+        `
+        )
+        .join('\n')}
     }
-  `;
-
-  const url = `https://store-${process.env.STORE_HASH}-1.mybigcommerce.com/graphql`;
-  const option = {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-      Authorization: `Bearer ${token}`,
-    },
-    body: JSON.stringify({ query }),
-  };
-
-  const response = await fetch(url, option);
-  const text = await response.text();
-
-  try {
-    const json = JSON.parse(text);
-
-    // ✅ Defensive checks
-    if (!json?.data?.site?.product) {
-      return [];
-    }
-
-    const variants = json.data.site.product.variants;
-    if (!variants) {
-      return [];
-    }
-
-    const cleaned = unwrapEdges(variants).flatMap((v) => v.metafields || []);
-    return cleaned;
-  } catch (err) {
-    console.error('Error parsing GraphQL response:', err, text);
-    return [];
   }
+`;
+
+    const json = await fetchGraphQL(query);
+
+    for (const key in json.data) {
+      const prod = json.data[key]?.product;
+      if (!prod) continue;
+
+      const productId = prod.entityId;
+      const variants = unwrapEdges(prod.variants);
+
+      variants.forEach((v) => {
+        if (v) {
+          // key like "12345:67890"
+          results[`${productId}:${v.entityId}`] = unwrapEdges(v.metafields);
+        }
+      });
+    }
+  }
+
+  return results;
 };
 
 /**
@@ -492,60 +481,44 @@ const getVariantMetaFields = async (productId, variantId) => {
  * @param {number} productId - The product entity ID
  * @returns {Promise<Array>} - Returns an array of metafields (empty if none found)
  */
-const getProductMetaFields = async (productId) => {
-  const token = await getValidApiToken('htw');
+const batchGetProductMetaFields = async (productIds, chunkSize = 5) => {
+  const results = {};
 
-  const query = `
-    query getProduct {
-      site {
-        product(entityId: ${productId}) {
-          metafields(namespace: "shipping.shipperhq") {
-            edges {
-              node {
-                key
-                value
+  for (let i = 0; i < productIds.length; i += chunkSize) {
+    const chunk = productIds.slice(i, i + chunkSize);
+
+    const query = `
+      query {
+        site {
+          ${chunk
+            .map(
+              (id, idx) => `
+              p${i + idx}: product(entityId: ${id}) {
+                entityId
+                metafields(namespace: "shipping.shipperhq") {
+                  edges { node { key value } }
+                }
               }
-            }
-          }
+            `
+            )
+            .join('\n')}
+        }
+      }
+    `;
+
+    const json = await fetchGraphQL(query);
+
+    if (json?.data?.site) {
+      for (const key in json.data.site) {
+        const prod = json.data.site[key];
+        if (prod) {
+          results[prod.entityId] = unwrapEdges(prod.metafields);
         }
       }
     }
-  `;
-
-  const url = `https://store-${process.env.STORE_HASH}-1.mybigcommerce.com/graphql`;
-  const option = {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-      Authorization: `Bearer ${token}`,
-    },
-    body: JSON.stringify({ query }),
-  };
-
-  const response = await fetch(url, option);
-  const text = await response.text();
-
-  try {
-    const json = JSON.parse(text);
-
-    // ✅ Defensive: check if product exists
-    if (!json?.data?.site?.product) {
-      return [];
-    }
-
-    // ✅ Defensive: check if metafields exist
-    const metafields = json.data.site.product.metafields;
-    if (!metafields) {
-      return [];
-    }
-
-    // Flatten the GraphQL edges -> node structure
-    const cleaned = unwrapEdges(metafields);
-    return cleaned;
-  } catch (err) {
-    console.error('Error parsing GraphQL response:', err, text);
-    return [];
   }
+
+  return results; // { productId: [metafields] }
 };
 
 /**
@@ -553,24 +526,30 @@ const getProductMetaFields = async (productId) => {
  * @param {Object} metaFields
  * @returns {boolean} - Returns true if any metafield indicates dropship
  */
-const determineDropShipStatus = async (metaFields) => {
+/**
+ * Returns true only if metafields explicitly contain "drop ship"
+ */
+/**
+ * Returns true only if metafields explicitly contain a dropship marker
+ */
+const determineDropShipStatus = (metaFields) => {
   if (!metaFields || !Array.isArray(metaFields)) return false;
 
   return metaFields.some((field) => {
-    if (field.key !== 'shipping-groups') return false;
+    if (!field || field.key !== 'shipping-groups' || !field.value) return false;
 
-    // value may be a JSON array string like '["Supacolor Dropship"]'
-    const values = (() => {
-      if (typeof field.value !== 'string') return [];
-      try {
-        const parsed = JSON.parse(field.value);
-        return Array.isArray(parsed) ? parsed : [field.value];
-      } catch {
-        return [field.value]; // not JSON, treat as scalar string
-      }
-    })();
+    // Parse value (it might be JSON array or plain string)
+    let values = [];
+    try {
+      const parsed = JSON.parse(field.value);
+      values = Array.isArray(parsed) ? parsed : [String(parsed)];
+    } catch {
+      values = [String(field.value)];
+    }
 
-    return values.some((v) => /drop\s*-?\s*ship/i.test(String(v)));
+    return values.some(
+      (v) => /drop\s*-?\s*ship/i.test(String(v)) // matches "dropship", "drop-ship", "drop ship"
+    );
   });
 };
 
@@ -582,63 +561,47 @@ const determineDropShipStatus = async (metaFields) => {
  * @returns {Promise<object>} - Returns a JSON object with order details
  */
 const processLineItems = async (products, order) => {
-  return Promise.all(
-    (products || []).map(async (p) => {
-      // ✅ Skip if product_id is invalid OR product is not visible
-      if (!p.product_id || p.product_id <= 0 || p.is_visible === false) {
-        return {
-          id: p.id,
-          order_id: order.id,
-          product_id: p.product_id,
-          name: p.name,
-          sku: p.sku,
-          quantity: p.quantity,
-          price: p.total_inc_tax,
-          is_clothing: false,
-          is_dropship: false,
-          options: (p.product_options || []).map((opt) => ({
-            display_name: opt.display_name,
-            display_value: opt.display_value,
-          })),
-        };
-      }
+  const productIds = Array.from(new Set(products.map((p) => p.product_id).filter(Boolean)));
+  const variantPairs = products
+    .filter((p) => p.product_id && p.variant_id)
+    .map((p) => ({ productId: p.product_id, variantId: p.variant_id }));
 
-      // 1. Product-level metafields
-      const productMetaFields = await getProductMetaFields(p.product_id);
+  // 🚀 Fetch in parallel (batched + chunked)
+  const [productMetaMap, variantMetaMap, categoriesMap] = await Promise.all([
+    batchGetProductMetaFields(productIds),
+    batchGetVariantMetaFields(variantPairs),
+    batchGetProductCategories(productIds),
+  ]);
 
-      // 2. Variant-level metafields (only if variant_id exists)
-      const variantMetaFields = await getVariantMetaFields(p.product_id, p.variant_id);
+  // Build each line item with local lookups (no more HTTP spam 🎉)
+  return products.map((p) => {
+    const productMetaFields = productMetaMap[p.product_id] || [];
+    const variantMetaFields = variantMetaMap[`${p.product_id}:${p.variant_id}`] || [];
+    const productCategories = categoriesMap[p.product_id] || [];
 
-      // 3. Categories
-      const productCategories = await getProductCategories(p.product_id);
+    const isProductDropship = determineDropShipStatus(productMetaFields);
+    const isVariantDropship = determineDropShipStatus(variantMetaFields);
 
-      // 4. Dropship determination
-      const isProductDropship = await determineDropShipStatus(productMetaFields);
-      const isVariantDropship = await determineDropShipStatus(variantMetaFields);
+    const isClothingProduct = productCategories.some(
+      (cat) => cat?.name?.trim().toLowerCase() === 'clothing'
+    );
 
-      // 5. Clothing check
-      const isClothingProduct = productCategories?.some(
-        (cat) => cat?.name?.trim().toLowerCase() === 'clothing'
-      );
-
-      // 6. Build output
-      return {
-        id: p.id,
-        order_id: order.id,
-        product_id: p.product_id,
-        name: p.name,
-        sku: p.sku,
-        quantity: p.quantity,
-        price: p.total_inc_tax,
-        is_clothing: isClothingProduct,
-        is_dropship: isProductDropship || isVariantDropship || false,
-        options: (p.product_options || []).map((opt) => ({
-          display_name: opt.display_name,
-          display_value: opt.display_value,
-        })),
-      };
-    })
-  );
+    return {
+      id: p.id,
+      order_id: order.id,
+      product_id: p.product_id,
+      name: p.name,
+      sku: p.sku,
+      quantity: p.quantity,
+      price: p.total_inc_tax,
+      is_clothing: isClothingProduct,
+      is_dropship: isProductDropship || isVariantDropship,
+      options: (p.product_options || []).map((opt) => ({
+        display_name: opt.display_name,
+        display_value: opt.display_value,
+      })),
+    };
+  });
 };
 
 /**
@@ -673,12 +636,12 @@ const getOrderData = async (orderID) => {
   // Build the final order JSON
   const json = await buildOrderJSON(order, cons, line_items, coupons);
 
-  await addOrderToDatabase(json);
+  // await addOrderToDatabase(json);
 
   return json;
 };
 
-getOrderData(3614406);
+// getOrderData(3614599);
 
 // -----------------------------------------------------------------------
 // DB

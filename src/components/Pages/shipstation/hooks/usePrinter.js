@@ -1,13 +1,23 @@
 import { useState } from 'react';
 import { getLocalPrinters } from '../utils/utils';
 
-export default function usePrinter(printRef, activeOrders, dispatch, limit, view, search, page) {
+export default function usePrinter(
+  printRef,
+  activeOrders,
+  dispatch,
+  limit,
+  view,
+  search,
+  page,
+  setActiveOrders
+) {
   const [generatingPDF, setGeneratingPDF] = useState(false);
   const [openPrintModal, setOpenPrintModal] = useState(false);
   const [pdfUrl, setPdfUrl] = useState(null);
   const [printersList, setPrintersList] = useState([]);
   const [selectedPrinter, setSelectedPrinter] = useState('');
   const [savedPDFBlob, setSavedPDFBlob] = useState(null);
+  const [isPrinting, setIsPrinting] = useState(false);
 
   /** ✅ Inline all CSS so the print server sees styled HTML */
   const getInlineStyledHtml = (element) => {
@@ -115,6 +125,7 @@ export default function usePrinter(printRef, activeOrders, dispatch, limit, view
   /** ✅ Send PDF blob to selected printer */
   const sendToPrinter = async () => {
     try {
+      setIsPrinting(true);
       const formData = new FormData();
       formData.append('pdf', savedPDFBlob);
       formData.append('printerName', selectedPrinter?.name);
@@ -144,6 +155,9 @@ export default function usePrinter(printRef, activeOrders, dispatch, limit, view
       }
     } catch (err) {
       alert('⚠️ Local print server not detected. Please install and run the print server.');
+    } finally {
+      setIsPrinting(false);
+      setActiveOrders([]);
     }
   };
 
@@ -158,5 +172,6 @@ export default function usePrinter(printRef, activeOrders, dispatch, limit, view
     printOrders,
     sendToPrinter,
     markPrinterAsDefault,
+    isPrinting,
   };
 }

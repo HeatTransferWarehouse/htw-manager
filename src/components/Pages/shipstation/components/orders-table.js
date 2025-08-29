@@ -9,7 +9,12 @@ import {
   TableRow,
   TableCell,
 } from '../../../Table/Table';
-import { FaCheck, FaChevronRight } from 'react-icons/fa6';
+import {
+  FaCheck,
+  FaChevronRight,
+  FaUpRightAndDownLeftFromCenter,
+  FaDownLeftAndUpRightToCenter,
+} from 'react-icons/fa6';
 import { twMerge } from 'tailwind-merge';
 import { useDispatch } from 'react-redux';
 import {
@@ -31,8 +36,11 @@ import DeleteModal from '../modals/modals';
 import PicklistHeader from './table-header';
 import useOrdersData from '../hooks/useOrdersData';
 import LoadingSkeleton from './loading-skeleton';
+import { LuExpand } from 'react-icons/lu';
 
 function OrdersTable({
+  isFullScreen,
+  setIsFullScreen,
   ordersData,
   activeOrders,
   setActiveOrders,
@@ -117,6 +125,11 @@ function OrdersTable({
     dispatch({ type: 'ADD_ORDER_TAG', payload: { name, hex } });
   };
 
+  const allSelected =
+    filteredData.length === 0
+      ? false
+      : filteredData.every((o) => activeOrders.some((a) => getOrderKey(a) === getOrderKey(o)));
+
   return (
     <>
       {deleteModalActive &&
@@ -129,7 +142,34 @@ function OrdersTable({
           document.body
         )}
 
-      <Table className={'max-w-[1900px] mx-auto'}>
+      <Table
+        className={twMerge(
+          'max-w-[1900px] mx-auto transition-all duration-150',
+          isFullScreen && 'shadow-none max-w-full border-none w-full h-full m-0'
+        )}
+      >
+        <div className="relative flex pt-4 items-center justify-center">
+          <h2 className="text-2xl  font-semibold">Picklist Management</h2>
+
+          <button
+            className={twMerge(
+              'absolute right-4 text-sm flex p-2 hover:text-white hover:bg-secondary hover:border-secondary border-black items-center justify-center gap-2 rounded-md border'
+            )}
+            onClick={() => setIsFullScreen(!isFullScreen)}
+          >
+            {isFullScreen ? (
+              <>
+                Exit Fullscreen
+                <FaDownLeftAndUpRightToCenter className=" w-3 h-3" />
+              </>
+            ) : (
+              <>
+                Enter Fullscreen
+                <FaUpRightAndDownLeftFromCenter className=" w-3 h-3" />
+              </>
+            )}
+          </button>
+        </div>
         <PicklistHeader
           handleSearch={handleSearch}
           view={view}
@@ -148,7 +188,36 @@ function OrdersTable({
         />
         <TableContainer tableFor={'orders'}>
           <TableHeader className={'bg-gray-200 border-y border-gray-400'}>
-            <TableHeadCell className={'p-0 text-sm'} minWidth={'4rem'} />
+            <TableHeadCell
+              className={'p-0 text-sm flex items-center justify-center gap-1'}
+              minWidth={'4rem'}
+            >
+              <button
+                onClick={(e) => {
+                  e.stopPropagation();
+                  if (allSelected) {
+                    // Deselect all
+                    setActiveOrders((prev) =>
+                      prev.filter(
+                        (o) => !filteredData.some((p) => getOrderKey(p) === getOrderKey(o))
+                      )
+                    );
+                  } else {
+                    // Select all
+                    const newOrders = filteredData.filter(
+                      (o) => !activeOrders.some((a) => getOrderKey(a) === getOrderKey(o))
+                    );
+                    setActiveOrders((prev) => [...prev, ...newOrders]);
+                  }
+                }}
+                className={twMerge(
+                  'w-5 h-5 rounded border ml-3 flex items-center justify-center',
+                  allSelected ? 'bg-secondary border-secondary' : 'border-black bg-white'
+                )}
+              >
+                {allSelected && <FaCheck className="w-3 h-3 text-white" />}
+              </button>
+            </TableHeadCell>
             <TableHeadCell className={'p-0 text-sm'} minWidth={'9rem'}>
               {renderSortButton('order_id', 'Order #')}
             </TableHeadCell>
@@ -182,7 +251,7 @@ function OrdersTable({
             <TableHeadCell className={'text-sm border-l border-gray-400'} minWidth={'7rem'}>
               Order Total
             </TableHeadCell>
-            <TableHeadCell className={'text-sm border-l border-gray-400'} minWidth={'7rem'}>
+            <TableHeadCell className={'text-sm border-l border-gray-400'} minWidth={'12.5rem'}>
               Print Time
             </TableHeadCell>
           </TableHeader>
@@ -400,7 +469,7 @@ function OrdersTable({
                         'mb-auto p-2',
                         order.is_printed && 'text-green-800 font-medium'
                       )}
-                      minWidth={'7rem'}
+                      minWidth={'12.5rem'}
                     >
                       {order.printed_time
                         ? new Date(order.printed_time).toLocaleString('en-US', {

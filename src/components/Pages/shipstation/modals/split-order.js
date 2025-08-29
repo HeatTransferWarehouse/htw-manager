@@ -45,8 +45,14 @@ function SplitOrderModal({
   };
 
   return ReactDOM.createPortal(
-    <div className="bg-black/50 z-[2934857] w-screen h-screen fixed top-0 left-0 flex items-center justify-center">
-      <div className="bg-white flex flex-col overflow-x-auto rounded max-h-[calc(100%-2rem)] max-w-[calc(100%-2rem)] min-w-[700px]">
+    <div
+      onClick={() => setSplitOrderModalActive(false)}
+      className="bg-black/50 z-[2934857] w-screen h-screen fixed top-0 left-0 flex items-center justify-center"
+    >
+      <div
+        onClick={(e) => e.stopPropagation()}
+        className="bg-white flex flex-col overflow-x-auto rounded max-h-[calc(100%-2rem)] max-w-[calc(100%-2rem)] min-w-[700px]"
+      >
         <div className="bg-gray-200 p-2 flex items-center justify-between text-lg">
           <h2>
             Split Order: <strong>{activeOrder.order_id}</strong>

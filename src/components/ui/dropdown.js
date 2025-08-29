@@ -131,12 +131,12 @@ const DropDownContainer = ({ children, className, onClose, type = 'hover' }) => 
   );
 };
 
-const DropDownTrigger = forwardRef(({ children, className, onClick, ...props }) => {
+const DropDownTrigger = forwardRef(({ children, className, onClick, ...props }, ref) => {
   const { isOpen, toggleOpen, type, triggerRef } = useContext(DropDownContext);
 
   return (
     <button
-      ref={triggerRef}
+      ref={ref || triggerRef} // ✅ use the ref passed in, fallback to context
       className={twMerge(
         isOpen ? 'bg-secondary/10' : '',
         'cursor-pointer group p-2 rounded-md transition hover:text-secondary flex items-center justify-start gap-4',

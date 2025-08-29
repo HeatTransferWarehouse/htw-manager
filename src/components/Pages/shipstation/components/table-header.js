@@ -80,12 +80,18 @@ function PicklistHeader({
         />
         {/* <TagsDropdown orderTagsList={orderTagsList} /> */}
         <button
+          disabled={syncing}
           onClick={() => {
             dispatch({ type: 'SYNC_ORDERS' });
           }}
-          className="px-4 py-2 flex items-center gap-2 text-lg rounded-md border text-black border-black hover:text-secondary hover:border-secondary"
+          className={twMerge(
+            'px-4 py-2 flex items-center gap-2 overflow-hidden relative text-lg rounded-md border text-black border-black hover:text-secondary hover:border-secondary',
+            syncing ? 'cursor-not-allowed pointer-events-none border-gray-500 text-gray-500' : ''
+          )}
         >
-          Sync Orders <FaSyncAlt className={twMerge('w-3 h-3', syncing && 'animate-spin')} />
+          <span className="z-50 flex items-center gap-2">
+            Sync Orders <FaSyncAlt className={twMerge('w-3 h-3', syncing && 'animate-spin')} />
+          </span>
         </button>
         <button
           disabled={activeOrders.length === 0}

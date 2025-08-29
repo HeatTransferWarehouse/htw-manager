@@ -3,7 +3,7 @@ import { TableCell, TableRow } from '../../../Table/Table';
 
 function LoadingSkeleton({ limit }) {
   return Array.from({ length: limit }).map((_, index) => (
-    <TableRow isMobile={false}>
+    <TableRow key={index} isMobile={false}>
       <TableCell className={'text-sm px-2'} minWidth={'4rem'} />
       <TableCell className={'text-sm px-2'} minWidth={'9rem'}>
         <span className="w-full bg-gray-300 rounded-md py-3 animate-pulse"></span>

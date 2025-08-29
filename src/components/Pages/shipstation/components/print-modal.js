@@ -10,6 +10,7 @@ import {
   DropDownItem,
   DropDownTrigger,
 } from '../../../ui/dropdown';
+import { FaSyncAlt } from 'react-icons/fa';
 
 export default function PrintModal({
   open,
@@ -21,12 +22,19 @@ export default function PrintModal({
   markPrinterAsDefault,
   sendToPrinter,
   onClose,
+  isPrinting,
 }) {
   if (!open) return null;
 
   return ReactDOM.createPortal(
-    <div className="fixed top-0 right-0 bg-black/50 w-full h-full z-50 flex items-center justify-center">
-      <div className="bg-white h-[calc(100%-2rem)] max-h-[895px] w-auto aspect-[1.45/1] overflow-hidden rounded shadow-lg">
+    <div
+      onClick={onClose}
+      className="fixed top-0 right-0 bg-black/50 w-full h-full z-[52] flex items-center justify-center"
+    >
+      <div
+        onClick={(e) => e.stopPropagation()}
+        className="bg-white h-[calc(100%-2rem)] max-h-[895px] w-auto aspect-[1.45/1] overflow-hidden rounded shadow-lg"
+      >
         {/* Header */}
         <div className="p-2 flex items-center justify-between shadow-default bg-gray-200 ">
           <h2 className="text-lg">Print Preview</h2>
@@ -110,11 +118,17 @@ export default function PrintModal({
             Cancel
           </button>
           <button
-            disabled={!selectedPrinter || generatingPDF}
+            disabled={!selectedPrinter || generatingPDF || isPrinting}
             className="bg-secondary hover:bg-secondaryLight text-white rounded px-3 py-1 disabled:bg-gray-400 disabled:cursor-not-allowed"
             onClick={sendToPrinter}
           >
-            {generatingPDF ? 'Generating...' : 'Print Picklist'}
+            {isPrinting ? (
+              <p className="flex items-center gap-2">
+                Printing <FaSyncAlt className="animate-spin w-3 h-3" />
+              </p>
+            ) : (
+              'Print Picklist'
+            )}
           </button>
         </div>
       </div>

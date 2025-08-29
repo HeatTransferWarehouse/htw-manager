@@ -9,6 +9,7 @@ import { calculateOrderAges } from '../utils/utils';
 import { useLocation } from 'react-router-dom';
 import usePrinter from '../hooks/usePrinter';
 import PrintModal from '../components/print-modal';
+import { twMerge } from 'tailwind-merge';
 
 function ShipstationPickList() {
   const printRef = useRef();
@@ -30,6 +31,8 @@ function ShipstationPickList() {
   const [activeOrders, setActiveOrders] = useState([]);
   const [expandedOrderIDs, setExpandedOrderIDs] = useState([]);
   const [currentTime, setCurrentTime] = useState(Date.now());
+  const [isFullScreen, setIsFullScreen] = useState(true);
+  const [generateMessageOpen, setGenerateMessageOpen] = useState(false);
 
   const shipmentsByOrder = orders.reduce((acc, order) => {
     const { order_id, shipment_number } = order;
@@ -61,7 +64,17 @@ function ShipstationPickList() {
     printOrders,
     sendToPrinter,
     markPrinterAsDefault,
-  } = usePrinter(printRef, activeOrders, dispatch, rowsPerPage, view, searchTerm, page + 1);
+    isPrinting,
+  } = usePrinter(
+    printRef,
+    activeOrders,
+    dispatch,
+    rowsPerPage,
+    view,
+    searchTerm,
+    page + 1,
+    setActiveOrders
+  );
 
   useEffect(() => {
     const interval = setInterval(() => {
@@ -70,6 +83,16 @@ function ShipstationPickList() {
 
     return () => clearInterval(interval);
   }, []);
+
+  useEffect(() => {
+    if (generatingPDF) {
+      setTimeout(() => {
+        setGenerateMessageOpen(true);
+      }, 50);
+    } else {
+      setGenerateMessageOpen(false);
+    }
+  }, [generatingPDF]);
 
   useEffect(() => {
     setOrders((prevOrders) => calculateOrderAges(prevOrders));
@@ -103,8 +126,15 @@ function ShipstationPickList() {
   }, [orderTags]);
 
   return (
-    <div>
+    <div
+      className={twMerge(
+        isFullScreen && 'fixed  overflow-auto h-screen w-screen bg-white z-[51] left-0 top-0',
+        'transition-all duration-150'
+      )}
+    >
       <OrdersTable
+        isFullScreen={isFullScreen}
+        setIsFullScreen={setIsFullScreen}
         ordersData={orders}
         activeOrders={activeOrders}
         setActiveOrders={setActiveOrders}
@@ -127,12 +157,18 @@ function ShipstationPickList() {
 
       {generatingPDF &&
         ReactDOM.createPortal(
-          <div className="bg-white p-4 shadow-md overflow-hidden flex justify-start absolute w-[400px] right-8 top-8 rounded z-[1023948]">
-            <div className="w-full h-[4px] bg-secondary absolute top-0 right-0" />
-            <div className="flex flex-col items-center justify-center gap-2">
+          <div
+            style={{
+              transform: generateMessageOpen ? 'translateY(0)' : 'translateY(-150%)',
+              transition: 'transform 0.1s ease-in-out',
+            }}
+            className="bg-white border border-gray-300 p-4 shadow-md overflow-hidden flex justify-start absolute w-[400px] right-8 top-8 rounded-md z-[51]"
+          >
+            <div className="w-full h-[6px] bg-secondary absolute top-0 right-0" />
+            <div className="flex  flex-col items-center justify-center gap-2">
               <div className="flex justify-start items-center">
                 <Info className="text-secondary mr-2" />
-                <p className="text-lg font-medium">Printing Picklist...</p>
+                <p className="text-lg font-medium">Generating Picklist...</p>
               </div>
               <p>Picklist is being generated</p>
             </div>
@@ -149,6 +185,7 @@ function ShipstationPickList() {
         markPrinterAsDefault={markPrinterAsDefault}
         sendToPrinter={sendToPrinter}
         onClose={() => setOpenPrintModal(false)}
+        isPrinting={isPrinting}
       />
       <div
         style={{
