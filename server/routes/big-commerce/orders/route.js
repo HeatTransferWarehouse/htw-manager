@@ -740,6 +740,8 @@ async function processSingleOrder(orderId, attempt = 1) {
     if (!ALLOWED_STATUSES.has(status)) {
       // If status is Incomplete, retry with backoff
       if (status === 'Incomplete' && attempt < MAX_RETRIES) {
+        console.log(`⏳ Order ${orderId} is Incomplete, retrying attempt ${attempt + 1}...`);
+
         setTimeout(() => processSingleOrder(orderId, attempt + 1), BACKOFF_MS);
       } else {
         // If not allowed or max retries reached, skip
