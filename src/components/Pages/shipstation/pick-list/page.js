@@ -31,7 +31,7 @@ function ShipstationPickList() {
   const [activeOrders, setActiveOrders] = useState([]);
   const [expandedOrderIDs, setExpandedOrderIDs] = useState([]);
   const [currentTime, setCurrentTime] = useState(Date.now());
-  const [isFullScreen, setIsFullScreen] = useState(true);
+  const [isFullScreen, setIsFullScreen] = useState(false);
   const [generateMessageOpen, setGenerateMessageOpen] = useState(false);
 
   const shipmentsByOrder = orders.reduce((acc, order) => {
