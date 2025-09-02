@@ -429,11 +429,11 @@ const batchGetVariantMetaFields = async (variantPairs, chunkSize = 3) => {
     // Each alias encodes product + variant
     const query = `
   query {
-    site {
-      ${chunk
-        .map(
-          ({ productId, variantId }, idx) => `
-          pv${i + idx}: product(entityId: ${productId}) {
+    ${chunk
+      .map(
+        ({ productId, variantId }, idx) => `
+        pv${i + idx}: site {
+          product(entityId: ${productId}) {
             entityId
             variants(entityIds: [${variantId}]) {
               edges {
@@ -446,10 +446,10 @@ const batchGetVariantMetaFields = async (variantPairs, chunkSize = 3) => {
               }
             }
           }
-        `
-        )
-        .join('\n')}
-    }
+        }
+      `
+      )
+      .join('\n')}
   }
 `;
 
@@ -579,8 +579,13 @@ const processLineItems = async (products, order) => {
     const variantMetaFields = variantMetaMap[`${p.product_id}:${p.variant_id}`] || [];
     const productCategories = categoriesMap[p.product_id] || [];
 
+    console.log('Product', p.product_id, 'metafields:', productMetaFields);
+    console.log('Variant', p.variant_id, 'metafields:', variantMetaFields);
+
     const isProductDropship = determineDropShipStatus(productMetaFields);
     const isVariantDropship = determineDropShipStatus(variantMetaFields);
+
+    console.log(isProductDropship, isVariantDropship);
 
     const isClothingProduct = productCategories.some(
       (cat) => cat?.name?.trim().toLowerCase() === 'clothing'
@@ -641,7 +646,7 @@ const getOrderData = async (orderID) => {
   return json;
 };
 
-// getOrderData(3614599);
+getOrderData(3615008);
 
 // -----------------------------------------------------------------------
 // DB
