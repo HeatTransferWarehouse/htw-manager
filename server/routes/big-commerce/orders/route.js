@@ -548,7 +548,7 @@ const determineDropShipStatus = (metaFields) => {
     }
 
     return values.some(
-      (v) => /drop\s*-?\s*ship/i.test(String(v)) // matches "dropship", "drop-ship", "drop ship"
+      (v) => /\bdrops?\s*-?\s*ship\b/i.test(String(v)) // matches "dropship", "drop-ship", "drop ship"
     );
   });
 };
