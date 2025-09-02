@@ -33,7 +33,7 @@ async function getWebHooks() {
     const response = await axios.get(url, { headers });
     response.data.data.forEach(async (hook) => {
       if (!hook.is_active) {
-        await updateWebHooks(hook.id);
+        await updateWebHooks(hook);
       }
     });
   } catch (err) {
@@ -41,67 +41,23 @@ async function getWebHooks() {
   }
 }
 
+getWebHooks();
+
 // This function will run every 60 seconds to check if the access token is still valid. If it is not, it will get a new one.
-async function updateWebHooks(id) {
-  const url = `https://api.bigcommerce.com/stores/${process.env.STORE_HASH}/v3/hooks/${id}`;
+async function updateWebHooks(hook) {
+  const url = `https://api.bigcommerce.com/stores/${process.env.STORE_HASH}/v3/hooks/${hook.id}`;
   const headers = {
     'X-Auth-Token': process.env.BG_AUTH_TOKEN,
   };
 
   // This is the object that will be used to update the webhooks
-  let webHookObject;
-  if (id === 27305616) {
-    webHookObject = {
-      scope: 'store/order/created',
-      destination: 'https://admin.heattransferwarehouse.com/supacolor-api/create-order',
-      is_active: true,
-      events_history_enabled: true,
-      headers: {
-        custom: 'string',
-      },
-    };
-  }
-  if (id === 28123505) {
-    webHookObject = {
-      scope: 'store/order/statusUpdated',
-      destination: 'https://admin.heattransferwarehouse.com/api/bp-api/bp-tracking',
-      is_active: true,
-      events_history_enabled: true,
-      headers: {
-        property1: 'string',
-        property2: 'string',
-      },
-    };
-  }
-  if (id === 28259671) {
-    webHookObject = {
-      scope: 'store/order/created',
-      destination: 'https://admin.heattransferwarehouse.com/api/sff-queue/create-order',
-      is_active: true,
-      events_history_enabled: true,
-      headers: null,
-    };
-  }
-  if (id === 28268539) {
-    webHookObject = {
-      scope: 'store/order/created',
-      destination: 'https://admin.heattransferwarehouse.com/api/queue/create-order',
-      is_active: true,
-      events_history_enabled: true,
-      headers: null,
-    };
-  }
-  if (id === 28329990) {
-    webHookObject = {
-      scope: 'store/order/created',
-      destination: 'https://admin.heattransferwarehouse.com/api/clothing-queue/order-webhook',
-      is_active: true,
-      events_history_enabled: true,
-      headers: null,
-    };
-  }
+  const updatedWebHookObject = {
+    ...hook,
+    is_active: true,
+  };
   try {
-    await axios.put(url, webHookObject, { headers });
+    await axios.put(url, updatedWebHookObject, { headers });
+    console.log(`Webhook ${hook.id} was updated to active`);
   } catch (error) {
     console.log('Error updating webhooks', error);
   }
