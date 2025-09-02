@@ -41,8 +41,6 @@ async function getWebHooks() {
   }
 }
 
-getWebHooks();
-
 // This function will run every 60 seconds to check if the access token is still valid. If it is not, it will get a new one.
 async function updateWebHooks(hook) {
   const url = `https://api.bigcommerce.com/stores/${process.env.STORE_HASH}/v3/hooks/${hook.id}`;
