@@ -122,10 +122,9 @@
   },
   "scripts": {
     "start": "node server/server.js",
-    "do-build": "npm run build",
     "client": "concurrently \"react-app-rewired start\" \"npx tailwindcss -i ./src/input.css -o ./src/output.css --watch\"",
     "server": "nodemon --watch server server/server.js",
-    "build": "node --max_old_space_size=4096 node_modules/react-app-rewired/scripts/build.js",
+    "build": "react-app-rewired build",
     "test": "react-app-rewired test",
     "eject": "react-scripts eject",
     "sass": "sass --watch src/assets/styles:src/assets/styles"
