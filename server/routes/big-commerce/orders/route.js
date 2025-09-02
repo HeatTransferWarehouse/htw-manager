@@ -579,13 +579,8 @@ const processLineItems = async (products, order) => {
     const variantMetaFields = variantMetaMap[`${p.product_id}:${p.variant_id}`] || [];
     const productCategories = categoriesMap[p.product_id] || [];
 
-    console.log('Product', p.product_id, 'metafields:', productMetaFields);
-    console.log('Variant', p.variant_id, 'metafields:', variantMetaFields);
-
     const isProductDropship = determineDropShipStatus(productMetaFields);
     const isVariantDropship = determineDropShipStatus(variantMetaFields);
-
-    console.log(isProductDropship, isVariantDropship);
 
     const isClothingProduct = productCategories.some(
       (cat) => cat?.name?.trim().toLowerCase() === 'clothing'
@@ -1016,8 +1011,6 @@ router.post('/split', async (req, res) => {
       const shipmentItems = lineItems.filter((li) =>
         shipment.items.map(String).includes(String(li.id))
       );
-
-      console.log(`Shipment ${shipment.id} will contain items:`, shipmentItems);
 
       if (!shipmentItems.length) {
         console.warn(`⚠️ No matching items found for shipment ${shipment.id}`);
