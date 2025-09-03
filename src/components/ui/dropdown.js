@@ -6,6 +6,7 @@ import React, {
   useState,
   createContext,
   useContext,
+  useLayoutEffect,
 } from 'react';
 import { twMerge } from 'tailwind-merge';
 import { FaChevronDown, FaChevronUp } from 'react-icons/fa6';
@@ -71,33 +72,24 @@ const DropDownContainer = ({ children, className, onClose, type = 'hover' }) => 
     };
   }, [calculatePosition]);
 
-  useEffect(() => {
+  useLayoutEffect(() => {
+    if (type === 'hover') return;
     const handleClickOutside = (event) => {
-      const trigger = triggerRef.current;
-      const content = contentRef.current;
+      if (!isOpen) return;
+      if (!triggerRef.current || !contentRef.current) return;
+
       if (
-        trigger &&
-        !trigger.contains(event.target) &&
-        content &&
-        !content.contains(event.target)
+        !triggerRef.current.contains(event.target) &&
+        !contentRef.current.contains(event.target)
       ) {
-        if (isOpen) {
-          closeDropdown();
-          onClose && onClose(event);
-        }
+        closeDropdown();
+        onClose?.(event);
       }
     };
 
-    if (type !== 'hover') {
-      document.addEventListener('click', handleClickOutside);
-    }
-
-    return () => {
-      if (type !== 'hover') {
-        document.removeEventListener('click', handleClickOutside);
-      }
-    };
-  }, [type, isOpen, onClose, triggerRef, contentRef]);
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, [type, isOpen, onClose]);
 
   return (
     <DropDownContext.Provider
@@ -163,73 +155,85 @@ const DropDownTrigger = forwardRef(({ children, className, onClick, ...props }, 
 });
 
 const DropDownContent = ({ children, className, style }) => {
-  const { isOpen, dropdownstyle, containerRef, contentRef } = useContext(DropDownContext);
-  const [isPositioned, setIsPositioned] = useState(false);
+  const { isOpen, dropdownstyle, triggerRef, contentRef } = useContext(DropDownContext);
+  const [isVisible, setIsVisible] = useState(false); // controls render
+  const [animate, setAnimate] = useState(false); // controls CSS animation
+  const [isPositioned, setIsPositioned] = useState({});
 
+  // Open animation
   useEffect(() => {
-    if (isOpen && contentRef.current) {
-      const { offsetWidth, scrollHeight } = contentRef.current;
-      const { buttonWidth, positionX, positionY, triggerHeight } = dropdownstyle;
-
-      const viewportHeight = window.innerHeight;
-      const viewportWidth = window.innerWidth;
-
-      let top = triggerHeight + 4;
-      let left = 0;
-      let isBottom = false;
-      let isRight = false;
-
-      if (top + scrollHeight > viewportHeight) {
-        top = positionY - scrollHeight;
-        isBottom = true;
-      }
-
-      if (left + offsetWidth > viewportWidth) {
-        isRight = true;
-      }
-
-      setIsPositioned({
-        width:
-          buttonWidth < contentRef.current?.scrollWidth
-            ? contentRef.current?.scrollWidth
-            : buttonWidth,
-        left: isRight ? 'unset' : left,
-        right: isRight ? viewportWidth - positionX - buttonWidth : 'unset',
-        top: isBottom ? 'unset' : top,
-        bottom: isBottom ? viewportHeight - positionY + 4 : 'unset',
-      });
+    if (isOpen) {
+      setIsVisible(true); // mount
+      requestAnimationFrame(() =>
+        setTimeout(() => {
+          setAnimate(true);
+        }, 5)
+      ); // trigger transition
+    } else {
+      setAnimate(false); // start exit
+      setIsVisible(false); // unmount
     }
-  }, [isOpen, dropdownstyle, children, contentRef]);
+  }, [isOpen]);
 
-  return isOpen && containerRef.current
-    ? createPortal(
-        <div
-          ref={contentRef}
-          className={twMerge(
-            'absolute z-[999999] rounded-md h-fit max-h-[200px] min-w-[120px] overflow-x-hidden overflow-y-auto bg-white shadow-default',
-            className
-          )}
-          style={{
-            ...style,
-            ...isPositioned,
-          }}
-        >
-          {children}
-        </div>,
-        containerRef.current
-      )
-    : null;
+  useLayoutEffect(() => {
+    if (!isVisible || !contentRef.current || !triggerRef.current) return;
+
+    const { offsetWidth, scrollHeight } = contentRef.current;
+    const { buttonWidth, positionX, positionY, triggerHeight } = dropdownstyle;
+
+    const viewportHeight = window.innerHeight;
+    const viewportWidth = window.innerWidth;
+
+    let top = triggerRef.current.getBoundingClientRect().top + triggerHeight;
+    let left = positionX;
+    let isBottom = false;
+    let isRight = false;
+
+    if (top + scrollHeight > viewportHeight) {
+      top = positionY - scrollHeight;
+      isBottom = true;
+    }
+
+    if (left + offsetWidth > viewportWidth) {
+      isRight = true;
+    }
+
+    setIsPositioned({
+      width: Math.max(buttonWidth, contentRef.current.scrollWidth),
+      left: isRight ? 'unset' : left,
+      right: isRight ? viewportWidth - positionX - buttonWidth : 'unset',
+      top: isBottom ? 'unset' : top,
+      bottom: isBottom ? viewportHeight - positionY + 4 : 'unset',
+    });
+  }, [isVisible, dropdownstyle, contentRef, triggerRef]);
+
+  if (!isVisible || !triggerRef.current) return null;
+
+  return createPortal(
+    <div
+      ref={contentRef}
+      className={twMerge(
+        'fixed z-[999999999999999999] rounded-md h-fit max-h-[200px] flex flex-col w-fit overflow-x-hidden overflow-y-auto bg-white shadow-default transition-all duration-100',
+        animate ? 'translate-y-1' : 'translate-y-0',
+        className
+      )}
+      style={{ ...style, ...isPositioned }}
+    >
+      {children}
+    </div>,
+    document.body
+  );
 };
 
 const DropDownItem = forwardRef(({ children, className, onClick, active, ...rest }, ref) => {
   const { closeDropdown } = useContext(DropDownContext);
 
   return (
-    <div
+    <button
       ref={ref}
       className={twMerge(
-        active ? 'bg-secondary/10 text-secondary' : '',
-        'p-2 hover:bg-secondary/10 hover:text-secondary cursor-pointer',
+        active ? 'bg-secondary/10 text-secondary hover:bg-secondary/10' : 'hover:bg-secondary/5',
+        'p-2  w-full hover:text-secondary text-left disabled:text-gray-500 cursor-pointer disabled:hover:text-gray-500 disabled:cursor-not-allowed disabled:hover:bg-transparent',
         className
       )}
       onClick={(e) => {
@@ -239,7 +243,7 @@ const DropDownItem = forwardRef(({ children, className, onClick, active, ...rest
       {...rest}
     >
       {children}
-    </div>
+    </button>
   );
 });
 

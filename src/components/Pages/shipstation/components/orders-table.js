@@ -36,7 +36,7 @@ import DeleteModal from '../modals/modals';
 import PicklistHeader from './table-header';
 import useOrdersData from '../hooks/useOrdersData';
 import LoadingSkeleton from './loading-skeleton';
-import { LuExpand } from 'react-icons/lu';
+import { FaRegCopy } from 'react-icons/fa6';
 
 function OrdersTable({
   isFullScreen,
@@ -315,9 +315,9 @@ function OrdersTable({
                       </button>
                     </TableCell>
 
-                    <TableCell className="mb-auto p-2" minWidth="9rem">
+                    <TableCell className="mb-auto  p-2" minWidth="9rem">
                       <a
-                        className="text-secondary"
+                        className="text-secondary flex items-center gap-1 relative group"
                         target="_blank"
                         href={`https://store-et4qthkygq.mybigcommerce.com/manage/orders/${order.order_id}`}
                       >

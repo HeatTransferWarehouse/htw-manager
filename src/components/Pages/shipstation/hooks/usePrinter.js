@@ -3,6 +3,7 @@ import { getLocalPrinters } from '../utils/utils';
 
 export default function usePrinter(
   printRef,
+  conversionRef,
   activeOrders,
   dispatch,
   limit,
@@ -18,6 +19,7 @@ export default function usePrinter(
   const [selectedPrinter, setSelectedPrinter] = useState('');
   const [savedPDFBlob, setSavedPDFBlob] = useState(null);
   const [isPrinting, setIsPrinting] = useState(false);
+  const [type, setType] = useState(''); // 'picklist' or 'conversion'
 
   /** ✅ Inline all CSS so the print server sees styled HTML */
   const getInlineStyledHtml = (element) => {
@@ -43,8 +45,10 @@ export default function usePrinter(
   };
 
   /** ✅ Generate PDF from the hidden ref */
-  const generatePDF = async () => {
-    const ref = printRef.current;
+  const generatePDF = async (type) => {
+    setType(type);
+    const ref = type === 'conversion' ? conversionRef.current : printRef.current;
+
     if (!ref) {
       setGeneratingPDF(false);
       return;
@@ -90,12 +94,13 @@ export default function usePrinter(
       alert('❌ An unexpected error occurred while generating the PDF.');
     } finally {
       setGeneratingPDF(false);
+      setType('');
     }
   };
 
   /** ✅ Entry point to start printing flow */
-  const printOrders = async () => {
-    generatePDF();
+  const printOrders = async (type) => {
+    generatePDF(type);
   };
 
   /** ✅ Mark printer as default */
@@ -138,16 +143,18 @@ export default function usePrinter(
       const result = await response.json();
 
       if (response.ok) {
-        dispatch({
-          type: 'MARK_ORDERS_PRINTED',
-          payload: {
-            orderIds: activeOrders.map((o) => o.order_id),
-            limit,
-            filter: view,
-            search,
-            page,
-          },
-        });
+        if (type === 'picklist') {
+          dispatch({
+            type: 'MARK_ORDERS_PRINTED',
+            payload: {
+              orderIds: activeOrders.map((o) => o.order_id),
+              limit,
+              filter: view,
+              search,
+              page,
+            },
+          });
+        }
         setOpenPrintModal(false);
         setSelectedPrinter('');
       } else {
@@ -173,5 +180,6 @@ export default function usePrinter(
     sendToPrinter,
     markPrinterAsDefault,
     isPrinting,
+    type,
   };
 }

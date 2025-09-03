@@ -23,6 +23,7 @@ export default function PrintModal({
   sendToPrinter,
   onClose,
   isPrinting,
+  type,
 }) {
   if (!open) return null;
 

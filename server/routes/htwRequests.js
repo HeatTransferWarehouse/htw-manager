@@ -3,11 +3,9 @@ const express = require('express');
 const router = express.Router();
 const fs = require('fs').promises; // Use the Promise-based fs API
 const multer = require('multer');
-const { exec } = require('child_process');
 const sharp = require('sharp'); // Import sharp for image processing
 const PSD = require('psd'); // Import psd.js
 const path = require('path');
-const sizeOf = require('image-size'); // Import image-size package for getting dimensions
 const { PDFDocument } = require('pdf-lib'); // Import pdf-lib for PDF processing
 
 const storage = multer.memoryStorage();

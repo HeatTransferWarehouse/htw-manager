@@ -1,6 +1,4 @@
 const express = require('express');
-
-const app = express();
 const pool = require('../modules/pool');
 const router = express.Router();
 const axios = require('axios');
@@ -20,46 +18,6 @@ const logtail = new Logtail('KQi4An7q1YZVwaTWzM72Ct5r');
 let accessToken;
 
 // This function will run every 60 seconds to check if the webhooks are active. If they are not, it will activate them.
-setInterval(getWebHooks, 60 * 1000);
-
-// This function will run every 60 seconds to check if the access token is still valid. If it is not, it will get a new one.
-async function getWebHooks() {
-  const url = `https://api.bigcommerce.com/stores/${process.env.STORE_HASH}/v3/hooks`;
-  const headers = {
-    'X-Auth-Token': process.env.BG_AUTH_TOKEN,
-  };
-
-  try {
-    const response = await axios.get(url, { headers });
-    response.data.data.forEach(async (hook) => {
-      if (!hook.is_active) {
-        await updateWebHooks(hook);
-      }
-    });
-  } catch (err) {
-    console.log('Error getting webhooks', err);
-  }
-}
-
-// This function will run every 60 seconds to check if the access token is still valid. If it is not, it will get a new one.
-async function updateWebHooks(hook) {
-  const url = `https://api.bigcommerce.com/stores/${process.env.STORE_HASH}/v3/hooks/${hook.id}`;
-  const headers = {
-    'X-Auth-Token': process.env.BG_AUTH_TOKEN,
-  };
-
-  // This is the object that will be used to update the webhooks
-  const updatedWebHookObject = {
-    ...hook,
-    is_active: true,
-  };
-  try {
-    await axios.put(url, updatedWebHookObject, { headers });
-    console.log(`Webhook ${hook.id} was updated to active`);
-  } catch (error) {
-    console.log('Error updating webhooks', error);
-  }
-}
 
 // This function gets the access token from the Supacolor API
 async function getAccessToken() {

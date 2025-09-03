@@ -10,9 +10,11 @@ import { useLocation } from 'react-router-dom';
 import usePrinter from '../hooks/usePrinter';
 import PrintModal from '../components/print-modal';
 import { twMerge } from 'tailwind-merge';
+import ConversionHTML from '../components/conversion-list';
 
 function ShipstationPickList() {
   const printRef = useRef();
+  const conversionRef = useRef();
   const location = useLocation();
   const dispatch = useDispatch();
   const searchParams = new URLSearchParams(location.search);
@@ -33,6 +35,7 @@ function ShipstationPickList() {
   const [currentTime, setCurrentTime] = useState(Date.now());
   const [isFullScreen, setIsFullScreen] = useState(false);
   const [generateMessageOpen, setGenerateMessageOpen] = useState(false);
+  const [printType, setPrintType] = useState('');
 
   const shipmentsByOrder = orders.reduce((acc, order) => {
     const { order_id, shipment_number } = order;
@@ -65,8 +68,10 @@ function ShipstationPickList() {
     sendToPrinter,
     markPrinterAsDefault,
     isPrinting,
+    type,
   } = usePrinter(
     printRef,
+    conversionRef,
     activeOrders,
     dispatch,
     rowsPerPage,
@@ -186,6 +191,7 @@ function ShipstationPickList() {
         sendToPrinter={sendToPrinter}
         onClose={() => setOpenPrintModal(false)}
         isPrinting={isPrinting}
+        type={type}
       />
       <div
         style={{
@@ -199,6 +205,19 @@ function ShipstationPickList() {
         }}
       >
         <PrintHtml ref={printRef} activeOrders={activeOrders} splitOrders={splitOrders} />
+      </div>
+      <div
+        style={{
+          clip: 'rect(0 0 0 0)',
+          clipPath: 'inset(100%)',
+          height: '1px',
+          overflow: 'hidden',
+          position: 'absolute',
+          whiteSpace: 'nowrap',
+          width: '1px',
+        }}
+      >
+        <ConversionHTML ref={conversionRef} activeOrders={activeOrders} />
       </div>
     </div>
   );

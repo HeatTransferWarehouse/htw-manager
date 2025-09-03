@@ -150,11 +150,14 @@ function ShipmentDropdown({ shipments, setShipments, item }) {
       <DropDownTrigger className="top-0 w-full bg-white border justify-between border-gray-400">
         {shipments.find((s) => s.items.includes(item.id))?.name || 'Select Shipment'}
       </DropDownTrigger>
-      <DropDownContent className={'!w-full'}>
+      <DropDownContent>
         {shipments.map((shipment) => (
           <DropDownItem
             key={shipment.id}
-            className="p-2 hover:bg-gray-100 cursor-pointer flex items-center justify-between"
+            className={twMerge(
+              'p-2  text-sm cursor-pointer flex items-center justify-between',
+              shipment.items.includes(item.id) && 'bg-secondary/10'
+            )}
             onClick={() => {
               // Assign item to this shipment
               const updatedShipments = shipments.map((s) => {
@@ -169,11 +172,11 @@ function ShipmentDropdown({ shipments, setShipments, item }) {
             }}
           >
             <span>{shipment.name}</span>
-            {shipment.items.includes(item.id) && <FaCheck />}
+            {shipment.items.includes(item.id) && <FaCheck className="text-secondary" />}
           </DropDownItem>
         ))}
         <DropDownItem
-          className="p-2 hover:bg-gray-100 cursor-pointer flex items-center justify-between"
+          className="p-2  text-sm cursor-pointer flex items-center justify-between"
           onClick={() => {
             const newShipmentId = shipments.length + 1;
             const newShipment = {

@@ -54,18 +54,7 @@ function PicklistHeader({
       <div className="p-4 flex  items-center gap-3">
         <Search onSearch={handleSearch} />
         <ViewDropdown view={view} url={pathname} />
-        <button
-          disabled={activeOrders.length === 0}
-          className={twMerge(
-            ' px-4 py-2 text-lg rounded-md border',
-            activeOrders.length > 0
-              ? ' text-secondary border-secondary hover:bg-secondary hover:text-white'
-              : ' text-gray-500 border-gray-500 cursor-not-allowed'
-          )}
-          onClick={printOrders}
-        >
-          Print
-        </button>
+        <PrintDropdown printOrders={printOrders} activeOrders={activeOrders} />
         <ActionsDropdown
           canSplitOrder={canSplitOrder}
           oneOrderActive={oneOrderActive}
@@ -77,6 +66,7 @@ function PicklistHeader({
           page={page}
           rowsPerPage={rowsPerPage}
           setActiveOrders={setActiveOrders}
+          setDeleteModalActive={setDeleteModalActive}
         />
         {/* <TagsDropdown orderTagsList={orderTagsList} /> */}
         <button
@@ -93,18 +83,7 @@ function PicklistHeader({
             Sync Orders <FaSyncAlt className={twMerge('w-3 h-3', syncing && 'animate-spin')} />
           </span>
         </button>
-        <button
-          disabled={activeOrders.length === 0}
-          className={twMerge(
-            ' px-4 py-2 text-lg rounded-md border',
-            activeOrders.length > 0
-              ? ' text-red-600 border-red-600 hover:bg-red-600 hover:text-white'
-              : ' text-gray-500 border-gray-500 cursor-not-allowed'
-          )}
-          onClick={() => setDeleteModalActive(true)}
-        >
-          Delete ({activeOrders.length})
-        </button>
+
         <Pagination
           props={{
             itemsCount: orderCount,
@@ -144,14 +123,14 @@ const ViewDropdown = ({ view, url }) => {
       <DropDownTrigger className="w-full hover:border-secondary border text-lg border-black justify-between">
         View: {toTitleCase(view)}
       </DropDownTrigger>
-      <DropDownContent>
+      <DropDownContent className={'max-h-fit'}>
         <DropDownItem
           className={twMerge(
             'text-black text-base p-0',
             view === 'all' && 'bg-secondary/10 text-secondary'
           )}
         >
-          <Link className="w-full flex p-2" to={`${url}?view=all`}>
+          <Link className="w-full flex p-2 border-b border-b-gray-300" to={`${url}?view=all`}>
             All
           </Link>
         </DropDownItem>
@@ -161,7 +140,7 @@ const ViewDropdown = ({ view, url }) => {
             view === 'printed' && 'bg-secondary/10 text-secondary'
           )}
         >
-          <Link className="w-full flex p-2" to={`${url}?view=printed`}>
+          <Link className="w-full flex p-2 border-b border-b-gray-300" to={`${url}?view=printed`}>
             Printed
           </Link>
         </DropDownItem>
@@ -171,7 +150,10 @@ const ViewDropdown = ({ view, url }) => {
             view === 'not-printed' && 'bg-secondary/10 text-secondary'
           )}
         >
-          <Link className="w-full flex p-2" to={`${url}?view=not-printed`}>
+          <Link
+            className="w-full flex p-2 border-b border-b-gray-300"
+            to={`${url}?view=not-printed`}
+          >
             Not Printed
           </Link>
         </DropDownItem>
@@ -181,7 +163,7 @@ const ViewDropdown = ({ view, url }) => {
             view === 'drop-ship' && 'bg-secondary/10 text-secondary'
           )}
         >
-          <Link className="w-full flex p-2" to={`${url}?view=dropship`}>
+          <Link className="w-full flex p-2 border-b border-b-gray-300" to={`${url}?view=dropship`}>
             Dropship
           </Link>
         </DropDownItem>
@@ -199,6 +181,30 @@ const ViewDropdown = ({ view, url }) => {
     </DropDownContainer>
   );
 };
+const PrintDropdown = ({ printOrders, activeOrders }) => {
+  return (
+    <DropDownContainer type="click">
+      <DropDownTrigger className="w-full hover:border-secondary border text-lg border-black justify-between">
+        Print
+      </DropDownTrigger>
+      <DropDownContent>
+        <DropDownItem
+          className="border-b border-gray-300"
+          disabled={activeOrders.length === 0}
+          onClick={() => printOrders('picklist')}
+        >
+          Picklist
+        </DropDownItem>
+        <DropDownItem
+          disabled={activeOrders.length === 0}
+          onClick={() => printOrders('conversion')}
+        >
+          Conversion List
+        </DropDownItem>
+      </DropDownContent>
+    </DropDownContainer>
+  );
+};
 const ActionsDropdown = ({
   canSplitOrder,
   oneOrderActive,
@@ -210,6 +216,7 @@ const ActionsDropdown = ({
   view,
   page,
   rowsPerPage,
+  setDeleteModalActive,
 }) => {
   const splitButtonRef = React.useRef(null);
   const mergeButtonRef = React.useRef(null);
@@ -240,12 +247,11 @@ const ActionsDropdown = ({
           {/* Split Orders */}
           <DropDownItem
             ref={splitButtonRef}
-            className={twMerge(
-              'text-base relative border-b border-gray-300 p-2',
-              canSplitOrder
-                ? 'text-black hover:bg-secondary/10 cursor-pointer'
-                : 'text-gray-500 !bg-transparent hover:text-gray-500 cursor-not-allowed'
-            )}
+            disabled={!canSplitOrder}
+            className={twMerge('text-base relative border-b border-gray-300 p-2')}
+            onClick={() => {
+              if (canSplitOrder) setOrderSplitModalActive(true);
+            }}
             onMouseEnter={() => {
               if (!canSplitOrder) {
                 showTooltip(
@@ -260,20 +266,15 @@ const ActionsDropdown = ({
             }}
             onMouseLeave={hideTooltip}
           >
-            <button
-              onClick={() => {
-                if (canSplitOrder) setOrderSplitModalActive(true);
-              }}
-            >
-              Split Order
-            </button>
+            Split Order
           </DropDownItem>
 
           {/* Combine Orders */}
           <DropDownItem
             ref={mergeButtonRef}
+            disabled={!canMergeOrders}
             className={twMerge(
-              'text-base relative text-nowrap p-2',
+              'text-base relative text-nowrap border-b border-gray-300 p-2',
               canMergeOrders
                 ? 'text-black hover:bg-secondary/10 cursor-pointer'
                 : 'text-gray-500 !bg-transparent hover:text-gray-500 cursor-not-allowed'
@@ -306,6 +307,13 @@ const ActionsDropdown = ({
             onMouseLeave={hideTooltip}
           >
             Combine Orders
+          </DropDownItem>
+          <DropDownItem
+            onClick={() => setDeleteModalActive(true)}
+            className="text-red-500 hover:bg-red-500/5 hover:text-red-500"
+            disabled={activeOrders.length === 0}
+          >
+            Delete ({activeOrders.length})
           </DropDownItem>
         </DropDownContent>
       </DropDownContainer>
