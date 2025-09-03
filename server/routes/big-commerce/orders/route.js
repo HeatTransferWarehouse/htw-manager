@@ -27,6 +27,8 @@ const STATUS_MAP = {
   14: 'Partially Refunded',
 };
 
+const clothingKeywords = ['clothing', 'towel', 'youth', 'womens', 'bottoms'];
+
 // Webhook delay/debounce: give BigCommerce time to flip out of "Incomplete"
 const PENDING_TIMERS = new Map(); // order_id -> timeout
 const DELAY_MS = 5_000; // initial delay after webhook
@@ -582,8 +584,8 @@ const processLineItems = async (products, order) => {
     const isProductDropship = determineDropShipStatus(productMetaFields);
     const isVariantDropship = determineDropShipStatus(variantMetaFields);
 
-    const isClothingProduct = productCategories.some(
-      (cat) => cat?.name?.trim().toLowerCase() === 'clothing'
+    const isClothingProduct = productCategories.some((cat) =>
+      clothingKeywords.some((kw) => cat?.name?.trim().toLowerCase().includes(kw))
     );
 
     return {
@@ -640,8 +642,6 @@ const getOrderData = async (orderID) => {
 
   return json;
 };
-
-getOrderData(3615008);
 
 // -----------------------------------------------------------------------
 // DB
