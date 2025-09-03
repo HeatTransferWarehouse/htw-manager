@@ -45,9 +45,9 @@ export default function usePrinter(
   };
 
   /** ✅ Generate PDF from the hidden ref */
-  const generatePDF = async (type) => {
-    setType(type);
-    const ref = type === 'conversion' ? conversionRef.current : printRef.current;
+  const generatePDF = async (printType) => {
+    const ref = printType === 'conversion' ? conversionRef.current : printRef.current;
+    console.log('type:', printType);
 
     if (!ref) {
       setGeneratingPDF(false);
@@ -94,7 +94,6 @@ export default function usePrinter(
       alert('❌ An unexpected error occurred while generating the PDF.');
     } finally {
       setGeneratingPDF(false);
-      setType('');
     }
   };
 
@@ -165,6 +164,7 @@ export default function usePrinter(
     } finally {
       setIsPrinting(false);
       setActiveOrders([]);
+      setType('');
     }
   };
 
@@ -181,5 +181,6 @@ export default function usePrinter(
     markPrinterAsDefault,
     isPrinting,
     type,
+    setType,
   };
 }

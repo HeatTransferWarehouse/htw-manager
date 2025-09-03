@@ -37,6 +37,7 @@ function PicklistHeader({
   setPage,
   orderTagsList,
   orderCount,
+  setType,
 }) {
   const location = useLocation();
   const pathname = location.pathname;
@@ -54,7 +55,7 @@ function PicklistHeader({
       <div className="p-4 flex  items-center gap-3">
         <Search onSearch={handleSearch} />
         <ViewDropdown view={view} url={pathname} />
-        <PrintDropdown printOrders={printOrders} activeOrders={activeOrders} />
+        <PrintDropdown printOrders={printOrders} setType={setType} activeOrders={activeOrders} />
         <ActionsDropdown
           canSplitOrder={canSplitOrder}
           oneOrderActive={oneOrderActive}
@@ -181,7 +182,7 @@ const ViewDropdown = ({ view, url }) => {
     </DropDownContainer>
   );
 };
-const PrintDropdown = ({ printOrders, activeOrders }) => {
+const PrintDropdown = ({ printOrders, activeOrders, setType }) => {
   return (
     <DropDownContainer type="click">
       <DropDownTrigger className="w-full hover:border-secondary border text-lg border-black justify-between">
@@ -191,13 +192,19 @@ const PrintDropdown = ({ printOrders, activeOrders }) => {
         <DropDownItem
           className="border-b border-gray-300"
           disabled={activeOrders.length === 0}
-          onClick={() => printOrders('picklist')}
+          onClick={() => {
+            setType('picklist');
+            printOrders('picklist');
+          }}
         >
           Picklist
         </DropDownItem>
         <DropDownItem
           disabled={activeOrders.length === 0}
-          onClick={() => printOrders('conversion')}
+          onClick={() => {
+            setType('conversion');
+            printOrders('conversion');
+          }}
         >
           Conversion List
         </DropDownItem>

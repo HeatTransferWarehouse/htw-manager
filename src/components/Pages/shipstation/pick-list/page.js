@@ -35,7 +35,6 @@ function ShipstationPickList() {
   const [currentTime, setCurrentTime] = useState(Date.now());
   const [isFullScreen, setIsFullScreen] = useState(false);
   const [generateMessageOpen, setGenerateMessageOpen] = useState(false);
-  const [printType, setPrintType] = useState('');
 
   const shipmentsByOrder = orders.reduce((acc, order) => {
     const { order_id, shipment_number } = order;
@@ -68,7 +67,7 @@ function ShipstationPickList() {
     sendToPrinter,
     markPrinterAsDefault,
     isPrinting,
-    type,
+    setType,
   } = usePrinter(
     printRef,
     conversionRef,
@@ -158,6 +157,7 @@ function ShipstationPickList() {
         searchTerm={searchTerm}
         setSearchTerm={setSearchTerm}
         loading={loading}
+        setType={setType}
       />
 
       {generatingPDF &&
@@ -191,7 +191,6 @@ function ShipstationPickList() {
         sendToPrinter={sendToPrinter}
         onClose={() => setOpenPrintModal(false)}
         isPrinting={isPrinting}
-        type={type}
       />
       <div
         style={{

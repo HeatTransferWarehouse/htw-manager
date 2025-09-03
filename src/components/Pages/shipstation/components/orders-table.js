@@ -59,6 +59,7 @@ function OrdersTable({
   setSearchTerm,
   searchTerm,
   loading,
+  setType,
 }) {
   const dispatch = useDispatch();
 
@@ -185,6 +186,7 @@ function OrdersTable({
           setPage={setPage}
           orderTagsList={orderTagsList}
           orderCount={ordersCount}
+          setType={setType}
         />
         <TableContainer tableFor={'orders'}>
           <TableHeader className={'bg-gray-200 border-y border-gray-400'}>
