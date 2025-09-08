@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { getLocalPrinters } from '../utils/utils';
+import { useDispatch } from 'react-redux';
 
 export default function usePrinter(
   printRef,
@@ -47,7 +48,6 @@ export default function usePrinter(
   /** ✅ Generate PDF from the hidden ref */
   const generatePDF = async (printType) => {
     const ref = printType === 'conversion' ? conversionRef.current : printRef.current;
-    console.log('type:', printType);
 
     if (!ref) {
       setGeneratingPDF(false);
@@ -58,7 +58,7 @@ export default function usePrinter(
       setGeneratingPDF(true);
 
       // Get printers
-      const printersResponse = await getLocalPrinters();
+      const printersResponse = await getLocalPrinters(dispatch);
       if (printersResponse?.printers?.length) {
         setPrintersList(printersResponse.printers);
         const defaultPrinter = printersResponse.printers.find((p) => p.is_default);
@@ -79,8 +79,13 @@ export default function usePrinter(
 
       if (!response.ok) {
         const text = await response.text();
-        console.error('PDF Server error:', response.status, text);
-        alert('⚠️ PDF generation failed. Please try again.');
+        dispatch({
+          type: 'SET_ORDERS_ERROR',
+          payload: {
+            title: 'PDF Generation Error',
+            message: text || 'An error occurred while generating the PDF.',
+          },
+        });
         return;
       }
 
@@ -91,7 +96,6 @@ export default function usePrinter(
       setOpenPrintModal(true);
     } catch (err) {
       console.error('generatePDF error:', err);
-      alert('❌ An unexpected error occurred while generating the PDF.');
     } finally {
       setGeneratingPDF(false);
     }
@@ -114,7 +118,7 @@ export default function usePrinter(
       const result = await response.json();
 
       if (response.ok && result.success) {
-        const updatePrinters = await getLocalPrinters();
+        const updatePrinters = await getLocalPrinters(dispatch);
         setPrintersList(updatePrinters.printers);
         const newDefault = updatePrinters.printers.find((p) => p.is_default);
         setSelectedPrinter(newDefault);
@@ -157,10 +161,26 @@ export default function usePrinter(
         setOpenPrintModal(false);
         setSelectedPrinter('');
       } else {
-        alert(`Print error: ${result.error}`);
+        dispatch({
+          type: 'SET_ORDERS_ERROR',
+          payload: {
+            title: 'Error Connecting to Print Server',
+            message:
+              err.message ||
+              'An Error occurred when attempting to connect to print server. Please ensure the print server is running on your machine.',
+          },
+        });
       }
     } catch (err) {
-      alert('⚠️ Local print server not detected. Please install and run the print server.');
+      dispatch({
+        type: 'SET_ORDERS_ERROR',
+        payload: {
+          title: 'Error Connecting to Print Server',
+          message:
+            err.message ||
+            'An Error occurred when attempting to connect to print server. Please ensure the print server is running on your machine.',
+        },
+      });
     } finally {
       setIsPrinting(false);
       setActiveOrders([]);

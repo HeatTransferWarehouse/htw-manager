@@ -23,7 +23,7 @@ export function formatMoney(amount, currency = 'USD', locale = 'en-US') {
   }).format(amount);
 }
 
-export async function getLocalPrinters() {
+export async function getLocalPrinters(dispatch) {
   try {
     const printersRes = await fetch('http://localhost:4577/printers');
     if (!printersRes.ok) throw new Error('Bad response from print server');
@@ -31,7 +31,18 @@ export async function getLocalPrinters() {
     return await printersRes.json();
   } catch (err) {
     console.warn('🛑 Local print server not running or unreachable.');
-    alert('⚠️ Local Print Server not detected. Please ensure it is installed and running.');
+    dispatch({
+      type: 'SET_ORDERS_ERROR',
+      payload: {
+        title: 'Error Connecting to Print Server',
+        message:
+          err.message ||
+          'An Error occurred when attempting to connect to print server. Please ensure the print server is running on your machine.',
+      },
+    });
+    setTimeout(() => {
+      dispatch({ type: 'CLEAR_ORDERS_ERROR' });
+    }, 5000);
     return;
   }
 }

@@ -7,6 +7,15 @@ function* splitOrder(action) {
     yield axios.post(`/api/big-commerce/orders/split`, { orderId, shipments });
     yield put({ type: 'GET_ORDERS', payload: { page, filter: view, limit: rowsPerPage } }); // Refresh orders
   } catch (err) {
+    yield put({
+      type: 'SET_ORDERS_ERROR',
+      payload: {
+        title: 'Error Splitting Order',
+        message: err.message || 'An error occurred while splitting the order.',
+      },
+    });
+    yield delay(5000);
+    yield put({ type: 'CLEAR_ORDERS_ERROR' });
     console.error('Error in splitOrder Saga:', err);
   }
 }
@@ -17,7 +26,51 @@ function* combineOrders(action) {
     yield axios.post(`/api/big-commerce/orders/merge`, { orderId, shipments });
     yield put({ type: 'GET_ORDERS', payload: { page, limit: rowsPerPage, filter: view } }); // Refresh orders
   } catch (err) {
-    console.error('Error in combineOrders Saga:', err);
+    yield put({
+      type: 'SET_ORDERS_ERROR',
+      payload: {
+        title: 'Error Combining Orders',
+        message: err.message || 'An error occurred while combining the orders.',
+      },
+    });
+    yield delay(5000);
+    yield put({ type: 'CLEAR_ORDERS_ERROR' });
+  }
+}
+
+function* addOrder(action) {
+  try {
+    const { orderId, view, page, rowsPerPage } = action.payload;
+
+    // ✅ store the response
+    const response = yield call(axios.post, `/api/big-commerce/orders/add`, { orderId });
+
+    // Refresh orders
+    yield put({
+      type: 'GET_ORDERS',
+      payload: { page, filter: view, limit: rowsPerPage },
+    });
+
+    // ✅ use message from server if provided
+    yield put({
+      type: 'SET_ORDERS_SUCCESS',
+      payload: {
+        title: `Order ${orderId} Added`,
+        message: response.data?.message || `Order ${orderId} was successfully added.`,
+      },
+    });
+  } catch (err) {
+    yield put({
+      type: 'SET_ORDERS_ERROR',
+      payload: {
+        title: 'Error Adding Order',
+        message:
+          err.response?.data?.message || err.message || 'An error occurred while adding the order.',
+      },
+    });
+
+    yield delay(5000);
+    yield put({ type: 'CLEAR_ORDERS_ERROR' });
   }
 }
 
@@ -56,6 +109,15 @@ function* getOrders(action) {
       });
     }
   } catch (err) {
+    yield put({
+      type: 'SET_ORDERS_ERROR',
+      payload: {
+        title: 'Error Fetching Orders',
+        message: err.message || 'An error occurred while fetching orders.',
+      },
+    });
+    yield delay(5000);
+    yield put({ type: 'CLEAR_ORDERS_ERROR' });
     console.error('Error in getOrders Saga:', err);
   } finally {
     yield put({ type: 'SET_ORDERS_LOADING', payload: false });
@@ -82,6 +144,15 @@ function* markOrdersPrinted(action) {
       },
     }); // Refresh orders
   } catch (err) {
+    yield put({
+      type: 'SET_ORDERS_ERROR',
+      payload: {
+        title: 'Error Marking Orders as Printed',
+        message: err.message || 'An error occurred while marking orders as printed.',
+      },
+    });
+    yield delay(5000);
+    yield put({ type: 'CLEAR_ORDERS_ERROR' });
     console.log('Error in markOrdersPrinted Saga', err);
   }
 }
@@ -97,6 +168,13 @@ function* generatePDF(action) {
       console.error('Failed to send print job:', response.data.message);
     }
   } catch (err) {
+    yield put({
+      type: 'SET_ORDERS_ERROR',
+      payload: {
+        title: 'Error Generating PDF',
+        message: err.message || 'An error occurred while generating the PDF.',
+      },
+    });
     console.error('Error in generatePDF Saga', err);
   }
 }
@@ -107,6 +185,15 @@ function* syncOrders() {
     yield axios.post(`/api/big-commerce/orders/sync`);
     yield put({ type: 'GET_ORDERS' }); // Refresh orders after sync
   } catch (err) {
+    yield put({
+      type: 'SET_ORDERS_ERROR',
+      payload: {
+        title: 'Error Syncing Orders',
+        message: err.message || 'An error occurred while syncing orders.',
+      },
+    });
+    yield delay(5000);
+    yield put({ type: 'CLEAR_ORDERS_ERROR' });
     console.log('Error in syncOrders Saga', err);
   } finally {
     yield put({ type: 'SET_SYNCING', payload: false });
@@ -122,6 +209,15 @@ function* getLocalPrinters() {
       console.error('Failed to fetch printers:', response.data.message);
     }
   } catch (err) {
+    yield put({
+      type: 'SET_ORDERS_ERROR',
+      payload: {
+        title: 'Error Fetching Printers',
+        message: err.message || 'An error occurred while fetching printers.',
+      },
+    });
+    yield delay(5000);
+    yield put({ type: 'CLEAR_ORDERS_ERROR' });
     console.error('Error in getLocalPrinters Saga', err);
   }
 }
@@ -133,6 +229,15 @@ function* deleteOrders(action) {
     });
     yield put({ type: 'GET_ORDERS' }); // Refresh orders
   } catch (err) {
+    yield put({
+      type: 'SET_ORDERS_ERROR',
+      payload: {
+        title: 'Error Deleting Orders',
+        message: err.message || 'An error occurred while deleting orders.',
+      },
+    });
+    yield delay(5000);
+    yield put({ type: 'CLEAR_ORDERS_ERROR' });
     console.log('Error in deleteOrders Saga', err);
   }
 }
@@ -146,6 +251,15 @@ function* getTags() {
       console.error('Failed to fetch tags:', response.data.message);
     }
   } catch (err) {
+    yield put({
+      type: 'SET_ORDERS_ERROR',
+      payload: {
+        title: 'Error Fetching Tags',
+        message: err.message || 'An error occurred while fetching tags.',
+      },
+    });
+    yield delay(5000);
+    yield put({ type: 'CLEAR_ORDERS_ERROR' });
     console.error('Error in getTags Saga', err);
   }
 }
@@ -160,6 +274,7 @@ function* ordersSaga() {
   yield takeLatest('GET_TAGS', getTags);
   yield takeLatest('SPLIT_ORDER', splitOrder);
   yield takeLatest('COMBINE_ORDERS', combineOrders);
+  yield takeLatest('ADD_ORDER', addOrder);
 }
 
 export default ordersSaga;

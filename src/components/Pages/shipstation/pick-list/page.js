@@ -24,10 +24,12 @@ function ShipstationPickList() {
   const syncing = useSelector((state) => state.BC.orders.syncing);
   const orderTags = useSelector((state) => state.BC.orders.tags);
   const loading = useSelector((state) => state.BC.orders.loading);
+  const errorsStore = useSelector((state) => state.BC.orders.errors);
   const [searchTerm, setSearchTerm] = useState('');
   const [rowsPerPage, setRowsPerPage] = useState(50);
   const [page, setPage] = useState(0);
   const [orders, setOrders] = useState([]);
+  const [errors, setErrors] = useState(errorsStore);
   const [ordersCount, setOrdersCount] = useState(0);
   const [orderTagsList, setOrdersTagsList] = useState(orderTags || []);
   const [activeOrders, setActiveOrders] = useState([]);
@@ -35,6 +37,7 @@ function ShipstationPickList() {
   const [currentTime, setCurrentTime] = useState(Date.now());
   const [isFullScreen, setIsFullScreen] = useState(false);
   const [generateMessageOpen, setGenerateMessageOpen] = useState(false);
+  const [activeOrder, setActiveOrder] = useState(null);
 
   const shipmentsByOrder = orders.reduce((acc, order) => {
     const { order_id, shipment_number } = order;
@@ -87,6 +90,10 @@ function ShipstationPickList() {
 
     return () => clearInterval(interval);
   }, []);
+
+  useEffect(() => {
+    setErrors(errorsStore);
+  }, [errorsStore]);
 
   useEffect(() => {
     if (generatingPDF) {
@@ -158,9 +165,13 @@ function ShipstationPickList() {
         setSearchTerm={setSearchTerm}
         loading={loading}
         setType={setType}
+        activeOrder={activeOrder}
+        setActiveOrder={setActiveOrder}
       />
 
-      {generatingPDF &&
+      {!errors.title &&
+        !errors.message &&
+        generatingPDF &&
         ReactDOM.createPortal(
           <div
             style={{
@@ -176,6 +187,27 @@ function ShipstationPickList() {
                 <p className="text-lg font-medium">Generating Picklist...</p>
               </div>
               <p>Picklist is being generated</p>
+            </div>
+          </div>,
+          document.body
+        )}
+      {errors.title &&
+        errors.message &&
+        ReactDOM.createPortal(
+          <div
+            style={{
+              transform: errors ? 'translateY(0)' : 'translateY(-150%)',
+              transition: 'transform 0.1s ease-in-out',
+            }}
+            className="bg-white border border-gray-300 p-4 shadow-md overflow-hidden flex justify-start absolute w-[400px] right-8 top-8 rounded-md z-[51]"
+          >
+            <div className="w-full h-[6px] bg-red-600 absolute top-0 right-0" />
+            <div className="flex  flex-col items-start justify-center gap-2">
+              <div className="flex justify-start items-center">
+                <Info className="text-red-600 mr-2" />
+                <p className="text-lg font-medium">{errors.title}</p>
+              </div>
+              <p>{errors.message}</p>
             </div>
           </div>,
           document.body
@@ -205,6 +237,7 @@ function ShipstationPickList() {
       >
         <PrintHtml ref={printRef} activeOrders={activeOrders} splitOrders={splitOrders} />
       </div>
+
       <div
         style={{
           clip: 'rect(0 0 0 0)',

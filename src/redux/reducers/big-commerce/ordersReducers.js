@@ -45,10 +45,34 @@ function tags(state = [], action) {
   }
 }
 
+function errors(state = {}, action) {
+  switch (action.type) {
+    case 'SET_ORDERS_ERROR':
+      return action.payload;
+    case 'CLEAR_ORDERS_ERROR':
+      return {};
+    default:
+      return state;
+  }
+}
+
+function success(state = {}, action) {
+  switch (action.type) {
+    case 'SET_ORDERS_SUCCESS':
+      return action.payload;
+    case 'CLEAR_ORDERS_SUCCESS':
+      return {};
+    default:
+      return state;
+  }
+}
+
 export default combineReducers({
   orders,
   syncing,
   printers,
   tags,
   loading,
+  errors,
+  success,
 });

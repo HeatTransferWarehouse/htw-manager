@@ -225,26 +225,30 @@ const DropDownContent = ({ children, className, style }) => {
   );
 };
 
-const DropDownItem = forwardRef(({ children, className, onClick, active, ...rest }, ref) => {
-  const { closeDropdown } = useContext(DropDownContext);
+const DropDownItem = forwardRef(
+  ({ children, className, onClick, active, disableCloseOnClick = false, ...rest }, ref) => {
+    const { closeDropdown } = useContext(DropDownContext);
 
-  return (
-    <button
-      ref={ref}
-      className={twMerge(
-        active ? 'bg-secondary/10 text-secondary hover:bg-secondary/10' : 'hover:bg-secondary/5',
-        'p-2  w-full hover:text-secondary text-left disabled:text-gray-500 cursor-pointer disabled:hover:text-gray-500 disabled:cursor-not-allowed disabled:hover:bg-transparent',
-        className
-      )}
-      onClick={(e) => {
-        if (onClick) onClick(e);
-        closeDropdown(); // Explicitly close the dropdown after clicking the item
-      }}
-      {...rest}
-    >
-      {children}
-    </button>
-  );
-});
+    return (
+      <button
+        ref={ref}
+        className={twMerge(
+          active ? 'bg-secondary/10 text-secondary hover:bg-secondary/10' : 'hover:bg-secondary/5',
+          'p-2  w-full hover:text-secondary text-left disabled:text-gray-500 cursor-pointer disabled:hover:text-gray-500 disabled:cursor-not-allowed disabled:hover:bg-transparent',
+          className
+        )}
+        onClick={(e) => {
+          if (onClick) onClick(e);
+          if (!disableCloseOnClick) {
+            closeDropdown(); // Explicitly close the dropdown after clicking the item
+          }
+        }}
+        {...rest}
+      >
+        {children}
+      </button>
+    );
+  }
+);
 
 export { DropDownContainer, DropDownTrigger, DropDownContent, DropDownItem };

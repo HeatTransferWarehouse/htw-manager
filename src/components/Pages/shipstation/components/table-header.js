@@ -22,6 +22,7 @@ import TagsDropdown from './tags';
 import { Link, useLocation } from 'react-router-dom';
 import { TbTriangleFilled } from 'react-icons/tb';
 import SplitOrderModal from '../modals/split-order';
+import { Close } from '@material-ui/icons';
 
 function PicklistHeader({
   handleSearch,
@@ -229,6 +230,8 @@ const ActionsDropdown = ({
   const mergeButtonRef = React.useRef(null);
 
   const [tooltip, setTooltip] = React.useState(null);
+  const [orderId, setOrderId] = React.useState('');
+  const [inputVisible, setInputVisible] = React.useState(false);
 
   const showTooltip = (ref, text) => {
     if (!ref.current) return;
@@ -252,6 +255,18 @@ const ActionsDropdown = ({
         </DropDownTrigger>
         <DropDownContent className="overflow-visible">
           {/* Split Orders */}
+          <DropDownItem
+            disableCloseOnClick
+            onClick={(e) => {
+              e.preventDefault();
+              e.stopPropagation();
+              setInputVisible(true);
+            }}
+            className="text-base relative text-nowrap border-b border-gray-300 p-2"
+          >
+            Add an Order
+          </DropDownItem>
+
           <DropDownItem
             ref={splitButtonRef}
             disabled={!canSplitOrder}
@@ -315,6 +330,7 @@ const ActionsDropdown = ({
           >
             Combine Orders
           </DropDownItem>
+
           <DropDownItem
             onClick={() => setDeleteModalActive(true)}
             className="text-red-500 hover:bg-red-500/5 hover:text-red-500"
@@ -343,6 +359,61 @@ const ActionsDropdown = ({
               size={12}
             />
             {tooltip.text}
+          </div>,
+          document.body
+        )}
+      {inputVisible &&
+        createPortal(
+          <div className="bg-black/50 fixed top-0 left-0 w-screen h-screen flex items-center justify-center z-[2034958992384752938457]">
+            <div className="bg-white rounded-md overflow-hidden">
+              <div className="bg-gray-100 border-b flex items-center justify-between border-b-gray-200 p-2">
+                <h2 className="w-full text-lg font-medium ">Add Missing Order</h2>
+                <Close
+                  className="hover:text-red-600 w-3 h-3 cursor-pointer"
+                  onClick={() => {
+                    setInputVisible(false);
+                    setOrderId('');
+                  }}
+                />
+              </div>
+              <div className="p-4 flex flex-col gap-1">
+                <label htmlFor="order_id">Order ID</label>
+                <input
+                  id="order_id"
+                  type="text"
+                  value={orderId}
+                  onChange={(e) => setOrderId(e.target.value)}
+                  className="w-64 border m-0 border-black rounded-md p-2"
+                />
+              </div>
+              <div className="w-full flex justify-end items-start gap-2 p-2 border-t border-t-gray-300">
+                <button
+                  onClick={() => {
+                    setInputVisible(false);
+                    setOrderId('');
+                  }}
+                  className="py-1 px-2 rounded-md bg-transparent hover:bg-gray-200"
+                >
+                  Cancel
+                </button>
+                <button
+                  onClick={() => {
+                    dispatch({
+                      type: 'ADD_ORDER',
+                      payload: { orderId: orderId.trim(), view, page: page + 1, rowsPerPage },
+                    });
+                    setInputVisible(false);
+                    setOrderId('');
+                  }}
+                  disabled={orderId.trim().length === 0}
+                  className={twMerge(
+                    'py-1 px-2 rounded-md disabled:bg-gray-300 disabled:text-gray-600 text-white bg-secondary'
+                  )}
+                >
+                  Add
+                </button>
+              </div>
+            </div>
           </div>,
           document.body
         )}

@@ -14,6 +14,9 @@ import {
   FaChevronRight,
   FaUpRightAndDownLeftFromCenter,
   FaDownLeftAndUpRightToCenter,
+  FaX,
+  FaXmark,
+  FaMinus,
 } from 'react-icons/fa6';
 import { twMerge } from 'tailwind-merge';
 import { useDispatch } from 'react-redux';
@@ -36,7 +39,9 @@ import DeleteModal from '../modals/modals';
 import PicklistHeader from './table-header';
 import useOrdersData from '../hooks/useOrdersData';
 import LoadingSkeleton from './loading-skeleton';
-import { FaRegCopy } from 'react-icons/fa6';
+import { LuNotebookText } from 'react-icons/lu';
+
+import OrderDetails from './order-details';
 
 function OrdersTable({
   isFullScreen,
@@ -62,27 +67,49 @@ function OrdersTable({
   setType,
 }) {
   const dispatch = useDispatch();
-
+  const noteRef = React.useRef(null);
   const [sort, setSort] = useState({ sort_by: 'order_id', order: 'desc' });
 
   const [deleteModalActive, setDeleteModalActive] = useState(false);
+  const [activeNotesId, setActiveNotesId] = useState(null);
+
+  // Close notes popup if clicking outside
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (noteRef.current && !noteRef.current.contains(event.target)) {
+        setActiveNotesId(null);
+      }
+    };
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, [noteRef]);
 
   const filteredData = useOrdersData(ordersData, sort, view, searchTerm);
 
   const handleSort = (sort_by) => {
-    const newOrder = sort.sort_by === sort_by && sort.order === 'asc' ? 'desc' : 'asc';
-    const newSort = { sort_by, order: newOrder };
+    let newOrder;
 
+    if (sort.sort_by === sort_by) {
+      // Same column: toggle
+      newOrder = sort.order === 'asc' ? 'desc' : 'asc';
+    } else {
+      // New column: start with desc
+      newOrder = 'desc';
+    }
+
+    const newSort = { sort_by, order: newOrder };
     setSort(newSort);
 
     dispatch({
       type: 'GET_ORDERS',
       payload: {
-        page: 1, // reset to first page on new sort
-        limit: rowsPerPage, // whatever your pagination size is
-        filter: view, // whatever filter you’re using
-        search: searchTerm, // if you have a search box
-        sort: `${sort_by}_${newOrder}`, // backend expects combined key
+        page: 1,
+        limit: rowsPerPage,
+        filter: view,
+        search: searchTerm,
+        sort: `${sort_by}_${newOrder}`,
       },
     });
   };
@@ -204,6 +231,13 @@ function OrdersTable({
                         (o) => !filteredData.some((p) => getOrderKey(p) === getOrderKey(o))
                       )
                     );
+                  } else if (activeOrders.length > 0) {
+                    // Deselect all
+                    setActiveOrders((prev) =>
+                      prev.filter(
+                        (o) => !filteredData.some((p) => getOrderKey(p) === getOrderKey(o))
+                      )
+                    );
                   } else {
                     // Select all
                     const newOrders = filteredData.filter(
@@ -214,16 +248,26 @@ function OrdersTable({
                 }}
                 className={twMerge(
                   'w-5 h-5 rounded border ml-3 flex items-center justify-center',
-                  allSelected ? 'bg-secondary border-secondary' : 'border-black bg-white'
+                  allSelected
+                    ? 'bg-secondary border-secondary'
+                    : activeOrders.length > 0
+                      ? 'bg-secondary border-secondary'
+                      : 'border-black bg-white'
                 )}
               >
-                {allSelected && <FaCheck className="w-3 h-3 text-white" />}
+                {allSelected ? (
+                  <FaCheck className="w-3 h-3 text-white" />
+                ) : activeOrders.length > 0 ? (
+                  <FaMinus className="w-3 h-3 text-white" />
+                ) : (
+                  ''
+                )}
               </button>
             </TableHeadCell>
-            <TableHeadCell className={'p-0 text-sm'} minWidth={'9rem'}>
+            <TableHeadCell className={'p-0 text-sm'} minWidth={'9.5rem'}>
               {renderSortButton('order_id', 'Order #')}
             </TableHeadCell>
-            <TableHeadCell className={'p-0 text-sm border-l border-gray-400'} minWidth={'7rem'}>
+            <TableHeadCell className={'p-0 text-sm border-l border-gray-400'} minWidth={'6.5rem'}>
               {renderSortButton('created_at', 'Order Date')}
             </TableHeadCell>
             <TableHeadCell className={'p-0 text-sm border-l border-gray-400'} minWidth={'5rem'}>
@@ -244,18 +288,21 @@ function OrdersTable({
             <TableHeadCell className={'text-sm border-l border-gray-400'} minWidth={'8rem'}>
               Shipping Method
             </TableHeadCell>
-            <TableHeadCell className={'text-sm border-l border-gray-400'} minWidth={'4.5rem'}>
-              Quantity
+            <TableHeadCell className={'text-sm border-l border-gray-400'} minWidth={'3rem'}>
+              Qty
             </TableHeadCell>
-            <TableHeadCell className={'text-sm border-l border-gray-400'} minWidth={'8rem'}>
+            <TableHeadCell className={'text-sm border-l border-gray-400'} minWidth={'6.75rem'}>
               Shipping Total
             </TableHeadCell>
             <TableHeadCell className={'text-sm border-l border-gray-400'} minWidth={'7rem'}>
               Order Total
             </TableHeadCell>
-            <TableHeadCell className={'text-sm border-l border-gray-400'} minWidth={'12.5rem'}>
+            <TableHeadCell className={'text-sm border-l border-gray-400'} minWidth={'12rem'}>
               Print Time
             </TableHeadCell>
+            {/* <TableHeadCell className={'text-sm border-l p-0 border-gray-400'} minWidth={'5rem'}>
+              {renderSortButton('pick_list_complete', 'Picked')}
+            </TableHeadCell> */}
           </TableHeader>
           <TableBody>
             {loading ? (
@@ -263,10 +310,13 @@ function OrdersTable({
             ) : filteredData.length > 0 ? (
               filteredData.map((order, index) => {
                 const orderKey = getOrderKey(order);
+                const isSelected = activeOrders.some((o) => getOrderKey(o) === orderKey);
 
                 return (
                   <TableRow
-                    className={order.is_printed && 'bg-green-600/10'}
+                    className={
+                      isSelected ? 'bg-secondary/10' : order.is_printed && 'bg-green-600/10'
+                    }
                     key={orderKey} // use unique key here too
                     isMobile={false}
                   >
@@ -317,7 +367,7 @@ function OrdersTable({
                       </button>
                     </TableCell>
 
-                    <TableCell className="mb-auto  p-2" minWidth="9rem">
+                    <TableCell className="mb-auto relative p-2" minWidth="9.5rem">
                       <a
                         className="text-secondary flex items-center gap-1 relative group"
                         target="_blank"
@@ -330,8 +380,81 @@ function OrdersTable({
                           ({order.shipment_number} of {order.total_shipments})
                         </span>
                       )}
+                      {(order.customer_notes || order.staff_notes) && (
+                        <button
+                          title="View Order Notes"
+                          className={twMerge(
+                            'absolute w-6 h-6 flex items-center text-gray-700 justify-center hover:bg-secondary/10 hover:text-secondary rounded-md right-[0.1rem]',
+                            activeNotesId &&
+                              activeNotesId ===
+                                (order.shipment_number > 0
+                                  ? `${order.order_id}-${order.shipment_number}`
+                                  : order.order_id) &&
+                              'bg-secondary/10 text-secondary'
+                          )}
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            if (
+                              activeNotesId &&
+                              activeNotesId ===
+                                (order.shipment_number > 0
+                                  ? `${order.order_id}-${order.shipment_number}`
+                                  : order.order_id)
+                            ) {
+                              setActiveNotesId(null);
+                            } else {
+                              setActiveNotesId(
+                                order.shipment_number > 0
+                                  ? `${order.order_id}-${order.shipment_number}`
+                                  : order.order_id
+                              );
+                            }
+                          }}
+                        >
+                          <LuNotebookText className="w-4 h-4" />
+                        </button>
+                      )}
+                      {activeNotesId &&
+                        activeNotesId ===
+                          (order.shipment_number > 0
+                            ? `${order.order_id}-${order.shipment_number}`
+                            : order.order_id) && (
+                          <div
+                            ref={noteRef}
+                            className="bg-white z-50 absolute text-sm left-0 w-80 top-12 rounded-md border border-gray-200 shadow-default overflow-hidden"
+                          >
+                            <h2 className="text-lg flex justify-between items-center font-medium bg-gray-100 border-b border-gray-200 p-2 mb-2">
+                              <p>
+                                Order Notes: <span className="font-semibold">{activeNotesId}</span>
+                              </p>
+                              <FaXmark
+                                className="w-4 h-4 cursor-pointer hover:text-red-600"
+                                onClick={(e) => {
+                                  e.stopPropagation();
+                                  setActiveNotesId(null);
+                                }}
+                              />
+                            </h2>
+                            <p className="font-medium p-2">
+                              Customer Notes:{' '}
+                              {order.customer_notes ? (
+                                <span className="ml-1 font-normal">{order.customer_notes}</span>
+                              ) : (
+                                <span className="text-gray-500 ml-1 font-normal">N/A</span>
+                              )}
+                            </p>
+                            <p className="font-medium p-2">
+                              Staff Notes:{' '}
+                              {order.staff_notes ? (
+                                <span className="ml-1 font-normal">{order.staff_notes}</span>
+                              ) : (
+                                <span className="text-gray-500 ml-1 font-normal">N/A</span>
+                              )}
+                            </p>
+                          </div>
+                        )}
                     </TableCell>
-                    <TableCell className="mb-auto p-2" minWidth="7rem">
+                    <TableCell className="mb-auto p-2" minWidth="6.5rem">
                       {new Date(order.created_at).toLocaleDateString('en-US')}
                     </TableCell>
                     <TableCell
@@ -450,7 +573,7 @@ function OrdersTable({
                     </TableCell>
                     <TableCell
                       className={'mb-auto w-full flex flex-col gap-2 items-end text-right p-2'}
-                      minWidth={'4.5rem'}
+                      minWidth={'3rem'}
                     >
                       {!expandedOrderIDs.includes(order.order_id)
                         ? order.total_items
@@ -460,7 +583,7 @@ function OrdersTable({
                             </div>
                           ))}
                     </TableCell>
-                    <TableCell className={'mb-auto flex justify-end p-2'} minWidth={'8rem'}>
+                    <TableCell className={'mb-auto flex justify-end p-2'} minWidth={'6.75rem'}>
                       {formatMoney(order.shipping.cost_inc_tax)}
                     </TableCell>
                     <TableCell className={'mb-auto flex justify-end p-2'} minWidth={'7rem'}>
@@ -471,7 +594,7 @@ function OrdersTable({
                         'mb-auto p-2',
                         order.is_printed && 'text-green-800 font-medium'
                       )}
-                      minWidth={'12.5rem'}
+                      minWidth={'12rem'}
                     >
                       {order.printed_time
                         ? new Date(order.printed_time).toLocaleString('en-US', {
@@ -484,6 +607,18 @@ function OrdersTable({
                           })
                         : 'N/A'}
                     </TableCell>
+                    {/* <TableCell className={'mb-auto flex justify-center p-2'} minWidth={'5rem'}>
+                      <span
+                        className={twMerge(
+                          'w-5 h-5 flex items-center justify-center rounded border border-secondary',
+                          order.pick_list_complete
+                            ? 'bg-secondary text-white'
+                            : 'bg-white text-white'
+                        )}
+                      >
+                        <FaCheck className="w-4 h-4" />
+                      </span>
+                    </TableCell> */}
                   </TableRow>
                 );
               })

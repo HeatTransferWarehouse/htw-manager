@@ -4,10 +4,16 @@ import { cleanDisplayName, optionCleaner } from '../utils/utils';
 const ConversionHTML = React.forwardRef(({ activeOrders }, ref) => {
   const result = useMemo(() => {
     const allLineItems = activeOrders.flatMap((order) =>
-      (order.line_items || []).map((item) => ({
-        ...item,
-        order_id: order.order_id,
-      }))
+      (order.line_items || [])
+        // ✅ filter for items with "htv" or "heat transfer vinyl" in the name
+        .filter((item) => {
+          const name = item.name?.toLowerCase() || '';
+          return name.includes('htv') || name.includes('heat transfer vinyl');
+        })
+        .map((item) => ({
+          ...item,
+          order_id: order.order_id,
+        }))
     );
 
     const lineItemSummary = allLineItems.reduce((acc, item) => {

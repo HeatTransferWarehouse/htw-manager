@@ -216,12 +216,14 @@ const runWithConcurrencyLimit = async (tasks, limit) => {
  * @param {object} lineItems
  * @returns
  */
-const buildOrderJSON = async (order, consignments, lineItems, coupons) => {
+const buildOrderJSON = async (order, consignments, lineItems, coupons, notes) => {
   // Build a structured order JSON object
 
   return {
     order_id: order.id,
     date_created: order.date_created,
+    staff_notes: notes.staff_notes,
+    customer_notes: notes.customer_notes,
     line_items: lineItems,
     shipping: {
       shipping_method: consignments.shipping_method,
@@ -620,6 +622,20 @@ const getOrderData = async (orderID) => {
   // Get products on order based on order.products.url
   const products = await getProductsOnOrder(order.products.url);
 
+  const cleanedStaffNotes = (order.staff_notes || '')
+    // remove specific NoFraud error
+    .replace(/NoFraud encountered an error "Not Authorized"\.\s*/i, '')
+    // remove "Skipped due to requested blocked gateway"
+    .replace(/Skipped due to requested blocked gateway\.?\s*/i, '')
+    // flatten line breaks
+    .replace(/[\r\n]+/g, ' ')
+    .trim();
+
+  const notes = {
+    staff_notes: cleanedStaffNotes,
+    customer_notes: order.customer_message || '',
+  };
+
   const coupons = {
     coupon_name: null,
     coupon_value: null,
@@ -635,10 +651,10 @@ const getOrderData = async (orderID) => {
   // Build line items with product and variant metadata and categories
   const line_items = await processLineItems(products, order);
 
-  // Build the final order JSON
-  const json = await buildOrderJSON(order, cons, line_items, coupons);
+  console.log(cons);
 
-  // await addOrderToDatabase(json);
+  // Build the final order JSON
+  const json = await buildOrderJSON(order, cons, line_items, coupons, notes);
 
   return json;
 };
@@ -670,6 +686,8 @@ const addOrderToDatabase = async (orderData) => {
       date_created,
       coupon_name,
       coupon_value,
+      staff_notes,
+      customer_notes,
     } = orderData;
 
     const existing = await pool.query('SELECT id FROM picklist_orders WHERE order_id = $1', [
@@ -693,9 +711,11 @@ const addOrderToDatabase = async (orderData) => {
         status,
         total_items,
         coupon_name,
-        coupon_value
+        coupon_value,
+        staff_notes,
+        customer_notes
       )
-      VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12)
+      VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14)
       RETURNING *;
       `,
       [
@@ -711,6 +731,8 @@ const addOrderToDatabase = async (orderData) => {
         total_items,
         coupon_name,
         coupon_value,
+        staff_notes,
+        customer_notes,
       ]
     );
 
@@ -839,6 +861,16 @@ async function syncOrders() {
         // Enrich line items with variant metadata + categories
         const line_items = await processLineItems(products, o);
 
+        const cleanedStaffNotes = (o.staff_notes || '')
+          .replace(/NoFraud encountered an error "Not Authorized"\.\s*/i, '') // remove that phrase + period + spaces
+          .replace(/[\r\n]+/g, ' ') // flatten line breaks
+          .trim();
+
+        const notes = {
+          staff_notes: cleanedStaffNotes,
+          customer_notes: o.customer_message || '',
+        };
+
         const coupons = {
           coupon_name: null,
           coupon_value: null,
@@ -852,7 +884,7 @@ async function syncOrders() {
         }
 
         // Build normalized order JSON object
-        const json = await buildOrderJSON(o, cons, line_items, coupons);
+        const json = await buildOrderJSON(o, cons, line_items, coupons, notes);
 
         // Insert order into database
         const out = await addOrderToDatabase(json);
@@ -1220,6 +1252,12 @@ router.get('/', async (req, res) => {
       case 'order_id_desc':
         orderBy = 'order_id DESC';
         break;
+      case 'pick_list_complete_asc':
+        orderBy = 'pick_list_complete ASC';
+        break;
+      case 'pick_list_complete_desc':
+        orderBy = 'pick_list_complete DESC';
+        break;
     }
 
     // --- Queries ---
@@ -1356,6 +1394,62 @@ router.post('/generate-pdf', async (req, res) => {
   } catch (err) {
     console.error('PDF generation error:', err);
     return res.status(500).send('Failed to generate PDF');
+  }
+});
+
+router.post('/add', async (req, res) => {
+  try {
+    const orderId = req.body?.orderId;
+    if (!orderId) {
+      console.error('No order id provided in request body');
+      return res.status(400).json({ success: false, message: 'No order id' });
+    }
+
+    const existing = await pool.query('SELECT id FROM picklist_orders WHERE order_id = $1', [
+      orderId,
+    ]);
+    if (existing.rows.length > 0) {
+      return res.status(400).json({ success: false, message: `Order ${orderId} already exists` });
+    }
+
+    // Process immediately (no delay)
+    await processSingleOrder(orderId);
+
+    return res.status(200).json({ success: true, message: 'Order processing initiated' });
+  } catch (err) {
+    console.error('Error adding order:', err);
+    return res.status(500).json({ success: false, message: 'Internal server error' });
+  }
+});
+
+router.post('/order-scanned', async (req, res) => {
+  try {
+    const { orderId } = req.body;
+    console.log(`Marking order ${orderId} as scanned...`);
+
+    const orderExists = await pool.query('SELECT id FROM picklist_orders WHERE order_id = $1', [
+      orderId,
+    ]);
+    if (orderExists.rows.length === 0) {
+      console.log(`Order ${orderId} not found in database.`);
+      return res.status(404).json({ success: false, message: 'Order not found' });
+    }
+
+    await pool.query(
+      `
+      UPDATE picklist_orders
+      SET pick_list_complete = true
+      WHERE order_id = $1
+      `,
+      [orderId]
+    );
+
+    // Always send a response
+    // return res.json({ success: true, orderId });
+    return res.status(500).json({ success: false, message: 'Internal server error' });
+  } catch (err) {
+    console.error('Error marking order as scanned:', err);
+    return res.status(500).json({ success: false, message: 'Internal server error' });
   }
 });
 
