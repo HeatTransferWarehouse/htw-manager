@@ -341,7 +341,6 @@ const ActionsDropdown = ({
         </DropDownContent>
       </DropDownContainer>
 
-      {/* Tooltip (portal-like) */}
       {tooltip &&
         createPortal(
           <div

@@ -651,8 +651,6 @@ const getOrderData = async (orderID) => {
   // Build line items with product and variant metadata and categories
   const line_items = await processLineItems(products, order);
 
-  console.log(cons);
-
   // Build the final order JSON
   const json = await buildOrderJSON(order, cons, line_items, coupons, notes);
 
