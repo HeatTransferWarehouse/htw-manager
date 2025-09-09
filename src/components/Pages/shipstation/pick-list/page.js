@@ -228,8 +228,19 @@ function ShipstationPickList() {
         onClose={() => setOpenPrintModal(false)}
         isPrinting={isPrinting}
       />
-
-      <PrintHtml ref={printRef} activeOrders={activeOrders} splitOrders={splitOrders} />
+      <div
+        style={{
+          clip: 'rect(0 0 0 0)',
+          clipPath: 'inset(100%)',
+          height: '1px',
+          overflow: 'hidden',
+          position: 'absolute',
+          whiteSpace: 'nowrap',
+          width: '1px',
+        }}
+      >
+        <PrintHtml ref={printRef} activeOrders={activeOrders} splitOrders={splitOrders} />
+      </div>
 
       <div
         style={{
