@@ -51,6 +51,7 @@ function PickListDetails({ order }) {
         {order.customer.company && (
           <p
             style={{
+              margin: '0',
               fontSize: '12px',
             }}
           >
@@ -85,6 +86,16 @@ function PickListDetails({ order }) {
         >
           Shipping Info
         </p>
+        {(order.shipping.first_name || order.shipping.last_name) && (
+          <p
+            style={{
+              margin: '0',
+              fontSize: '12px',
+            }}
+          >
+            {toTitleCase(order.shipping.first_name)} {toTitleCase(order.shipping.last_name)}
+          </p>
+        )}
         <p
           style={{
             margin: '0',
@@ -117,7 +128,7 @@ function PickListDetails({ order }) {
             fontSize: '12px',
           }}
         >
-          {toTitleCase(order.shipping.country)}
+          {order.shipping.country.toUpperCase()}
         </p>
       </div>
       <div
@@ -177,36 +188,7 @@ function PickListDetails({ order }) {
             hour12: true,
           })}
         </p>
-        <p
-          style={{
-            margin: '0',
-            fontSize: '12px',
-          }}
-        >
-          <span
-            style={{
-              fontWeight: '600',
-            }}
-          >
-            Customer Notes:
-          </span>{' '}
-          {order.customer_notes || 'N/A'}
-        </p>
-        <p
-          style={{
-            margin: '0',
-            fontSize: '12px',
-          }}
-        >
-          <span
-            style={{
-              fontWeight: '600',
-            }}
-          >
-            Staff Notes:
-          </span>{' '}
-          {order.staff_notes || 'N/A'}
-        </p>
+
         <div
           style={{
             display: 'flex',
@@ -278,6 +260,48 @@ function PickListDetails({ order }) {
           </span>
         </div>
       </div>
+      {(order.customer_notes || order.staff_notes) && (
+        <div
+          style={{
+            gridColumn: '1 / span 3',
+            display: 'flex',
+            flexDirection: 'column',
+            gap: '0.5rem',
+            marginTop: '1rem',
+          }}
+        >
+          <p
+            style={{
+              margin: '0',
+              fontSize: '12px',
+            }}
+          >
+            <span
+              style={{
+                fontWeight: '600',
+              }}
+            >
+              Customer Notes:
+            </span>{' '}
+            {order.customer_notes || 'N/A'}
+          </p>
+          <p
+            style={{
+              margin: '0',
+              fontSize: '12px',
+            }}
+          >
+            <span
+              style={{
+                fontWeight: '600',
+              }}
+            >
+              HTW Notes:
+            </span>{' '}
+            {order.staff_notes || 'N/A'}
+          </p>
+        </div>
+      )}
     </div>
   );
 }

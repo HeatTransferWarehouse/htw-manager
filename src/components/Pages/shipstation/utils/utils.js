@@ -8,10 +8,21 @@ export function toTitleCase(str) {
 
 export function formatPhoneNumber(phone) {
   const cleaned = ('' + phone).replace(/\D/g, '');
-  const match = cleaned.match(/^(\d{3})(\d{3})(\d{4})$/);
-  if (match) {
-    return `(${match[1]}) ${match[2]}-${match[3]}`;
+
+  let country = '';
+  let number = cleaned;
+
+  // Detect leading "1" for US country code
+  if (cleaned.length === 11 && cleaned.startsWith('1')) {
+    country = '+1 ';
+    number = cleaned.slice(1);
   }
+
+  const match = number.match(/^(\d{3})(\d{3})(\d{4})$/);
+  if (match) {
+    return `${country}(${match[1]}) ${match[2]}-${match[3]}`;
+  }
+
   return phone;
 }
 
@@ -193,4 +204,35 @@ export function sortOrders(orders, sort) {
 
     return sort.order === 'asc' ? (valA > valB ? 1 : -1) : valA < valB ? 1 : -1;
   });
+}
+
+export const getOrderKey = (order) => `${order.order_id}-${order.shipment_number || order.id}`;
+
+export function toggleSelectAll(activeOrders, setActiveOrders, filteredData, allSelected) {
+  if (allSelected) {
+    // Deselect all
+    setActiveOrders((prev) =>
+      prev.filter((o) => !filteredData.some((p) => getOrderKey(p) === getOrderKey(o)))
+    );
+  } else if (activeOrders.length > 0) {
+    // Deselect all
+    setActiveOrders((prev) =>
+      prev.filter((o) => !filteredData.some((p) => getOrderKey(p) === getOrderKey(o)))
+    );
+  } else {
+    // Select all
+    const newOrders = filteredData.filter(
+      (o) => !activeOrders.some((a) => getOrderKey(a) === getOrderKey(o))
+    );
+    setActiveOrders((prev) => [...prev, ...newOrders]);
+  }
+}
+
+export function toggleSelectOrder(activeOrders, setActiveOrders, order) {
+  const orderKey = getOrderKey(order);
+  if (activeOrders.some((o) => getOrderKey(o) === orderKey)) {
+    setActiveOrders((prev) => prev.filter((o) => getOrderKey(o) !== orderKey));
+  } else {
+    setActiveOrders((prev) => [...prev, order]);
+  }
 }

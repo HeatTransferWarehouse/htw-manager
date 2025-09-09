@@ -1,6 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import OrdersTable from '../components/orders-table';
 import '../styles.css';
 import ReactDOM from 'react-dom';
 import PrintHtml from '../components/print-html';
@@ -11,6 +10,7 @@ import usePrinter from '../hooks/usePrinter';
 import PrintModal from '../components/print-modal';
 import { twMerge } from 'tailwind-merge';
 import ConversionHTML from '../components/conversion-list';
+import OrdersTable from '../components/table/orders-table';
 
 function ShipstationPickList() {
   const printRef = useRef();
@@ -38,6 +38,7 @@ function ShipstationPickList() {
   const [isFullScreen, setIsFullScreen] = useState(false);
   const [generateMessageOpen, setGenerateMessageOpen] = useState(false);
   const [activeOrder, setActiveOrder] = useState(null);
+  const [filters, setFilters] = useState({});
 
   const shipmentsByOrder = orders.reduce((acc, order) => {
     const { order_id, shipment_number } = order;
@@ -138,6 +139,7 @@ function ShipstationPickList() {
 
   return (
     <div
+      id="picklist-table-sheet"
       className={twMerge(
         isFullScreen && 'fixed  overflow-auto h-screen w-screen bg-white z-[51] left-0 top-0',
         'transition-all duration-150'
@@ -167,6 +169,8 @@ function ShipstationPickList() {
         setType={setType}
         activeOrder={activeOrder}
         setActiveOrder={setActiveOrder}
+        filters={filters}
+        setFilters={setFilters}
       />
 
       {!errors.title &&
@@ -224,19 +228,8 @@ function ShipstationPickList() {
         onClose={() => setOpenPrintModal(false)}
         isPrinting={isPrinting}
       />
-      <div
-        style={{
-          clip: 'rect(0 0 0 0)',
-          clipPath: 'inset(100%)',
-          height: '1px',
-          overflow: 'hidden',
-          position: 'absolute',
-          whiteSpace: 'nowrap',
-          width: '1px',
-        }}
-      >
-        <PrintHtml ref={printRef} activeOrders={activeOrders} splitOrders={splitOrders} />
-      </div>
+
+      <PrintHtml ref={printRef} activeOrders={activeOrders} splitOrders={splitOrders} />
 
       <div
         style={{

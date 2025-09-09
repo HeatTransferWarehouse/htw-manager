@@ -226,6 +226,9 @@ const buildOrderJSON = async (order, consignments, lineItems, coupons, notes) =>
     customer_notes: notes.customer_notes,
     line_items: lineItems,
     shipping: {
+      first_name: consignments.first_name,
+      last_name: consignments.last_name,
+      company: consignments.company,
       shipping_method: consignments.shipping_method,
       cost_inc_tax: consignments.cost_inc_tax,
       street_1: consignments.street_1,
@@ -741,6 +744,62 @@ const addOrderToDatabase = async (orderData) => {
   }
 };
 
+async function updateOrder(orderId) {
+  try {
+    const data = await getOrderData(orderId);
+    if (!data) {
+      console.log(`No data returned for order ${orderId}`);
+      return;
+    }
+
+    const result = await pool.query(
+      `
+      UPDATE picklist_orders
+      SET
+        line_items = $1,
+        shipping = $2,
+        customer = $3,
+        subtotal = $4,
+        tax = $5,
+        grand_total = $6,
+        total_items = $7,
+        status = $8,
+        coupon_name = $9,
+        coupon_value = $10,
+        staff_notes = $11,
+        customer_notes = $12
+      WHERE order_id = $13
+      RETURNING *;
+    `,
+      [
+        JSON.stringify(data.line_items),
+        JSON.stringify(data.shipping),
+        JSON.stringify(data.customer),
+        data.subtotal,
+        data.tax,
+        data.grand_total,
+        data.total_items,
+        data.status,
+        data.coupon_name,
+        data.coupon_value,
+        data.staff_notes,
+        data.customer_notes,
+        orderId,
+      ]
+    );
+
+    if (result.rows.length === 0) {
+      console.log(`Order ${orderId} not found in database for update.`);
+    } else {
+      console.log(`Order ${orderId} updated successfully.`);
+    }
+  } catch (err) {
+    console.error(`Error updating order ${orderId}:`, err);
+  }
+}
+
+updateOrder(3616690);
+
 // -----------------------------------------------------------------------
 // Per-order delayed processing for webhook
 // -----------------------------------------------------------------------
@@ -938,6 +997,22 @@ async function updateOrderStatus(orderId, newStatus) {
 // -----------------------------------------------------------------------
 // Routes
 // -----------------------------------------------------------------------
+
+router.post('/order-updated', async (req, res) => {
+  try {
+    const orderId = req.body?.data?.id;
+    if (!orderId) {
+      console.log('No order id provided on webhook payload');
+      return res.status(400).json({ success: false, message: 'No order id' });
+    }
+
+    await updateOrder(orderId);
+    return res.status(200).json({ success: true, message: 'Order sync scheduled' });
+  } catch (err) {
+    console.error('Error handling order-updated webhook:', err);
+    return res.status(500).json({ success: false, message: 'Internal server error' });
+  }
+});
 
 router.post('/status-updated', async (req, res) => {
   try {

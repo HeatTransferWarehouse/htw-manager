@@ -136,7 +136,7 @@ function PickListItemsTable({ order }) {
                 ) : product.is_clothing ? (
                   <span
                     style={{
-                      backgroundColor: '#d6d6d6',
+                      backgroundColor: '#e5e5e5',
                       width: 'fit-content',
                       borderRadius: '0.25rem',
                       fontWeight: '600',
