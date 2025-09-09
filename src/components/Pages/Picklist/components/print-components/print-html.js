@@ -1,8 +1,8 @@
 import React from 'react';
-import PickListItemsTable from './print-components/picklist-items-table';
-import PickListDetails from './print-components/picklist-details';
-import PickListOrderSummary from './print-components/picklist-price-summary';
-import PickListHeader from './print-components/picklist-header';
+import PickListItemsTable from './picklist-items-table';
+import PickListDetails from './picklist-details';
+import PickListOrderSummary from './picklist-price-summary';
+import PickListHeader from './picklist-header';
 
 const PrintHtml = React.forwardRef(({ activeOrders, splitOrders }, ref) => {
   const getOrderKey = (order) => `${order.order_id}-${order.shipment_number || order.id}`;

@@ -1,18 +1,18 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import '../styles.css';
+import './styles.css';
 import ReactDOM from 'react-dom';
-import PrintHtml from '../components/print-html';
+import PrintHtml from './components/print-components/print-html';
 import { Info } from '@material-ui/icons';
-import { calculateOrderAges } from '../utils/utils';
+import { calculateOrderAges } from './utils/utils';
 import { useLocation } from 'react-router-dom';
-import usePrinter from '../hooks/usePrinter';
-import PrintModal from '../components/print-modal';
+import usePrinter from './hooks/usePrinter';
+import PrintModal from './components/print-modal';
 import { twMerge } from 'tailwind-merge';
-import ConversionHTML from '../components/conversion-list';
-import OrdersTable from '../components/table/orders-table';
+import ConversionHTML from './components/print-components/conversion-list';
+import OrdersTable from './components/table/orders-table';
 
-function ShipstationPickList() {
+function PickList() {
   const printRef = useRef();
   const conversionRef = useRef();
   const location = useLocation();
@@ -259,4 +259,4 @@ function ShipstationPickList() {
   );
 }
 
-export default ShipstationPickList;
+export default PickList;

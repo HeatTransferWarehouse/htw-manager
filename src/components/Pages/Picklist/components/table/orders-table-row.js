@@ -65,7 +65,7 @@ function OrdersTableRow(props) {
           )}
         >
           {activeOrders.some((o) => getOrderKey(o) === orderKey) && (
-            <FaCheck className="w-3 h-3 text-white" />
+            <FaCheck className="w-[10px] h-[10px] text-white" />
           )}
         </button>
       </TableCell>

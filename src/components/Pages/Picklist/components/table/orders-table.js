@@ -13,7 +13,7 @@ import {
 } from '../../../../ui/pagination';
 import ReactDOM from 'react-dom';
 import DeleteModal from '../../modals/modals';
-import PicklistHeader from '../table-header';
+import PicklistHeader from './orders-table-header';
 import useOrdersData from '../../hooks/useOrdersData';
 import LoadingSkeleton from '../loading-skeleton';
 import OrdersTableRow from './orders-table-row';

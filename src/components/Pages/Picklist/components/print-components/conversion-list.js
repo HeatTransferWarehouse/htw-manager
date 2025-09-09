@@ -1,5 +1,5 @@
 import React, { useMemo } from 'react';
-import { cleanDisplayName, optionCleaner } from '../utils/utils';
+import { cleanDisplayName, optionCleaner } from '../../utils/utils';
 
 const ConversionHTML = React.forwardRef(({ activeOrders }, ref) => {
   const result = useMemo(() => {

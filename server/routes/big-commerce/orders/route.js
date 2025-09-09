@@ -7,6 +7,10 @@ const pdf = require('html-pdf-node');
 
 // ----------------------------- Config ----------------------------------
 
+if (process.env.SERVER_ENV === 'prod') {
+  setInterval(syncOrders, 10 * 60 * 1000);
+}
+
 const ALLOWED_STATUSES = new Set(['Awaiting Fulfillment', 'Awaiting Payment']);
 
 const STATUS_MAP = {
@@ -294,52 +298,6 @@ const unwrapEdges = (obj) => {
 
   // Case 3: Primitive (string, number, boolean, null, undefined)
   return obj;
-};
-
-// Returns a valid Storefront token, refreshing if needed
-/**
- * Ensures you always have a valid BigCommerce Storefront token.
- * Caches the token in memory and only requests a new one if:
- *   - No token is cached, OR
- *   - The cached token has expired.
- *
- * @returns {Promise<string>} - A valid Storefront token
- */
-const getStoreFrontToken = async () => {
-  // 1. Reuse token if it's cached AND not expired
-  if (storeFrontToken.token && Date.now() < storeFrontToken.expiry) {
-    return storeFrontToken.token;
-  }
-
-  try {
-    // 2. Otherwise, fetch a new token from your backend route
-    // server/routes/big-commerce/token.js must handle talking to BigCommerce
-    const res = await fetch(`${getBaseUrl()}/api/big-commerce/token?store=htw`, {
-      method: 'GET',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-    });
-
-    // 3. Guard: Ensure the request succeeded
-    if (!res.ok) {
-      throw new Error(`Failed to fetch storefront token: ${res.statusText}`);
-    }
-
-    // 4. Parse response JSON
-    const data = await res.json();
-
-    // 5. Cache token in memory with expiration
-    // BigCommerce token response should include `token` and `expires_in` (in seconds)
-    storeFrontToken.token = data.token;
-    storeFrontToken.expiry = Date.now() + data.expires_in * 1000;
-
-    return storeFrontToken.token;
-  } catch (err) {
-    // 6. Log and rethrow for caller to handle
-    console.error('Error fetching Storefront token:', err);
-    throw err;
-  }
 };
 
 // -----------------------------------------------------------------------------
@@ -797,8 +755,6 @@ async function updateOrder(orderId) {
     console.error(`Error updating order ${orderId}:`, err);
   }
 }
-
-updateOrder(3616690);
 
 // -----------------------------------------------------------------------
 // Per-order delayed processing for webhook

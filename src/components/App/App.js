@@ -27,7 +27,7 @@ import RhineStoneMockUp from '../Pages/RhinestoneMockUp/page';
 import { twMerge } from 'tailwind-merge';
 import JDSProductCreation from '../Pages/JDS/ProductCreation/page';
 import PageNotFound from '../Pages/404/page';
-import ShipstationPickList from '../Pages/shipstation/pick-list/page';
+import PickList from '../Pages/Picklist/page';
 
 // App.js
 export const routeConfig = [
@@ -148,7 +148,7 @@ export const routeConfig = [
   {
     path: '/shipstation/pick-list',
     name: 'Shipstation Pick List',
-    element: <ShipstationPickList />,
+    element: <PickList />,
     protected: true,
     page_title: 'Shipstation Pick List',
   },

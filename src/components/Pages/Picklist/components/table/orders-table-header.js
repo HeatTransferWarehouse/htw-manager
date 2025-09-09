@@ -1,9 +1,9 @@
 import React from 'react';
-import Search from './search';
+import Search from '../search';
 import { twMerge } from 'tailwind-merge';
 import { FaSyncAlt } from 'react-icons/fa';
 import { useDispatch } from 'react-redux';
-import { toTitleCase } from '../utils/utils';
+import { toTitleCase } from '../../utils/utils';
 import { createPortal } from 'react-dom';
 import {
   Pagination,
@@ -11,17 +11,17 @@ import {
   PaginationOption,
   PaginationSheet,
   PaginationTrigger,
-} from '../../../ui/pagination';
+} from '../../../../ui/pagination';
 import {
   DropDownContainer,
   DropDownContent,
   DropDownItem,
   DropDownTrigger,
-} from '../../../ui/dropdown';
-import TagsDropdown from './tags';
+} from '../../../../ui/dropdown';
+import TagsDropdown from '../tags';
 import { Link, useLocation } from 'react-router-dom';
 import { TbTriangleFilled } from 'react-icons/tb';
-import SplitOrderModal from '../modals/split-order';
+import SplitOrderModal from '../../modals/split-order';
 import { Close } from '@material-ui/icons';
 
 function PicklistHeader({

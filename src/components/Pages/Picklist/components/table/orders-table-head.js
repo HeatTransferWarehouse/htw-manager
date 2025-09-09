@@ -38,9 +38,9 @@ function OrdersTableHead(props) {
           )}
         >
           {allSelected ? (
-            <FaCheck className="w-3 h-3 text-white" />
+            <FaCheck className="w-[10px] h-[10px] text-white" />
           ) : activeOrders.length > 0 ? (
-            <FaMinus className="w-3 h-3 text-white" />
+            <FaMinus className="w-[10px] h-[10px] text-white" />
           ) : (
             ''
           )}
