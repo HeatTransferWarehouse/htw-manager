@@ -3,7 +3,9 @@ const express = require('express');
 const axios = require('axios');
 const router = express.Router();
 
-setInterval(getWebHooks, 60 * 1000);
+if (process.env.SERVER_ENV === 'prod') {
+  setInterval(getWebHooks, 60 * 1000);
+}
 
 // This function will run every 60 seconds to check if the access token is still valid. If it is not, it will get a new one.
 async function getWebHooks() {
