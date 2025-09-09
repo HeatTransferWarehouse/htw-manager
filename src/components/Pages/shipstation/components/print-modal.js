@@ -64,7 +64,7 @@ export default function PrintModal({
                 <DropDownTrigger className="w-full border border-black justify-between">
                   {selectedPrinter?.alias || 'Select Printer'}
                 </DropDownTrigger>
-                <DropDownContent style={{ width: '100%' }} className="w-full">
+                <DropDownContent>
                   {printersList.map((printer, idx) => (
                     <DropDownItem
                       className={twMerge(
@@ -81,7 +81,7 @@ export default function PrintModal({
                         </span>
                       </span>
                       <span>
-                        <button
+                        <span
                           className="flex text-[12px] text-black hover:text-secondary group items-center gap-2"
                           onClick={(e) => {
                             e.stopPropagation();
@@ -99,7 +99,7 @@ export default function PrintModal({
                           >
                             {printer.is_default && <FaCheck className="text-white w-3 h-3" />}
                           </span>
-                        </button>
+                        </span>
                       </span>
                     </DropDownItem>
                   ))}
