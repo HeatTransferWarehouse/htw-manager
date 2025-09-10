@@ -70,7 +70,7 @@ const Search = ({ onSearch, className }) => {
         type="text"
         value={query}
         onChange={handleInputChange}
-        placeholder="Search by Order #, SKU, or Item Name"
+        placeholder="Search orders"
         className="pl-8 focus:outline-secondary py-2 w-[26rem] m-0 text-lg rounded border border-black hover:border-secondary"
         ref={inputRef}
         onFocus={() => setFocused(true)}
