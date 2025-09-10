@@ -5,7 +5,7 @@ import { FaCheck, FaMinus } from 'react-icons/fa';
 import { HiOutlineArrowNarrowDown, HiOutlineArrowNarrowUp } from 'react-icons/hi';
 
 function OrdersTableHead(props) {
-  const { sort, filteredData, activeOrders, setActiveOrders, allSelected, handleSort } = props;
+  const { sort, ordersData, activeOrders, setActiveOrders, allSelected, handleSort } = props;
 
   const renderSortButton = (column, label) => (
     <button
@@ -26,7 +26,7 @@ function OrdersTableHead(props) {
         <button
           onClick={(e) => {
             e.stopPropagation();
-            toggleSelectAll(activeOrders, setActiveOrders, filteredData, allSelected);
+            toggleSelectAll(activeOrders, setActiveOrders, ordersData, allSelected);
           }}
           className={twMerge(
             'w-5 h-5 rounded border ml-3 flex items-center justify-center',
