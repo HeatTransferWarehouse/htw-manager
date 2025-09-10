@@ -13,6 +13,7 @@ const Search = ({ onSearch, className }) => {
   const os = detectOS(); // Detect OS when component mounts
   const inputRef = useRef(null);
   const [showClearInput, setShowClearInput] = useState(false);
+  const [focused, setFocused] = useState(false);
 
   const handleInputClear = (bool) => {
     setShowClearInput(bool);
@@ -47,6 +48,21 @@ const Search = ({ onSearch, className }) => {
     };
   }, []);
 
+  const baseTokens = [
+    { label: 'status:', desc: 'Match order status' },
+    { label: 'customer:', desc: 'Match customer email or name' },
+    { label: 'sku:', desc: 'Match product SKU' },
+    { label: 'product:', desc: 'Match product name' },
+    { label: 'company:', desc: 'Match shipping company' },
+    { label: 'shipping:', desc: 'Match shipping method' },
+  ];
+
+  const customerSubTokens = [
+    { label: 'customer:email:', desc: 'Match customer email' },
+    { label: 'customer:first_name:', desc: 'Match customer first name' },
+    { label: 'customer:last_name:', desc: 'Match customer last name' },
+  ];
+
   return (
     <span className="relative flex items-center">
       <HiOutlineSearch className="absolute left-2 w-5 h-5" />
@@ -57,6 +73,8 @@ const Search = ({ onSearch, className }) => {
         placeholder="Search by Order #, SKU, or Item Name"
         className="pl-8 focus:outline-secondary py-2 w-[26rem] m-0 text-lg rounded border border-black hover:border-secondary"
         ref={inputRef}
+        onFocus={() => setFocused(true)}
+        onBlur={() => setFocused(false)}
       />
       <span className="absolute text-gray-600 right-2 h-5 w-fit flex items-center ">
         {showClearInput && (
@@ -73,6 +91,44 @@ const Search = ({ onSearch, className }) => {
         )}
         {!showClearInput && <span className="max-lg:hidden">{os === 'mac' ? '⌘K' : 'CtrlK'}</span>}
       </span>
+      {focused && (query.length === 0 || query.trim().toLowerCase() === 'customer:') && (
+        <div className="w-full absolute rounded z-[20349582304958] left-0 top-14 bg-white border border-gray-200 shadow-default">
+          <p className="text-base p-3 text-gray-600">Search Filters:</p>
+          <ul className="list-none p-0 m-0">
+            {query.trim().toLowerCase() === 'customer:'
+              ? customerSubTokens.map((token) => (
+                  <li key={token.label}>
+                    <button
+                      className="w-full text-left px-3 py-2 hover:bg-secondary/10 flex items-center justify-between"
+                      onMouseDown={(e) => {
+                        e.preventDefault();
+                        setQuery(token.label);
+                        inputRef.current.focus();
+                      }}
+                    >
+                      <span className="font-medium text-sm">{token.label}</span>
+                      <span className="text-xs text-gray-500">{token.desc}</span>
+                    </button>
+                  </li>
+                ))
+              : baseTokens.map((token) => (
+                  <li key={token.label}>
+                    <button
+                      className="w-full text-left px-3 py-2 hover:bg-secondary/10 flex items-center justify-between"
+                      onMouseDown={(e) => {
+                        e.preventDefault();
+                        setQuery(token.label);
+                        inputRef.current.focus();
+                      }}
+                    >
+                      <span className="font-medium text-sm">{token.label}</span>
+                      <span className="text-xs text-gray-500">{token.desc}</span>
+                    </button>
+                  </li>
+                ))}
+          </ul>
+        </div>
+      )}
     </span>
   );
 };

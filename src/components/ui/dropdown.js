@@ -65,8 +65,6 @@ const DropDownContainer = ({ children, className, onClose, type = 'hover' }) => 
     mainContainer.addEventListener('scroll', handleScrollResize);
     window.addEventListener('resize', handleScrollResize);
 
-    calculatePosition();
-
     return () => {
       mainContainer.removeEventListener('scroll', handleScrollResize);
       window.removeEventListener('resize', handleScrollResize);

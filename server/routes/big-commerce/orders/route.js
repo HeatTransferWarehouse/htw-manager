@@ -950,6 +950,136 @@ async function updateOrderStatus(orderId, newStatus) {
   }
 }
 
+function tokenizeQuery(query) {
+  const tokens = [];
+  const parts = query.match(/(?:[^\s"]+:"[^"]+"|\S+)/g) || [];
+
+  let buffer = '';
+  parts.forEach((part) => {
+    if (buffer) {
+      // If buffer is holding a prefixed token, append until we see a new prefix
+      if (/^\w+:/i.test(part)) {
+        tokens.push(buffer.trim());
+        buffer = part;
+      } else {
+        buffer += ' ' + part;
+      }
+    } else {
+      buffer = part;
+    }
+  });
+
+  if (buffer) tokens.push(buffer.trim());
+
+  return tokens.map((t) => t.replace(/^(\w+:)"(.*)"$/, '$1$2')); // strip quotes if they exist
+}
+
+function handleSearch(query) {
+  let conditions = [];
+  let params = [];
+
+  if (query) {
+    const tokens = tokenizeQuery(query);
+    let freeText = [];
+
+    tokens.forEach((t) => {
+      if (t.toLowerCase().startsWith('status:')) {
+        const val = t
+          .replace(/^status:/i, '')
+          .trim()
+          .replace(/^"|"$/g, '');
+        params.push(`%${val}%`);
+        conditions.push(`status ILIKE $${params.length}`);
+      } else if (t.toLowerCase().startsWith('customer:')) {
+        // Remove the `customer:` prefix
+        const rest = t.replace(/^customer:/i, '').trim();
+
+        // Split into parts -> e.g. "email:foo"
+        const [subKey, ...valueParts] = rest.split(':');
+        const val = valueParts.join(':').trim(); // allows spaces and multiple colons
+        const paramIndex = params.length + 1;
+
+        if (subKey.toLowerCase() === 'email' && val) {
+          params.push(`%${val.toLowerCase()}%`);
+          conditions.push(`LOWER(customer->>'email') LIKE $${paramIndex}`);
+        } else if (subKey.toLowerCase() === 'first_name' && val) {
+          params.push(`%${val.toLowerCase()}%`);
+          conditions.push(`LOWER(customer->>'first_name') LIKE $${paramIndex}`);
+        } else if (subKey.toLowerCase() === 'last_name' && val) {
+          params.push(`%${val.toLowerCase()}%`);
+          conditions.push(`LOWER(customer->>'last_name') LIKE $${paramIndex}`);
+        } else {
+          // fallback = generic "customer:foo" → matches email OR full name
+          params.push(`%${rest.toLowerCase()}%`);
+          conditions.push(`
+      (
+        LOWER(customer->>'email') LIKE $${paramIndex}
+        OR (LOWER(COALESCE(customer->>'first_name','')) || ' ' || LOWER(COALESCE(customer->>'last_name','')))
+           LIKE $${paramIndex}
+      )
+    `);
+        }
+      } else if (t.toLowerCase().startsWith('sku:')) {
+        const val = t.replace(/^sku:/i, '').trim();
+        params.push(`%${val.toLowerCase()}%`);
+        conditions.push(`
+          EXISTS (
+            SELECT 1
+            FROM jsonb_array_elements(line_items) li
+            WHERE li->>'sku' ILIKE $${params.length}
+          )
+        `);
+      } else if (t.toLowerCase().startsWith('product:')) {
+        const val = t.replace(/^product:/i, '').trim();
+        params.push(`%${val.toLowerCase()}%`);
+        conditions.push(`
+          EXISTS (
+            SELECT 1
+            FROM jsonb_array_elements(line_items) li
+            WHERE li->>'name' ILIKE $${params.length}
+          )
+        `);
+      } else if (t.toLowerCase().startsWith('company:')) {
+        const val = t.replace(/^company:/i, '').trim();
+        params.push(`%${val.toLowerCase()}%`);
+        conditions.push(`shipping->>'company' ILIKE $${params.length}`);
+      } else if (t.toLowerCase().startsWith('shipping:')) {
+        const val = t.replace(/^shipping:/i, '').trim();
+        params.push(`%${val.toLowerCase()}%`);
+        conditions.push(`shipping->>'shipping_method' ILIKE $${params.length}`);
+      } else {
+        // fallback free-text search
+        freeText.push(t);
+      }
+    });
+
+    if (freeText.length > 0) {
+      const textSearch = freeText.join(' ').trim();
+      if (textSearch) {
+        params.push(`%${textSearch.toLowerCase()}%`);
+        conditions.push(`
+          (
+            CAST(order_id AS TEXT) ILIKE $${params.length}
+            OR EXISTS (
+              SELECT 1
+              FROM jsonb_array_elements(line_items) li
+              WHERE li->>'sku'  ILIKE $${params.length}
+                 OR li->>'name' ILIKE $${params.length}
+            )
+            OR customer->>'email' ILIKE $${params.length}
+            OR shipping->>'company' ILIKE $${params.length}
+            OR (COALESCE(customer->>'first_name','') || ' ' || COALESCE(customer->>'last_name',''))
+               ILIKE $${params.length}
+            OR shipping->>'shipping_method' ILIKE $${params.length}
+          )
+        `);
+      }
+    }
+  }
+
+  return { conditions, params };
+}
+
 // -----------------------------------------------------------------------
 // Routes
 // -----------------------------------------------------------------------
@@ -1225,9 +1355,6 @@ router.get('/', async (req, res) => {
     const search = req.query.search ? req.query.search.trim() : null;
     const sort = req.query.sort || 'created_at_desc';
 
-    let conditions = [];
-    let params = [];
-
     // --- Filters ---
     if (filter === 'printed') {
       conditions.push('is_printed = true');
@@ -1245,23 +1372,7 @@ router.get('/', async (req, res) => {
       `);
     }
 
-    // --- Search ---
-    if (search) {
-      params.push(search);
-      conditions.push(`
-        (
-          CAST(order_id AS TEXT) ILIKE '%' || $1 || '%'
-          OR EXISTS (
-            SELECT 1
-            FROM jsonb_array_elements(line_items) li
-            WHERE li->>'sku'  ILIKE '%' || $1 || '%'
-               OR li->>'name' ILIKE '%' || $1 || '%'
-          )
-          OR customer::text ILIKE '%' || $1 || '%'
-        )
-      `);
-    }
-
+    const { conditions, params } = handleSearch(search);
     const whereClause = conditions.length ? `WHERE ${conditions.join(' AND ')}` : '';
 
     // --- Sorting ---
@@ -1290,17 +1401,10 @@ router.get('/', async (req, res) => {
     }
 
     // --- Params ---
-    const countParams = search ? [search] : [];
-    const dataParams = search ? [search, limit, offset] : [limit, offset];
-
-    const countQuery = `
-  WITH filtered AS (
-    SELECT *
-    FROM picklist_orders
-    ${whereClause}
-  )
-  SELECT COUNT(*) FROM filtered
-`;
+    // --- Params ---
+    // --- Params ---
+    const countParams = [...params];
+    const dataParams = [...params, parseInt(limit, 10), parseInt(offset, 10)];
 
     const dataQuery = `
   WITH filtered AS (
@@ -1311,8 +1415,22 @@ router.get('/', async (req, res) => {
   SELECT *
   FROM filtered
   ORDER BY ${orderBy}
-  LIMIT $${search ? 2 : 1} OFFSET $${search ? 3 : 2}
+  LIMIT $${params.length + 1} OFFSET $${params.length + 2}
 `;
+
+    const countQuery = `
+  WITH filtered AS (
+    SELECT *
+    FROM picklist_orders
+    ${whereClause}
+  )
+  SELECT COUNT(*) FROM filtered
+`;
+
+    console.log('Count Query:', countQuery);
+    console.log('Count Params:', countParams);
+    console.log('Data Query:', dataQuery);
+    console.log('Data Params:', dataParams);
 
     // --- Execute ---
     const totalResult = await pool.query(countQuery, countParams);

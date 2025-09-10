@@ -50,6 +50,8 @@ function OrdersTable(props) {
   const [deleteModalActive, setDeleteModalActive] = useState(false);
   const [activeNotesId, setActiveNotesId] = useState(null);
 
+  console.log(ordersData);
+
   const allSelected =
     ordersData.length === 0
       ? false
