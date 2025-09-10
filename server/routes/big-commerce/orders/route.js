@@ -1014,6 +1014,7 @@ function handleSearch(query) {
           conditions.push(`
       (
         LOWER(customer->>'email') LIKE $${paramIndex}
+        OR customer->>'company' ILIKE $${params.length}
         OR (LOWER(COALESCE(customer->>'first_name','')) || ' ' || LOWER(COALESCE(customer->>'last_name','')))
            LIKE $${paramIndex}
       )
@@ -1070,6 +1071,8 @@ function handleSearch(query) {
             OR shipping->>'company' ILIKE $${params.length}
             OR (COALESCE(customer->>'first_name','') || ' ' || COALESCE(customer->>'last_name',''))
                ILIKE $${params.length}
+
+            OR customer->>'company' ILIKE $${params.length}
             OR shipping->>'shipping_method' ILIKE $${params.length}
           )
         `);
@@ -1355,6 +1358,8 @@ router.get('/', async (req, res) => {
     const search = req.query.search ? req.query.search.trim() : null;
     const sort = req.query.sort || 'created_at_desc';
 
+    const { conditions, params } = handleSearch(search);
+
     // --- Filters ---
     if (filter === 'printed') {
       conditions.push('is_printed = true');
@@ -1372,7 +1377,6 @@ router.get('/', async (req, res) => {
       `);
     }
 
-    const { conditions, params } = handleSearch(search);
     const whereClause = conditions.length ? `WHERE ${conditions.join(' AND ')}` : '';
 
     // --- Sorting ---
@@ -1426,11 +1430,6 @@ router.get('/', async (req, res) => {
   )
   SELECT COUNT(*) FROM filtered
 `;
-
-    console.log('Count Query:', countQuery);
-    console.log('Count Params:', countParams);
-    console.log('Data Query:', dataQuery);
-    console.log('Data Params:', dataParams);
 
     // --- Execute ---
     const totalResult = await pool.query(countQuery, countParams);
