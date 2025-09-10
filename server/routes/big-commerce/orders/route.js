@@ -1222,22 +1222,24 @@ router.get('/', async (req, res) => {
     const limit = parseInt(req.query.limit, 10) || 100;
     const offset = (page - 1) * limit;
     const filter = req.query.filter || 'all';
-    const search = req.query.search ? req.query.search.trim().toLowerCase() : null;
+    const search = req.query.search ? req.query.search.trim() : null;
     const sort = req.query.sort || 'created_at_desc';
 
     let conditions = [];
-    let countParams = [];
-    let dataParams = [limit, offset]; // always start with limit + offset
+    let params = [];
 
     // --- Filters ---
-    if (filter === 'printed') conditions.push('is_printed = true');
-    else if (filter === 'not-printed') conditions.push('is_printed = false');
-    else if (filter === 'split') conditions.push('is_split = true');
-    else if (filter === 'dropship') {
+    if (filter === 'printed') {
+      conditions.push('is_printed = true');
+    } else if (filter === 'not-printed') {
+      conditions.push('is_printed = false');
+    } else if (filter === 'split') {
+      conditions.push('is_split = true');
+    } else if (filter === 'dropship') {
       conditions.push(`
         EXISTS (
           SELECT 1
-          FROM jsonb_array_elements(line_items::jsonb) li
+          FROM jsonb_array_elements(line_items) li
           WHERE COALESCE(li->>'is_dropship','false')::boolean = true
         )
       `);
@@ -1245,21 +1247,19 @@ router.get('/', async (req, res) => {
 
     // --- Search ---
     if (search) {
-      const condition = `
+      params.push(search);
+      conditions.push(`
         (
           CAST(order_id AS TEXT) ILIKE '%' || $1 || '%'
           OR EXISTS (
             SELECT 1
-            FROM jsonb_array_elements(line_items::jsonb) li
-            WHERE li->>'sku' ILIKE '%' || $1 || '%'
+            FROM jsonb_array_elements(line_items) li
+            WHERE li->>'sku'  ILIKE '%' || $1 || '%'
                OR li->>'name' ILIKE '%' || $1 || '%'
           )
+          OR customer::text ILIKE '%' || $1 || '%'
         )
-      `;
-      conditions.push(condition);
-
-      countParams.push(search);
-      dataParams.push(search); // will become $3 in the data query
+      `);
     }
 
     const whereClause = conditions.length ? `WHERE ${conditions.join(' AND ')}` : '';
@@ -1289,43 +1289,36 @@ router.get('/', async (req, res) => {
         break;
     }
 
-    // --- Queries ---
+    // --- Params ---
+    const countParams = search ? [search] : [];
+    const dataParams = search ? [search, limit, offset] : [limit, offset];
+
     const countQuery = `
-      WITH filtered AS (
-        SELECT *
-        FROM picklist_orders
-        ${whereClause}
-      )
-      SELECT COUNT(*) FROM filtered
-    `;
+  WITH filtered AS (
+    SELECT *
+    FROM picklist_orders
+    ${whereClause}
+  )
+  SELECT COUNT(*) FROM filtered
+`;
 
     const dataQuery = `
-      WITH filtered AS (
-        SELECT *
-        FROM picklist_orders
-        ${whereClause.replace(/\$1/g, `$3`)} -- shift search param for data query
-      )
-      SELECT *
-      FROM filtered
-      ORDER BY ${orderBy}
-      LIMIT $1 OFFSET $2
-    `;
+  WITH filtered AS (
+    SELECT *
+    FROM picklist_orders
+    ${whereClause}
+  )
+  SELECT *
+  FROM filtered
+  ORDER BY ${orderBy}
+  LIMIT $${search ? 2 : 1} OFFSET $${search ? 3 : 2}
+`;
 
-    // --- Execute safely ---
-    const totalResult = countParams.length
-      ? await pool.query(countQuery, countParams)
-      : await pool.query(countQuery);
-
+    // --- Execute ---
+    const totalResult = await pool.query(countQuery, countParams);
     const totalOrders = parseInt(totalResult.rows[0].count, 10);
     const totalPages = Math.ceil(totalOrders / limit);
-
-    const result =
-      dataParams.length > 2
-        ? await pool.query(dataQuery, dataParams)
-        : await pool.query(
-            dataQuery.replace(/\$3/g, 'NULL'), // if no search, remove placeholder
-            [limit, offset]
-          );
+    const result = await pool.query(dataQuery, dataParams);
 
     return res.status(200).json({
       orders: result.rows,

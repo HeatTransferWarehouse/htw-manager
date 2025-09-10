@@ -14,7 +14,6 @@ import {
 import ReactDOM from 'react-dom';
 import DeleteModal from '../../modals/modals';
 import PicklistHeader from './orders-table-header';
-import useOrdersData from '../../hooks/useOrdersData';
 import LoadingSkeleton from '../loading-skeleton';
 import OrdersTableRow from './orders-table-row';
 import OrdersTableHead from './orders-table-head';
@@ -50,11 +49,11 @@ function OrdersTable(props) {
   const [sort, setSort] = useState({ sort_by: 'order_id', order: 'desc' });
   const [deleteModalActive, setDeleteModalActive] = useState(false);
   const [activeNotesId, setActiveNotesId] = useState(null);
-  const filteredData = useOrdersData(ordersData, sort, view, searchTerm);
+
   const allSelected =
-    filteredData.length === 0
+    ordersData.length === 0
       ? false
-      : filteredData.every((o) => activeOrders.some((a) => getOrderKey(a) === getOrderKey(o)));
+      : ordersData.every((o) => activeOrders.some((a) => getOrderKey(a) === getOrderKey(o)));
 
   // Close notes popup if clicking outside
   useEffect(() => {
@@ -167,7 +166,7 @@ function OrdersTable(props) {
           activeOrders={activeOrders}
           syncing={syncing}
           setDeleteModalActive={setDeleteModalActive}
-          filteredData={filteredData}
+          ordersData={ordersData}
           rowsPerPage={rowsPerPage}
           setRowsPerPage={setRowsPerPage}
           page={page}
@@ -181,7 +180,7 @@ function OrdersTable(props) {
         <TableContainer tableFor={'orders'}>
           <OrdersTableHead
             sort={sort}
-            filteredData={filteredData}
+            ordersData={ordersData}
             activeOrders={activeOrders}
             setActiveOrders={setActiveOrders}
             allSelected={allSelected}
@@ -190,8 +189,8 @@ function OrdersTable(props) {
           <TableBody>
             {loading ? (
               <LoadingSkeleton limit={rowsPerPage} />
-            ) : filteredData.length > 0 ? (
-              filteredData.map((order, index) => {
+            ) : ordersData.length > 0 ? (
+              ordersData.map((order, index) => {
                 const orderKey = getOrderKey(order);
                 const isSelected = activeOrders.some((o) => getOrderKey(o) === orderKey);
                 const noteId =

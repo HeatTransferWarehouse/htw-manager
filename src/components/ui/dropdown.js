@@ -45,6 +45,7 @@ const DropDownContainer = ({ children, className, onClose, type = 'hover' }) => 
   const calculatePosition = useCallback(() => {
     if (!triggerRef.current) return;
     const rect = triggerRef.current.getBoundingClientRect();
+
     setDropdownstyle({
       buttonWidth: rect.width,
       positionX: rect.x,
@@ -102,6 +103,7 @@ const DropDownContainer = ({ children, className, onClose, type = 'hover' }) => 
         containerRef,
         triggerRef,
         contentRef,
+        calculatePosition,
       }}
     >
       <div
@@ -124,7 +126,7 @@ const DropDownContainer = ({ children, className, onClose, type = 'hover' }) => 
 };
 
 const DropDownTrigger = forwardRef(({ children, className, onClick, ...props }, ref) => {
-  const { isOpen, toggleOpen, type, triggerRef } = useContext(DropDownContext);
+  const { isOpen, toggleOpen, type, triggerRef, calculatePosition } = useContext(DropDownContext);
 
   return (
     <button
@@ -136,8 +138,10 @@ const DropDownTrigger = forwardRef(({ children, className, onClick, ...props }, 
       )}
       onClick={(e) => {
         onClick && onClick(e);
+        calculatePosition();
         if (type !== 'hover') toggleOpen();
       }}
+      onMouseEnter={() => type === 'hover' && calculatePosition()}
       {...props}
     >
       {children}
