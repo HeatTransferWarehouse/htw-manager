@@ -78,6 +78,7 @@ const JDS = require('./routes/JDS/index');
 const google = require('./routes/google-sheets');
 const bigCommerceOrdersAPI = require('./routes/big-commerce/orders/route');
 const bigCommerceTokenRouter = require('./routes/big-commerce/token');
+const SSActivewearRouter = require('./routes/ssActivewearRouter');
 
 app.use('/api/user', userRouter);
 app.use('/supacolor-api', supacolorRouter);
@@ -89,6 +90,7 @@ app.use('/api/jds', JDS);
 app.use('/api/google', google);
 app.use('/api/big-commerce/orders', bigCommerceOrdersAPI);
 app.use('/api/big-commerce/token', bigCommerceTokenRouter);
+app.use('/api/ss-activewear', SSActivewearRouter);
 
 // Queue Routers
 app.use('/api/sff-queue', sffQueueRouter);

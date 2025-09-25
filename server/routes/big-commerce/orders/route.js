@@ -559,6 +559,7 @@ const processLineItems = async (products, order) => {
       sku: p.sku,
       quantity: p.quantity,
       price: p.total_inc_tax,
+      bin_picking_number: p.bin_picking_number,
       is_clothing: isClothingProduct,
       is_dropship: isProductDropship || isVariantDropship,
       options: (p.product_options || []).map((opt) => ({
@@ -1564,7 +1565,6 @@ router.post('/add', async (req, res) => {
 router.post('/order-scanned', async (req, res) => {
   try {
     const { orderId } = req.body;
-    console.log(`Marking order ${orderId} as scanned...`);
 
     const orderExists = await pool.query('SELECT id FROM picklist_orders WHERE order_id = $1', [
       orderId,

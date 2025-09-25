@@ -65,6 +65,19 @@ function PickListItemsTable({ order }) {
             style={{
               fontSize: '12px',
               paddingBlock: '0.5rem',
+              textAlign: 'left',
+              margin: '0',
+              paddingRight: '0',
+              paddingLeft: '0',
+              fontWeight: '600',
+            }}
+          >
+            Warehouse Location
+          </th>
+          <th
+            style={{
+              fontSize: '12px',
+              paddingBlock: '0.5rem',
               textAlign: 'right',
               margin: '0',
               paddingRight: '0',
@@ -212,6 +225,20 @@ function PickListItemsTable({ order }) {
                     );
                   })}
               </span>
+            </td>
+            <td
+              style={{
+                fontSize: '12px',
+                paddingTop: '0.5rem',
+                paddingBottom: '0.5rem',
+                textAlign: 'left',
+                margin: '0',
+                paddingRight: '0',
+                paddingLeft: '0',
+                verticalAlign: 'top',
+              }}
+            >
+              {product.bin_picking_number || 'N/A'}
             </td>
             <td
               style={{
