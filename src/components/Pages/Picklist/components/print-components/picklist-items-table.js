@@ -72,7 +72,7 @@ function PickListItemsTable({ order }) {
               fontWeight: '600',
             }}
           >
-            Warehouse Location
+            Bin Location
           </th>
           <th
             style={{
