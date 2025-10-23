@@ -44,7 +44,7 @@
     "customize-cra": "^1.0.0",
     "date-fns": "^4.1.0",
     "dayjs": "^1.11.13",
-    "dotenv": "^16.4.5",
+    "dotenv": "^16.6.1",
     "draft-js": "^0.11.7",
     "draft-js-anchor-plugin": "^2.0.3",
     "draft-js-buttons": "^2.0.2",
