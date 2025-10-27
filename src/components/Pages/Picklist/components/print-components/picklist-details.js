@@ -236,9 +236,9 @@ function PickListDetails({ order }) {
             Pick:{' '}
             <span
               style={{
-                width: '1.25rem',
+                width: '1.5rem',
                 border: '1px solid black',
-                height: '1.25rem',
+                height: '1.5rem',
               }}
             ></span>
           </span>
@@ -248,7 +248,7 @@ function PickListDetails({ order }) {
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'center',
-              marginLeft: '-1.25rem',
+              marginLeft: '-1.5rem',
               gap: '0.25rem',
               fontSize: '12px',
             }}
@@ -256,9 +256,9 @@ function PickListDetails({ order }) {
             Check:{' '}
             <span
               style={{
-                width: '1.25rem',
+                width: '1.5rem',
                 border: '1px solid black',
-                height: '1.25rem',
+                height: '1.5rem',
               }}
             ></span>
           </span>
@@ -275,23 +275,35 @@ function PickListDetails({ order }) {
             Shipped:{' '}
             <span
               style={{
-                width: '1.25rem',
+                width: '1.5rem',
                 border: '1px solid black',
-                height: '1.25rem',
+                height: '1.5rem',
               }}
             ></span>
           </span>
         </div>
         {needsReview && (
-          <p
+          <span
             style={{
+              width: '100%',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'flex-start',
+              gap: '1rem',
+              marginTop: '1rem',
               fontWeight: 'bold',
               fontSize: '16px',
-              marginTop: '6px',
             }}
           >
-            **NEEDS REVIEW**
-          </p>
+            **NEEDS REVIEW**:{' '}
+            <span
+              style={{
+                width: '1.5rem',
+                border: '1px solid black',
+                height: '1.5rem',
+              }}
+            ></span>
+          </span>
         )}
       </div>
       {(order.customer_notes || order.staff_notes) && (
