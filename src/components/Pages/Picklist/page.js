@@ -228,7 +228,7 @@ function PickList() {
         onClose={() => setOpenPrintModal(false)}
         isPrinting={isPrinting}
       />
-      <div
+      {/* <div
         style={{
           clip: 'rect(0 0 0 0)',
           clipPath: 'inset(100%)',
@@ -238,9 +238,9 @@ function PickList() {
           whiteSpace: 'nowrap',
           width: '1px',
         }}
-      >
-        <PrintHtml ref={printRef} activeOrders={activeOrders} splitOrders={splitOrders} />
-      </div>
+      > */}
+      <PrintHtml ref={printRef} activeOrders={activeOrders} splitOrders={splitOrders} />
+      {/* </div> */}
 
       <div
         style={{
