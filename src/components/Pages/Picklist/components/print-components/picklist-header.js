@@ -2,6 +2,7 @@ import React from 'react';
 import ShipStationBarcode from '../shipstation-barcode';
 
 function PickListHeader({ order }) {
+  const isNDA = order.shipping.shipping_method.toLowerCase().includes('next day air');
   return (
     <div
       style={{
@@ -47,9 +48,13 @@ function PickListHeader({ order }) {
           style={{
             margin: '0',
             fontSize: '18px',
+            borderRadius: '5px',
+            backgroundColor: isNDA ? 'black' : 'transparent',
+            padding: isNDA ? '2px 6px' : '0',
+            color: isNDA ? 'white' : 'black',
           }}
         >
-          {order.shipping.shipping_method}
+          {isNDA ? 'UPS (NEXT DAY AIR)' : order.shipping.shipping_method}
         </p>
       </div>
     </div>
