@@ -220,7 +220,7 @@ const runWithConcurrencyLimit = async (tasks, limit) => {
  * @param {object} lineItems
  * @returns
  */
-const buildOrderJSON = async (order, consignments, lineItems, coupons, notes) => {
+const buildOrderJSON = async (order, consignments, lineItems, coupons, notes, customerOrders) => {
   // Build a structured order JSON object
 
   return {
@@ -248,6 +248,7 @@ const buildOrderJSON = async (order, consignments, lineItems, coupons, notes) =>
       email: order.billing_address?.email,
       phone: order.billing_address?.phone,
       company: order.billing_address?.company,
+      is_first_order: customerOrders.length === 1,
     },
     subtotal: order.subtotal_ex_tax,
     tax: order.total_tax,
@@ -570,6 +571,12 @@ const processLineItems = async (products, order) => {
   });
 };
 
+const getOrderFromCustomer = async (customerId) => {
+  const url = ` https://api.bigcommerce.com/stores/${process.env.STORE_HASH}/v2/orders?customer_id=${customerId}`;
+  const response = await fetchJSON(url);
+  return response;
+};
+
 /**
  * https://developer.bigcommerce.com/docs/rest-management/orders#get-an-order
  * @param {Int} orderID
@@ -579,8 +586,13 @@ const getOrderData = async (orderID) => {
   const url = `https://api.bigcommerce.com/stores/${process.env.STORE_HASH}/v2/orders/${orderID}?include=consignments`;
   const order = await fetchJSON(url);
 
+  const customerId = order.customer_id;
+
+  const customerOrders = await getOrderFromCustomer(customerId);
+
   // Separate consignments shipping info
   const cons = order.consignments?.[0]?.shipping?.[0] || {};
+
   // Get products on order based on order.products.url
   const products = await getProductsOnOrder(order.products.url);
 
@@ -614,7 +626,7 @@ const getOrderData = async (orderID) => {
   const line_items = await processLineItems(products, order);
 
   // Build the final order JSON
-  const json = await buildOrderJSON(order, cons, line_items, coupons, notes);
+  const json = await buildOrderJSON(order, cons, line_items, coupons, notes, customerOrders);
 
   return json;
 };
@@ -762,7 +774,7 @@ async function updateOrder(orderId) {
 // -----------------------------------------------------------------------
 
 // Processes a single order with retries and backoff
-async function processSingleOrder(orderId, attempt = 1) {
+async function processSingleOrder(orderId, manualAdd = false, attempt = 1) {
   try {
     const data = await getOrderData(orderId);
 
@@ -773,12 +785,12 @@ async function processSingleOrder(orderId, attempt = 1) {
     const status = (data.status || '').trim();
 
     // Check if status is allowed
-    if (!ALLOWED_STATUSES.has(status)) {
+    if (!ALLOWED_STATUSES.has(status) && !manualAdd) {
       // If status is Incomplete, retry with backoff
       if (status === 'Incomplete' && attempt < MAX_RETRIES) {
         console.log(`⏳ Order ${orderId} is Incomplete, retrying attempt ${attempt + 1}...`);
 
-        setTimeout(() => processSingleOrder(orderId, attempt + 1), BACKOFF_MS);
+        setTimeout(() => processSingleOrder(orderId, manualAdd, attempt + 1), BACKOFF_MS);
       } else {
         // If not allowed or max retries reached, skip
         console.log(`⏭️ Skipping order ${orderId} (status: ${status || 'N/A'})`);
@@ -807,7 +819,7 @@ function scheduleOrderProcess(orderId, delayMs = DELAY_MS) {
   // Set a new timer
   const t = setTimeout(() => {
     PENDING_TIMERS.delete(orderId);
-    processSingleOrder(orderId);
+    processSingleOrder(orderId, false);
   }, delayMs);
 
   PENDING_TIMERS.set(orderId, t);
@@ -1553,7 +1565,7 @@ router.post('/add', async (req, res) => {
     }
 
     // Process immediately (no delay)
-    await processSingleOrder(orderId);
+    await processSingleOrder(orderId, true);
 
     return res.status(200).json({ success: true, message: 'Order processing initiated' });
   } catch (err) {

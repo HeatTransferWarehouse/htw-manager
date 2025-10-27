@@ -309,6 +309,7 @@ function PickListItemsTable({ order }) {
               {order.shipping.shipping_method}
             </p>
           </td>
+          <td></td>
           <td
             style={{
               fontSize: '12px',

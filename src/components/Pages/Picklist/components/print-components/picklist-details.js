@@ -2,6 +2,29 @@ import React from 'react';
 import { formatPhoneNumber, toTitleCase } from '../../utils/utils';
 
 function PickListDetails({ order }) {
+  const reasons = [];
+
+  if (
+    order.shipping.city.toLowerCase() === 'miami' &&
+    ['fl', 'florida'].includes(order.shipping.state.toLowerCase())
+  ) {
+    reasons.push('Miami Shipping Address');
+  }
+
+  if (
+    order.shipping.city.toLowerCase() === 'fort lauderdale' &&
+    ['fl', 'florida'].includes(order.shipping.state.toLowerCase())
+  ) {
+    reasons.push('Fort Lauderdale Shipping Address');
+  }
+
+  if (order.customer.is_first_order) {
+    reasons.push("Customer's first order");
+  }
+
+  const needsReview = reasons.length > 0;
+  const reviewReason = reasons.join(', ');
+
   return (
     <div
       style={{
@@ -259,6 +282,17 @@ function PickListDetails({ order }) {
             ></span>
           </span>
         </div>
+        {needsReview && (
+          <p
+            style={{
+              fontWeight: 'bold',
+              fontSize: '16px',
+              marginTop: '6px',
+            }}
+          >
+            **NEEDS REVIEW**
+          </p>
+        )}
       </div>
       {(order.customer_notes || order.staff_notes) && (
         <div
@@ -299,6 +333,33 @@ function PickListDetails({ order }) {
               HTW Notes:
             </span>{' '}
             {order.staff_notes || 'N/A'}
+          </p>
+        </div>
+      )}
+      {needsReview && (
+        <div
+          style={{
+            gridColumn: '1 / span 3',
+            display: 'flex',
+            flexDirection: 'column',
+            gap: '0.5rem',
+            marginTop: '1rem',
+          }}
+        >
+          <p
+            style={{
+              margin: '0',
+              fontSize: '12px',
+            }}
+          >
+            <span
+              style={{
+                fontWeight: '600',
+              }}
+            >
+              Review Reason:
+            </span>{' '}
+            {reviewReason}
           </p>
         </div>
       )}
