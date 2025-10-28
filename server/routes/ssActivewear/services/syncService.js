@@ -256,14 +256,19 @@ class SyncService {
       );
 
       if (categoryId) {
-        // Verify the primary category exists before assigning
-        const categoryExists = bcCategories.some(cat => cat.id === categoryId);
+        // Handle both single category IDs and arrays of category IDs
+        const categoryIds = Array.isArray(categoryId) ? categoryId : [categoryId];
 
-        if (categoryExists) {
-          const categories = [categoryId];
+        // Verify all categories exist before assigning
+        const validCategories = categoryIds.filter(id =>
+          bcCategories.some(cat => cat.id === id)
+        );
 
-          // Add additional category 468 (Clothing) for products in category 503 (Headwear) or 498 (Mens Clothing Blanks) if it exists
-          if (categoryId === 503 || categoryId === 498) {
+        if (validCategories.length > 0) {
+          const categories = [...validCategories];
+
+          // Add additional category 468 (Clothing) for products in category 503 (Headwear) or 498 (Mens Clothing Blanks) if not already included
+          if ((categoryIds.includes(503) || categoryIds.includes(498)) && !categories.includes(468)) {
             const category468Exists = bcCategories.some(cat => cat.id === 468);
             if (category468Exists) {
               categories.push(468);
@@ -274,7 +279,7 @@ class SyncService {
             bigCommerceService.updateProduct(bcProductId, { categories })
           );
         } else {
-          logger.warn(`Category ${categoryId} does not exist in BigCommerce, skipping category assignment for product ${bcProductId}`);
+          logger.warn(`None of the categories ${categoryIds.join(', ')} exist in BigCommerce, skipping category assignment for product ${bcProductId}`);
         }
       }
 
@@ -601,14 +606,19 @@ class SyncService {
       );
 
       if (categoryId) {
-        // Verify the primary category exists before assigning
-        const categoryExists = bcCategories.some(cat => cat.id === categoryId);
+       
+        const categoryIds = Array.isArray(categoryId) ? categoryId : [categoryId];
 
-        if (categoryExists) {
-          const categories = [categoryId];
+        
+        const validCategories = categoryIds.filter(id =>
+          bcCategories.some(cat => cat.id === id)
+        );
 
-          // Add additional category 468 (Clothing) for products in category 503 (Headwear) or 498 (Mens Clothing Blanks) if it exists
-          if (categoryId === 503 || categoryId === 498) {
+        if (validCategories.length > 0) {
+          const categories = [...validCategories];
+
+         
+          if ((categoryIds.includes(503) || categoryIds.includes(498)) && !categories.includes(468)) {
             const category468Exists = bcCategories.some(cat => cat.id === 468);
             if (category468Exists) {
               categories.push(468);
@@ -619,7 +629,7 @@ class SyncService {
             bigCommerceService.updateProduct(productId, { categories })
           );
         } else {
-          logger.warn(`Category ${categoryId} does not exist in BigCommerce, skipping category assignment for product ${productId}`);
+          logger.warn(`None of the categories ${categoryIds.join(', ')} exist in BigCommerce, skipping category assignment for product ${productId}`);
         }
       }
 

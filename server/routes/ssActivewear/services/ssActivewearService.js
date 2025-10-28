@@ -1,6 +1,6 @@
 const axios = require('axios');
 const config = require('../config.js');
-const logger = require('./loggerService.js');
+const logger = require('./loggerService');
 
 class SSActivewearService {
   constructor() {
@@ -65,7 +65,8 @@ class SSActivewearService {
     const fullProductName = brandName && styleName ? `${brandName} Style ${styleName}` : (brandName ? `${brandName} ${productName}` : productName);
 
     const styleNameForSku = styleName || productName.replace(/\s+/g, '-');
-    const skuString = `${styleNameForSku}-base`;
+    const brandNameForSku = brandName ? brandName.replace(/\s+/g, '').replace(/[^a-zA-Z0-9]/g, '').substring(0, 2).toUpperCase() : '';
+    const skuString = brandNameForSku ? `${brandNameForSku}-${styleNameForSku}-base` : `${styleNameForSku}-base`;
 
     return {
       name: fullProductName,

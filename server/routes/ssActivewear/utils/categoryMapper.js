@@ -8,6 +8,9 @@ class CategoryMapper {
       '47 BRAND': 'Headwear',
       'Independent Trading Co.': 498,
       'Independent Trading': 498,
+      'American Apparel': [468, 498],
+      'TriDri': [468, 498],
+      'Tultex': [468, 498],
     };
   }
 
@@ -33,12 +36,17 @@ class CategoryMapper {
 
     for (const [brand, categoryName] of Object.entries(this.brandToCategoryMap)) {
       if (productName.includes(brand)) {
-  
-        if (typeof categoryName === 'number') {
+       
+        if (Array.isArray(categoryName)) {
           return categoryName;
         }
 
       
+        if (typeof categoryName === 'number') {
+          return categoryName;
+        }
+
+        
         if (categoryName.toLowerCase() === 'headwear') {
           return HEADWEAR_ID;
         } else if (categoryName.toLowerCase() === 'clothing') {
