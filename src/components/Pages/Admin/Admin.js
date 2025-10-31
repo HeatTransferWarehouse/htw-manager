@@ -1,16 +1,11 @@
-import React, { useContext, useEffect, useState } from "react";
-import "../css/admin.css";
-import { useDispatch, useSelector } from "react-redux";
-import DeleteModal from "../../modals/deleteModal";
-import Webhooks from "./components/webhooks";
-import {
-  CreateWebhook,
-  RegisterUser,
-  UpdateUser,
-  UpdateWebhook,
-} from "./components/modals";
-import UserTable from "./components/user-table";
-import { BreakpointsContext } from "../../../context/BreakpointsContext";
+import React, { useContext, useEffect, useState } from 'react';
+import '../css/admin.css';
+import { useDispatch, useSelector } from 'react-redux';
+import DeleteModal from '../../modals/deleteModal';
+import Webhooks from './components/webhooks';
+import { CreateWebhook, RegisterUser, UpdateUser, UpdateWebhook } from './components/modals';
+import UserTable from './components/user-table';
+import { BreakpointsContext } from '../../../context/BreakpointsContext';
 
 function WallyB() {
   const dispatch = useDispatch();
@@ -25,18 +20,17 @@ function WallyB() {
   const [editUserActive, setEditUserActive] = useState(false);
   const [user, setUser] = useState({});
   const [webhookModalActive, setWebhookModalActive] = useState(false);
-  const [updateWebhookModalActive, setUpdateWebhookModalActive] =
-    useState(false);
+  const [updateWebhookModalActive, setUpdateWebhookModalActive] = useState(false);
   const [activeWebhook, setActiveWebhook] = useState({});
 
   useEffect(() => {
-    dispatch({ type: "FETCH_ALL_USERS" });
-    dispatch({ type: "GET_WEBHOOKS" });
+    dispatch({ type: 'FETCH_ALL_USERS' });
+    dispatch({ type: 'GET_WEBHOOKS' });
   }, [dispatch]);
 
   const deleteUser = () => {
     dispatch({
-      type: "DELETE_USER",
+      type: 'DELETE_USER',
       payload: selectedUserId,
     });
     setDeleteModalActive(false);
@@ -45,7 +39,7 @@ function WallyB() {
 
   const deleteWebhook = () => {
     dispatch({
-      type: "DELETE_WEBHOOK",
+      type: 'DELETE_WEBHOOK',
       payload: selectedWebhookId,
     });
 

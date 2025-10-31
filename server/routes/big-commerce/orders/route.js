@@ -602,7 +602,6 @@ const getOrderFromCustomer = async (customerId, storeKey) => {
 const getOrderData = async (orderID, storeKey) => {
   const url = `https://api.bigcommerce.com/stores/${storeMap[storeKey].hash}/v2/orders/${orderID}?include=consignments`;
   const order = await fetchJSON(url, storeKey);
-  console.log(order);
 
   const customerId = order.customer_id;
 
@@ -1266,7 +1265,6 @@ router.post('/split', async (req, res) => {
   const client = await pool.connect();
   try {
     const { orderId, shipments, storeKey } = req.body;
-    console.log(storeKey);
 
     // 1. Fetch original order once
     const foundOrder = await client.query(
