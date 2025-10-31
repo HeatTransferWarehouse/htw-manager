@@ -1347,6 +1347,14 @@ video {
   width: 100vw;
 }
 
+.w-40 {
+  width: 10rem;
+}
+
+.w-60 {
+  width: 15rem;
+}
+
 .min-w-32 {
   min-width: 8rem;
 }

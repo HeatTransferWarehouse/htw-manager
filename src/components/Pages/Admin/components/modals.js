@@ -1,5 +1,5 @@
-import React, { useEffect, useRef, useState } from "react";
-import Scopes from "../webhooksScopes.json";
+import React, { useEffect, useRef, useState } from 'react';
+import Scopes from '../webhooksScopes.json';
 import {
   Modal,
   ModalCloseDesktop,
@@ -7,8 +7,8 @@ import {
   ModalContent,
   ModalOverlay,
   ModalTitle,
-} from "../../../Modal/modal";
-import { useDrag } from "@use-gesture/react";
+} from '../../../Modal/modal';
+import { useDrag } from '@use-gesture/react';
 import {
   Fieldset,
   Form,
@@ -19,18 +19,26 @@ import {
   Input,
   RadioGroup,
   RadioButton,
-} from "../../../Form/form";
-import { useDispatch } from "react-redux";
-import { Button } from "../../../ui/button";
+} from '../../../Form/form';
+import { useDispatch } from 'react-redux';
+import { Button } from '../../../ui/button';
 
 const CreateWebhook = ({ props }) => {
   const dispatch = useDispatch();
   const closeRef = useRef(null);
   const bgRef = useRef(null);
-  const [destination, setDestination] = useState("");
-  const [selectedScope, setSelectedScope] = useState("Select Scope");
+  const [destination, setDestination] = useState('');
+  const [selectedScope, setSelectedScope] = useState('Select Scope');
+  const [selectedStore, setSelectedStore] = useState('Select Store');
   const [isActive, setIsActive] = useState(true);
   const [scopeDrawerOpen, setScopeDrawerOpen] = useState(false);
+  const [storeDrawerOpen, setStoreDrawerOpen] = useState(false);
+
+  const storeMap = {
+    htw: 'Heat Transfer Warehouse',
+    sff: 'Shirts From Fargo',
+    sb: 'HTW Sandbox',
+  };
 
   const submitWebhook = async (e) => {
     e.preventDefault();
@@ -41,10 +49,11 @@ const CreateWebhook = ({ props }) => {
       events_history_enabled: true,
       headers: null,
     };
-    dispatch({ type: "CREATE_WEBHOOK", payload: webhook });
+    dispatch({ type: 'CREATE_WEBHOOK', payload: webhook });
     props.setOpen(false);
-    setDestination("");
-    setSelectedScope("Select Scope");
+    setDestination('');
+    setSelectedScope('Select Scope');
+    setSelectedStore('Select Store');
     setIsActive(true);
   };
 
@@ -54,11 +63,18 @@ const CreateWebhook = ({ props }) => {
     setScopeDrawerOpen(!scopeDrawerOpen);
   };
 
+  const openStoreDrawer = (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+    setStoreDrawerOpen(!storeDrawerOpen);
+  };
+
   const handleOutsideClick = (e) => {
     if (bgRef.current === e.target) {
       props.setOpen(false);
-      setDestination("");
-      setSelectedScope("Select Scope");
+      setDestination('');
+      setSelectedScope('Select Scope');
+      setSelectedStore('Select Store');
       setIsActive(true);
     }
   };
@@ -66,22 +82,21 @@ const CreateWebhook = ({ props }) => {
   const bind = useDrag(({ down, movement: [, my], cancel }) => {
     if (my > 100) {
       cancel(props.setOpen(false));
-      setDestination("");
-      setSelectedScope("Select Scope");
+      setDestination('');
+      setSelectedScope('Select Scope');
+      setSelectedStore('Select Store');
       setIsActive(true);
     }
     if (!down && my > 50) {
       props.setOpen(false);
-      setDestination("");
-      setSelectedScope("Select Scope");
+      setDestination('');
+      setSelectedScope('Select Scope');
+      setSelectedStore('Select Store');
       setIsActive(true);
     }
   });
   return (
-    <ModalOverlay
-      ref={bgRef}
-      handleClick={handleOutsideClick}
-      open={props.open}>
+    <ModalOverlay ref={bgRef} handleClick={handleOutsideClick} open={props.open}>
       <Modal open={props.open} width="sm">
         <ModalCloseMobile ref={closeRef} bind={bind} />
         <ModalCloseDesktop handleClick={() => props.setOpen(false)} />
@@ -99,7 +114,8 @@ const CreateWebhook = ({ props }) => {
                 open={scopeDrawerOpen}
                 setOpen={setScopeDrawerOpen}
                 value={selectedScope}
-                required={true}>
+                required={true}
+              >
                 <OptionSheet open={scopeDrawerOpen}>
                   <Option selectedValue={selectedScope} value="Select Scope">
                     Select Scope
@@ -112,7 +128,8 @@ const CreateWebhook = ({ props }) => {
                         setScopeDrawerOpen(false);
                       }}
                       selectedValue={selectedScope}
-                      value={scope}>
+                      value={scope}
+                    >
                       {scope}
                     </Option>
                   ))}
@@ -131,6 +148,57 @@ const CreateWebhook = ({ props }) => {
                 value={destination}
                 required={true}
               />
+            </Fieldset>
+            <Fieldset>
+              <Label htmlFor="scope">Storefront</Label>
+              <Select
+                className="w-60"
+                id="storefront"
+                name="storefront select"
+                onChange={(e) => setSelectedStore(e.target.value)}
+                onClick={openStoreDrawer}
+                open={storeDrawerOpen}
+                setOpen={setStoreDrawerOpen}
+                value={selectedStore}
+                required={true}
+              >
+                <OptionSheet open={storeDrawerOpen}>
+                  <Option selectedValue={selectedStore} value="Select Store">
+                    Select Store
+                  </Option>
+
+                  <Option
+                    onClick={() => {
+                      setSelectedStore('htw');
+                      setStoreDrawerOpen(false);
+                    }}
+                    selectedValue={selectedStore}
+                    value={storeMap['htw']}
+                  >
+                    {storeMap['htw']}
+                  </Option>
+                  <Option
+                    onClick={() => {
+                      setSelectedStore('sff');
+                      setStoreDrawerOpen(false);
+                    }}
+                    selectedValue={selectedStore}
+                    value={storeMap['sff']}
+                  >
+                    {storeMap['sff']}
+                  </Option>
+                  <Option
+                    onClick={() => {
+                      setSelectedStore('sb');
+                      setStoreDrawerOpen(false);
+                    }}
+                    selectedValue={selectedStore}
+                    value={storeMap['sb']}
+                  >
+                    {storeMap['sb']}
+                  </Option>
+                </OptionSheet>
+              </Select>
             </Fieldset>
             <Fieldset>
               <Label>Active</Label>
@@ -169,15 +237,15 @@ const UpdateWebhook = ({ props }) => {
   const dispatch = useDispatch();
   const closeRef = useRef(null);
   const bgRef = useRef(null);
-  const [destination, setDestination] = useState("");
-  const [selectedScope, setSelectedScope] = useState("");
+  const [destination, setDestination] = useState('');
+  const [selectedScope, setSelectedScope] = useState('');
   const [isActive, setIsActive] = useState(null);
   const [eventsActive, setEventsActive] = useState(null);
   const [scopeDrawerOpen, setScopeDrawerOpen] = useState(false);
 
   useEffect(() => {
     setSelectedScope(props?.webhook.scope);
-    setDestination(props?.webhook.destination?.split(".com")[1] ?? "");
+    setDestination(props?.webhook.destination?.split('.com')[1] ?? '');
     setIsActive(props?.webhook.isActive);
     setEventsActive(props?.webhook.eventsHistoryEnabled);
   }, [props.webhook]);
@@ -192,7 +260,7 @@ const UpdateWebhook = ({ props }) => {
       headers: null,
     };
     dispatch({
-      type: "UPDATE_WEBHOOK",
+      type: 'UPDATE_WEBHOOK',
       payload: { id: props?.webhook.id, webhook },
     });
     props.setOpen(false);
@@ -223,10 +291,7 @@ const UpdateWebhook = ({ props }) => {
   });
 
   return (
-    <ModalOverlay
-      ref={bgRef}
-      handleClick={handleOutsideClick}
-      open={props.open}>
+    <ModalOverlay ref={bgRef} handleClick={handleOutsideClick} open={props.open}>
       <Modal open={props.open} width="sm">
         <ModalCloseMobile ref={closeRef} bind={bind} />
         <ModalCloseDesktop handleClick={() => props.setOpen(false)} />
@@ -244,7 +309,8 @@ const UpdateWebhook = ({ props }) => {
                 open={scopeDrawerOpen}
                 setOpen={setScopeDrawerOpen}
                 value={selectedScope}
-                required={true}>
+                required={true}
+              >
                 <OptionSheet open={scopeDrawerOpen}>
                   <Option selectedValue={selectedScope} value="Select Scope">
                     Select Scope
@@ -257,7 +323,8 @@ const UpdateWebhook = ({ props }) => {
                         setScopeDrawerOpen(false);
                       }}
                       selectedValue={selectedScope}
-                      value={scope}>
+                      value={scope}
+                    >
                       {scope}
                     </Option>
                   ))}
@@ -327,7 +394,8 @@ const UpdateWebhook = ({ props }) => {
                   props.setOpen(false);
                   props.setActiveWebhook({});
                 }}
-                variant="neutral">
+                variant="neutral"
+              >
                 Cancel
               </Button>
               <Button variant="secondary" onClick={updateWebhook}>
@@ -346,14 +414,14 @@ const UpdateUser = ({ props }) => {
   const closeRef = useRef(null);
   const bgRef = useRef(null);
   const [selectDrawerOpen, setSelectDrawerOpen] = useState(false);
-  const [username, setUsername] = useState("");
-  const [password, setPassword] = useState("");
+  const [username, setUsername] = useState('');
+  const [password, setPassword] = useState('');
   const [role, setRole] = useState(null);
   const [userId, setUserId] = useState(null);
 
   useEffect(() => {
     setUsername(props?.user.email);
-    setRole(props?.user.access_level === 5 ? "Admin" : "Member");
+    setRole(props?.user.access_level === 5 ? 'Admin' : 'Member');
     setPassword(props?.user.password);
     setUserId(props?.user.id);
     setUserId(props?.user.id);
@@ -363,7 +431,7 @@ const UpdateUser = ({ props }) => {
     e.preventDefault();
 
     dispatch({
-      type: "UPDATE_USER",
+      type: 'UPDATE_USER',
       payload: {
         id: userId,
         username: username,
@@ -371,8 +439,8 @@ const UpdateUser = ({ props }) => {
         role: role,
       },
     });
-    setUsername("");
-    setPassword("");
+    setUsername('');
+    setPassword('');
     setRole(null);
     setUserId(null);
     props.setOpen(false);
@@ -400,10 +468,7 @@ const UpdateUser = ({ props }) => {
   });
 
   return (
-    <ModalOverlay
-      ref={bgRef}
-      handleClick={handleOutsideClick}
-      open={props.open}>
+    <ModalOverlay ref={bgRef} handleClick={handleOutsideClick} open={props.open}>
       <Modal open={props.open} width="sm">
         <ModalCloseMobile ref={closeRef} bind={bind} />
         <ModalCloseDesktop handleClick={() => props.setOpen(false)} />
@@ -420,8 +485,9 @@ const UpdateUser = ({ props }) => {
                 onClick={openSelectDrawer}
                 open={selectDrawerOpen}
                 setOpen={setSelectDrawerOpen}
-                value={role === 5 ? "Admin" : "Member"}
-                required={true}>
+                value={role === 5 ? 'Admin' : 'Member'}
+                required={true}
+              >
                 <OptionSheet width="8rem" open={selectDrawerOpen}>
                   <Option selectedValue={role} value="Select Role">
                     Select Role
@@ -432,7 +498,8 @@ const UpdateUser = ({ props }) => {
                       setSelectDrawerOpen(false);
                     }}
                     selectedValue={role}
-                    value={5}>
+                    value={5}
+                  >
                     Admin
                   </Option>
                   <Option
@@ -441,7 +508,8 @@ const UpdateUser = ({ props }) => {
                       setSelectDrawerOpen(false);
                     }}
                     selectedValue={role}
-                    value={0}>
+                    value={0}
+                  >
                     Member
                   </Option>
                 </OptionSheet>
@@ -480,7 +548,8 @@ const UpdateUser = ({ props }) => {
                   e.stopPropagation();
                   props.setOpen(false);
                 }}
-                variant="neutral">
+                variant="neutral"
+              >
                 Cancel
               </Button>
               <Button variant="secondary" onClick={updateUser}>
@@ -498,21 +567,21 @@ const RegisterUser = ({ props }) => {
   const dispatch = useDispatch();
   const closeRef = useRef(null);
   const bgRef = useRef(null);
-  const [username, setUsername] = useState("");
-  const [password, setPassword] = useState("");
+  const [username, setUsername] = useState('');
+  const [password, setPassword] = useState('');
 
   const registerUser = async (e) => {
     e.preventDefault();
 
     dispatch({
-      type: "REGISTER",
+      type: 'REGISTER',
       payload: {
         username: username,
         password: password,
       },
     });
-    setUsername("");
-    setPassword("");
+    setUsername('');
+    setPassword('');
     props.setOpen(false);
   };
 
@@ -532,10 +601,7 @@ const RegisterUser = ({ props }) => {
   });
 
   return (
-    <ModalOverlay
-      ref={bgRef}
-      handleClick={handleOutsideClick}
-      open={props.open}>
+    <ModalOverlay ref={bgRef} handleClick={handleOutsideClick} open={props.open}>
       <Modal open={props.open} width="sm">
         <ModalCloseMobile ref={closeRef} bind={bind} />
         <ModalCloseDesktop handleClick={() => props.setOpen(false)} />
@@ -576,7 +642,8 @@ const RegisterUser = ({ props }) => {
                   e.stopPropagation();
                   props.setOpen(false);
                 }}
-                variant="neutral">
+                variant="neutral"
+              >
                 Cancel
               </Button>
               <Button variant="secondary" onClick={registerUser}>

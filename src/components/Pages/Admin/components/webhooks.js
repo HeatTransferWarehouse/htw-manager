@@ -1,29 +1,28 @@
-import React from "react";
-import { GoDotFill } from "react-icons/go";
-import { FaPlus } from "react-icons/fa6";
-import { Button } from "../../../ui/button";
-import { Card } from "../../../ui/card";
-import { MdEdit } from "react-icons/md";
-import { MdDelete } from "react-icons/md";
+import React from 'react';
+import { GoDotFill } from 'react-icons/go';
+import { FaPlus } from 'react-icons/fa6';
+import { Button } from '../../../ui/button';
+import { Card } from '../../../ui/card';
+import { MdEdit } from 'react-icons/md';
+import { MdDelete } from 'react-icons/md';
 
 export default function Webhooks({ props }) {
   return (
-    <Card width={"xl"}>
+    <Card width={'xl'}>
       <div className="flex items-center max-md:flex-col max-md:gap-4 justify-between mb-4">
         <h2 className="font-bold text-2xl">
-          Webhooks{" "}
-          <span className="text-lg text-gray-700 font-normal">
-            ({props.webhooks?.length})
-          </span>
+          Webhooks{' '}
+          <span className="text-lg text-gray-700 font-normal">({props.webhooks?.length})</span>
         </h2>
-        <Button onClick={() => props.setOpen(true)} variant={"secondary"}>
+        <Button onClick={() => props.setOpen(true)} variant={'secondary'}>
           New Hook <FaPlus className="w-4 h-4 fill-white" />
         </Button>
       </div>
       {props.webhooks?.map((webhook, index) => (
         <div
           key={index}
-          className="flex items-center justify-between border-b border-gray-200 py-4">
+          className="flex items-center justify-between border-b border-gray-200 py-4"
+        >
           <div className="grow">
             <p className="text-lg w-fit max-md:text-base relative font-bold flex items-center gap-2">
               {webhook.scope}
@@ -37,13 +36,12 @@ export default function Webhooks({ props }) {
                 </span>
               )}
             </p>
-            <p className="text-sm text-gray-500">
-              {webhook.destination.split(".com/")[1]}
-            </p>
+            <p className="text-sm text-gray-500">{webhook.destination.split('.com/')[1]}</p>
+            <p className="text-sm text-gray-500">Store: {webhook.store}</p>
           </div>
           <div className="flex items-center gap-2">
             <Button
-              className={"p-2"}
+              className={'p-2'}
               onClick={() => {
                 props.setActiveWebhook({
                   id: webhook.id,
@@ -55,24 +53,22 @@ export default function Webhooks({ props }) {
                 });
                 props.setUpdateOpen(true);
               }}
-              variant={"neutral"}>
-              {props.breakpoint === "mobile" ? (
-                <MdEdit className="w-4 h-4 fill-black" />
-              ) : (
-                "Update"
-              )}
+              variant={'neutral'}
+            >
+              {props.breakpoint === 'mobile' ? <MdEdit className="w-4 h-4 fill-black" /> : 'Update'}
             </Button>
             <Button
-              className={"p-2"}
+              className={'p-2'}
               onClick={() => {
                 props.setSelectedWebhookId(webhook.id);
                 props.setDeleteModalActive(true);
               }}
-              variant={"danger"}>
-              {props.breakpoint === "mobile" ? (
+              variant={'danger'}
+            >
+              {props.breakpoint === 'mobile' ? (
                 <MdDelete className="w-4 h-4 fill-white" />
               ) : (
-                "Delete"
+                'Delete'
               )}
             </Button>
           </div>
