@@ -43,7 +43,7 @@ export async function getLocalPrinters(dispatch) {
   } catch (err) {
     console.warn('🛑 Local print server not running or unreachable.');
     dispatch({
-      type: 'SET_ORDERS_ERROR',
+      type: 'SET_HTW_ORDERS_ERROR',
       payload: {
         title: 'Error Connecting to Print Server',
         message:

@@ -1,0 +1,263 @@
+import React, { useEffect, useRef, useState } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import './styles.css';
+import ReactDOM from 'react-dom';
+import PrintHtml from './components/print-components/print-html';
+import { Info } from '@material-ui/icons';
+import { calculateOrderAges } from './utils/utils';
+import { useLocation } from 'react-router-dom';
+import usePrinter from './hooks/usePrinter';
+import PrintModal from './components/print-modal';
+import { twMerge } from 'tailwind-merge';
+import ConversionHTML from './components/print-components/conversion-list';
+import OrdersTable from './components/table/orders-table';
+
+function PickList() {
+  const printRef = useRef();
+  const conversionRef = useRef();
+  const location = useLocation();
+  const dispatch = useDispatch();
+  const searchParams = new URLSearchParams(location.search);
+  const storeKey = 'sff'; // Since this is the SFF picklist page
+
+  const view = searchParams.get('view') || 'all'; // Default to 'new' if no parameter
+  const ordersStore = useSelector((state) => state.BC.SFFOrders.orders);
+  const syncing = useSelector((state) => state.BC.SFFOrders.syncing);
+  const orderTags = useSelector((state) => state.BC.SFFOrders.tags);
+  const loading = useSelector((state) => state.BC.SFFOrders.loading);
+  const errorsStore = useSelector((state) => state.BC.SFFOrders.errors);
+  const [searchTerm, setSearchTerm] = useState('');
+  const [rowsPerPage, setRowsPerPage] = useState(50);
+  const [page, setPage] = useState(0);
+  const [orders, setOrders] = useState([]);
+  const [errors, setErrors] = useState(errorsStore);
+  const [ordersCount, setOrdersCount] = useState(0);
+  const [orderTagsList, setOrdersTagsList] = useState(orderTags || []);
+  const [activeOrders, setActiveOrders] = useState([]);
+  const [expandedOrderIDs, setExpandedOrderIDs] = useState([]);
+  const [currentTime, setCurrentTime] = useState(Date.now());
+  const [isFullScreen, setIsFullScreen] = useState(false);
+  const [generateMessageOpen, setGenerateMessageOpen] = useState(false);
+  const [activeOrder, setActiveOrder] = useState(null);
+  const [filters, setFilters] = useState({});
+
+  const shipmentsByOrder = orders.reduce((acc, order) => {
+    const { order_id, shipment_number } = order;
+
+    if (!acc[order_id]) {
+      acc[order_id] = new Set();
+    }
+
+    // add shipment_number to that order's set
+    acc[order_id].add(shipment_number || 0);
+
+    return acc;
+  }, {});
+
+  // Convert to array with counts if needed:
+  const splitOrders = Object.entries(shipmentsByOrder).map(([order_id, shipments]) => ({
+    order_id,
+    shipmentCount: shipments.size,
+  }));
+
+  const {
+    generatingPDF,
+    openPrintModal,
+    pdfUrl,
+    printersList,
+    selectedPrinter,
+    setSelectedPrinter,
+    setOpenPrintModal,
+    printOrders,
+    sendToPrinter,
+    markPrinterAsDefault,
+    isPrinting,
+    setType,
+  } = usePrinter(
+    printRef,
+    conversionRef,
+    activeOrders,
+    dispatch,
+    rowsPerPage,
+    view,
+    searchTerm,
+    page + 1,
+    setActiveOrders
+  );
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setCurrentTime(Date.now());
+    }, 60 * 1000); // every minute
+
+    return () => clearInterval(interval);
+  }, []);
+
+  useEffect(() => {
+    setErrors(errorsStore);
+  }, [errorsStore]);
+
+  useEffect(() => {
+    if (generatingPDF) {
+      setTimeout(() => {
+        setGenerateMessageOpen(true);
+      }, 50);
+    } else {
+      setGenerateMessageOpen(false);
+    }
+  }, [generatingPDF]);
+
+  useEffect(() => {
+    setOrders((prevOrders) => calculateOrderAges(prevOrders));
+  }, [currentTime]);
+
+  useEffect(() => {
+    dispatch({ type: 'GET_SFF_ORDERS', payload: { page: page + 1, limit: rowsPerPage, storeKey } });
+  }, [page, rowsPerPage, dispatch]);
+
+  useEffect(() => {
+    dispatch({ type: 'GET_SFF_ORDER_TAGS', payload: { storeKey } });
+  }, [dispatch]);
+
+  useEffect(() => {
+    dispatch({
+      type: 'GET_SFF_ORDERS',
+      payload: { page: page + 1, limit: rowsPerPage, filter: view, storeKey },
+      // 👆 backend is 1-based, your state is 0-based
+    });
+  }, [page, rowsPerPage, dispatch, view]);
+
+  useEffect(() => {
+    if (ordersStore?.orders) {
+      setOrders(calculateOrderAges(ordersStore.orders));
+    }
+    setOrdersCount(ordersStore.pagination?.totalOrders || 0);
+  }, [ordersStore, currentTime]);
+
+  useEffect(() => {
+    setOrdersTagsList(orderTags);
+  }, [orderTags]);
+
+  return (
+    <div
+      id="picklist-table-sheet"
+      className={twMerge(
+        isFullScreen && 'fixed  overflow-auto h-screen w-screen bg-white z-[51] left-0 top-0',
+        'transition-all duration-150'
+      )}
+    >
+      <OrdersTable
+        isFullScreen={isFullScreen}
+        setIsFullScreen={setIsFullScreen}
+        ordersData={orders}
+        activeOrders={activeOrders}
+        setActiveOrders={setActiveOrders}
+        expandedOrderIDs={expandedOrderIDs}
+        setExpandedOrderIDs={setExpandedOrderIDs}
+        printOrders={printOrders}
+        splitOrders={splitOrders}
+        view={view}
+        syncing={syncing}
+        orderTagsList={orderTagsList}
+        rowsPerPage={rowsPerPage}
+        setRowsPerPage={setRowsPerPage}
+        page={page}
+        setPage={setPage}
+        ordersCount={ordersCount}
+        searchTerm={searchTerm}
+        setSearchTerm={setSearchTerm}
+        loading={loading}
+        setType={setType}
+        activeOrder={activeOrder}
+        setActiveOrder={setActiveOrder}
+        filters={filters}
+        setFilters={setFilters}
+      />
+
+      {!errors.title &&
+        !errors.message &&
+        generatingPDF &&
+        ReactDOM.createPortal(
+          <div
+            style={{
+              transform: generateMessageOpen ? 'translateY(0)' : 'translateY(-150%)',
+              transition: 'transform 0.1s ease-in-out',
+            }}
+            className="bg-white border border-gray-300 p-4 shadow-md overflow-hidden flex justify-start absolute w-[400px] right-8 top-8 rounded-md z-[51]"
+          >
+            <div className="w-full h-[6px] bg-secondary absolute top-0 right-0" />
+            <div className="flex  flex-col items-center justify-center gap-2">
+              <div className="flex justify-start items-center">
+                <Info className="text-secondary mr-2" />
+                <p className="text-lg font-medium">Generating Picklist...</p>
+              </div>
+              <p>Picklist is being generated</p>
+            </div>
+          </div>,
+          document.body
+        )}
+      {errors.title &&
+        errors.message &&
+        ReactDOM.createPortal(
+          <div
+            style={{
+              transform: errors ? 'translateY(0)' : 'translateY(-150%)',
+              transition: 'transform 0.1s ease-in-out',
+            }}
+            className="bg-white border border-gray-300 p-4 shadow-md overflow-hidden flex justify-start absolute w-[400px] right-8 top-8 rounded-md z-[51]"
+          >
+            <div className="w-full h-[6px] bg-red-600 absolute top-0 right-0" />
+            <div className="flex  flex-col items-start justify-center gap-2">
+              <div className="flex justify-start items-center">
+                <Info className="text-red-600 mr-2" />
+                <p className="text-lg font-medium">{errors.title}</p>
+              </div>
+              <p>{errors.message}</p>
+            </div>
+          </div>,
+          document.body
+        )}
+      <PrintModal
+        open={openPrintModal}
+        generatingPDF={generatingPDF}
+        pdfUrl={pdfUrl}
+        printersList={printersList}
+        selectedPrinter={selectedPrinter}
+        setSelectedPrinter={setSelectedPrinter}
+        markPrinterAsDefault={markPrinterAsDefault}
+        sendToPrinter={sendToPrinter}
+        onClose={() => setOpenPrintModal(false)}
+        isPrinting={isPrinting}
+      />
+      <div
+        style={{
+          clip: 'rect(0 0 0 0)',
+          clipPath: 'inset(100%)',
+          height: '1px',
+          overflow: 'hidden',
+          position: 'absolute',
+          whiteSpace: 'nowrap',
+          width: '1px',
+        }}
+      >
+        <PrintHtml ref={printRef} activeOrders={activeOrders} splitOrders={splitOrders} />
+      </div>
+
+      <div
+        style={{
+          clip: 'rect(0 0 0 0)',
+          clipPath: 'inset(100%)',
+          height: '1px',
+          overflow: 'hidden',
+          position: 'absolute',
+          whiteSpace: 'nowrap',
+          width: '1px',
+        }}
+      >
+        <ConversionHTML ref={conversionRef} activeOrders={activeOrders} />
+      </div>
+    </div>
+  );
+}
+
+export default PickList;

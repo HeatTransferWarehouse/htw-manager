@@ -8,7 +8,8 @@ const pdf = require('html-pdf-node');
 // ----------------------------- Config ----------------------------------
 
 if (process.env.SERVER_ENV === 'prod') {
-  setInterval(syncOrders, 10 * 60 * 1000);
+  setInterval(syncOrders('htw'), 10 * 60 * 1000);
+  setInterval(syncOrders('sff'), 10 * 60 * 1000);
 }
 
 const ALLOWED_STATUSES = new Set(['Awaiting Fulfillment', 'Awaiting Payment']);
@@ -31,6 +32,16 @@ const STATUS_MAP = {
   14: 'Partially Refunded',
 };
 
+const DATABASE_MAP = {
+  htw: 'picklist_orders',
+  sff: 'sff_picklist_orders',
+};
+
+const DELETED_IDS_DB_MAP = {
+  htw: 'deleted_order_ids',
+  sff: 'sff_deleted_order_ids',
+};
+
 const clothingKeywords = ['clothing', 'towel', 'youth', 'womens', 'bottoms'];
 
 // Webhook delay/debounce: give BigCommerce time to flip out of "Incomplete"
@@ -43,10 +54,6 @@ const BACKOFF_MS = 5_000; // wait between retries
 const SYNC_TARGET = 50; // aim to add up to 50 valid orders
 const SYNC_CONCURRENCY = 8; // parallel workers for product fetch + insert
 const SYNC_PAGE_SIZE = 50;
-const storeFrontToken = {
-  token: null,
-  expiry: 0,
-};
 
 const storeMap = {
   sandbox: {
@@ -145,14 +152,14 @@ const getBaseUrl = () => {
  * @returns {Promise<object>} - Resolves with parsed JSON response.
  * @throws {Error} - Throws if the response status is not OK (>=400).
  */
-const fetchJSON = async (url, options = {}) => {
+const fetchJSON = async (url, storeKey, options = {}) => {
   if (!url) return undefined; // early return if url is missing
 
   try {
     const resp = await fetch(url, {
       method: 'GET',
       headers: {
-        'X-Auth-Token': process.env.BG_AUTH_TOKEN,
+        'X-Auth-Token': storeMap[storeKey].token,
         'Content-Type': 'application/json',
         Accept: 'application/json',
       },
@@ -180,6 +187,7 @@ const fetchJSON = async (url, options = {}) => {
  */
 const runWithConcurrencyLimit = async (tasks, limit) => {
   // Pre-allocate an array for results, same length as tasks
+
   const results = new Array(tasks.length);
 
   // Shared index tracker for which task should be run next
@@ -220,7 +228,15 @@ const runWithConcurrencyLimit = async (tasks, limit) => {
  * @param {object} lineItems
  * @returns
  */
-const buildOrderJSON = async (order, consignments, lineItems, coupons, notes, customerOrders) => {
+const buildOrderJSON = async (
+  order,
+  consignments,
+  lineItems,
+  coupons,
+  notes,
+  customerOrders,
+  paymentMethod
+) => {
   // Build a structured order JSON object
 
   return {
@@ -248,7 +264,7 @@ const buildOrderJSON = async (order, consignments, lineItems, coupons, notes, cu
       email: order.billing_address?.email,
       phone: order.billing_address?.phone,
       company: order.billing_address?.company,
-      is_first_order: customerOrders.length === 1,
+      is_first_order: customerOrders?.length === 1,
     },
     subtotal: order.subtotal_ex_tax,
     tax: order.total_tax,
@@ -257,6 +273,7 @@ const buildOrderJSON = async (order, consignments, lineItems, coupons, notes, cu
     status: order.status,
     coupon_name: coupons.coupon_name,
     coupon_value: coupons.coupon_value,
+    payment_method: paymentMethod,
   };
 };
 
@@ -311,13 +328,13 @@ const unwrapEdges = (obj) => {
 // @returns {Promise<string>} A valid Storefront API token
 // -----------------------------------------------------------------------------
 
-const getProductsOnOrder = async (url) => {
-  return fetchJSON(url);
+const getProductsOnOrder = async (url, storeKey) => {
+  return fetchJSON(url, storeKey);
 };
 
-const fetchGraphQL = async (query) => {
-  const token = await getValidApiToken('htw');
-  const url = `https://store-${process.env.STORE_HASH}-1.mybigcommerce.com/graphql`;
+const fetchGraphQL = async (query, storeKey) => {
+  const token = await getValidApiToken(storeKey);
+  const url = `https://store-${storeMap[storeKey].hash}-1.mybigcommerce.com/graphql`;
 
   const resp = await fetch(url, {
     method: 'POST',
@@ -340,7 +357,7 @@ const fetchGraphQL = async (query) => {
  * @param {number} productId - The product entity ID
  * @returns {Promise<Array<{ name: string }>>} - Returns an array of category objects (empty if none found)
  */
-const batchGetProductCategories = async (productIds, chunkSize = 5) => {
+const batchGetProductCategories = async (productIds, storeKey, chunkSize = 5) => {
   const results = {};
 
   for (let i = 0; i < productIds.length; i += chunkSize) {
@@ -365,7 +382,7 @@ const batchGetProductCategories = async (productIds, chunkSize = 5) => {
       }
     `;
 
-    const json = await fetchGraphQL(query);
+    const json = await fetchGraphQL(query, storeKey);
 
     if (json?.data?.site) {
       for (const key in json.data.site) {
@@ -386,7 +403,7 @@ const batchGetProductCategories = async (productIds, chunkSize = 5) => {
  * @param {number} variantId
  * @returns {Promise<Array>} - Returns an array of metafields (empty if not found)
  */
-const batchGetVariantMetaFields = async (variantPairs, chunkSize = 3) => {
+const batchGetVariantMetaFields = async (variantPairs, storeKey, chunkSize = 3) => {
   const results = {};
 
   for (let i = 0; i < variantPairs.length; i += chunkSize) {
@@ -419,7 +436,7 @@ const batchGetVariantMetaFields = async (variantPairs, chunkSize = 3) => {
   }
 `;
 
-    const json = await fetchGraphQL(query);
+    const json = await fetchGraphQL(query, storeKey);
 
     for (const key in json.data) {
       const prod = json.data[key]?.product;
@@ -447,7 +464,7 @@ const batchGetVariantMetaFields = async (variantPairs, chunkSize = 3) => {
  * @param {number} productId - The product entity ID
  * @returns {Promise<Array>} - Returns an array of metafields (empty if none found)
  */
-const batchGetProductMetaFields = async (productIds, chunkSize = 5) => {
+const batchGetProductMetaFields = async (productIds, storeKey, chunkSize = 5) => {
   const results = {};
 
   for (let i = 0; i < productIds.length; i += chunkSize) {
@@ -472,7 +489,7 @@ const batchGetProductMetaFields = async (productIds, chunkSize = 5) => {
       }
     `;
 
-    const json = await fetchGraphQL(query);
+    const json = await fetchGraphQL(query, storeKey);
 
     if (json?.data?.site) {
       for (const key in json.data.site) {
@@ -526,7 +543,7 @@ const determineDropShipStatus = (metaFields) => {
  * @param {object} order
  * @returns {Promise<object>} - Returns a JSON object with order details
  */
-const processLineItems = async (products, order) => {
+const processLineItems = async (products, order, storeKey) => {
   const productIds = Array.from(new Set(products.map((p) => p.product_id).filter(Boolean)));
   const variantPairs = products
     .filter((p) => p.product_id && p.variant_id)
@@ -534,9 +551,9 @@ const processLineItems = async (products, order) => {
 
   // 🚀 Fetch in parallel (batched + chunked)
   const [productMetaMap, variantMetaMap, categoriesMap] = await Promise.all([
-    batchGetProductMetaFields(productIds),
-    batchGetVariantMetaFields(variantPairs),
-    batchGetProductCategories(productIds),
+    batchGetProductMetaFields(productIds, storeKey),
+    batchGetVariantMetaFields(variantPairs, storeKey),
+    batchGetProductCategories(productIds, storeKey),
   ]);
 
   // Build each line item with local lookups (no more HTTP spam 🎉)
@@ -571,9 +588,9 @@ const processLineItems = async (products, order) => {
   });
 };
 
-const getOrderFromCustomer = async (customerId) => {
-  const url = ` https://api.bigcommerce.com/stores/${process.env.STORE_HASH}/v2/orders?customer_id=${customerId}`;
-  const response = await fetchJSON(url);
+const getOrderFromCustomer = async (customerId, storeKey) => {
+  const url = ` https://api.bigcommerce.com/stores/${storeMap[storeKey].hash}/v2/orders?customer_id=${customerId}`;
+  const response = await fetchJSON(url, storeKey);
   return response;
 };
 
@@ -582,19 +599,22 @@ const getOrderFromCustomer = async (customerId) => {
  * @param {Int} orderID
  * @returns {Promise<object>} - Returns a JSON object with order details
  */
-const getOrderData = async (orderID) => {
-  const url = `https://api.bigcommerce.com/stores/${process.env.STORE_HASH}/v2/orders/${orderID}?include=consignments`;
-  const order = await fetchJSON(url);
+const getOrderData = async (orderID, storeKey) => {
+  const url = `https://api.bigcommerce.com/stores/${storeMap[storeKey].hash}/v2/orders/${orderID}?include=consignments`;
+  const order = await fetchJSON(url, storeKey);
+  console.log(order);
 
   const customerId = order.customer_id;
 
-  const customerOrders = await getOrderFromCustomer(customerId);
+  const customerOrders = await getOrderFromCustomer(customerId, storeKey);
 
   // Separate consignments shipping info
   const cons = order.consignments?.[0]?.shipping?.[0] || {};
 
+  const paymentMethod = order.payment_method;
+
   // Get products on order based on order.products.url
-  const products = await getProductsOnOrder(order.products.url);
+  const products = await getProductsOnOrder(order.products.url, storeKey);
 
   const cleanedStaffNotes = (order.staff_notes || '')
     // remove specific NoFraud error
@@ -615,7 +635,7 @@ const getOrderData = async (orderID) => {
     coupon_value: null,
   };
 
-  const couponData = await fetchJSON(order.coupons.url);
+  const couponData = await fetchJSON(order.coupons.url, storeKey);
 
   if (couponData && Array.isArray(couponData)) {
     coupons.coupon_name = couponData[0]?.code || null;
@@ -623,10 +643,18 @@ const getOrderData = async (orderID) => {
   }
 
   // Build line items with product and variant metadata and categories
-  const line_items = await processLineItems(products, order);
+  const line_items = await processLineItems(products, order, storeKey);
 
   // Build the final order JSON
-  const json = await buildOrderJSON(order, cons, line_items, coupons, notes, customerOrders);
+  const json = await buildOrderJSON(
+    order,
+    cons,
+    line_items,
+    coupons,
+    notes,
+    customerOrders,
+    paymentMethod
+  );
 
   return json;
 };
@@ -640,7 +668,7 @@ const getOrderData = async (orderID) => {
  * @param {Object} orderData
  * @returns {Promise<{ success: boolean, order?: object, message?: string, error?: Error }>} - Returns an object indicating success or failure
  */
-const addOrderToDatabase = async (orderData) => {
+const addOrderToDatabase = async (orderData, storeKey) => {
   try {
     if (!orderData?.order_id) return { success: false, message: 'Missing order_id' };
     if (!orderData?.status) return { success: false, message: 'Missing status' };
@@ -660,18 +688,20 @@ const addOrderToDatabase = async (orderData) => {
       coupon_value,
       staff_notes,
       customer_notes,
+      payment_method,
     } = orderData;
 
-    const existing = await pool.query('SELECT id FROM picklist_orders WHERE order_id = $1', [
-      order_id,
-    ]);
+    const existing = await pool.query(
+      `SELECT id FROM ${DATABASE_MAP[storeKey]} WHERE order_id = $1`,
+      [order_id]
+    );
     if (existing.rows.length > 0) {
       return { success: false, message: 'Order already exists' };
     }
 
     const result = await pool.query(
       `
-      INSERT INTO picklist_orders (
+      INSERT INTO ${DATABASE_MAP[storeKey]} (
         order_id,
         created_at,
         line_items,
@@ -685,9 +715,9 @@ const addOrderToDatabase = async (orderData) => {
         coupon_name,
         coupon_value,
         staff_notes,
-        customer_notes
+        customer_notes${storeKey === 'sff' ? ', payment_method' : ''}
       )
-      VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14)
+      VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14${storeKey === 'sff' ? ', $15' : ''})
       RETURNING *;
       `,
       [
@@ -705,6 +735,7 @@ const addOrderToDatabase = async (orderData) => {
         coupon_value,
         staff_notes,
         customer_notes,
+        payment_method,
       ]
     );
 
@@ -715,9 +746,9 @@ const addOrderToDatabase = async (orderData) => {
   }
 };
 
-async function updateOrder(orderId) {
+async function updateOrder(orderId, storeKey) {
   try {
-    const data = await getOrderData(orderId);
+    const data = await getOrderData(orderId, storeKey);
     if (!data) {
       console.log(`No data returned for order ${orderId}`);
       return;
@@ -725,7 +756,7 @@ async function updateOrder(orderId) {
 
     const result = await pool.query(
       `
-      UPDATE picklist_orders
+      UPDATE ${DATABASE_MAP[storeKey]}
       SET
         line_items = $1,
         shipping = $2,
@@ -774,9 +805,9 @@ async function updateOrder(orderId) {
 // -----------------------------------------------------------------------
 
 // Processes a single order with retries and backoff
-async function processSingleOrder(orderId, manualAdd = false, attempt = 1) {
+async function processSingleOrder(orderId, storeKey, manualAdd = false, attempt = 1) {
   try {
-    const data = await getOrderData(orderId);
+    const data = await getOrderData(orderId, storeKey);
 
     if (!data) {
       console.log(`⚪️ Order ${orderId}: no data returned`);
@@ -790,7 +821,7 @@ async function processSingleOrder(orderId, manualAdd = false, attempt = 1) {
       if (status === 'Incomplete' && attempt < MAX_RETRIES) {
         console.log(`⏳ Order ${orderId} is Incomplete, retrying attempt ${attempt + 1}...`);
 
-        setTimeout(() => processSingleOrder(orderId, manualAdd, attempt + 1), BACKOFF_MS);
+        setTimeout(() => processSingleOrder(orderId, storeKey, manualAdd, attempt + 1), BACKOFF_MS);
       } else {
         // If not allowed or max retries reached, skip
         console.log(`⏭️ Skipping order ${orderId} (status: ${status || 'N/A'})`);
@@ -799,7 +830,7 @@ async function processSingleOrder(orderId, manualAdd = false, attempt = 1) {
     }
 
     // If we reach here, the order is valid and we can add it to the database
-    const result = await addOrderToDatabase(data);
+    const result = await addOrderToDatabase(data, storeKey);
     if (result?.success) {
       console.log(`✅ Order ${orderId} added`);
     } else {
@@ -811,7 +842,7 @@ async function processSingleOrder(orderId, manualAdd = false, attempt = 1) {
 }
 
 // Schedules an order for processing after a delay
-function scheduleOrderProcess(orderId, delayMs = DELAY_MS) {
+function scheduleOrderProcess(orderId, storeKey, delayMs = DELAY_MS) {
   // Clear any existing timer for this order
   const existing = PENDING_TIMERS.get(orderId);
   if (existing) clearTimeout(existing);
@@ -819,7 +850,7 @@ function scheduleOrderProcess(orderId, delayMs = DELAY_MS) {
   // Set a new timer
   const t = setTimeout(() => {
     PENDING_TIMERS.delete(orderId);
-    processSingleOrder(orderId, false);
+    processSingleOrder(orderId, storeKey, false);
   }, delayMs);
 
   PENDING_TIMERS.set(orderId, t);
@@ -845,12 +876,12 @@ function scheduleOrderProcess(orderId, delayMs = DELAY_MS) {
  *
  * @returns {Promise<{success: boolean, added: number, skipped_incomplete: number, results: Array}>}
  */
-async function syncOrders() {
+async function syncOrders(storeKey) {
   // How many orders to sync in one run (cap)
   const addedTarget = SYNC_TARGET; // e.g., 50
 
   // BigCommerce v2 Orders API endpoint (one page only)
-  const url = `https://api.bigcommerce.com/stores/${process.env.STORE_HASH}/v2/orders?limit=${
+  const url = `https://api.bigcommerce.com/stores/${storeMap[storeKey].hash}/v2/orders?limit=${
     SYNC_PAGE_SIZE || 100
   }&sort=date_created:desc&include=consignments`;
 
@@ -859,7 +890,12 @@ async function syncOrders() {
   const results = [];
 
   // 1) Fetch a single page of orders
-  const orders = await fetchJSON(url);
+  const orders = await fetchJSON(url, storeKey);
+
+  if (!orders) {
+    return { success: false, added: 0, skipped_incomplete: 0, results: [] };
+  }
+
   if (!orders?.length) {
     return { success: true, added: 0, skipped_incomplete: 0, results: [] };
   }
@@ -881,11 +917,15 @@ async function syncOrders() {
         // Extract first consignment's shipping info
         const cons = o.consignments?.[0]?.shipping?.[0] || {};
 
+        const customerOrders = await getOrderFromCustomer(o.customer_id, storeKey);
+
         // Fetch products for this order
-        const products = await getProductsOnOrder(o.products.url);
+        const products = await getProductsOnOrder(o.products.url, storeKey);
+
+        const paymentMethod = o.payment_method;
 
         // Enrich line items with variant metadata + categories
-        const line_items = await processLineItems(products, o);
+        const line_items = await processLineItems(products, o, storeKey);
 
         const cleanedStaffNotes = (o.staff_notes || '')
           .replace(/NoFraud encountered an error "Not Authorized"\.\s*/i, '') // remove that phrase + period + spaces
@@ -902,7 +942,7 @@ async function syncOrders() {
           coupon_value: null,
         };
 
-        const couponData = await fetchJSON(o.coupons.url);
+        const couponData = await fetchJSON(o.coupons.url, storeKey);
 
         if (couponData && Array.isArray(couponData)) {
           coupons.coupon_name = couponData[0]?.code || null;
@@ -910,10 +950,18 @@ async function syncOrders() {
         }
 
         // Build normalized order JSON object
-        const json = await buildOrderJSON(o, cons, line_items, coupons, notes);
+        const json = await buildOrderJSON(
+          o,
+          cons,
+          line_items,
+          coupons,
+          notes,
+          customerOrders,
+          paymentMethod
+        );
 
         // Insert order into database
-        const out = await addOrderToDatabase(json);
+        const out = await addOrderToDatabase(json, storeKey);
 
         // Return inserted order or null if failed
         return out?.success ? out.order : null;
@@ -942,11 +990,11 @@ async function syncOrders() {
   return { success: true, added, skipped_incomplete: skippedIncomplete, results };
 }
 
-async function updateOrderStatus(orderId, newStatus) {
+async function updateOrderStatus(orderId, newStatus, storeKey) {
   try {
     const result = await pool.query(
       `
-      UPDATE picklist_orders
+      UPDATE ${DATABASE_MAP[storeKey]}
       SET status = $1
       WHERE order_id = $2
       RETURNING *;
@@ -1108,7 +1156,22 @@ router.post('/order-updated', async (req, res) => {
       return res.status(400).json({ success: false, message: 'No order id' });
     }
 
-    await updateOrder(orderId);
+    await updateOrder(orderId, 'htw');
+    return res.status(200).json({ success: true, message: 'Order sync scheduled' });
+  } catch (err) {
+    console.error('Error handling order-updated webhook:', err);
+    return res.status(500).json({ success: false, message: 'Internal server error' });
+  }
+});
+router.post('/sff-order-updated', async (req, res) => {
+  try {
+    const orderId = req.body?.data?.id;
+    if (!orderId) {
+      console.log('No order id provided on webhook payload');
+      return res.status(400).json({ success: false, message: 'No order id' });
+    }
+
+    await updateOrder(orderId, 'sff');
     return res.status(200).json({ success: true, message: 'Order sync scheduled' });
   } catch (err) {
     console.error('Error handling order-updated webhook:', err);
@@ -1133,7 +1196,31 @@ router.post('/status-updated', async (req, res) => {
         .json({ success: true, message: 'Ignored Incomplete → X status change' });
     }
 
-    await updateOrderStatus(orderId, newStatus);
+    await updateOrderStatus(orderId, newStatus, 'htw');
+  } catch (err) {
+    console.error('Error handling status-updated webhook:', err);
+    return res.status(500).json({ success: false, message: 'Internal server error' });
+  }
+});
+
+router.post('/sff-status-updated', async (req, res) => {
+  try {
+    const orderId = req.body?.data?.id;
+    if (!orderId) {
+      console.log('No order id provided on webhook payload');
+      return res.status(400).json({ success: false, message: 'No order id' });
+    }
+    const { new_status_id, previous_status_id } = req.body?.data.status || {};
+    const newStatus = STATUS_MAP[new_status_id] || 'Unknown';
+    const prevStatus = STATUS_MAP[previous_status_id] || 'Unknown';
+
+    if (prevStatus === 'Incomplete') {
+      return res
+        .status(200)
+        .json({ success: true, message: 'Ignored Incomplete → X status change' });
+    }
+
+    await updateOrderStatus(orderId, newStatus, 'sff');
   } catch (err) {
     console.error('Error handling status-updated webhook:', err);
     return res.status(500).json({ success: false, message: 'Internal server error' });
@@ -1148,13 +1235,26 @@ router.post('/create-order', (req, res) => {
   }
 
   // Debounce + delay this specific order
-  scheduleOrderProcess(orderID);
+  scheduleOrderProcess(orderID, 'htw');
+  return res.status(200).json({ success: true, message: 'Order sync scheduled' });
+});
+
+router.post('/sff-create-order', (req, res) => {
+  const orderID = req.body?.data?.id;
+  if (!orderID) {
+    console.error('No order id provided on webhook payload');
+    return res.status(400).json({ success: false, message: 'No order id' });
+  }
+
+  // Debounce + delay this specific order
+  scheduleOrderProcess(orderID, 'sff');
   return res.status(200).json({ success: true, message: 'Order sync scheduled' });
 });
 
 router.post('/sync', async (req, res) => {
   try {
-    const out = await syncOrders();
+    const storeKey = req.body.storeKey;
+    const out = await syncOrders(storeKey);
     return res.status(200).json(out);
   } catch (err) {
     console.error('Error syncing orders:', err);
@@ -1162,25 +1262,15 @@ router.post('/sync', async (req, res) => {
   }
 });
 
-router.get('/total-orders', async (req, res) => {
-  try {
-    const result = await pool.query('SELECT COUNT(*) FROM picklist_orders');
-    const count = parseInt(result.rows[0]?.count || '0', 10);
-    return res.status(200).json({ total_orders: count });
-  } catch (err) {
-    console.error('Error fetching total orders:', err);
-    return res.status(500).json({ success: false, message: 'Failed to fetch total orders' });
-  }
-});
-
 router.post('/split', async (req, res) => {
   const client = await pool.connect();
   try {
-    const { orderId, shipments } = req.body;
+    const { orderId, shipments, storeKey } = req.body;
+    console.log(storeKey);
 
     // 1. Fetch original order once
     const foundOrder = await client.query(
-      'SELECT * FROM picklist_orders WHERE order_id = $1 AND (shipment_number IS NULL OR shipment_number = 0)',
+      `SELECT * FROM ${DATABASE_MAP[storeKey]} WHERE order_id = $1 AND (shipment_number IS NULL OR shipment_number = 0)`,
       [orderId]
     );
     if (foundOrder.rows.length === 0) {
@@ -1227,7 +1317,7 @@ router.post('/split', async (req, res) => {
         // Update the existing base row for first shipment
         const updated = await client.query(
           `
-          UPDATE picklist_orders
+          UPDATE ${DATABASE_MAP[storeKey]}
           SET line_items = $1,
               shipment_number = $2,
               is_split = true,
@@ -1242,7 +1332,7 @@ router.post('/split', async (req, res) => {
         // Insert fresh duplicates for subsequent shipments
         const duplicated = await client.query(
           `
-          INSERT INTO picklist_orders (
+          INSERT INTO ${DATABASE_MAP[storeKey]} (
           order_id, customer, shipping, status, total_items, grand_total,
           created_at, is_printed, printed_time, line_items, shipment_number,
           is_split, total_shipments
@@ -1291,7 +1381,7 @@ router.post('/split', async (req, res) => {
 router.post('/merge', async (req, res) => {
   const client = await pool.connect();
   try {
-    const { orderId, shipments } = req.body;
+    const { orderId, shipments, storeKey } = req.body;
 
     if (!orderId || !Array.isArray(shipments) || shipments.length < 2) {
       return res.status(400).json({
@@ -1302,7 +1392,7 @@ router.post('/merge', async (req, res) => {
 
     // 1. Get all the shipments for this order
     const { rows: foundShipments } = await client.query(
-      `SELECT * FROM picklist_orders
+      `SELECT * FROM ${DATABASE_MAP[storeKey]}
        WHERE order_id = $1 AND shipment_number = ANY($2::int[])
        ORDER BY shipment_number ASC`,
       [orderId, shipments]
@@ -1331,7 +1421,7 @@ router.post('/merge', async (req, res) => {
 
     // 4. Update the primary shipment with merged line items
     const { rows: updatedOrder } = await client.query(
-      `UPDATE picklist_orders
+      `UPDATE ${DATABASE_MAP[storeKey]}
        SET line_items = $1::jsonb,
            shipment_number = 0,
             is_split = false,
@@ -1343,7 +1433,9 @@ router.post('/merge', async (req, res) => {
 
     // 5. Delete the other split shipments
     if (otherIds.length > 0) {
-      await client.query(`DELETE FROM picklist_orders WHERE id = ANY($1::uuid[])`, [otherIds]);
+      await client.query(`DELETE FROM ${DATABASE_MAP[storeKey]} WHERE id = ANY($1::uuid[])`, [
+        otherIds,
+      ]);
     }
 
     await client.query('COMMIT');
@@ -1370,6 +1462,7 @@ router.get('/', async (req, res) => {
     const filter = req.query.filter || 'all';
     const search = req.query.search ? req.query.search.trim() : null;
     const sort = req.query.sort || 'created_at_desc';
+    const storeKey = req.query.storeKey;
 
     const { conditions, params } = handleSearch(search);
 
@@ -1418,31 +1511,29 @@ router.get('/', async (req, res) => {
     }
 
     // --- Params ---
-    // --- Params ---
-    // --- Params ---
     const countParams = [...params];
     const dataParams = [...params, parseInt(limit, 10), parseInt(offset, 10)];
 
     const dataQuery = `
-  WITH filtered AS (
-    SELECT *
-    FROM picklist_orders
-    ${whereClause}
-  )
-  SELECT *
-  FROM filtered
-  ORDER BY ${orderBy}
-  LIMIT $${params.length + 1} OFFSET $${params.length + 2}
-`;
+      WITH filtered AS (
+        SELECT *
+        FROM ${DATABASE_MAP[storeKey]}
+        ${whereClause}
+      )
+      SELECT *
+      FROM filtered
+      ORDER BY ${orderBy}
+      LIMIT $${params.length + 1} OFFSET $${params.length + 2}
+    `;
 
     const countQuery = `
-  WITH filtered AS (
-    SELECT *
-    FROM picklist_orders
-    ${whereClause}
-  )
-  SELECT COUNT(*) FROM filtered
-`;
+      WITH filtered AS (
+        SELECT *
+        FROM ${DATABASE_MAP[storeKey]}
+        ${whereClause}
+      )
+      SELECT COUNT(*) FROM filtered
+    `;
 
     // --- Execute ---
     const totalResult = await pool.query(countQuery, countParams);
@@ -1467,6 +1558,7 @@ router.get('/', async (req, res) => {
 
 router.get('/tags', async (req, res) => {
   try {
+    const storeKey = req.body.storeKey || null;
     const result = await pool.query('SELECT * FROM order_tags ORDER BY name');
     return res.status(200).json(result.rows);
   } catch (err) {
@@ -1476,14 +1568,14 @@ router.get('/tags', async (req, res) => {
 });
 
 router.delete('/', async (req, res) => {
-  const orderIds = req.body.orderIds;
+  const { orderIds, storeKey } = req.body;
   if (!Array.isArray(orderIds) || orderIds.length === 0) {
     return res.status(400).json({ success: false, message: 'An array of order IDs is required' });
   }
 
   try {
     const placeholders = orderIds.map((_, i) => `$${i + 1}`).join(', ');
-    const deleteQuery = `DELETE FROM picklist_orders WHERE order_id IN (${placeholders}) RETURNING order_id`;
+    const deleteQuery = `DELETE FROM ${DATABASE_MAP[storeKey]} WHERE order_id IN (${placeholders}) RETURNING order_id`;
     const deleteResult = await pool.query(deleteQuery, orderIds);
     const deletedIds = deleteResult.rows.map((row) => row.order_id);
 
@@ -1492,7 +1584,7 @@ router.delete('/', async (req, res) => {
     }
 
     const insertPlaceholders = deletedIds.map((_, i) => `($${i + 1})`).join(', ');
-    const insertQuery = `INSERT INTO deleted_order_ids (order_id) VALUES ${insertPlaceholders} ON CONFLICT DO NOTHING`;
+    const insertQuery = `INSERT INTO ${DELETED_IDS_DB_MAP[storeKey]} (order_id) VALUES ${insertPlaceholders} ON CONFLICT DO NOTHING`;
     await pool.query(insertQuery, deletedIds);
 
     return res.status(200).json({
@@ -1507,14 +1599,14 @@ router.delete('/', async (req, res) => {
 });
 
 router.put('/mark-printed', async (req, res) => {
-  const { orderIds } = req.body;
+  const { orderIds, storeKey } = req.body;
   if (!Array.isArray(orderIds) || orderIds.length === 0) {
     return res.status(400).json({ message: 'orderIds must be a non-empty array' });
   }
   try {
     await pool.query(
       `
-      UPDATE picklist_orders
+      UPDATE ${DATABASE_MAP[storeKey]}
       SET is_printed = true,
           printed_time = now()
       WHERE order_id = ANY($1::int[])
@@ -1551,55 +1643,26 @@ router.post('/generate-pdf', async (req, res) => {
 
 router.post('/add', async (req, res) => {
   try {
-    const orderId = req.body?.orderId;
+    const { orderId, storeKey } = req.body;
     if (!orderId) {
       console.error('No order id provided in request body');
       return res.status(400).json({ success: false, message: 'No order id' });
     }
 
-    const existing = await pool.query('SELECT id FROM picklist_orders WHERE order_id = $1', [
-      orderId,
-    ]);
+    const existing = await pool.query(
+      `SELECT id FROM ${DATABASE_MAP[storeKey]} WHERE order_id = $1`,
+      [orderId]
+    );
     if (existing.rows.length > 0) {
       return res.status(400).json({ success: false, message: `Order ${orderId} already exists` });
     }
 
     // Process immediately (no delay)
-    await processSingleOrder(orderId, true);
+    await processSingleOrder(orderId, storeKey, true);
 
     return res.status(200).json({ success: true, message: 'Order processing initiated' });
   } catch (err) {
     console.error('Error adding order:', err);
-    return res.status(500).json({ success: false, message: 'Internal server error' });
-  }
-});
-
-router.post('/order-scanned', async (req, res) => {
-  try {
-    const { orderId } = req.body;
-
-    const orderExists = await pool.query('SELECT id FROM picklist_orders WHERE order_id = $1', [
-      orderId,
-    ]);
-    if (orderExists.rows.length === 0) {
-      console.log(`Order ${orderId} not found in database.`);
-      return res.status(404).json({ success: false, message: 'Order not found' });
-    }
-
-    await pool.query(
-      `
-      UPDATE picklist_orders
-      SET pick_list_complete = true
-      WHERE order_id = $1
-      `,
-      [orderId]
-    );
-
-    // Always send a response
-    // return res.json({ success: true, orderId });
-    return res.status(500).json({ success: false, message: 'Internal server error' });
-  } catch (err) {
-    console.error('Error marking order as scanned:', err);
     return res.status(500).json({ success: false, message: 'Internal server error' });
   }
 });

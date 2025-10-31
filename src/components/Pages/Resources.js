@@ -1,7 +1,8 @@
-import React from "react";
-import "./css/Main.css";
-import { NavLink } from "react-router-dom";
-import { CustomLink } from "../ui/link";
+import React from 'react';
+import './css/Main.css';
+import { NavLink } from 'react-router-dom';
+import { CustomLink } from '../ui/link';
+import { FaWindows, FaApple } from 'react-icons/fa';
 
 function Resources() {
   return (
@@ -15,20 +16,18 @@ function Resources() {
               <strong>Equipment</strong>, <strong>Sublimation</strong>, and More
             </h1>
             <p className="text-lg text-center text-white">
-              This is a list of all Resources and links to all of our Websites,
-              Custom Apps, and more
+              This is a list of all Resources and links to all of our Websites, Custom Apps, and
+              more
             </p>
           </div>
         </section>
 
         <section className="px-4">
           <div className="mx-auto">
-            <h2 className="text-3xl text-center mb-4 font-bold">
-              HTW Websites
-            </h2>
+            <h2 className="text-3xl text-center mb-4 font-bold">HTW Websites</h2>
             <p className="text-center text-lg">
-              These are all Live, Testing, and Coming Soon Websites managed by
-              Heat Transfer Warehouse.
+              These are all Live, Testing, and Coming Soon Websites managed by Heat Transfer
+              Warehouse.
             </p>
           </div>
           <div className="grid py-16 grid-cols-1 md:grid-cols-2 mx-auto w-full gap-8 max-w-screen-2xl">
@@ -56,7 +55,8 @@ function Resources() {
                 style="button"
                 href="https://heattransferwarehouse.com"
                 target="_blank"
-                rel="noopener noreferrer">
+                rel="noopener noreferrer"
+              >
                 Go to Site
               </CustomLink>
             </div>
@@ -84,7 +84,8 @@ function Resources() {
                 style="button"
                 href="https://heattransferwarehouse.com"
                 target="_blank"
-                rel="noopener noreferrer">
+                rel="noopener noreferrer"
+              >
                 Go to Site
               </CustomLink>
             </div>
@@ -99,6 +100,34 @@ function Resources() {
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 mt-8 mx-auto gap-4 md:gap-8 max-w-screen-2xl">
             <div className="shadow-default p-4 text-gray-700 justify-between rounded-md flex flex-col gap-2 bg-white">
               <div>
+                <p className="font-semibold">Picklist Print Server</p>
+                <p>Program needed for printing picklist and conversion lists</p>
+              </div>
+              <div className="flex items-center gap-2">
+                <CustomLink
+                  className={'flex gap-2 items-center'}
+                  style="button"
+                  href={`http://localhost:3000/downloads/HTW-Print-Server-Setup-windows.exe`}
+                  target="_blank"
+                  download="HTW-Print-Server-Setup-windows.exe"
+                >
+                  <FaWindows /> Download
+                </CustomLink>
+                <CustomLink
+                  style="button"
+                  className={
+                    'flex gap-2 items-center pointer-events-none cursor-not-allowed opacity-50 !bg-black'
+                  }
+                  href={`http://localhost:3000/downloads/HTW-Print-Server-Setup-windows.exe`}
+                  target="_blank"
+                  download="HTW-Print-Server-Setup-windows.exe"
+                >
+                  <FaApple /> Download (coming soon)
+                </CustomLink>
+              </div>
+            </div>
+            <div className="shadow-default p-4 text-gray-700 justify-between rounded-md flex flex-col gap-2 bg-white">
+              <div>
                 <p className="font-semibold">Web/Dev Logins and API</p>
                 <p>Information and Login Credentials for the Webs and Devs.</p>
               </div>
@@ -106,7 +135,8 @@ function Resources() {
                 style="button"
                 href="https://docs.google.com/spreadsheets/d/1Ebf_nSvXy3PFdRMtbBuyksvZwnET6vtX0sCEZV6kG2M/"
                 target="_blank"
-                rel="noopener noreferrer">
+                rel="noopener noreferrer"
+              >
                 Open
               </CustomLink>
             </div>
@@ -114,15 +144,16 @@ function Resources() {
               <div>
                 <p className="font-semibold">CSR Vinyl Calculator</p>
                 <p>
-                  Calculate Vinyl Estimates and recommended lengths for
-                  customers based on the product.
+                  Calculate Vinyl Estimates and recommended lengths for customers based on the
+                  product.
                 </p>
               </div>
               <CustomLink
                 style="button"
                 href="https://www.heattransferwarehouse.com/csr-vinyl-calculator/"
                 target="_blank"
-                rel="noopener noreferrer">
+                rel="noopener noreferrer"
+              >
                 Open
               </CustomLink>
             </div>
@@ -130,15 +161,16 @@ function Resources() {
               <div>
                 <p className="font-semibold">Supacolor Calculator</p>
                 <p>
-                  Estimates the size of Supacolor that the customer should order
-                  based on the type and proportions wanted.
+                  Estimates the size of Supacolor that the customer should order based on the type
+                  and proportions wanted.
                 </p>
               </div>
               <CustomLink
                 style="button"
                 href="https://www.heattransferwarehouse.com/supacolor-calculator/"
                 target="_blank"
-                rel="noopener noreferrer">
+                rel="noopener noreferrer"
+              >
                 Open
               </CustomLink>
             </div>
@@ -146,15 +178,16 @@ function Resources() {
               <div>
                 <p className="font-semibold">HTV Calculator</p>
                 <p>
-                  Estimates the ammount of yardage needed for a project based
-                  off the size of the HTV being purchased.
+                  Estimates the ammount of yardage needed for a project based off the size of the
+                  HTV being purchased.
                 </p>
               </div>
               <CustomLink
                 style="button"
                 href="https://www.heattransferwarehouse.com/htv-calculator/"
                 target="_blank"
-                rel="noopener noreferrer">
+                rel="noopener noreferrer"
+              >
                 Open
               </CustomLink>
             </div>
@@ -162,15 +195,16 @@ function Resources() {
               <div>
                 <p className="font-semibold">Rhinestone Calculator</p>
                 <p>
-                  Estimates the price of a custom rhinestone transfer given the
-                  size and stone colors.
+                  Estimates the price of a custom rhinestone transfer given the size and stone
+                  colors.
                 </p>
               </div>
               <CustomLink
                 style="button"
                 href="https://www.heattransferwarehouse.com/rhinestone-calculator/"
                 target="_blank"
-                rel="noopener noreferrer">
+                rel="noopener noreferrer"
+              >
                 Open
               </CustomLink>
             </div>
@@ -178,15 +212,15 @@ function Resources() {
               <div>
                 <p className="font-semibold">Processes Document</p>
                 <p>
-                  List of all in house processes and procedures. All are
-                  categorized by department
+                  List of all in house processes and procedures. All are categorized by department
                 </p>
               </div>
               <CustomLink
                 style="button"
                 href="https://docs.google.com/document/d/1YoZOUH5K1CC3kAakhIAjxUxKXfMATjcjF3ozZn_JAgA/"
                 target="_blank"
-                rel="noopener noreferrer">
+                rel="noopener noreferrer"
+              >
                 Open
               </CustomLink>
             </div>
@@ -195,10 +229,7 @@ function Resources() {
                 <p className="font-semibold">Hero Banner Code Generator</p>
                 <p>Generate code to create a new Hero Banner in big commerce</p>
               </div>
-              <CustomLink
-                style="button"
-                type="router"
-                href="/hero-code-generator">
+              <CustomLink style="button" type="router" href="/hero-code-generator">
                 Open
               </CustomLink>
             </div>
@@ -206,31 +237,22 @@ function Resources() {
               <div>
                 <p className="font-semibold">FAQ Code Generator</p>
                 <p>
-                  Generate code to create a faq section for categories, faq
-                  pages, or product pages.
+                  Generate code to create a faq section for categories, faq pages, or product pages.
                 </p>
               </div>
-              <CustomLink
-                style="button"
-                type="router"
-                href="/faq-code-generator">
+              <CustomLink style="button" type="router" href="/faq-code-generator">
                 Open
               </CustomLink>
             </div>
             <div className="shadow-default p-4 text-gray-700 justify-between rounded-md flex flex-col gap-2 bg-white">
               <div>
-                <p className="font-semibold">
-                  List of products w/out a description
-                </p>
+                <p className="font-semibold">List of products w/out a description</p>
                 <p>
-                  Find a list of all products that are missing a description for
-                  Heat Transfer Warehouse & Shirts From Fargo.
+                  Find a list of all products that are missing a description for Heat Transfer
+                  Warehouse & Shirts From Fargo.
                 </p>
               </div>
-              <CustomLink
-                style="button"
-                type="router"
-                href="/products/no-description">
+              <CustomLink style="button" type="router" href="/products/no-description">
                 Open
               </CustomLink>
             </div>
@@ -238,14 +260,11 @@ function Resources() {
               <div>
                 <p className="font-semibold">List of products w/out alt tags</p>
                 <p>
-                  Find a list of all products that are missing an alt tag on
-                  images for Heat Transfer Warehouse & Shirts From Fargo.
+                  Find a list of all products that are missing an alt tag on images for Heat
+                  Transfer Warehouse & Shirts From Fargo.
                 </p>
               </div>
-              <CustomLink
-                style="button"
-                type="router"
-                href="/products/missing-alts">
+              <CustomLink style="button" type="router" href="/products/missing-alts">
                 Open
               </CustomLink>
             </div>
@@ -256,8 +275,8 @@ function Resources() {
           <div className="mx-auto">
             <h2 className="text-3xl text-center mb-4 font-bold">Services</h2>
             <p className="text-center">
-              Links to pages, support numbers, and more for services we use.
-              Most of these require a login.
+              Links to pages, support numbers, and more for services we use. Most of these require a
+              login.
             </p>
           </div>
           <div className="grid mt-8 grid-cols-1 sm:grid-cols-2 md:grid-cols-3 max-w-screen-2xl mx-auto gap-4 md:gap-8">
@@ -265,15 +284,16 @@ function Resources() {
               <div>
                 <p className="font-semibold">Digital Ocean</p>
                 <p>
-                  Houses all of our custom servers, apps, and databases. Deploy,
-                  redeploy, and manage our servers and data.
+                  Houses all of our custom servers, apps, and databases. Deploy, redeploy, and
+                  manage our servers and data.
                 </p>
               </div>
               <CustomLink
                 style="button"
                 href="https://docs.digitalocean.com/support/"
                 target="_blank"
-                rel="noopener noreferrer">
+                rel="noopener noreferrer"
+              >
                 Support Docs
               </CustomLink>
             </div>
@@ -281,15 +301,16 @@ function Resources() {
               <div>
                 <p className="font-semibold">SendGrid</p>
                 <p>
-                  Used to send custom emails to customers. Used for emails with
-                  SanMar, OSIAffiliate, etc.
+                  Used to send custom emails to customers. Used for emails with SanMar,
+                  OSIAffiliate, etc.
                 </p>
               </div>
               <CustomLink
                 style="button"
                 href="https://support.sendgrid.com/hc/en-us"
                 target="_blank"
-                rel="noopener noreferrer">
+                rel="noopener noreferrer"
+              >
                 Support Docs
               </CustomLink>
             </div>
@@ -297,31 +318,30 @@ function Resources() {
               <div>
                 <p className="font-semibold">OSIAffiliate</p>
                 <p>
-                  Used for our affiliates to generate custom links to our site
-                  and refer our products.
+                  Used for our affiliates to generate custom links to our site and refer our
+                  products.
                 </p>
               </div>
               <CustomLink
                 style="button"
                 href="https://support.osiaffiliate.com/support/home"
                 target="_blank"
-                rel="noopener noreferrer">
+                rel="noopener noreferrer"
+              >
                 Support Docs
               </CustomLink>
             </div>
             <div className="p-4 flex flex-col justify-between gap-4 bg-white shadow-default rounded-md text-gray-700">
               <div>
                 <p className="font-semibold">Zendesk</p>
-                <p>
-                  Chat service on our websites to chat live with customers and
-                  offer support.
-                </p>
+                <p>Chat service on our websites to chat live with customers and offer support.</p>
               </div>
               <CustomLink
                 style="button"
                 href="https://support.zendesk.com/hc/en-us/categories/4405298745370-Support"
                 target="_blank"
-                rel="noopener noreferrer">
+                rel="noopener noreferrer"
+              >
                 Support Docs
               </CustomLink>
             </div>
@@ -329,15 +349,15 @@ function Resources() {
               <div>
                 <p className="font-semibold">Afterpay</p>
                 <p>
-                  One of our Afterpayment methods. Customers can pay off their
-                  bill over 4 weeks.
+                  One of our Afterpayment methods. Customers can pay off their bill over 4 weeks.
                 </p>
               </div>
               <CustomLink
                 style="button"
                 href="https://help.afterpay.com/hc/en-us/categories/900000234146-I-M-A-MERCHANT"
                 target="_blank"
-                rel="noopener noreferrer">
+                rel="noopener noreferrer"
+              >
                 Support Docs
               </CustomLink>
             </div>
@@ -345,63 +365,58 @@ function Resources() {
               <div>
                 <p className="font-semibold">Klarna</p>
                 <p>
-                  One of our Afterpayment methods. Customers can pay off over 4
-                  weeks or via Financing.
+                  One of our Afterpayment methods. Customers can pay off over 4 weeks or via
+                  Financing.
                 </p>
               </div>
               <CustomLink
                 style="button"
                 href="https://www.klarna.com/us/customer-service/"
                 target="_blank"
-                rel="noopener noreferrer">
+                rel="noopener noreferrer"
+              >
                 Support Docs
               </CustomLink>
             </div>
             <div className="p-4 flex flex-col justify-between gap-4 bg-white shadow-default rounded-md text-gray-700">
               <div>
                 <p className="font-semibold">Bolt</p>
-                <p>
-                  Used for processing payments and in the customer
-                  checkout/login.
-                </p>
+                <p>Used for processing payments and in the customer checkout/login.</p>
               </div>
               <CustomLink
                 style="button"
                 href="https://support.bolt.com/hc/en-us"
                 target="_blank"
-                rel="noopener noreferrer">
+                rel="noopener noreferrer"
+              >
                 Support Docs
               </CustomLink>
             </div>
             <div className="p-4 flex flex-col justify-between gap-4 bg-white shadow-default rounded-md text-gray-700">
               <div>
                 <p className="font-semibold">Klaviyo</p>
-                <p>
-                  Our main means of marketing, emails, text, and mass marketing
-                  campaigns.
-                </p>
+                <p>Our main means of marketing, emails, text, and mass marketing campaigns.</p>
               </div>
               <CustomLink
                 style="button"
                 href="https://help.klaviyo.com/hc/en-us"
                 target="_blank"
-                rel="noopener noreferrer">
+                rel="noopener noreferrer"
+              >
                 Support Docs
               </CustomLink>
             </div>
             <div className="p-4 flex flex-col justify-between gap-4 bg-white shadow-default rounded-md text-gray-700">
               <div>
                 <p className="font-semibold">BigCommerce</p>
-                <p>
-                  Hosts our main websites and tracks new orders, customers, and
-                  sales.
-                </p>
+                <p>Hosts our main websites and tracks new orders, customers, and sales.</p>
               </div>
               <CustomLink
                 style="button"
                 href="https://support.bigcommerce.com/s/?language=en_US"
                 target="_blank"
-                rel="noopener noreferrer">
+                rel="noopener noreferrer"
+              >
                 Support Docs
               </CustomLink>
             </div>
@@ -409,31 +424,29 @@ function Resources() {
               <div>
                 <p className="font-semibold">Brightpearl</p>
                 <p>
-                  Links all orders, sales, customers, products, inventory, and
-                  more in one place.
+                  Links all orders, sales, customers, products, inventory, and more in one place.
                 </p>
               </div>
               <CustomLink
                 style="button"
                 href="https://www.brightpearl.com/contact-support"
                 target="_blank"
-                rel="noopener noreferrer">
+                rel="noopener noreferrer"
+              >
                 Support Docs
               </CustomLink>
             </div>
             <div className="p-4 flex flex-col justify-between gap-4 bg-white shadow-default rounded-md text-gray-700">
               <div>
                 <p className="font-semibold">Shipstation</p>
-                <p>
-                  Process Goods out Notes, send info to FedEx and UPS, and
-                  manage Shipping.
-                </p>
+                <p>Process Goods out Notes, send info to FedEx and UPS, and manage Shipping.</p>
               </div>
               <CustomLink
                 style="button"
                 href="https://help.shipstation.com/hc/en-us"
                 target="_blank"
-                rel="noopener noreferrer">
+                rel="noopener noreferrer"
+              >
                 Support Docs
               </CustomLink>
             </div>
@@ -446,22 +459,22 @@ function Resources() {
                 style="button"
                 href="https://docs.shipperhq.com"
                 target="_blank"
-                rel="noopener noreferrer">
+                rel="noopener noreferrer"
+              >
                 Support Docs
               </CustomLink>
             </div>
             <div className="p-4 flex flex-col justify-between gap-4 bg-white shadow-default rounded-md text-gray-700">
               <div>
                 <p className="font-semibold">Go Daddy</p>
-                <p>
-                  Setup and Manage our Domains, manage DNS Settings, and more.
-                </p>
+                <p>Setup and Manage our Domains, manage DNS Settings, and more.</p>
               </div>
               <CustomLink
                 style="button"
                 href="https://www.godaddy.com/contact-us"
                 target="_blank"
-                rel="noopener noreferrer">
+                rel="noopener noreferrer"
+              >
                 Support Docs
               </CustomLink>
             </div>

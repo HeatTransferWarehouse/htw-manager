@@ -28,6 +28,8 @@ import { twMerge } from 'tailwind-merge';
 import JDSProductCreation from '../Pages/JDS/ProductCreation/page';
 import PageNotFound from '../Pages/404/page';
 import PickList from '../Pages/Picklist/page';
+import SffPickList from '../Pages/PicklistSff/page';
+import ProductWeights from '../Pages/ProductWeights/page';
 
 // App.js
 export const routeConfig = [
@@ -146,11 +148,25 @@ export const routeConfig = [
     page_title: 'JDS Product Creation',
   },
   {
-    path: '/shipstation/pick-list',
-    name: 'Shipstation Pick List',
+    path: '/shipstation/pick-list/htw',
+    name: 'Shipstation HTW Pick List',
     element: <PickList />,
     protected: true,
-    page_title: 'Shipstation Pick List',
+    page_title: 'Shipstation HTW Pick List',
+  },
+  {
+    path: '/shipstation/pick-list/sff',
+    name: 'Shipstation SFF Pick List',
+    element: <SffPickList />,
+    protected: true,
+    page_title: 'Shipstation SFF Pick List',
+  },
+  {
+    path: '/product-weights',
+    name: 'Product Weights',
+    element: <ProductWeights />,
+    protected: true,
+    page_title: 'Product Weights',
   },
 ];
 

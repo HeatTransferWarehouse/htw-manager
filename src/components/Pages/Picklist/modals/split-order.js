@@ -32,7 +32,7 @@ function SplitOrderModal({
   const handleSplitItems = () => {
     console.log(shipments);
     dispatch({
-      type: 'SPLIT_ORDER',
+      type: 'SPLIT_HTW_ORDER',
       payload: {
         orderId: activeOrder.order_id,
         shipments,
