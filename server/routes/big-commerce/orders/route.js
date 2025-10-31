@@ -769,7 +769,7 @@ async function updateOrder(orderId, storeKey) {
         coupon_name = $9,
         coupon_value = $10,
         staff_notes = $11,
-        customer_notes = $12,
+        customer_notes = $12
       WHERE order_id = $13
       RETURNING *;
     `,
