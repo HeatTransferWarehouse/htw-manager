@@ -714,9 +714,10 @@ const addOrderToDatabase = async (orderData, storeKey) => {
         coupon_name,
         coupon_value,
         staff_notes,
-        customer_notes${storeKey === 'sff' ? ', payment_method' : ''}
+        customer_notes,
+        payment_method
       )
-      VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14${storeKey === 'sff' ? ', $15' : ''})
+      VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15)
       RETURNING *;
       `,
       [
@@ -768,7 +769,7 @@ async function updateOrder(orderId, storeKey) {
         coupon_name = $9,
         coupon_value = $10,
         staff_notes = $11,
-        customer_notes = $12
+        customer_notes = $12,
       WHERE order_id = $13
       RETURNING *;
     `,
@@ -1333,9 +1334,9 @@ router.post('/split', async (req, res) => {
           INSERT INTO ${DATABASE_MAP[storeKey]} (
           order_id, customer, shipping, status, total_items, grand_total,
           created_at, is_printed, printed_time, line_items, shipment_number,
-          is_split, total_shipments
+          is_split, total_shipments, payment_method
         )
-        VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10::jsonb,$11,$12,$13)
+        VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10::jsonb,$11,$12,$13, $14)
         RETURNING *;
         `,
           [
@@ -1352,6 +1353,7 @@ router.post('/split', async (req, res) => {
             shipment.id,
             true, // is_split
             shipments.length, // total shipments
+            originalOrder.payment_method,
           ]
         );
         results.push(duplicated.rows[0]);
