@@ -8,8 +8,8 @@ const pdf = require('html-pdf-node');
 // ----------------------------- Config ----------------------------------
 
 if (process.env.SERVER_ENV === 'prod') {
-  setInterval(syncOrders('htw'), 10 * 60 * 1000);
-  setInterval(syncOrders('sff'), 10 * 60 * 1000);
+  setInterval(() => syncOrders('htw'), 10 * 60 * 1000);
+  setInterval(() => syncOrders('sff'), 10 * 60 * 1000);
 }
 
 const ALLOWED_STATUSES = new Set(['Awaiting Fulfillment', 'Awaiting Payment']);
