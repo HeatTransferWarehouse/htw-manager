@@ -171,54 +171,35 @@ function Nav() {
             >
               Resources
             </NavLink>
-            <NavLink
-              to="/supacolor"
-              onClick={() => {
-                disableAll();
-                setSupacolor(true);
-              }}
-              className={`${
-                supacolor ? 'text-secondary border-secondary' : 'text-dark border-white'
-              } p-2 hover:border-secondary hover:text-secondary border-b-[3px] border-solid`}
-            >
-              Supacolor
-            </NavLink>
-            <NavLink
-              to="/decoqueue"
-              onClick={() => {
-                disableAll();
-                setDecoQueue(true);
-              }}
-              className={`${
-                decoQueue ? 'text-secondary border-secondary' : 'text-dark border-white'
-              } p-2 hover:border-secondary hover:text-secondary border-b-[3px] border-solid`}
-            >
-              DecoQueue
-            </NavLink>
-            <NavLink
-              to="/sff-queue"
-              onClick={() => {
-                disableAll();
-                setSffQueue(true);
-              }}
-              className={`${
-                sffQueue ? 'text-secondary border-secondary' : 'text-dark border-white'
-              } p-2 hover:border-secondary hover:text-secondary border-b-[3px] border-solid`}
-            >
-              SFF Queue
-            </NavLink>
-            <NavLink
-              to="/queue/clothing"
-              onClick={() => {
-                disableAll();
-                setClothingQueue(true);
-              }}
-              className={`${
-                clothingQueue ? 'text-secondary border-secondary' : 'text-dark border-white'
-              } p-2 hover:border-secondary hover:text-secondary border-b-[3px] border-solid`}
-            >
-              Clothing Queue
-            </NavLink>
+            <DropDownContainer type="hover">
+              <DropDownTrigger>Queue's</DropDownTrigger>
+              <DropDownContent>
+                <DropDownItem>
+                  <NavLink to={'/supacolor'} className="p-2 hover:text-secondary whitespace-nowrap">
+                    Supacolor
+                  </NavLink>
+                </DropDownItem>
+                <DropDownItem>
+                  <NavLink to={'/decoqueue'} className="p-2 hover:text-secondary whitespace-nowrap">
+                    DecoQueue
+                  </NavLink>
+                </DropDownItem>
+                <DropDownItem>
+                  <NavLink to={'/sff-queue'} className="p-2 hover:text-secondary whitespace-nowrap">
+                    SFF Queue
+                  </NavLink>
+                </DropDownItem>
+                <DropDownItem>
+                  <NavLink
+                    to={'/queue/clothing'}
+                    className="p-2 hover:text-secondary whitespace-nowrap"
+                  >
+                    Clothing Queue
+                  </NavLink>
+                </DropDownItem>
+              </DropDownContent>
+            </DropDownContainer>
+
             <DropDownContainer type="hover">
               <DropDownTrigger>Product Tools</DropDownTrigger>
               <DropDownContent>
@@ -261,18 +242,27 @@ function Nav() {
                 </DropDownItem>
               </DropDownContent>
             </DropDownContainer>
-            <NavLink
-              to="/shipstation/pick-list"
-              onClick={() => {
-                disableAll();
-                setPicklist(true);
-              }}
-              className={`${
-                pricklist ? 'text-secondary border-secondary' : 'text-dark border-white'
-              } p-2 hover:border-secondary hover:text-secondary border-b-[3px] border-solid`}
-            >
-              Orders Picklist
-            </NavLink>
+            <DropDownContainer type="hover">
+              <DropDownTrigger>Picklist's</DropDownTrigger>
+              <DropDownContent>
+                <DropDownItem>
+                  <NavLink
+                    to={'/shipstation/pick-list/htw'}
+                    className="p-2 hover:text-secondary whitespace-nowrap"
+                  >
+                    HTW
+                  </NavLink>
+                </DropDownItem>
+                <DropDownItem>
+                  <NavLink
+                    to={'/shipstation/pick-list/sff'}
+                    className="p-2 hover:text-secondary whitespace-nowrap"
+                  >
+                    SFF
+                  </NavLink>
+                </DropDownItem>
+              </DropDownContent>
+            </DropDownContainer>
             {user.access_level === '5' && (
               <NavLink
                 to="/admin"

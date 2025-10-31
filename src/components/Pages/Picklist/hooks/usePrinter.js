@@ -80,7 +80,7 @@ export default function usePrinter(
       if (!response.ok) {
         const text = await response.text();
         dispatch({
-          type: 'SET_ORDERS_ERROR',
+          type: 'SET_HTW_ORDERS_ERROR',
           payload: {
             title: 'PDF Generation Error',
             message: text || 'An error occurred while generating the PDF.',
@@ -148,7 +148,7 @@ export default function usePrinter(
       if (response.ok) {
         if (type === 'picklist') {
           dispatch({
-            type: 'MARK_ORDERS_PRINTED',
+            type: 'MARK_HTW_ORDERS_PRINTED',
             payload: {
               orderIds: activeOrders.map((o) => o.order_id),
               limit,
@@ -162,7 +162,7 @@ export default function usePrinter(
         setSelectedPrinter('');
       } else {
         dispatch({
-          type: 'SET_ORDERS_ERROR',
+          type: 'SET_HTW_ORDERS_ERROR',
           payload: {
             title: 'Error Connecting to Print Server',
             message:
@@ -173,7 +173,7 @@ export default function usePrinter(
       }
     } catch (err) {
       dispatch({
-        type: 'SET_ORDERS_ERROR',
+        type: 'SET_HTW_ORDERS_ERROR',
         payload: {
           title: 'Error Connecting to Print Server',
           message:

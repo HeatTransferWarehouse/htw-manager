@@ -74,7 +74,7 @@ function PicklistHeader({
         <button
           disabled={syncing}
           onClick={() => {
-            dispatch({ type: 'SYNC_ORDERS' });
+            dispatch({ type: 'SYNC_HTW_ORDERS' });
           }}
           className={twMerge(
             'px-4 py-2 flex items-center gap-2 overflow-hidden relative text-lg rounded-md border text-black border-black hover:text-secondary hover:border-secondary',
@@ -304,7 +304,7 @@ const ActionsDropdown = ({
             onClick={() => {
               if (canMergeOrders) {
                 dispatch({
-                  type: 'COMBINE_ORDERS',
+                  type: 'COMBINE_HTW_ORDERS',
                   payload: {
                     orderId: activeOrders[0].order_id,
                     shipments: activeOrders.map((order) => Number(order.shipment_number)),
@@ -398,7 +398,7 @@ const ActionsDropdown = ({
                 <button
                   onClick={() => {
                     dispatch({
-                      type: 'ADD_ORDER',
+                      type: 'ADD_HTW_ORDER',
                       payload: { orderId: orderId.trim(), view, page: page + 1, rowsPerPage },
                     });
                     setInputVisible(false);

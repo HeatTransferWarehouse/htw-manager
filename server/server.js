@@ -77,7 +77,9 @@ const sffProductRoutes = require('./routes/product-issues/sff');
 const JDS = require('./routes/JDS/index');
 const google = require('./routes/google-sheets');
 const bigCommerceOrdersAPI = require('./routes/big-commerce/orders/route');
+const bigCommerceProductAPI = require('./routes/big-commerce/products/route');
 const bigCommerceTokenRouter = require('./routes/big-commerce/token');
+
 const SSActivewearRouter = require('./routes/ssActivewearRouter');
 
 app.use('/api/user', userRouter);
@@ -89,6 +91,7 @@ app.use('/api/products/sff', sffProductRoutes);
 app.use('/api/jds', JDS);
 app.use('/api/google', google);
 app.use('/api/big-commerce/orders', bigCommerceOrdersAPI);
+app.use('/api/big-commerce/products', bigCommerceProductAPI);
 app.use('/api/big-commerce/token', bigCommerceTokenRouter);
 app.use('/api/ss-activewear', SSActivewearRouter);
 

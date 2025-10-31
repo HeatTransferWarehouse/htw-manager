@@ -83,7 +83,7 @@ function OrdersTable(props) {
     setSort(newSort);
 
     dispatch({
-      type: 'GET_ORDERS',
+      type: 'GET_HTW_ORDERS',
       payload: {
         page: 1,
         limit: rowsPerPage,
@@ -102,7 +102,7 @@ function OrdersTable(props) {
     setPage(0);
 
     dispatch({
-      type: 'GET_ORDERS',
+      type: 'GET_HTW_ORDERS',
       payload: { page: 1, limit: rowsPerPage, filter: view, search: term },
     });
   };
@@ -111,13 +111,13 @@ function OrdersTable(props) {
     const orderIds = activeOrders.map((order) => order.order_id);
     if (orderIds.length === 0) return;
 
-    dispatch({ type: 'DELETE_ORDERS', payload: orderIds });
+    dispatch({ type: 'DELETE_HTW_ORDERS', payload: orderIds });
     setDeleteModalActive(false);
     setActiveOrders([]);
   };
 
   const addOrderTag = (name, hex) => {
-    dispatch({ type: 'ADD_ORDER_TAG', payload: { name, hex } });
+    dispatch({ type: 'ADD_HTW_ORDER_TAG', payload: { name, hex } });
   };
 
   const toggleNote = (noteId) => {
@@ -137,7 +137,7 @@ function OrdersTable(props) {
         )}
       >
         <div className="relative flex pt-4 items-center justify-center">
-          <h2 className="text-2xl  font-semibold">Picklist Management</h2>
+          <h2 className="text-2xl  font-semibold">Heat Transfer Warehouse Picklist Management</h2>
 
           <button
             className={twMerge(

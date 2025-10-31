@@ -18,13 +18,14 @@ function PickList() {
   const location = useLocation();
   const dispatch = useDispatch();
   const searchParams = new URLSearchParams(location.search);
+  const storeKey = 'htw'; // Since this is the HTW picklist page
 
   const view = searchParams.get('view') || 'all'; // Default to 'new' if no parameter
-  const ordersStore = useSelector((state) => state.BC.orders.orders);
-  const syncing = useSelector((state) => state.BC.orders.syncing);
-  const orderTags = useSelector((state) => state.BC.orders.tags);
-  const loading = useSelector((state) => state.BC.orders.loading);
-  const errorsStore = useSelector((state) => state.BC.orders.errors);
+  const ordersStore = useSelector((state) => state.BC.HTWOrders.orders);
+  const syncing = useSelector((state) => state.BC.HTWOrders.syncing);
+  const orderTags = useSelector((state) => state.BC.HTWOrders.tags);
+  const loading = useSelector((state) => state.BC.HTWOrders.loading);
+  const errorsStore = useSelector((state) => state.BC.HTWOrders.errors);
   const [searchTerm, setSearchTerm] = useState('');
   const [rowsPerPage, setRowsPerPage] = useState(50);
   const [page, setPage] = useState(0);
@@ -111,17 +112,17 @@ function PickList() {
   }, [currentTime]);
 
   useEffect(() => {
-    dispatch({ type: 'GET_ORDERS', payload: { page: page + 1, limit: rowsPerPage } });
+    dispatch({ type: 'GET_HTW_ORDERS', payload: { page: page + 1, limit: rowsPerPage, storeKey } });
   }, [page, rowsPerPage, dispatch]);
 
   useEffect(() => {
-    dispatch({ type: 'GET_ORDER_TAGS' });
+    dispatch({ type: 'GET_HTW_ORDER_TAGS', payload: { storeKey } });
   }, [dispatch]);
 
   useEffect(() => {
     dispatch({
-      type: 'GET_ORDERS',
-      payload: { page: page + 1, limit: rowsPerPage, filter: view },
+      type: 'GET_HTW_ORDERS',
+      payload: { page: page + 1, limit: rowsPerPage, filter: view, storeKey },
       // 👆 backend is 1-based, your state is 0-based
     });
   }, [page, rowsPerPage, dispatch, view]);
@@ -228,7 +229,7 @@ function PickList() {
         onClose={() => setOpenPrintModal(false)}
         isPrinting={isPrinting}
       />
-      {/* <div
+      <div
         style={{
           clip: 'rect(0 0 0 0)',
           clipPath: 'inset(100%)',
@@ -238,9 +239,9 @@ function PickList() {
           whiteSpace: 'nowrap',
           width: '1px',
         }}
-      > */}
-      <PrintHtml ref={printRef} activeOrders={activeOrders} splitOrders={splitOrders} />
-      {/* </div> */}
+      >
+        <PrintHtml ref={printRef} activeOrders={activeOrders} splitOrders={splitOrders} />
+      </div>
 
       <div
         style={{

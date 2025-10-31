@@ -163,6 +163,37 @@ function PickListItemsTable({ order }) {
                 ) : (
                   ''
                 )}
+                {product.sku.startsWith(49) ? (
+                  <span
+                    style={{
+                      backgroundColor: '#404040',
+                      width: 'fit-content',
+                      borderRadius: '0.25rem',
+                      fontWeight: '600',
+                      color: 'white',
+                      fontSize: '10px',
+                      padding: '0.2rem',
+                    }}
+                  >
+                    TURBO
+                  </span>
+                ) : (
+                  (product.sku.startsWith(41) || product.sku.startsWith(40)) && (
+                    <span
+                      style={{
+                        backgroundColor: '#404040',
+                        width: 'fit-content',
+                        borderRadius: '0.25rem',
+                        fontWeight: '600',
+                        color: 'white',
+                        fontSize: '10px',
+                        padding: '0.2rem',
+                      }}
+                    >
+                      THERMOFLEX
+                    </span>
+                  )
+                )}
               </span>
             </td>
             <td
