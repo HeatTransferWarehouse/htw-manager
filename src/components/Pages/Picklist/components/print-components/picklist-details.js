@@ -211,6 +211,21 @@ function PickListDetails({ order }) {
             hour12: true,
           })}
         </p>
+        <p
+          style={{
+            margin: '0',
+            fontSize: '12px',
+          }}
+        >
+          <span
+            style={{
+              fontWeight: '600',
+            }}
+          >
+            Payment Method:
+          </span>{' '}
+          {order.payment_method}
+        </p>
 
         <div
           style={{
