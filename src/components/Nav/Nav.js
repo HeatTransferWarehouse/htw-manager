@@ -171,31 +171,20 @@ function Nav() {
             >
               Resources
             </NavLink>
-            <DropDownContainer type="hover">
+            <DropDownContainer type="click">
               <DropDownTrigger>Queue's</DropDownTrigger>
               <DropDownContent>
-                <DropDownItem>
-                  <NavLink to={'/supacolor'} className="p-2 hover:text-secondary whitespace-nowrap">
-                    Supacolor
-                  </NavLink>
+                <DropDownItem asLink to={'/supacolor'}>
+                  Supacolor
                 </DropDownItem>
-                <DropDownItem>
-                  <NavLink to={'/decoqueue'} className="p-2 hover:text-secondary whitespace-nowrap">
-                    DecoQueue
-                  </NavLink>
+                <DropDownItem asLink to={'/decoqueue'}>
+                  DecoQueue
                 </DropDownItem>
-                <DropDownItem>
-                  <NavLink to={'/sff-queue'} className="p-2 hover:text-secondary whitespace-nowrap">
-                    SFF Queue
-                  </NavLink>
+                <DropDownItem asLink to={'/sff-queue'}>
+                  SFF Queue
                 </DropDownItem>
-                <DropDownItem>
-                  <NavLink
-                    to={'/queue/clothing'}
-                    className="p-2 hover:text-secondary whitespace-nowrap"
-                  >
-                    Clothing Queue
-                  </NavLink>
+                <DropDownItem asLink to={'/queue/clothing'}>
+                  Clothing Queue
                 </DropDownItem>
               </DropDownContent>
             </DropDownContainer>
@@ -203,63 +192,31 @@ function Nav() {
             <DropDownContainer type="hover">
               <DropDownTrigger>Product Tools</DropDownTrigger>
               <DropDownContent>
-                <DropDownItem>
-                  <NavLink
-                    to={'/products/missing-alts'}
-                    className="p-2 hover:text-secondary whitespace-nowrap"
-                  >
-                    Alt Tag Issues
-                  </NavLink>
+                <DropDownItem asLink to={'/products/missing-alts'}>
+                  Alt Tag Issues
                 </DropDownItem>
-                <DropDownItem>
-                  <NavLink
-                    to={'/products/no-description'}
-                    className="p-2 hover:text-secondary whitespace-nowrap"
-                  >
-                    Description Issues
-                  </NavLink>
+                <DropDownItem asLink to={'/products/no-description'}>
+                  Description Issues
                 </DropDownItem>
-                <DropDownItem>
+                <DropDownItem asLink>
                   <NavLink
                     to={'/jds/new-product'}
-                    className="p-2 hover:text-secondary whitespace-nowrap"
+                    className="px-2 h-full w-full hover:text-secondary whitespace-nowrap"
                   >
                     JDS Product Import
                   </NavLink>
                 </DropDownItem>
               </DropDownContent>
             </DropDownContainer>
-            <DropDownContainer type="hover">
-              <DropDownTrigger>Sanmar</DropDownTrigger>
-              <DropDownContent>
-                <DropDownItem>
-                  <NavLink
-                    to={'/sanmar-price-sync'}
-                    className="p-2 hover:text-secondary whitespace-nowrap"
-                  >
-                    Price Sync
-                  </NavLink>
-                </DropDownItem>
-              </DropDownContent>
-            </DropDownContainer>
+
             <DropDownContainer type="hover">
               <DropDownTrigger>Picklist's</DropDownTrigger>
               <DropDownContent>
-                <DropDownItem>
-                  <NavLink
-                    to={'/shipstation/pick-list/htw'}
-                    className="p-2 hover:text-secondary whitespace-nowrap"
-                  >
-                    HTW
-                  </NavLink>
+                <DropDownItem asLink to={'/shipstation/pick-list/htw'}>
+                  HTW
                 </DropDownItem>
-                <DropDownItem>
-                  <NavLink
-                    to={'/shipstation/pick-list/sff'}
-                    className="p-2 hover:text-secondary whitespace-nowrap"
-                  >
-                    SFF
-                  </NavLink>
+                <DropDownItem asLink to={'/shipstation/pick-list/sff'}>
+                  SFF
                 </DropDownItem>
               </DropDownContent>
             </DropDownContainer>
@@ -280,26 +237,22 @@ function Nav() {
           </nav>
           {user.id && (
             <DropDownContainer type="hover">
-              <DropDownTrigger>
+              <DropDownTrigger asLink to="/account">
                 <FaUserCircle className="w-6 h-6" />
                 {user.email}
               </DropDownTrigger>
               <DropDownContent>
-                <DropDownItem>
-                  <NavLink to="/account" className="p-2 hover:text-secondary">
-                    Account
-                  </NavLink>
+                <DropDownItem asLink to="/account">
+                  Account
                 </DropDownItem>
-                <DropDownItem>
-                  <NavLink
-                    to="/"
-                    onClick={() => {
-                      dispatch({ type: 'LOGOUT' });
-                    }}
-                    className="p-2 hover:text-secondary"
-                  >
-                    Log Out
-                  </NavLink>
+                <DropDownItem
+                  asLink
+                  to="/"
+                  onClick={() => {
+                    dispatch({ type: 'LOGOUT' });
+                  }}
+                >
+                  Log Out
                 </DropDownItem>
               </DropDownContent>
             </DropDownContainer>

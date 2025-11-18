@@ -12,6 +12,7 @@ import { twMerge } from 'tailwind-merge';
 import { FaChevronDown, FaChevronUp } from 'react-icons/fa6';
 import { createPortal } from 'react-dom';
 import { useDropDownManager } from '../../context/dropdownContext';
+import { Link } from 'react-router-dom';
 
 // Create a Context for dropdown state
 const DropDownContext = createContext();
@@ -123,38 +124,72 @@ const DropDownContainer = ({ children, className, onClose, type = 'hover' }) => 
   );
 };
 
-const DropDownTrigger = forwardRef(({ children, className, onClick, ...props }, ref) => {
-  const { isOpen, toggleOpen, type, triggerRef, calculatePosition } = useContext(DropDownContext);
+const DropDownTrigger = forwardRef(
+  ({ children, className, onClick, asLink, to, ...props }, ref) => {
+    const { isOpen, toggleOpen, type, triggerRef, calculatePosition } = useContext(DropDownContext);
 
-  return (
-    <button
-      ref={ref || triggerRef} // ✅ use the ref passed in, fallback to context
-      className={twMerge(
-        isOpen ? 'bg-secondary/10' : '',
-        'cursor-pointer group p-2 rounded-md transition hover:text-secondary flex items-center justify-start gap-4',
-        className
-      )}
-      onClick={(e) => {
-        onClick && onClick(e);
-        calculatePosition();
-        if (type !== 'hover') toggleOpen();
-      }}
-      onMouseEnter={() => type === 'hover' && calculatePosition()}
-      {...props}
-    >
-      {children}
-      {type !== 'popover' && (
-        <span className="pointer-events-none flex items-center justify-center">
-          {isOpen ? (
-            <FaChevronUp className="group-hover:text-secondary" />
-          ) : (
-            <FaChevronDown className="group-hover:text-secondary" />
+    if (asLink) {
+      return (
+        <Link
+          to={to}
+          ref={ref || triggerRef} // ✅ use the ref passed in, fallback to context
+          className={twMerge(
+            isOpen ? 'bg-secondary/10' : '',
+            'cursor-pointer group p-2 rounded-md transition hover:text-secondary flex items-center justify-start gap-4',
+            className
           )}
-        </span>
-      )}
-    </button>
-  );
-});
+          onClick={(e) => {
+            onClick && onClick(e);
+            calculatePosition();
+            if (type !== 'hover') toggleOpen();
+          }}
+          onMouseEnter={() => type === 'hover' && calculatePosition()}
+          {...props}
+        >
+          {children}
+          {type !== 'popover' && (
+            <span className="pointer-events-none flex items-center justify-center">
+              {isOpen ? (
+                <FaChevronUp className="group-hover:text-secondary" />
+              ) : (
+                <FaChevronDown className="group-hover:text-secondary" />
+              )}
+            </span>
+          )}
+        </Link>
+      );
+    }
+
+    return (
+      <button
+        ref={ref || triggerRef} // ✅ use the ref passed in, fallback to context
+        className={twMerge(
+          isOpen ? 'bg-secondary/10' : '',
+          'cursor-pointer group p-2 rounded-md transition hover:text-secondary flex items-center justify-start gap-4',
+          className
+        )}
+        onClick={(e) => {
+          onClick && onClick(e);
+          calculatePosition();
+          if (type !== 'hover') toggleOpen();
+        }}
+        onMouseEnter={() => type === 'hover' && calculatePosition()}
+        {...props}
+      >
+        {children}
+        {type !== 'popover' && (
+          <span className="pointer-events-none flex items-center justify-center">
+            {isOpen ? (
+              <FaChevronUp className="group-hover:text-secondary" />
+            ) : (
+              <FaChevronDown className="group-hover:text-secondary" />
+            )}
+          </span>
+        )}
+      </button>
+    );
+  }
+);
 
 const DropDownContent = ({ children, className, style }) => {
   const { isOpen, dropdownstyle, triggerRef, contentRef } = useContext(DropDownContext);
@@ -228,15 +263,52 @@ const DropDownContent = ({ children, className, style }) => {
 };
 
 const DropDownItem = forwardRef(
-  ({ children, className, onClick, active, disableCloseOnClick = false, ...rest }, ref) => {
+  (
+    {
+      children,
+      className,
+      onClick,
+      active,
+      disableCloseOnClick = false,
+      asLink = false,
+      to,
+      ...rest
+    },
+    ref
+  ) => {
     const { closeDropdown } = useContext(DropDownContext);
+
+    if (asLink) {
+      return (
+        <Link
+          to={to}
+          ref={ref}
+          className={twMerge(
+            active
+              ? 'bg-secondary/10 text-secondary hover:bg-secondary/10'
+              : 'hover:bg-secondary/5',
+            'p-2 h-fit w-full hover:text-secondary whitespace-nowrap text-left disabled:text-gray-500 cursor-pointer disabled:hover:text-gray-500 disabled:cursor-not-allowed disabled:hover:bg-transparent',
+            className
+          )}
+          onClick={(e) => {
+            if (onClick) onClick(e);
+            if (!disableCloseOnClick) {
+              closeDropdown(); // Explicitly close the dropdown after clicking the item
+            }
+          }}
+          {...rest}
+        >
+          {children}
+        </Link>
+      );
+    }
 
     return (
       <button
         ref={ref}
         className={twMerge(
           active ? 'bg-secondary/10 text-secondary hover:bg-secondary/10' : 'hover:bg-secondary/5',
-          'p-2  w-full hover:text-secondary text-left disabled:text-gray-500 cursor-pointer disabled:hover:text-gray-500 disabled:cursor-not-allowed disabled:hover:bg-transparent',
+          'p-2 h-fit w-full hover:text-secondary text-left disabled:text-gray-500 cursor-pointer disabled:hover:text-gray-500 disabled:cursor-not-allowed disabled:hover:bg-transparent',
           className
         )}
         onClick={(e) => {
