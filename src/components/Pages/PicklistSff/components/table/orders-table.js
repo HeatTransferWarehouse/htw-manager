@@ -42,6 +42,8 @@ function OrdersTable(props) {
     setType,
     filters,
     setFilters,
+    lastSelectedOrder,
+    setLastSelectedOrder,
   } = props;
 
   const dispatch = useDispatch();
@@ -128,6 +130,8 @@ function OrdersTable(props) {
     }
   };
 
+  console.log(ordersData);
+
   return (
     <>
       <Table
@@ -201,8 +205,10 @@ function OrdersTable(props) {
                 return (
                   <OrdersTableRow
                     key={orderKey}
+                    orders={ordersData}
                     order={order}
                     index={index}
+                    orderIndex={index}
                     isSelected={isSelected}
                     expandedOrderIDs={expandedOrderIDs}
                     setExpandedOrderIDs={setExpandedOrderIDs}
@@ -214,6 +220,8 @@ function OrdersTable(props) {
                     setActiveOrders={setActiveOrders}
                     noteId={noteId}
                     orderKey={orderKey}
+                    lastSelectedOrder={lastSelectedOrder}
+                    setLastSelectedOrder={setLastSelectedOrder}
                   />
                 );
               })

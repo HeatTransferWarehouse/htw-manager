@@ -25,6 +25,10 @@ function OrdersTableRow(props) {
     noteId,
     noteRef,
     toggleNote,
+    lastSelectedOrder,
+    setLastSelectedOrder,
+    orders,
+    index,
   } = props;
   return (
     <TableRow
@@ -55,18 +59,39 @@ function OrdersTableRow(props) {
         <button
           onClick={(e) => {
             e.stopPropagation();
+
+            const selected = activeOrders.some((o) => getOrderKey(o) === orderKey);
+
+            // SHIFT RANGE SELECT
+            if (e.shiftKey && lastSelectedOrder !== null) {
+              const start = Math.min(lastSelectedOrder, index);
+              const end = Math.max(lastSelectedOrder, index);
+
+              const range = orders.slice(start, end + 1);
+              const merged = [...activeOrders];
+
+              range.forEach((o) => {
+                const key = getOrderKey(o);
+                if (!merged.some((x) => getOrderKey(x) === key)) {
+                  merged.push(o);
+                }
+              });
+
+              setActiveOrders(merged);
+              setLastSelectedOrder(index);
+              return;
+            }
+
+            // NORMAL CLICK (toggle single)
             toggleSelectOrder(activeOrders, setActiveOrders, order);
+            setLastSelectedOrder(index);
           }}
           className={twMerge(
             'w-5 h-5 rounded border flex items-center justify-center',
-            activeOrders.some((o) => getOrderKey(o) === orderKey)
-              ? 'bg-secondary border-secondary'
-              : 'border-black bg-white'
+            isSelected ? 'bg-secondary border-secondary' : 'border-black bg-white'
           )}
         >
-          {activeOrders.some((o) => getOrderKey(o) === orderKey) && (
-            <FaCheck className="w-[10px] h-[10px] text-white" />
-          )}
+          {isSelected && <FaCheck className="w-[10px] h-[10px] text-white" />}
         </button>
       </TableCell>
 
