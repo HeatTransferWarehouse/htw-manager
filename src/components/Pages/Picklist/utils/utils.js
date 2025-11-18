@@ -216,9 +216,7 @@ export function toggleSelectAll(activeOrders, setActiveOrders, filteredData, all
     );
   } else if (activeOrders.length > 0) {
     // Deselect all
-    setActiveOrders((prev) =>
-      prev.filter((o) => !filteredData.some((p) => getOrderKey(p) === getOrderKey(o)))
-    );
+    setActiveOrders([]);
   } else {
     // Select all
     const newOrders = filteredData.filter(

@@ -130,8 +130,6 @@ function OrdersTable(props) {
     }
   };
 
-  console.log(ordersData);
-
   return (
     <>
       <Table
