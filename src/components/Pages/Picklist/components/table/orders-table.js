@@ -42,6 +42,8 @@ function OrdersTable(props) {
     setType,
     filters,
     setFilters,
+    lastSelectedOrder,
+    setLastSelectedOrder,
   } = props;
 
   const dispatch = useDispatch();
@@ -214,6 +216,9 @@ function OrdersTable(props) {
                     setActiveOrders={setActiveOrders}
                     noteId={noteId}
                     orderKey={orderKey}
+                    lastSelectedOrder={lastSelectedOrder}
+                    setLastSelectedOrder={setLastSelectedOrder}
+                    orders={ordersData}
                   />
                 );
               })

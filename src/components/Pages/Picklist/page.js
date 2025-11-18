@@ -40,6 +40,7 @@ function PickList() {
   const [generateMessageOpen, setGenerateMessageOpen] = useState(false);
   const [activeOrder, setActiveOrder] = useState(null);
   const [filters, setFilters] = useState({});
+  const [lastSelectedOrder, setLastSelectedOrder] = useState(null);
 
   const shipmentsByOrder = orders.reduce((acc, order) => {
     const { order_id, shipment_number } = order;
@@ -172,6 +173,8 @@ function PickList() {
         setActiveOrder={setActiveOrder}
         filters={filters}
         setFilters={setFilters}
+        lastSelectedOrder={lastSelectedOrder}
+        setLastSelectedOrder={setLastSelectedOrder}
       />
 
       {!errors.title &&
