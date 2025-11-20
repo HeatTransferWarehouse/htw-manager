@@ -61,7 +61,16 @@ function PickListDetails({ order }) {
             fontSize: '12px',
           }}
         >
-          {toTitleCase(order.customer.first_name)} {toTitleCase(order.customer.last_name)}
+          {toTitleCase(order.customer.first_name)} {toTitleCase(order.customer.last_name)}{' '}
+          {order.customer.is_guest && (
+            <span
+              style={{
+                fontWeight: 600,
+              }}
+            >
+              (Guest)
+            </span>
+          )}
         </p>
         <p
           style={{

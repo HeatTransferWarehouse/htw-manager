@@ -265,6 +265,7 @@ const buildOrderJSON = async (
       phone: order.billing_address?.phone,
       company: order.billing_address?.company,
       is_first_order: customerOrders?.length === 1,
+      is_guest: order.customer_id === 0,
     },
     subtotal: order.subtotal_ex_tax,
     tax: order.total_tax,
