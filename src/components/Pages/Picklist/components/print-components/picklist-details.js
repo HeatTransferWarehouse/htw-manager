@@ -22,6 +22,10 @@ function PickListDetails({ order }) {
     reasons.push("Customer's first order");
   }
 
+  if (order.customer.is_guest) {
+    reasons.push('Guest Checkout');
+  }
+
   const needsReview = reasons.length > 0;
   const reviewReason = reasons.join(', ');
 
