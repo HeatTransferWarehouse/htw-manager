@@ -107,7 +107,7 @@ function Resources() {
                 <CustomLink
                   className={'flex gap-2 items-center'}
                   style="button"
-                  href={`http://localhost:3000/downloads/HTW-Print-Server-Setup-windows.exe`}
+                  href={`https://admin.heattransferwarehouse.com/downloads/HTW-Print-Server-Setup-windows.exe`}
                   target="_blank"
                   download="HTW-Print-Server-Setup-windows.exe"
                 >
