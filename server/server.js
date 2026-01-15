@@ -39,6 +39,8 @@ const allowedOrigins = [
   'https://www.heattransferwarehouse.com',
   'https://www.heat-transfer-warehouse-sandbox.mybigcommerce.com',
   'http://admin.heattransferwarehouse.com',
+  'https://www.yourcustomtransfers.com',
+  'http://www.yourcustomtransfers.com/',
   'http://localhost:3000',
   'http://localhost:3012',
   'http://localhost:8000',
