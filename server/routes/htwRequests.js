@@ -40,9 +40,11 @@ router.post('/update-item-price', async (req, res) => {
     ) {
       hash = process.env.STORE_HASH;
       apiKey = process.env.BG_AUTH_TOKEN;
-    }else if (requestOrigin === 'https://www.yourcustomtransfers.com'
-      || requestOrigin === 'https://www.yourcustomtransfers.com/'
-    ) {
+    } else if (
+  requestOrigin && 
+  (requestOrigin.replace(/\/$/, '') === 'https://www.yourcustomtransfers.com' || 
+   requestOrigin.replace(/\/$/, '') === 'https://yourcustomtransfers.com')
+) {
       hash = process.env.BC_HASH;
       apiKey = process.env.BC_TOKEN;
     } else {
@@ -157,9 +159,11 @@ router.post('/cart-transfer-price', async (req, res) => {
     ) {
       hash = process.env.STORE_HASH;
       apiKey = process.env.BG_AUTH_TOKEN;
-    } else if (requestOrigin === 'https://www.yourcustomtransfers.com'
-      || requestOrigin === 'https://www.yourcustomtransfers.com/'
-    ) {
+    } else if (
+  requestOrigin && 
+  (requestOrigin.replace(/\/$/, '') === 'https://www.yourcustomtransfers.com' || 
+   requestOrigin.replace(/\/$/, '') === 'https://yourcustomtransfers.com')
+) {
       hash = process.env.BC_HASH;
       apiKey = process.env.BC_TOKEN;
     } else {
