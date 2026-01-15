@@ -39,11 +39,14 @@ const allowedOrigins = [
   'https://www.heattransferwarehouse.com',
   'https://www.heat-transfer-warehouse-sandbox.mybigcommerce.com',
   'http://admin.heattransferwarehouse.com',
+  'https://www.yourcustomtransfers.com',
+  'https://yourcustomtransfers.com',
   'http://localhost:3000',
   'http://localhost:3012',
   'http://localhost:8000',
   'http://localhost:4577',
   // add more if needed
+
 ];
 
 const dynamicCors = (req, res, next) => {

@@ -1,21 +1,53 @@
 require('dotenv').config();
 const express = require('express');
 const router = express.Router();
-const fs = require('fs').promises; // Use the Promise-based fs API
+const fs = require('fs').promises;
 const multer = require('multer');
-const sharp = require('sharp'); // Import sharp for image processing
-const PSD = require('psd'); // Import psd.js
+const sharp = require('sharp');
+const PSD = require('psd');
 const path = require('path');
-const { PDFDocument } = require('pdf-lib'); // Import pdf-lib for PDF processing
+const { PDFDocument } = require('pdf-lib');
 
 const storage = multer.memoryStorage();
 const upload = multer({ storage: storage });
 
-// Function to save buffer to file
 const saveBufferToFile = (buffer, filename) => {
   const filePath = path.join('uploads', filename);
   return fs.writeFile(filePath, buffer).then(() => filePath);
 };
+
+// CORS middleware specifically for this router
+const setCorsHeaders = (req, res, next) => {
+  const origin = req.headers.origin;
+  const allowedOrigins = [
+    'https://www.heattransferwarehouse.com',
+    'https://www.heat-transfer-warehouse-sandbox.mybigcommerce.com',
+    'http://admin.heattransferwarehouse.com',
+    'http://www.yourcustomtransfers.com',
+    'https://www.yourcustomtransfers.com',
+    'https://your-custom-transfer.mybigcommerce.com',
+    'http://localhost:3000',
+    'http://localhost:3012',
+    'http://localhost:8000',
+    'http://localhost:4577',
+  ];
+
+  if (allowedOrigins.includes(origin)) {
+    res.setHeader('Access-Control-Allow-Origin', origin);
+    res.setHeader('Access-Control-Allow-Credentials', 'true');
+    res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
+    res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization, X-Requested-With');
+  }
+
+  if (req.method === 'OPTIONS') {
+    return res.sendStatus(200);
+  }
+
+  next();
+};
+
+// Apply CORS middleware to all routes in this router
+router.use(setCorsHeaders);
 
 router.post('/update-item-price', async (req, res) => {
   try {
@@ -40,11 +72,15 @@ router.post('/update-item-price', async (req, res) => {
     ) {
       hash = process.env.STORE_HASH;
       apiKey = process.env.BG_AUTH_TOKEN;
+    } else if (requestOrigin === 'https://www.yourcustomtransfers.com'
+      || requestOrigin === 'https://your-custom-transfer.mybigcommerce.com'
+    ) {
+      hash = process.env.BC_HASH;
+      apiKey = process.env.BC_TOKEN;
     } else {
       throw new Error('Invalid origin');
     }
 
-    // URL for adding the item to the cart
     const updateUrl = `https://api.bigcommerce.com/stores/${hash}/v3/carts/${cartId}/items/${cartItemId}`;
 
     const headers = {
@@ -127,7 +163,7 @@ const addDigitalProofItem = async (cartId, digitalProofID, apiKey, hash) => {
   const response = await fetch(url, options);
   if (!response.ok) {
     if (response.status === 409 && response.statusText === 'Conflict') {
-      return response.json(); // If the item already exists, return the response
+      return response.json();
     }
     console.error('Failed to add digital proof item', response);
     throw new Error(`Failed to add digital proof item: ${response.statusText}`);
@@ -152,6 +188,10 @@ router.post('/cart-transfer-price', async (req, res) => {
     ) {
       hash = process.env.STORE_HASH;
       apiKey = process.env.BG_AUTH_TOKEN;
+    } else if (requestOrigin === 'https://www.yourcustomtransfers.com' ||
+      requestOrigin === 'https://your-custom-transfer.mybigcommerce.com') {
+      hash = process.env.BC_HASH;
+      apiKey = process.env.BC_TOKEN;
     } else {
       throw new Error('Invalid origin');
     }
@@ -221,10 +261,9 @@ router.post('/cart-related-products', async (req, res) => {
   try {
     const { productIds, token, query } = req.body;
 
-    // Fetch GraphQL data
     const response = await fetch(`https://heattransferwarehouse.com/graphql`, {
       method: 'POST',
-      credentials: 'same-origin', // You might not need this for external domains
+      credentials: 'same-origin',
       headers: {
         'Content-Type': 'application/json',
         Authorization: `Bearer ${token}`,
@@ -238,19 +277,16 @@ router.post('/cart-related-products', async (req, res) => {
     });
 
     if (!response.ok) {
-      // Handle non-200 HTTP responses
       throw new Error(`GraphQL request failed: ${response.statusText}`);
     }
 
     const result = await response.json();
 
-    // Ensure the structure is as expected
     const relatedProducts = result.data?.site?.product?.relatedProducts?.edges || [];
 
-    // Build HTML from related products
     const productsHtml = buildRelatedProductsHTML(relatedProducts);
 
-    res.send(productsHtml); // Send the HTML response to the client
+    res.send(productsHtml);
   } catch (err) {
     console.error(err);
     res.status(500).json({
@@ -260,7 +296,6 @@ router.post('/cart-related-products', async (req, res) => {
   }
 });
 
-// Build related products HTML
 const buildRelatedProductsHTML = (products) => {
   const relatedProducts = products.map((product) => {
     return buildRelatedProductElement(product.node);
@@ -269,7 +304,6 @@ const buildRelatedProductsHTML = (products) => {
   return relatedProducts.join('');
 };
 
-// Build individual product HTML
 const buildRelatedProductElement = (product) => {
   return `
     <article class="card">
@@ -353,22 +387,20 @@ router.post('/process-image', upload.single('file'), async (req, res) => {
       return res.status(400).json({ message: 'No file uploaded' });
     }
 
-    const fileBuffer = file.buffer; // Access the file buffer
+    const fileBuffer = file.buffer;
     const fileExtension = file.originalname.split('.').pop().toLowerCase();
     const originalFileName = file.originalname;
     const fileStats = {
-      size: file.size, // Size in bytes
-      mimetype: file.mimetype, // MIME type of the file
+      size: file.size,
+      mimetype: file.mimetype,
     };
-
-    // Handle PNG, JPEG, JPG, SVG (already images, no conversion needed)
 
     if (['png', 'jpeg', 'jpg'].includes(fileExtension)) {
       const metadata = await sharp(fileBuffer).metadata();
 
       const width = metadata.width;
       const height = metadata.height;
-      const density = metadata.density || 72; // default to 72 PPI if not provided
+      const density = metadata.density || 72;
 
       const widthInInches = width / density;
       const heightInInches = height / density;
@@ -386,7 +418,6 @@ router.post('/process-image', upload.single('file'), async (req, res) => {
       });
     }
 
-    // Handle EPS and AI files with ImageMagick
     else if (fileExtension === 'eps' || fileExtension === 'ai') {
       res.json({
         image: ``,
@@ -399,9 +430,7 @@ router.post('/process-image', upload.single('file'), async (req, res) => {
       });
     }
 
-    // Handle PSD files with psd.js
     else if (fileExtension === 'psd') {
-      // Save the buffer to disk before processing with psd.js
       const filePath = await saveBufferToFile(fileBuffer, originalFileName);
 
       const psd = await PSD.fromFile(filePath);
@@ -422,7 +451,6 @@ router.post('/process-image', upload.single('file'), async (req, res) => {
           console.log('Aspect Ratio:', aspectRatio);
           console.log('PPI:', ppi);
 
-          // Convert to base64
           const previewBuffer = await fs.readFile(previewPath);
           const base64Image = previewBuffer.toString('base64');
 
@@ -436,7 +464,6 @@ router.post('/process-image', upload.single('file'), async (req, res) => {
             type: 'image',
           });
 
-          // Clean up temporary files
           await fs.unlink(filePath);
           await fs.unlink(previewPath);
         })
@@ -446,19 +473,14 @@ router.post('/process-image', upload.single('file'), async (req, res) => {
         });
     }
 
-    // Handle PDF files
     else if (fileExtension === 'pdf') {
       const pdfDoc = await PDFDocument.load(fileBuffer);
       const page = pdfDoc.getPage(0);
 
       const { width, height } = page.getSize();
 
-      // Render the page to PNG (pdf-lib supports embedded PNG/JPG but not rasterizing)
-      // You'll need to use pdf-lib only for metadata, then fallback to sharp/imagemagick for actual rendering
-
-      // TEMPORARY: fallback response
       return res.json({
-        image: '', // Placeholder if you don't rasterize here
+        image: '',
         aspectRatio: width / height,
         widthInInches: width / 72,
         heightInInches: height / 72,
@@ -467,7 +489,6 @@ router.post('/process-image', upload.single('file'), async (req, res) => {
         type: 'pdf',
       });
     } else if (fileExtension === 'svg') {
-      // Parse the SVG XML to get dimensions
       const svgString = fileBuffer.toString('utf8');
       const viewBoxMatch = svgString.match(/viewBox="([^"]+)"/);
       const widthMatch = svgString.match(/width="([^"]+)"/);
@@ -484,18 +505,17 @@ router.post('/process-image', upload.single('file'), async (req, res) => {
         width = viewBoxValues[2];
         height = viewBoxValues[3];
       } else {
-        width = 100; // fallback default
+        width = 100;
         height = 100;
       }
 
-      // Optionally render to PNG for preview
       const pngBuffer = await sharp(fileBuffer).png().toBuffer();
       const base64Image = pngBuffer.toString('base64');
 
       return res.json({
         image: `data:image/png;base64,${base64Image}`,
         aspectRatio: width / height,
-        widthInInches: width / 72, // assuming 72 PPI for fallback
+        widthInInches: width / 72,
         heightInInches: height / 72,
         ppi: 72,
         size: fileStats.size,
@@ -503,7 +523,6 @@ router.post('/process-image', upload.single('file'), async (req, res) => {
       });
     }
 
-    // Unsupported file type
     else {
       return res.status(400).json({ message: 'Unsupported file type' });
     }
